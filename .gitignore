@@ -1,0 +1,12 @@
+.idea
+.vscode
+pgdata
+#push.sh
+uploads
+uploads*
+moon.py
+node_modules
+docs/doc
+
+
+
