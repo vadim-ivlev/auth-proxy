@@ -1,0 +1,2 @@
+- switch to primitive proxy
+- get rid of gin using <https://github.com/abbot/go-http-auth>
