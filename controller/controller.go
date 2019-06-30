@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"auth-proxy/auth"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -19,6 +20,46 @@ func PingHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
+}
+
+func LandingPage(c *gin.Context) {
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.HTML(200, "index.html", nil)
+}
+
+func Login(c *gin.Context) {
+	session := sessions.Default(c)
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	// if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Parameters can't be empty"})
+	// 	return
+	// }
+	if auth.CheckUserPassword(username, password) {
+		session.Set("user", username) //In real world usage you'd set this to the users ID
+		err := session.Save()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate session token"})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated " + username})
+		}
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+	}
+}
+
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get("user")
+	if user == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
+	} else {
+		log.Println(user)
+		session.Delete("user")
+		session.Save()
+		c.JSON(http.StatusOK, gin.H{"message": user.(string) + " successfully logged out"})
+	}
 }
 
 // ReverseProxy перенаправляет запросы к другому серверу

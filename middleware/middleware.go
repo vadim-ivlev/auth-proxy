@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"auth-proxy/auth"
+	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,4 +33,23 @@ func hostIsAllowed(host string) bool {
 		return true
 	}
 	return false
+}
+
+// CheckUser проверяет залогинен ли пользователь
+func CheckUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
+		if user == nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
+		} else {
+			userName := user.(string)
+			roles := auth.GetUserRoles(userName, c.Request.URL.Path)
+			info := auth.GetUserInfo(userName)
+
+			c.Request.Header.Set("user-roles", roles)
+			c.Request.Header.Set("user-info", info)
+			c.Next()
+		}
+	}
 }

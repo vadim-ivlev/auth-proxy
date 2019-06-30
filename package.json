@@ -2,8 +2,8 @@
   "name": "postdemo",
   "version": "1.0.0",
   "scripts": {
-    "start1": "node server.js 3001 Application 1" ,
-    "start2": "node server.js 3002 Application 2" 
+    "start1": "node server.js 3001 Application 1",
+    "start2": "node server.js 3002 Application 2"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
