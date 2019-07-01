@@ -1,5 +1,11 @@
 package auth
 
+// import (
+// 	gsessions "github.com/gorilla/sessions"
+// )
+
+// var Store = gsessions.NewCookieStore([]byte("secret"))
+
 func CheckUserPassword(user, password string) bool {
 	if user == "q" && password == "q" {
 		return true

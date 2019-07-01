@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"auth-proxy/auth"
+	"auth-proxy/model/auth"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/contrib/sessions"
+	// gsessions "github.com/gorilla/sessions"
 
 	"auth-proxy/primitiveproxy"
 
@@ -32,12 +33,10 @@ func Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	// if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Parameters can't be empty"})
-	// 	return
-	// }
 	if auth.CheckUserPassword(username, password) {
 		session.Set("user", username) //In real world usage you'd set this to the users ID
+		session.Options(sessions.Options{MaxAge: 0})
+
 		err := session.Save()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate session token"})
@@ -55,12 +54,63 @@ func Logout(c *gin.Context) {
 	if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
 	} else {
-		log.Println(user)
 		session.Delete("user")
+		session.Clear()
+		session.Options(sessions.Options{MaxAge: -1})
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"message": user.(string) + " successfully logged out"})
 	}
 }
+
+// func Login1(c *gin.Context) {
+// 	r := c.Request
+// 	w := c.Writer
+// 	session, err := auth.Store.Get(c.Request, "auth-proxy")
+// 	if err != nil {
+// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "auth.Store.Get(c.Request, auth-proxy)"})
+// 	}
+
+// 	username := c.PostForm("username")
+// 	password := c.PostForm("password")
+
+// 	if auth.CheckUserPassword(username, password) {
+// 		session.Values["user"] = username
+// 		// FIXME: MaxAge=0 does not work
+// 		session.Options = &gsessions.Options{
+// 			MaxAge: 0,
+// 		}
+
+// 		err := session.Save(r, w)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		} else {
+// 			c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated " + username})
+// 		}
+// 	} else {
+// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+// 	}
+// }
+
+// func Logout1(c *gin.Context) {
+// 	r := c.Request
+// 	w := c.Writer
+// 	session, err := auth.Store.Get(c.Request, "auth-proxy")
+// 	if err != nil {
+// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "auth.Store.Get(c.Request, auth-proxy)"})
+// 	}
+// 	user, ok := session.Values["user"].(string)
+
+// 	if !ok {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
+// 	} else {
+// 		delete(session.Values, "user")
+// 		session.Options = &gsessions.Options{
+// 			MaxAge: -1,
+// 		}
+// 		session.Save(r, w)
+// 		c.JSON(http.StatusOK, gin.H{"message": user + " successfully logged out"})
+// 	}
+// }
 
 // ReverseProxy перенаправляет запросы к другому серверу
 func ReverseProxy(target string, pathPrefix string) gin.HandlerFunc {
@@ -70,10 +120,9 @@ func ReverseProxy(target string, pathPrefix string) gin.HandlerFunc {
 	}
 	proxy := httputil.NewSingleHostReverseProxy(url)
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get("user")
-		println("USER:", user)
-		println("SESSION:", session)
+		// session := sessions.Default(c)
+		// user := session.Get("user")
+		// println("USER:", user.(string))
 
 		c.Request.URL.Path = strings.TrimPrefix(c.Request.URL.Path, pathPrefix)
 		proxy.ServeHTTP(c.Writer, c.Request)

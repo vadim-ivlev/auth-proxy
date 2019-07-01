@@ -1,0 +1,23 @@
+# Для окружений dev, docker, prod
+# устанавливает соответствие
+# идентификатор приложения : URL приложения
+
+dev:
+  app1:     http://localhost:3001
+  app2:     http://localhost:3002
+  onlinebc: http://localhost:7700
+  rg:       https://rg.ru 
+
+
+docker:
+  app1:     http://localhost:3001
+  app2:     http://localhost:3002
+  onlinebc: http://localhost:7700
+  rg:       https://rg.ru 
+
+
+prod:
+  app1:     http://localhost:3001
+  app2:     http://localhost:3002
+  onlinebc: http://localhost:7700
+  rg:       https://rg.ru 

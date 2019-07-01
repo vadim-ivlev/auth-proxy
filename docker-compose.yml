@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    container_name: psql-com
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - "./pgdata:/var/lib/postgresql/data/pgdata"
+      - "./migrations:/dumps"
+      - "./etc/.pgpass:/root/.pgpass"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: onlinebc 
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+
+  # redis:
+  #     image: redis
+  #     container_name: pg-redis-com
+  #     ports:
+  #         - "6389:6379"
+  #     restart: always
+
+
+
+
+

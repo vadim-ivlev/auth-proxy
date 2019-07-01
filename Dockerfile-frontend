@@ -1,0 +1,15 @@
+FROM golang:1.12.5-stretch 
+LABEL maintainer="RGRU <ivlev@rg.ru>"
+
+RUN apt-get -y update && apt-get -y install sshpass 
+
+WORKDIR /go/src/onlinebc_admin
+COPY . .
+
+ENV GO111MODULE=on
+RUN env CGO_ENABLED=0 go build
+
+EXPOSE 7700
+
+CMD ["./onlinebc_admin", "-serve", "7700", "-env=docker"]
+

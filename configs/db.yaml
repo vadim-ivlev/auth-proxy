@@ -1,0 +1,29 @@
+# Параметры подключения к базе данных
+# для окружений dev, docker, prod
+
+
+dev:
+  host: localhost
+  port: 5432
+  user: root 
+  password: root 
+  dbname: onlinebc 
+  sslmode: disable
+
+
+docker:
+  host: db
+  port: 5432
+  user: root 
+  password: root 
+  dbname: onlinebc 
+  sslmode: disable
+
+
+prod:
+  host: localhost
+  port: 5432
+  user: root 
+  password: root 
+  dbname: onlinebc 
+  sslmode: disable

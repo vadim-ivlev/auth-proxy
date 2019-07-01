@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"auth-proxy/auth"
+	"auth-proxy/model/auth"
 	"net/http"
 	"strings"
 
@@ -53,3 +53,24 @@ func CheckUser() gin.HandlerFunc {
 		}
 	}
 }
+
+// // CheckUser проверяет залогинен ли пользователь
+// func CheckUser1() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		session, err := auth.Store.Get(c.Request, "auth-proxy")
+// 		if err != nil {
+// 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "auth.Store.Get(c.Request, auth-proxy)"})
+// 		} else {
+// 			userName, ok := session.Values["user"].(string)
+// 			if !ok {
+// 				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
+// 			}
+// 			roles := auth.GetUserRoles(userName, c.Request.URL.Path)
+// 			info := auth.GetUserInfo(userName)
+
+// 			c.Request.Header.Set("user-roles", roles)
+// 			c.Request.Header.Set("user-info", info)
+// 			c.Next()
+// 		}
+// 	}
+// }
