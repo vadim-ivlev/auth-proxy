@@ -33,7 +33,7 @@ func GetUserRoles(user, app string) string {
 	if err != nil {
 		return ""
 	}
-	roles, _ := record["roles"]
+	roles, _ := record["roles"].(string)
 	return roles
 
 	// jsonBytes, _ := json.Marshal(record)

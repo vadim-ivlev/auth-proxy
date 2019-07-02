@@ -4,7 +4,7 @@ services:
 
   db:
     image: postgres
-    container_name: psql-com
+    container_name: auth-db-dev
     restart: always
     ports:
       - 5432:5432
@@ -19,6 +19,20 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
 
 
-
+  node:
+    image: "node:alpine"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./test_apps:/home/node/app
+    expose:
+      - "3001"
+      - "3002"
+    ports:
+      - 3001:3001
+      - 3002:3002
+    command: "npm run start12"
 
 
