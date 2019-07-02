@@ -16,7 +16,7 @@ func Serve(port string) {
 
 // Setup определяет пути и присоединяет функции middleware.
 func Setup() *gin.Engine {
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// r := gin.New()
 

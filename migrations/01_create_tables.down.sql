@@ -1,10 +1,8 @@
-DROP INDEX IF EXISTS image_post_id_idx;
-DROP INDEX IF EXISTS post_id_broadcast_idx;
-DROP INDEX IF EXISTS post_id_parent_idx;
-DROP INDEX IF EXISTS broadcast_title_textsearch_idx;
+DROP INDEX IF EXISTS role_appname_idx;
+DROP INDEX IF EXISTS user_textsearch_idx;
 
-DROP TABLE IF EXISTS public.image;
-DROP TABLE IF EXISTS public.post;
-DROP TABLE IF EXISTS public.broadcast;
-
+DROP TABLE IF EXISTS public.app_user_role;
+DROP TABLE IF EXISTS public.role;
+DROP TABLE IF EXISTS public.app;
+DROP TABLE IF EXISTS public.user;
 

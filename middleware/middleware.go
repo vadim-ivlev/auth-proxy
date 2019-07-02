@@ -44,7 +44,7 @@ func CheckUser() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 		} else {
 			userName := user.(string)
-			roles := auth.GetUserRoles(userName, c.Request.URL.Path)
+			roles := auth.GetUserRoles(userName, strings.TrimSuffix(strings.TrimPrefix(c.Request.URL.Path, "/apps/"), "/"))
 			info := auth.GetUserInfo(userName)
 
 			c.Request.Header.Set("user-roles", roles)

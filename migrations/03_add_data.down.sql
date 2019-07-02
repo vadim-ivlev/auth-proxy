@@ -1,3 +1,3 @@
--- TRUNCATE public.broadcast CASCADE;
+DELETE FROM public.user CASCADE;
+DELETE FROM public.app CASCADE;
 
-DELETE FROM public.broadcast CASCADE WHERE id < 360;

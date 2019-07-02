@@ -42,7 +42,7 @@ func ReadConfig(fileName string, env string) {
 	printIf("ReadConfig()", err)
 	params = envParams[env]
 
-	connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode)
+	connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=public", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode)
 	connectURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", params.User, params.Password, params.Host, params.Port, params.Dbname, params.Sslmode)
 
 }

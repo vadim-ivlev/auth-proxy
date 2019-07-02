@@ -4,18 +4,18 @@
 # гасим бд
 docker-compose down
 
-# удаляем файлы бд, и чистим загрузки
-sudo rm -rf pgdata uploads/* uploads_temp/*
+# удаляем файлы бд
+sudo rm -rf pgdata 
 
 
 # build a docker image 
-docker build -t rgru/onlinebc_admin:latest -f Dockerfile-frontend . 
+docker build -t rgru/auth-proxy:latest -f Dockerfile-frontend . 
 
 # push the docker image 
 docker login
-docker push rgru/onlinebc_admin:latest
+docker push rgru/auth-proxy:latest
 
 
 # копируем docker-compose-frontend.yml и 
-cp docker-compose-frontend.yml ../onlinebc/docker-compose.yml
-cp readme-frontend.md ../onlinebc/readme.md
+cp docker-compose-frontend.yml ../auth/docker-compose.yml
+cp readme-frontend.md ../auth/readme.md

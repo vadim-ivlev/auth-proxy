@@ -2,58 +2,52 @@
 DO 
 $$
 BEGIN
+-- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
 
+SET CONSTRAINTS app_user_role_fk_a DEFERRED;
+SET CONSTRAINTS app_user_role_fk_u DEFERRED;
+-- SET CONSTRAINTS app_user_role_fk_r DEFERRED;
+SET CONSTRAINTS role_fk DEFERRED;
 
+-- данные
 
+INSERT INTO public.app (appname, description, url) VALUES ('app1'          , 'Тестовое express приложение 1', 'http://localhost:3001');
+INSERT INTO public.app (appname, description, url) VALUES ('app2'          , 'Тестовое express приложение 2', 'http://localhost:3002');
+INSERT INTO public.app (appname, description, url) VALUES ('onlinebc_admin', 'Тестовые трансляции'          , 'http://localhost:7700');
+INSERT INTO public.app (appname, description, url) VALUES ('rg'            , 'Сайт rg.ru'                   , 'https://rg.ru');
 
--- добавлено, чтобы не заботиться о порядке вставки данных, из за ограничений внешних ключей
-SET CONSTRAINTS post_broadcast_fk DEFERRED;
-SET CONSTRAINTS post_post_fk DEFERRED;
-SET CONSTRAINTS image_post_fk DEFERRED;
+INSERT INTO public.user (username, password, email, fullname, description) VALUES ('vadim', '1', 'ivlev@rg.ru' , 'Ивлев Вадим'  , 'разработчик');
+INSERT INTO public.user (username, password, email, fullname, description) VALUES ('serg' , '1', 'barsuk@rg.ru', 'Барсук Сергей', 'разработчик');
+INSERT INTO public.user (username, password, email, fullname, description) VALUES ('max'  , '1', 'chagin@rg.ru', 'Чагин Максим' , 'начальник отдела разработки');
 
+INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'manager');
+INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'worker');
+INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'boss');
+INSERT INTO public.role (appname, rolename) VALUES ('app2'          , 'admin');
+INSERT INTO public.role (appname, rolename) VALUES ('app2'          , 'user');
+INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'admin');
+INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'editor');
+INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'guest');
+INSERT INTO public.role (appname, rolename) VALUES ('rg'            , 'reader');
 
---
--- TOC entry 2899 (class 0 OID 16387)
--- Dependencies: 197
--- Data for Name: broadcast; Type: TABLE DATA; Schema: public; Owner: root
---
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'manager');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'worker');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'boss');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'max'  , 'manager');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'max'  , 'boss');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'serg' , 'manager');
 
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (321, 'Финал конкурса Мисс Россия-2017', 1492117200, 1492277400, 1, 0, 1, 0, 'http://rg.ru/2017/04/15/online-miss-russia-2017.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (322, 'Военный парад на Красной площади', 1493931600, 1494312000, 1, 0, 1, 0, 'http://rg.ru/2017/05/09/onlajn-transliaciia-voennogo-parada-na-krasnoj-ploshchadi.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (323, 'Бессмертный полк', 1494277200, 1496329080, 1, 0, 1, 0, 'http://rg.ru/', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (324, 'Церемония открытия кинофестиваля "Кинотавр"', 1496782800, 1496848500, 1, 1, 1, 0, 'http://rg.ru/2017/06/07/reg-ufo/onlajn-transliaciia-ceremonii-otkrytiia-28-go-kinofestivalia-kinotavr.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (325, 'Прямая линия с Владимиром Путиным', 1497474000, 1497514200, 1, 0, 1, 0, 'http://rg.ru/2017/06/15/priamaia-liniia-s-vladimirom-putinym-onlajn-transliaciia.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (326, 'Боксерский бой Поветкин - Руденко', 1498856400, 1498930200, 1, 1, 1, 0, 'http://rg.ru/2017/07/01/reg-cfo/bokserskij-boj-povetkin-rudenko-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (327, 'Боксерский бой Лебедев - Флэнаган', 1499547600, 1499619600, 1, 1, 1, 0, 'http://rg.ru/2017/07/09/reg-urfo/bokserskij-boj-lebedev-flenagan-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (328, 'Жеребьевка 3-го раунда Лиги Чемпионов и Лиги Европы', 1499979600, 1500026400, 1, 0, 1, 0, 'http://rg.ru/2017/07/14/online-3rd-round.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (329, '"Недетский разговор" Владимира Путина со школьниками', 1500584400, 1500640200, 1, 0, 0, 0, 'http://rg.ru/2017/07/21/reg-ufo/nedetskij-razgovor-vladimira-putina-so-shkolnikami-onlajn-transliaciia.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (332, 'Танковый биатлон-2017', 1501189200, 1501318800, 1, 0, 1, 0, 'http://rg.ru/2017/07/29/reg-cfo/tankovyj-biatlon-v-alabino-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (333, 'Жеребьевка плей-офф ЛЧ и ЛЕ', 1501794000, 1501840800, 1, 0, 0, 0, 'http://rg.ru/2017/08/04/onlajn-transliaciia-zherebevki-plej-off-ligi-chempionov-i-ligi-evropy.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (334, 'Встреча Владимира Путина с участниками форума "Таврида"', 1503090000, 1503245100, 1, 0, 1, 0, 'http://rg.ru/2017/08/20/reg-ufo/obshchenie-prezidenta-s-uchastnikami-foruma-tavrida-onlajn-transliaciia.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (335, ' Жеребьевка группового этапа Лиги чемпионов', 1503522000, 1503590400, 1, 0, 0, 0, 'http://rg.ru/2017/08/24/zherebevka-gruppovogo-etapa-ligi-chempionov-onlajn-transliaciia.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (336, 'Жеребьевка группового этапа Лиги Европы', 1503608400, 1503658800, 1, 0, 0, 0, 'http://rg.ru/2017/08/25/zherebevka-gruppovogo-etapa-ligi-evropy-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (337, 'Боксерский бой Макгрегор - Мейвезер', 1503694800, 1503806400, 1, 1, 1, 0, 'http://rg.ru/2017/08/26/makgregor-mejvezer-onlajn-transliaciia-boia-veka.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (338, 'Москве - 870! Онлайн-трансляция Дня Города', 1504818000, 1504940400, 1, 0, 1, 0, 'http://rg.ru/2017/09/09/reg-cfo/moskve-870-onlajn-transliaciia-dnia-goroda.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (339, 'Трансляция презентации новых iPhone', 1505163600, 1505205000, 1, 0, 1, 0, 'http://rg.ru/2017/09/12/prezentaciia-novyh-apple-iphone-onlajn-transliaciia.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (340, 'Референдум в Каталонии', 1506805200, 1506839400, 1, 1, 1, 0, 'http://rg.ru/2017/10/01/referendum-o-nezavisimosti-katalonii-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (341, ' Жеребьевка чемпионата мира по футболу-2018', 1512075600, 1512140400, 1, 0, 1, 0, 'http://rg.ru/2017/12/01/zherebevka-chempionata-mira-po-futbolu-2018-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (342, 'Жеребьевка матчей Лиги чемпионов и Лиги Европы', 1512939600, 1512990000, 1, 0, 1, 0, 'http://rg.ru/2017/12/11/zherebevka-matchej-ligi-chempionov-i-ligi-evropy-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (343, 'Пресс-конференция Владимира Путина', 1513112400, 1513239000, 1, 0, 1, 0, 'http://rg.ru/2017/12/14/onlajn-transliaciia-press-konferencii-vladimira-putina.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (344, 'Празднование 75-летия победы в Сталинградской битве', 1517432400, 1517554200, 1, 0, 1, 0, 'http://rg.ru/2018/02/02/reg-ufo/onlajn-transliaciia-prazdnovaniia-75-letiia-pobedy-v-stalingradskoj-bitve.html', '', 6, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (345, 'CAS решает судьбу российских олимпийцев', 1518037200, 1518075960, 1, 1, 1, 0, 'http://rg.ru/2018/02/08/cas-reshaet-sudbu-rossijskih-olimpijcev-onlajn-transliaciia.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (346, 'Церемония открытия Олимпиады в Пхенчхане ', 1518123600, 1518174000, 1, 0, 1, 0, 'http://rg.ru/2018/02/09/onlajn-transliaciia-ceremonii-otkrytiia-olimpijskih-igr-v-phenchhane.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (347, ' Послание президента Федеральному Собранию ', 1519765200, 1519894020, 1, 0, 1, 0, 'http://rg.ru/2018/03/01/onlajn-transliaciia-poslaniia-prezidenta-federalnomu-sobraniiu.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (348, 'Церемония вручения кинопремии "Оскар"', 1520110800, 1520195400, 1, 1, 1, 0, 'http://rg.ru/2018/03/04/ceremoniia-vrucheniia-kinopremii-oskar-onlajn-transliaciia.html', '', 0, 1, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (349, 'Финал конкурса красоты Мисс Россия-2018', 1523566800, 1523725200, 1, 0, 1, 0, 'http://rg.ru/2018/04/14/online-final-miss-rossiia-2018.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (350, ' Парад Победы на Красной площади ', 1525726800, 1525848000, 1, 0, 1, 0, 'http://rg.ru/2018/05/09/onlajn-transliaciia-voennogo-parada-na-krasnoj-ploshchadi.html ', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (351, 'Первый полуфинал конкурса "Евровидение-2018"', 1525726800, 1525811400, 1, 1, 0, 0, 'http://rg.ru/2018/05/08/onlajn-transliaciia-pervogo-polufinala-konkursa-evrovidenie-2018.html', '', 0, 1, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (352, 'Второй полуфинал конкурса "Евровидение-2018"', 1525899600, 1525978800, 1, 1, 1, 0, 'http://rg.ru/2018/05/10/onlajn-transliaciia-vtorogo-polufinala-konkursa-evrovidenie-2018.html', '', 0, 1, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (353, 'Финал конкурса "Евровидение-2018"', 1526072400, 1526151600, 1, 1, 1, 0, 'http://rg.ru/2018/05/12/final-konkursa-evrovidenie-2018-onlajn-transliaciia.html', '', 0, 1, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (355, 'Гассиев - Усик. Финал Всемирной суперсерии бокса', 1532120400, 1532196000, 1, 0, 1, 0, 'http://rg.ru/2018/07/21/gassiev-usik-online.html', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (356, 'Презентация новых iPhone', 1536699600, 1536746100, 1, 0, 1, 0, 'http://rg.ru/', '', 0, 0, '');
-INSERT INTO public.broadcast (id, title, time_created, time_begin, is_ended, show_date, show_time, show_main_page, link_article, link_img, groups_create, is_diary, diary_author) VALUES (354, 'Обновленная трансляция', 1528376820, 1528376820, 1, 1, 0, 0, 'http://www.rg.ru/2013/08/09/zhrebiy-site-anons.html', '//cdnimg.rg.ru/pril/article/126/55/62/lukjanov-zavrazhin100.jpg', 0, 0, 'Новиков');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app2', 'vadim', 'admin');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app2', 'vadim', 'user');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app2', 'max'  , 'admin');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app2', 'serg' , 'user');
 
-
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'vadim', 'admin');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'vadim', 'editor');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'vadim', 'guest');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'max'  , 'admin');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'max'  , 'editor');
+INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'serg' , 'editor');
 
 
 EXCEPTION WHEN OTHERS THEN 

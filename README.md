@@ -247,7 +247,7 @@ Postgres доступен на localhost:5432.
 - Server: db,
 - Username: root,
 - Password: root,
-- Database: onlinebc
+- Database: auth
 
 
 
@@ -266,23 +266,23 @@ Postgres доступен на localhost:5432.
 
 Дамп базы данных в файл в директорию `migrations/`.
   
-    docker exec -it psql-com pg_dump --file /dumps/onlinebc-dump.sql --host "localhost" --port "5432" --username "root"  --verbose --format=p --create --clean --if-exists --dbname "onlinebc"
+    docker exec -it psql-com pg_dump --file /dumps/auth-dump.sql --host "localhost" --port "5432" --username "root"  --verbose --format=p --create --clean --if-exists --dbname "auth"
 
 
 Восстановление БД из дампа в `migrations/`.
 
-    docker exec -it psql-com psql -U root -1 -d onlinebc -f /dumps/onlinebc-dump.sql
+    docker exec -it psql-com psql -U root -1 -d auth -f /dumps/auth-dump.sql
 
 
 
 Дамп схемы БД
 
-    docker exec -it psql-com pg_dump --file /dumps/onlinebc-schema.sql --host "localhost" --port "5432" --username "root" --schema-only  --verbose --format=p --create --clean --if-exists --dbname "onlinebc"
+    docker exec -it psql-com pg_dump --file /dumps/auth-schema.sql --host "localhost" --port "5432" --username "root" --schema-only  --verbose --format=p --create --clean --if-exists --dbname "auth"
 
 
 Дамп только данных таблиц.
 
-    docker exec -it psql-com pg_dump --file /dumps/onlinebc-data.sql --host "localhost" --port "5432" --username "root"  --verbose --format=p --dbname "onlinebc" --column-inserts --data-only --table=broadcast --table=post --table=image
+    docker exec -it psql-com pg_dump --file /dumps/auth-data.sql --host "localhost" --port "5432" --username "root"  --verbose --format=p --dbname "auth" --column-inserts --data-only --table=broadcast --table=post --table=image
 
 
 Можно добавить  -$(date +"-%Y-%m-%d--%H-%M-%S") к имени файла для приклеивания штампа даты-времени.
@@ -291,13 +291,13 @@ Postgres доступен на localhost:5432.
 
 Показ структуры таблицы TABLE_NAME
 
-    docker-compose exec db pg_dump -U root -d onlinebc -t TABLE_NAME --schema-only
+    docker-compose exec db pg_dump -U root -d auth -t TABLE_NAME --schema-only
 
 
 
 Командная строка Postgres
 
-	docker-compose exec db psql -U root onlinebc
+	docker-compose exec db psql -U root auth
 
 
 

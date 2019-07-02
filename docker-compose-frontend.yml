@@ -6,64 +6,29 @@ services:
   # база данных
   db:
     image: postgres
-    container_name: onlinebc-db
+    container_name: auth-db
     restart: always
     # ports:
     #   - 5432:5432
-    # volumes:
-    #   - "./pgdata:/var/lib/postgresql/data/pgdata"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: onlinebc 
+      POSTGRES_DB: auth 
       PGDATA: /var/lib/postgresql/data/pgdata
   
-
-  # кэширует данные для фронтэнда
-  redis:
-      image: redis
-      container_name: onlinebc-redis
-      # ports:
-      #     - "6389:6379"
-      restart: always
-
-
-  # сервер для загрузки изображений по ssh
-  imgserver:
-    image: sickp/alpine-sshd
-    container_name: onlinebc-imgserver
-    restart: always
-    volumes:
-      - images:/var/www/onlinebc/uploads
-
-    entrypoint: sh -c "mkdir -p /var/www/onlinebc/uploads &&  echo uploads created; ssh-keygen -A; exec /usr/sbin/sshd -D "
-    # Раскомментируйте volumes: чтобы видеть загруженные файлы в локальной директории.
-    # Если volumes: раскомментирована, entrypoint: не нужна. 
-    # volumes: ["./uploads:/var/www/onlinebc/uploads"]
-    # ports:
-    #  - "222:22"
 
 
   # сервер, где запущено приложение
   runner:
-    image: rgru/onlinebc_admin
-    container_name: onlinebc-runner
+    image: rgru/auth-proxy
+    container_name: auth-runner
     restart: always
-    volumes:
-      - images:/go/src/onlinebc_admin/uploads
-
-    # раскомментируйте следующую строку если хотите доступ только к публичному REST API 
-    # command: bash -c "cd /go/src/onlinebc_admin && ./onlinebc_admin -serve 7700 -env=docker -front"
     ports:
-      - 7700:7700
+      - 4400:4400
     depends_on:
       - db
-      - redis
-      - imgserver
     links:
       - db
-      - redis
-      - imgserver
 
 
 
@@ -79,6 +44,3 @@ services:
   #     - db
   #   links:
   #     - db
-
-volumes:
-  images:

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
-	"videos/model/redis"
 )
 
 func main() {
@@ -18,9 +17,6 @@ func main() {
 	// читаем конфиги Postgres, и роутера.
 	db.ReadConfig("./configs/db.yaml", env)
 	router.ReadConfig("./configs/routes.yaml", env)
-
-	// Инициализируем Redis
-	redis.Init()
 
 	// Ждем готовности базы данных
 	db.WaitForDbOrExit(10)

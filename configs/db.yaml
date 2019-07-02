@@ -7,7 +7,7 @@ dev:
   port: 5432
   user: root 
   password: root 
-  dbname: onlinebc 
+  dbname: auth 
   sslmode: disable
 
 
@@ -16,7 +16,7 @@ docker:
   port: 5432
   user: root 
   password: root 
-  dbname: onlinebc 
+  dbname: auth 
   sslmode: disable
 
 
@@ -25,5 +25,5 @@ prod:
   port: 5432
   user: root 
   password: root 
-  dbname: onlinebc 
+  dbname: auth 
   sslmode: disable

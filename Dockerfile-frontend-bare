@@ -9,11 +9,11 @@ COPY migrations  /app/migrations
 COPY templates  /app/templates
 COPY docs  /app/docs
 
-COPY onlinebc_admin  /app/onlinebc
+COPY auth-proxy  /app/auth
 
-EXPOSE 7700
+EXPOSE 4400
 
-CMD bash -c "cd /app && ./onlinebc -serve 7700 -env=docker"
+CMD bash -c "cd /app && ./auth -serve 4400 -env=docker"
 
 
 

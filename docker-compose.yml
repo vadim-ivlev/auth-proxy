@@ -15,16 +15,8 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: onlinebc 
+      POSTGRES_DB: auth 
       PGDATA: /var/lib/postgresql/data/pgdata
-
-
-  # redis:
-  #     image: redis
-  #     container_name: pg-redis-com
-  #     ports:
-  #         - "6389:6379"
-  #     restart: always
 
 
 

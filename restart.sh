@@ -3,14 +3,16 @@
 # гасим бд
 docker-compose down
 
-# удаляем файлы бд, и чистим загрузки
-sudo rm -rf pgdata uploads/* uploads_temp/*
+# удаляем файлы бд
+sudo rm -rf pgdata 
 
 # поднимаем бд
 docker-compose up -d
-sleep 1
+sleep 2
 
 # запускаем приложение
-go run main.go -serve 7777
+go run main.go -serve 4000 -env=dev
+
+# ./migup.sh
 
 
