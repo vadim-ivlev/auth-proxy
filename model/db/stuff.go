@@ -5,12 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 
-	//blank import
-	_ "github.com/golang-migrate/migrate/database/postgres"
-	//blank import
-	_ "github.com/golang-migrate/migrate/source/file"
 	yaml "gopkg.in/yaml.v2"
 )
 

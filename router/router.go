@@ -25,7 +25,7 @@ func Setup() *gin.Engine {
 	r.LoadHTMLGlob("templates/*.*")
 
 	r.Use(middleware.HeadersMiddleware())
-	
+
 	store := sessions.NewCookieStore([]byte("secret"))
 	store.Options(sessions.Options{MaxAge: 0})
 	r.Use(sessions.Sessions("auth-proxy", store))
@@ -33,8 +33,6 @@ func Setup() *gin.Engine {
 	r.GET("/", controller.LandingPage)
 	r.POST("/login", controller.Login)
 	r.GET("/logout", controller.Logout)
-
-	r.GET("/ping", controller.PingHandler)
 
 	apps := r.Group("/apps")
 	apps.Use(middleware.CheckUser())

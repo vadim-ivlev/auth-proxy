@@ -3,16 +3,21 @@ package auth
 import (
 	"auth-proxy/model/db"
 	"encoding/json"
+	"fmt"
 	"log"
+	"time"
 
 	// "net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/patrickmn/go-cache"
 	// gsessions "github.com/gorilla/sessions"
 )
 
 // var Store = gsessions.NewCookieStore([]byte("secret"))
+
+var Cache = cache.New(2*time.Minute, 4*time.Minute)
 
 func GetUserName(c *gin.Context) string {
 	session := sessions.Default(c)
@@ -52,28 +57,44 @@ func CheckUserPassword(username, password string) bool {
 	if err != nil {
 		return false
 	}
-	savedPassword, ok := record["password"].(string)
+	dbPassword, ok := record["password"].(string)
 	if !ok {
 		log.Println("Cannot get password")
 		return false
 	}
-	if savedPassword == password {
+	if dbPassword == password {
 		return true
 	}
 	return false
 }
 
 func GetUserRoles(user, app string) string {
+	cacheKey := user + "-" + app + "-roles"
+	cachedValue, found := Cache.Get(cacheKey)
+	if found {
+		fmt.Println("cached roles=", cachedValue)
+		return cachedValue.(string)
+	}
+
 	// record, err := db.QueryRowMap(`SELECT public.get_app_user_roles($1,$2) AS roles;`, app, user)
 	record, err := db.QueryRowMap(`SELECT json_agg(rolename) AS roles FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
 	if err != nil {
 		return ""
 	}
 	roles := string(record["roles"].([]byte))
+
+	Cache.Set(cacheKey, roles, cache.DefaultExpiration)
 	return roles
 }
 
 func GetUserInfo(user string) string {
+	cacheKey := user + "-info"
+	cachedValue, found := Cache.Get(cacheKey)
+	if found {
+		fmt.Println("cached info=", cachedValue)
+		return cachedValue.(string)
+	}
+
 	record, err := db.QueryRowMap(`SELECT username, email, fullname, description 
 		FROM public.user 
 		WHERE username = $1;`, user)
@@ -82,5 +103,7 @@ func GetUserInfo(user string) string {
 	}
 	jsonBytes, _ := json.Marshal(record)
 	jsonString := string(jsonBytes)
+
+	Cache.Set(cacheKey, jsonString, cache.DefaultExpiration)
 	return jsonString
 }

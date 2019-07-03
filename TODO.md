@@ -3,3 +3,10 @@
 
 
 // https://github.com/Depado/gin-auth-example/blob/master/main.go
+
+- add caching
+
+-------------------------
+
+- SQLite
+- get rid of gin

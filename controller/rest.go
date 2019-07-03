@@ -16,13 +16,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// PingHandler нужен для фронта, так как сначала отправляется метод с OPTIONS
-func PingHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "pong",
-	})
-}
-
 func LandingPage(c *gin.Context) {
 	c.Header("Content-Type", "text/html; charset=utf-8")
 	username := auth.GetUserName(c)
