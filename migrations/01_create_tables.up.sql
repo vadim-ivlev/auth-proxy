@@ -20,12 +20,12 @@ CREATE TABLE IF NOT EXISTS public.app (
 );
 
 -- Роли приложения
-CREATE TABLE IF NOT EXISTS public.role (
-    rolename text NOT NULL,
+CREATE TABLE IF NOT EXISTS public.app_role (
     appname text NOT NULL,
+    rolename text NOT NULL,
     description text,
 
-    CONSTRAINT role_pkey PRIMARY KEY (rolename, appname),
+    CONSTRAINT role_pkey PRIMARY KEY (appname, rolename),
     CONSTRAINT role_fk FOREIGN KEY (appname) REFERENCES public.app(appname) ON DELETE CASCADE DEFERRABLE
 );
 
@@ -37,12 +37,11 @@ CREATE TABLE IF NOT EXISTS public.app_user_role (
     rolename text NOT NULL,
 
     CONSTRAINT app_user_role_pkey PRIMARY KEY (appname, username, rolename),
-    CONSTRAINT app_user_role_fk_a FOREIGN KEY (appname) REFERENCES public.app(appname) ON DELETE CASCADE DEFERRABLE,
-    CONSTRAINT app_user_role_fk_u FOREIGN KEY (username) REFERENCES public.user(username) ON DELETE CASCADE DEFERRABLE
-    -- CONSTRAINT app_user_role_fk_r FOREIGN KEY (rolename) REFERENCES public.role(rolename) ON DELETE CASCADE DEFERRABLE
+    CONSTRAINT app_user_role_fk_u FOREIGN KEY (username) REFERENCES public.user(username) ON DELETE CASCADE DEFERRABLE,
+    CONSTRAINT app_user_role_fk_ar FOREIGN KEY (appname, rolename) REFERENCES public.app_role(appname, rolename) ON DELETE CASCADE DEFERRABLE
 );
 
-CREATE INDEX IF NOT EXISTS role_appname_idx ON public.role USING btree (appname);
+CREATE INDEX IF NOT EXISTS role_appname_idx ON public.app_role USING btree (appname);
 CREATE INDEX IF NOT EXISTS user_textsearch_idx ON public.user USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
 
 

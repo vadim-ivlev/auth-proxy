@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" href="templates/index.css" />
     <link rel="stylesheet" type="text/css" href="templates/jquery.json-viewer.css" />
 
+    <script src="templates/index.js"></script>
 
 </head>
 
@@ -30,51 +31,35 @@
     <h1><span class="rgru"><span>RG.</span><span class="or">RU</span></span></h1>
     <h3>Сервис Авторизации админок RG.RU</h3>
     <h4>Auth-Proxy</h4>
+    <div><b>{{.username}}</b>
+    <!-- {{.info}} -->
+    {{if eq .username ""}} Login first {{else}} logined {{end}}
+    </div>
                     
-        <div style="display: flex;">
-            <form  id="form0" onsubmit="
-            event.preventDefault();
-            $('#result0').html('')
-            $('#result1').html('')
-            $(this).ajaxSubmit({
-                url: '/login', 
-                type: 'POST',
-                // success: function(response) {$('#result0').text(JSON.stringify(response, null,'  '));}
-                success: function(response) {$('#result0').jsonViewer(response, {collapsed: true, rootCollapsable: false});}
-            });">
+        <div class="flexed">
+            <form  id="form0" onsubmit="loginFormSubmit(event)">
                 <div>
                     <span class="param-name">username</span>
-                    <input name="username" type="text" value="q">
+                    <input name="username" type="text" value="vadim">
                 </div>
                 <div>
                     <span class="param-name">password</span>
-                    <input name="password" type="text" value="q">
+                    <input name="password" type="text" value="1">
                 </div>
                 <div>
                     <span class="param-name"></span>
                     <input type="submit" value="Login">
                 </div>
-
             </form>
             <pre  id="result0"></pre>
         </div>
 
-        <div style="display: flex;">
-            <form  id="form1" onsubmit="
-            event.preventDefault();
-            $('#result0').html('')
-            $('#result1').html('')
-            $(this).ajaxSubmit({
-                url: '/logout', 
-                type: 'GET',
-                // success: function(response) {$('#result0').text(JSON.stringify(response, null,'  '));}
-                success: function(response) {$('#result1').jsonViewer(response, {collapsed: true, rootCollapsable: false});}
-            });">
+        <div class="flexed">
+            <form  id="form1" onsubmit="logoutFormSubmit(event)">
                 <div>
                     <span class="param-name"></span>
                     <input type="submit" value="Logout">
                 </div>
-
             </form>
             <pre  id="result1"></pre>
         </div>
@@ -87,7 +72,10 @@
         <p><a target="onlinebc" href="/apps/onlinebc">onlinebc</a></p>
         
 
+<script>
 
+
+</script>
 </body>
 
 </html>

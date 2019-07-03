@@ -6,12 +6,9 @@ AS $function$
 BEGIN
     RETURN
     (
-        select jsonb_agg(t) from
-        (
-            SELECT rolename FROM app_user_role
+            SELECT jsonb_agg(rolename) as roles FROM app_user_role
             WHERE  appname  = a_name 
             AND    username = u_name
-        ) t
     );
 
 END;

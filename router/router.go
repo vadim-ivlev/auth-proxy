@@ -25,10 +25,8 @@ func Setup() *gin.Engine {
 	r.LoadHTMLGlob("templates/*.*")
 
 	r.Use(middleware.HeadersMiddleware())
+	
 	store := sessions.NewCookieStore([]byte("secret"))
-	// MaxAge=0 means no Max-Age attribute specified and the cookie will be
-	// deleted after the browser session ends.
-	// FIXME: MaxAge: 0 does not work
 	store.Options(sessions.Options{MaxAge: 0})
 	r.Use(sessions.Sessions("auth-proxy", store))
 

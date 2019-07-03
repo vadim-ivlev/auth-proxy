@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,12 +37,10 @@ func hostIsAllowed(host string) bool {
 // CheckUser проверяет залогинен ли пользователь
 func CheckUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get("user")
-		if user == nil {
+		userName := auth.GetUserName(c)
+		if userName == "" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 		} else {
-			userName := user.(string)
 			roles := auth.GetUserRoles(userName, strings.TrimSuffix(strings.TrimPrefix(c.Request.URL.Path, "/apps/"), "/"))
 			info := auth.GetUserInfo(userName)
 
@@ -54,23 +51,3 @@ func CheckUser() gin.HandlerFunc {
 	}
 }
 
-// // CheckUser проверяет залогинен ли пользователь
-// func CheckUser1() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		session, err := auth.Store.Get(c.Request, "auth-proxy")
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "auth.Store.Get(c.Request, auth-proxy)"})
-// 		} else {
-// 			userName, ok := session.Values["user"].(string)
-// 			if !ok {
-// 				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
-// 			}
-// 			roles := auth.GetUserRoles(userName, c.Request.URL.Path)
-// 			info := auth.GetUserInfo(userName)
-
-// 			c.Request.Header.Set("user-roles", roles)
-// 			c.Request.Header.Set("user-info", info)
-// 			c.Next()
-// 		}
-// 	}
-// }

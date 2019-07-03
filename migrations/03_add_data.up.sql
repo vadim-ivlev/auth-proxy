@@ -4,9 +4,9 @@ $$
 BEGIN
 -- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
 
-SET CONSTRAINTS app_user_role_fk_a DEFERRED;
 SET CONSTRAINTS app_user_role_fk_u DEFERRED;
--- SET CONSTRAINTS app_user_role_fk_r DEFERRED;
+-- SET CONSTRAINTS app_user_role_fk_a DEFERRED;
+SET CONSTRAINTS app_user_role_fk_ar DEFERRED;
 SET CONSTRAINTS role_fk DEFERRED;
 
 -- данные
@@ -20,15 +20,15 @@ INSERT INTO public.user (username, password, email, fullname, description) VALUE
 INSERT INTO public.user (username, password, email, fullname, description) VALUES ('serg' , '1', 'barsuk@rg.ru', 'Барсук Сергей', 'разработчик');
 INSERT INTO public.user (username, password, email, fullname, description) VALUES ('max'  , '1', 'chagin@rg.ru', 'Чагин Максим' , 'начальник отдела разработки');
 
-INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'manager');
-INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'worker');
-INSERT INTO public.role (appname, rolename) VALUES ('app1'          , 'boss');
-INSERT INTO public.role (appname, rolename) VALUES ('app2'          , 'admin');
-INSERT INTO public.role (appname, rolename) VALUES ('app2'          , 'user');
-INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'admin');
-INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'editor');
-INSERT INTO public.role (appname, rolename) VALUES ('onlinebc_admin', 'guest');
-INSERT INTO public.role (appname, rolename) VALUES ('rg'            , 'reader');
+INSERT INTO public.app_role (appname, rolename) VALUES ('app1'          , 'manager');
+INSERT INTO public.app_role (appname, rolename) VALUES ('app1'          , 'worker');
+INSERT INTO public.app_role (appname, rolename) VALUES ('app1'          , 'boss');
+INSERT INTO public.app_role (appname, rolename) VALUES ('app2'          , 'admin');
+INSERT INTO public.app_role (appname, rolename) VALUES ('app2'          , 'user');
+INSERT INTO public.app_role (appname, rolename) VALUES ('onlinebc_admin', 'admin');
+INSERT INTO public.app_role (appname, rolename) VALUES ('onlinebc_admin', 'editor');
+INSERT INTO public.app_role (appname, rolename) VALUES ('onlinebc_admin', 'guest');
+INSERT INTO public.app_role (appname, rolename) VALUES ('rg'            , 'reader');
 
 INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'manager');
 INSERT INTO public.app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'worker');
