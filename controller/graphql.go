@@ -64,19 +64,19 @@ func getPayload3(c *gin.Context) (query string, variables map[string]interface{}
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на вставку записей.
-func createRecord(params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func createRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	// вставляем запись
 	fieldValues, err := db.CreateRow(tableToUpdate, params.Args)
 	if err != nil {
 		return fieldValues, err
 	}
 	// извлекаем id вставленной записи
-	id := fieldValues["id"].(int64)
+	id := fieldValues[keyFieldName]
 
 	// возвращаем ответ
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE id = $1 ;", id)
+	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
 }
 
 // updateRecord обновляет запись в таблице tableToUpdate,
@@ -84,15 +84,15 @@ func createRecord(params gq.ResolveParams, tableToUpdate string, tableToSelectFr
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на обновление записей.
-func updateRecord(params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
-	id := params.Args["id"].(int)
-	fieldValues, err := db.UpdateRowByID(tableToUpdate, id, params.Args)
+func updateRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+	id := params.Args[keyFieldName]
+	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, id, params.Args)
 	if err != nil {
 		return fieldValues, err
 	}
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE id = $1 ;", id)
+	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
 }
 
 // deleteRecord удаляет запись из таблицы tableToUpdate,
@@ -100,17 +100,17 @@ func updateRecord(params gq.ResolveParams, tableToUpdate string, tableToSelectFr
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на удаление записей.
-func deleteRecord(params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func deleteRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	// сохраняем запись, которую собираемся удалять
-	id := params.Args["id"].(int)
+	id := params.Args[keyFieldName]
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	fieldValues, err := db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE id = $1 ;", id)
+	fieldValues, err := db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
 	if err != nil {
 		return nil, err
 	}
 	// удаляем запись
-	_, err = db.DeleteRowByID(tableToUpdate, id)
+	_, err = db.DeleteRowByID(keyFieldName, tableToUpdate, id)
 	if err != nil {
 		return nil, err
 	}

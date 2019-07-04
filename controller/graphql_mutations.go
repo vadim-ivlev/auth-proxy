@@ -10,8 +10,88 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 	Name: "Mutation",
 	Fields: gq.Fields{
 
-		// BROADCAST =====================================================
+		"create_user": &gq.Field{
+			Description: "Создать пользователя",
+			Type:        fullUserObject,
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+				"password": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Пароль",
+				},
+				"email": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Емайл",
+				},
+				"fullname": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Полное имя",
+				},
+				"description": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Описание",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return createRecord("username", params, "user", "full_user")
+			},
+		},
 
+		"update_user": &gq.Field{
+			Description: "Обновить пользователя",
+			Type:        fullUserObject,
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+				"password": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Пароль",
+				},
+				"email": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Емайл",
+				},
+				"fullname": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Полное имя",
+				},
+				"description": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Описание",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return updateRecord("username", params, "user", "full_user")
+			},
+		},
+
+		"delete_user": &gq.Field{
+			Description: "Удалить пользователя",
+			Type:        fullUserObject,
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return deleteRecord("username", params, "user", "full_user")
+			},
+		},
+
+		// ******************************************************************************
+		// ******************************************************************************
+		// ******************************************************************************
+		// ******************************************************************************
+		// ******************************************************************************
+		// ******************************************************************************
+		// ******************************************************************************
+		// BROADCAST =====================================================
 		"create_broadcast": &gq.Field{
 			Type:        fullBroadcastType,
 			Description: "Создать трансляцию",
@@ -68,7 +148,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				return createRecord(params, "broadcast", "full_broadcast")
+				return createRecord("id", params, "broadcast", "full_broadcast")
 			},
 		},
 
@@ -130,7 +210,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				res, err := updateRecord(params, "broadcast", "full_broadcast")
+				res, err := updateRecord("id", params, "broadcast", "full_broadcast")
 				if err == nil {
 					// redis.ClearByBroadcastID(params.Args["id"])
 				}
@@ -148,7 +228,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				res, err := deleteRecord(params, "broadcast", "full_broadcast")
+				res, err := deleteRecord("id", params, "broadcast", "full_broadcast")
 				if err == nil {
 					// redis.ClearByBroadcastID(params.Args["id"])
 				}
@@ -198,7 +278,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				res, err := createRecord(params, "post", "full_post")
+				res, err := createRecord("id", params, "post", "full_post")
 				if err == nil {
 					// redis.ClearByBroadcastID(params.Args["id_broadcast"])
 					// redis.ClearByPostID(params.Args["id_parent"])
@@ -262,7 +342,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				// 	params.Args["id_parent"] = nil
 				// }
 
-				res, err := updateRecord(params, "post", "full_post")
+				res, err := updateRecord("id", params, "post", "full_post")
 				// if err == nil {
 				// 	redis.ClearByBroadcastID(id_broadcast_old)
 				// 	redis.ClearByPostID(id_parend_old)
@@ -287,7 +367,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				// 	log.Println("delete_post:getPostParentIDs:", err)
 				// }
 
-				res, err := deleteRecord(params, "post", "full_post")
+				res, err := deleteRecord("id", params, "post", "full_post")
 				// if err == nil {
 				// 	redis.ClearByBroadcastID(id_broadcast_old)
 				// 	redis.ClearByPostID(id_parend_old)
@@ -385,7 +465,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				// }
 				delete(params.Args, "file_field_name")
 
-				res, err := db.UpdateRowByID("image", params.Args["id"].(int), params.Args)
+				res, err := db.UpdateRowByID("id", "image", params.Args["id"].(int), params.Args)
 				// if err == nil {
 				// 	redis.ClearByImageID(params.Args["id"])
 				// }
@@ -405,7 +485,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				// post_id_old := redis.GetImagePostID(params.Args["id"])
-				res, err := db.DeleteRowByID("image", params.Args["id"].(int))
+				res, err := db.DeleteRowByID("id", "image", params.Args["id"].(int))
 				// if err == nil {
 				// 	redis.ClearByPostID(post_id_old)
 				// }

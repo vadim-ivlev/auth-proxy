@@ -92,7 +92,7 @@ func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, e
 // Возвращает map[string]interface{}, error новой записи таблицы.
 func CreateRow(tableName string, fieldValues map[string]interface{}) (map[string]interface{}, error) {
 	keys, values, dollars := getKeysAndValues(fieldValues)
-	sqlText := fmt.Sprintf("INSERT INTO %s ( %s ) VALUES ( %s ) RETURNING * ;",
+	sqlText := fmt.Sprintf(`INSERT INTO "%s" ( %s ) VALUES ( %s ) RETURNING * ;`,
 		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "))
 	return QueryRowMap(sqlText, values...)
 }
@@ -107,17 +107,17 @@ func CreateRow(tableName string, fieldValues map[string]interface{}) (map[string
 // UpdateRowByID обновляет запись в таблице tableName по ее id.
 // map fieldValues задает имена и значения полей таблицы.
 // Возвращает map[string]interface{}, error обновленной записи таблицы.
-func UpdateRowByID(tableName string, id int, fieldValues map[string]interface{}) (map[string]interface{}, error) {
+func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldValues map[string]interface{}) (map[string]interface{}, error) {
 	keys, values, dollars := getKeysAndValues(fieldValues)
-	sqlText := fmt.Sprintf("UPDATE %s SET ( %s ) = ( %s ) WHERE id = %v RETURNING * ;",
+	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v' RETURNING * ;`,
 		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "), id)
 	return QueryRowMap(sqlText, values...)
 }
 
 // DeleteRowByID удаляет запись в таблице tableName по ее id.
 // Возвращает map[string]interface{}, error удаленной записи таблицы.
-func DeleteRowByID(tableName string, id int) (map[string]interface{}, error) {
-	sqlText := fmt.Sprintf("DELETE FROM %s WHERE id = %v RETURNING * ;", tableName, id)
+func DeleteRowByID(keyFieldName string, tableName string, id interface{}) (map[string]interface{}, error) {
+	sqlText := fmt.Sprintf(`DELETE FROM "%s" WHERE `+keyFieldName+` = '%v' RETURNING * ;`, tableName, id)
 	return QueryRowMap(sqlText)
 }
 

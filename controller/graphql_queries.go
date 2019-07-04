@@ -24,7 +24,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				fields := getSelectedFields([]string{"get_user"}, params)
-				return db.QueryRowMap("SELECT "+fields+" FROM user WHERE username = $1 ;", params.Args["username"])
+				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
 			},
 		},
 
