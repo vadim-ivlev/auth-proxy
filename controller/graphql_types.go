@@ -40,6 +40,138 @@ func addFields(fields1 gq.Fields, fields2 gq.Fields) gq.Fields {
 }
 
 // FIELDS **************************************************
+var userFields = gq.Fields{
+	"username": &gq.Field{
+		Type:        gq.String,
+		Description: "Уникальный идентификатор пользователя",
+	},
+	"password": &gq.Field{
+		Type:        gq.String,
+		Description: "Пароль",
+	},
+	"email": &gq.Field{
+		Type:        gq.String,
+		Description: "Емайл",
+	},
+	"fullname": &gq.Field{
+		Type:        gq.String,
+		Description: "Полное имя пользователя",
+	},
+	"description": &gq.Field{
+		Type:        gq.String,
+		Description: "Дополнительная информация",
+	},
+}
+
+var appFields = gq.Fields{
+	"appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Уникальный идентификатор приложения",
+	},
+	"description": &gq.Field{
+		Type:        gq.String,
+		Description: "Дополнительная информация",
+	},
+}
+
+var app_roleFields = gq.Fields{
+	"appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Идентификатор приложения",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль пользователей в данном приложении",
+	},
+	"description": &gq.Field{
+		Type:        gq.String,
+		Description: "Дополнительная информация",
+	},
+}
+
+var app_user_roleFields = gq.Fields{
+	"username": &gq.Field{
+		Type:        gq.String,
+		Description: "Идентификатор пользователя",
+	},
+	"appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Идентификатор приложения",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль пользователя в данном приложении",
+	},
+}
+
+// FULL FIELDS поля с древовидной структурой  ****************************************************
+
+var fullUserFields = addFields(userFields, gq.Fields{
+	"app_user_roles": &gq.Field{
+		Type:        gq.NewList(app_user_roleObject),
+		Description: "Роли пользователя определенные в приложениях",
+		Resolve: func(params gq.ResolveParams) (interface{}, error) {
+			return JSONParamToMap(params, "app_user_roles")
+		},
+	},
+})
+
+var fullAppFields = addFields(appFields, gq.Fields{
+	"roles": &gq.Field{
+		Type:        gq.NewList(app_roleObject),
+		Description: "Роли определенные в приложениях",
+		Resolve: func(params gq.ResolveParams) (interface{}, error) {
+			return JSONParamToMap(params, "roles")
+		},
+	},
+})
+
+// TYPES ****************************************************
+
+var userObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "User",
+	Description: "Пользователь",
+	Fields:      userFields,
+})
+
+var appObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "App",
+	Description: "Приложение к которой требуется авторизация",
+	Fields:      appFields,
+})
+
+var app_roleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "AppRole",
+	Description: "Роли приложения",
+	Fields:      app_roleFields,
+})
+
+var app_user_roleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "AppUserRole",
+	Description: "Роли пользователя для приложения",
+	Fields:      app_user_roleFields,
+})
+
+// FULL TYPES типы с древовидной структурой *************
+
+var fullUserObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "FullUser",
+	Description: "Пользователь с ролями определенными в приложениях",
+	Fields:      fullUserFields,
+})
+
+var fullAppObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "FullApp",
+	Description: "Приложение с определенными в нем ролями",
+	Fields:      fullAppFields,
+})
+
+// *********************************************************************************************
+// *********************************************************************************************
+// *********************************************************************************************
+// *********************************************************************************************
+// *********************************************************************************************
+// *********************************************************************************************
 var broadcastFields = gq.Fields{
 	"id": &gq.Field{
 		Type:        gq.Int,

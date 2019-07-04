@@ -33,6 +33,7 @@ func Setup() *gin.Engine {
 	r.GET("/", controller.LandingPage)
 	r.POST("/login", controller.Login)
 	r.GET("/logout", controller.Logout)
+	// r.GET("/graphql", controller.GraphQL)
 	r.POST("/graphql", controller.GraphQL)
 
 	apps := r.Group("/apps")

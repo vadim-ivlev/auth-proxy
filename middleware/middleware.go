@@ -11,9 +11,17 @@ import (
 // HeadersMiddleware добавляет HTTP заголовки к ответу сервера
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// TODO: определить политику CORS.
+		// Кто отвечает за кроссдоменные запросы?
+		// Auth-proxy или сами приложения?
+		// Пока что кроссдоменность действует только для /graphql этого приложения.
+		if c.Request.URL.Path == "/graphql" {
+			c.Header("Access-Control-Allow-Origin", "*")
+		}
+
 		// c.Header("Access-Control-Allow-Origin", "https://editor.rg.ru")
 		// if hostIsAllowed(c.Request.Host) {
-		// c.Header("Access-Control-Allow-Origin", "*")
+		// 	c.Header("Access-Control-Allow-Origin", "*")
 		// }
 		// c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, HEAD")
 		// c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Access-Control-Allow-Headers, Authorization, X-Requested-With")
@@ -50,4 +58,3 @@ func CheckUser() gin.HandlerFunc {
 		}
 	}
 }
-

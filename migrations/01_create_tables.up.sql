@@ -1,5 +1,5 @@
 
--- Пользователи  
+-- Пользователь  
 CREATE TABLE IF NOT EXISTS public.user (
     username text NOT NULL,
     password text NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.user (
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );
 
--- Приложения к которым требуется авторизация
+-- Приложение к которой требуется авторизация
 CREATE TABLE IF NOT EXISTS public.app (
     appname text NOT NULL,
     description text,

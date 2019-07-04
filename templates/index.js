@@ -1,3 +1,21 @@
+function onError(e, msg){
+    alert(msg, e)
+}
+// var getResponseHandler = (elementID) => (response) => 
+// {
+//     $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false})
+//     document.location.reload()
+// }
+
+function showResponseIn(elementID) {
+    return function(response){
+        $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false})
+        document.location.reload()
+    }
+} 
+
+
+
 function loginFormSubmit(event) {
     event.preventDefault()
     $("#result0").html("")
@@ -5,12 +23,9 @@ function loginFormSubmit(event) {
     $("#form0").ajaxSubmit({
         url: "/login",
         type: "POST",
-        // success: function(response) {$('#result0').text(JSON.stringify(response, null,'  '));}
-        success: function(response) {
-            $("#result0").jsonViewer(response, {collapsed: true, rootCollapsable: false})
-            document.location.reload()
-        }
-    })
+        success: showResponseIn('#result0'),
+        error: onError
+    })        
 }
 
 function logoutFormSubmit(event) {
@@ -20,10 +35,9 @@ function logoutFormSubmit(event) {
     $("#form1").ajaxSubmit({
         url: "/logout",
         type: "GET",
-        // success: function(response) {$('#result0').text(JSON.stringify(response, null,'  '));}
-        success: function(response) {
-            $("#result1").jsonViewer(response, {collapsed: true, rootCollapsable: false})
-            document.location.reload()
-        }
+        success: showResponseIn('#result1'),
+        error: onError
     })
 }
+
+

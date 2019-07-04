@@ -81,7 +81,8 @@ func GetUserRoles(user, app string) string {
 	if err != nil {
 		return ""
 	}
-	roles := string(record["roles"].([]byte))
+	bytes, _ := record["roles"].([]byte)
+	roles := string(bytes)
 
 	Cache.Set(cacheKey, roles, cache.DefaultExpiration)
 	return roles

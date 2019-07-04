@@ -13,7 +13,67 @@ import (
 var rootQuery = gq.NewObject(gq.ObjectConfig{
 	Name: "Query",
 	Fields: gq.Fields{
+		"get_user": &gq.Field{
+			Type:        userObject,
+			Description: "Показать пользователя по идентификатору",
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				fields := getSelectedFields([]string{"get_user"}, params)
+				return db.QueryRowMap("SELECT "+fields+" FROM user WHERE username = $1 ;", params.Args["username"])
+			},
+		},
 
+		"get_full_user": &gq.Field{
+			Type:        fullUserObject,
+			Description: "Показать пользователя c приложениями и ролями по имени пользователя",
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				fields := getSelectedFields([]string{"get_full_user"}, params)
+				return db.QueryRowMap("SELECT "+fields+" FROM full_user WHERE username = $1 ;", params.Args["username"])
+			},
+		},
+
+		"get_app": &gq.Field{
+			Type:        appObject,
+			Description: "Показать приложение по идентификатору",
+			Args: gq.FieldConfigArgument{
+				"appname": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя приложения",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				fields := getSelectedFields([]string{"get_app"}, params)
+				return db.QueryRowMap("SELECT "+fields+" FROM app WHERE appname = $1 ;", params.Args["appname"])
+			},
+		},
+
+		"get_full_app": &gq.Field{
+			Type:        fullAppObject,
+			Description: "Показать приложение c его ролями по имени приложения",
+			Args: gq.FieldConfigArgument{
+				"appname": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя приложения",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				fields := getSelectedFields([]string{"get_full_app"}, params)
+				return db.QueryRowMap("SELECT "+fields+" FROM full_app WHERE appname = $1 ;", params.Args["appname"])
+			},
+		},
+
+		// -------------------------------------------------------
 		"get_broadcast": &gq.Field{
 			Type:        fullBroadcastType,
 			Description: "Показать трансляцию по идентификатору c постами, ответами и медиа",
