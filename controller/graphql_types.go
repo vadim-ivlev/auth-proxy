@@ -126,6 +126,27 @@ var fullAppFields = addFields(appFields, gq.Fields{
 	},
 })
 
+var listUserFields = gq.Fields{
+	"length": &gq.Field{
+		Type:        gq.Int,
+		Description: "Количество элементов в списке",
+	},
+	"list": &gq.Field{
+		Type:        gq.NewList(userObject),
+		Description: "Список пользователей",
+	},
+}
+var listAppFields = gq.Fields{
+	"length": &gq.Field{
+		Type:        gq.Int,
+		Description: "Количество элементов в списке",
+	},
+	"list": &gq.Field{
+		Type:        gq.NewList(appObject),
+		Description: "Список приложений",
+	},
+}
+
 // TYPES ****************************************************
 
 var userObject = gq.NewObject(gq.ObjectConfig{
@@ -150,6 +171,20 @@ var app_user_roleObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AppUserRole",
 	Description: "Роли пользователя для приложения",
 	Fields:      app_user_roleFields,
+})
+
+// LISTS *************************************************************
+
+var listUserGQType = gq.NewObject(gq.ObjectConfig{
+	Name:        "ListUser",
+	Description: "Список пользователей и их количество",
+	Fields:      listUserFields,
+})
+
+var listAppGQType = gq.NewObject(gq.ObjectConfig{
+	Name:        "ListApp",
+	Description: "Список приложений и их количество",
+	Fields:      listAppFields,
 })
 
 // FULL TYPES типы с древовидной структурой *************

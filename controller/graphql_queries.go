@@ -13,22 +13,22 @@ import (
 var rootQuery = gq.NewObject(gq.ObjectConfig{
 	Name: "Query",
 	Fields: gq.Fields{
-		"get_user": &gq.Field{
-			Type:        userObject,
-			Description: "Показать пользователя по идентификатору",
-			Args: gq.FieldConfigArgument{
-				"username": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя пользователя",
-				},
-			},
-			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				fields := getSelectedFields([]string{"get_user"}, params)
-				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
-			},
-		},
+		// "get_user": &gq.Field{
+		// 	Type:        userObject,
+		// 	Description: "Показать пользователя по идентификатору",
+		// 	Args: gq.FieldConfigArgument{
+		// 		"username": &gq.ArgumentConfig{
+		// 			Type:        gq.NewNonNull(gq.String),
+		// 			Description: "Имя пользователя",
+		// 		},
+		// 	},
+		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
+		// 		fields := getSelectedFields([]string{"get_user"}, params)
+		// 		return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
+		// 	},
+		// },
 
-		"get_full_user": &gq.Field{
+		"get_user": &gq.Field{
 			Type:        fullUserObject,
 			Description: "Показать пользователя c приложениями и ролями по имени пользователя",
 			Args: gq.FieldConfigArgument{
@@ -38,27 +38,27 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				fields := getSelectedFields([]string{"get_full_user"}, params)
+				fields := getSelectedFields([]string{"get_user"}, params)
 				return db.QueryRowMap("SELECT "+fields+" FROM full_user WHERE username = $1 ;", params.Args["username"])
 			},
 		},
 
-		"get_app": &gq.Field{
-			Type:        appObject,
-			Description: "Показать приложение по идентификатору",
-			Args: gq.FieldConfigArgument{
-				"appname": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя приложения",
-				},
-			},
-			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				fields := getSelectedFields([]string{"get_app"}, params)
-				return db.QueryRowMap("SELECT "+fields+" FROM app WHERE appname = $1 ;", params.Args["appname"])
-			},
-		},
+		// "get_app": &gq.Field{
+		// 	Type:        appObject,
+		// 	Description: "Показать приложение по идентификатору",
+		// 	Args: gq.FieldConfigArgument{
+		// 		"appname": &gq.ArgumentConfig{
+		// 			Type:        gq.NewNonNull(gq.String),
+		// 			Description: "Имя приложения",
+		// 		},
+		// 	},
+		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
+		// 		fields := getSelectedFields([]string{"get_app"}, params)
+		// 		return db.QueryRowMap("SELECT "+fields+" FROM app WHERE appname = $1 ;", params.Args["appname"])
+		// 	},
+		// },
 
-		"get_full_app": &gq.Field{
+		"get_app": &gq.Field{
 			Type:        fullAppObject,
 			Description: "Показать приложение c его ролями по имени приложения",
 			Args: gq.FieldConfigArgument{
@@ -68,12 +68,74 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				fields := getSelectedFields([]string{"get_full_app"}, params)
+				fields := getSelectedFields([]string{"get_app"}, params)
 				return db.QueryRowMap("SELECT "+fields+" FROM full_app WHERE appname = $1 ;", params.Args["appname"])
 			},
 		},
 
-		// -------------------------------------------------------
+		"list_user": &gq.Field{
+			Type:        listUserGQType,
+			Description: "Получить список пользователей и их количество.",
+			Args: gq.FieldConfigArgument{
+				"search": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Строка полнотекстового поиска.",
+				},
+				"order": &gq.ArgumentConfig{
+					Type:         gq.String,
+					Description:  "сортировка строк в определённом порядке. По умолчанию 'id DESC'",
+					DefaultValue: "id DESC",
+				},
+				"limit": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "возвратить не больше заданного числа строк. По умолчанию 100.",
+					DefaultValue: 100,
+				},
+				"offset": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "пропустить указанное число строк, прежде чем начать выдавать строки. По умолчанию 0.",
+					DefaultValue: 0,
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				wherePart, orderAndLimits := queryEnd(params)
+				fields := getSelectedFields([]string{"list_user", "list"}, params)
+
+				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "user"` + wherePart + orderAndLimits)
+				if err != nil {
+					return nil, err
+				}
+				count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "user"` + wherePart)
+				if err != nil {
+					return nil, err
+				}
+
+				m := map[string]interface{}{
+					"length": count["count"],
+					"list":   list,
+				}
+
+				return m, nil
+
+			},
+		},
+
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
+		// ************************************************************************************************
 		"get_broadcast": &gq.Field{
 			Type:        fullBroadcastType,
 			Description: "Показать трансляцию по идентификатору c постами, ответами и медиа",

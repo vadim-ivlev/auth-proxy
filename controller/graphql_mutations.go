@@ -84,6 +84,61 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
+
+
+		
+		"create_app": &gq.Field{
+			Description: "Создать приложение",
+			Type:        fullAppObject,
+			Args: gq.FieldConfigArgument{
+				"appname": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя приложения (уникальное)",
+				},
+				"description": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Описание",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return createRecord("appname", params, "app", "full_app")
+			},
+		},
+
+
+		"update_app": &gq.Field{
+			Description: "Обновить пользователя",
+			Type:        fullAppObject,
+			Args: gq.FieldConfigArgument{
+				"appname": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+				"description": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Описание",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return updateRecord("appname", params, "app", "full_app")
+			},
+		},
+
+		"delete_app": &gq.Field{
+			Description: "Удалить пользователя",
+			Type:        fullAppObject,
+			Args: gq.FieldConfigArgument{
+				"appname": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return deleteRecord("appname", params, "app", "full_app")
+			},
+		},
+
+
 		// ******************************************************************************
 		// ******************************************************************************
 		// ******************************************************************************

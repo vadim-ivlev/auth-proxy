@@ -53,7 +53,7 @@ func DeleteSession(c *gin.Context) {
 // }
 
 func CheckUserPassword(username, password string) bool {
-	record, err := db.QueryRowMap("SELECT password FROM public.user WHERE username = $1;", username)
+	record, err := db.QueryRowMap(`SELECT password FROM "user" WHERE username = $1;`, username)
 	if err != nil {
 		return false
 	}
@@ -76,7 +76,8 @@ func GetUserRoles(user, app string) string {
 		return cachedValue.(string)
 	}
 
-	// record, err := db.QueryRowMap(`SELECT public.get_app_user_roles($1,$2) AS roles;`, app, user)
+	// record, err := db.QueryRowMap(`SELECT get_app_user_roles($1,$2) AS roles;`, app, user)
+	// SELECT DISTINCT roles FROM user_roles WHERE username='vadim' AND appname = 'app1';
 	record, err := db.QueryRowMap(`SELECT json_agg(rolename) AS roles FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
 	if err != nil {
 		return ""
@@ -97,7 +98,7 @@ func GetUserInfo(user string) string {
 	}
 
 	record, err := db.QueryRowMap(`SELECT username, email, fullname, description 
-		FROM public.user 
+		FROM "user" 
 		WHERE username = $1;`, user)
 	if err != nil {
 		return ""
