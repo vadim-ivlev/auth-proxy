@@ -20,16 +20,6 @@ CREATE TABLE IF NOT EXISTS app (
     CONSTRAINT app_pkey PRIMARY KEY (appname)
 );
 
--- Справочная таблица.
--- Роль приложения с описанием
-CREATE TABLE IF NOT EXISTS app_role (
-    appname text NOT NULL,
-    rolename text NOT NULL,
-    description text,
-
-    CONSTRAINT role_pkey PRIMARY KEY (appname, rolename),
-    CONSTRAINT role_fk FOREIGN KEY (appname) REFERENCES app(appname) ON DELETE CASCADE DEFERRABLE
-);
 
 ----------------------------------------------------------------
 -- ОСНОВНАЯ ТАБЛИЦА. 
@@ -41,11 +31,12 @@ CREATE TABLE IF NOT EXISTS app_user_role (
 
     CONSTRAINT app_user_role_pkey PRIMARY KEY (appname, username, rolename),
     CONSTRAINT app_user_role_fk_u FOREIGN KEY (username) REFERENCES "user"(username) ON DELETE CASCADE DEFERRABLE,
-    CONSTRAINT app_user_role_fk_ar FOREIGN KEY (appname, rolename) REFERENCES app_role(appname, rolename) ON DELETE CASCADE DEFERRABLE
+    CONSTRAINT app_user_role_fk_a FOREIGN KEY (appname)  REFERENCES "app" (appname)  ON DELETE CASCADE DEFERRABLE
 );
 
+-- TODO: get rid of because of sqlite
 -- индексы для ускорения выборок
-CREATE INDEX IF NOT EXISTS role_appname_idx ON app_role USING btree (appname);
+-- CREATE INDEX IF NOT EXISTS role_appname_idx ON app_role (appname);
 CREATE INDEX IF NOT EXISTS user_textsearch_idx ON "user" USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
 CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
 

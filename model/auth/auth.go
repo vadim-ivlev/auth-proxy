@@ -109,3 +109,10 @@ func GetUserInfo(user string) string {
 	Cache.Set(cacheKey, jsonString, cache.DefaultExpiration)
 	return jsonString
 }
+
+func AppUserRoleExist(appname, username, rolename string) bool {
+	_, err := db.QueryRowMap(`SELECT * FROM  app_user_role  
+		WHERE appname = $1 AND username = $2 AND rolename = $3 ;`,
+		appname, username, rolename)
+	return (err != nil)
+}

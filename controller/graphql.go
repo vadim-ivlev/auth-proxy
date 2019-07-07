@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"auth-proxy/model/auth"
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
 
 	// "go/ast"
 	"net/http"
@@ -17,11 +19,6 @@ import (
 )
 
 // FUNCTIONS *******************************************************
-
-// func getIntID(c *gin.Context) int {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	return id
-// }
 
 // jsonStringToMap преобразует строку JSON в map[string]interface{}
 func jsonStringToMap(s string) map[string]interface{} {
@@ -172,6 +169,48 @@ func getSelectedFields(selectionPath []string, resolveParams gq.ResolveParams) s
 	}
 	s := strings.Join(collect, ", ")
 	return s
+}
+
+func getLoginedUserName(params gq.ResolveParams) string {
+	c, ok := params.Context.Value("ginContext").(*gin.Context)
+	if !ok {
+		log.Println("Not OK: getLoginedUserName")
+		return ""
+	}
+	return auth.GetUserName(c)
+}
+
+func getOwnerUserName(params gq.ResolveParams) string {
+	c, ok := params.Context.Value("ginContext").(*gin.Context)
+	if !ok {
+		log.Println("Not OK: getLoginedUserName")
+		return ""
+	}
+	return auth.GetUserName(c)
+}
+
+func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
+	uname := getLoginedUserName(params)
+	pname, ok := params.Args["username"].(string)
+	if ok && pname == uname {
+		return
+	}
+	panicIfNotAdmin(params)
+}
+
+func panicIfNotAdmin(params gq.ResolveParams) {
+	username := getLoginedUserName(params)
+	if auth.AppUserRoleExist("auth", username, "admin") {
+		return
+	}
+	panic("Sorry. You have to be an admin.")
+}
+
+func panicIfNotUser(params gq.ResolveParams) {
+	username := getLoginedUserName(params)
+	if username == "" {
+		panic("Sorry. You have to log in.")
+	}
 }
 
 // G R A P H Q L ********************************************************************************
