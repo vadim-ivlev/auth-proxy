@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/gin-gonic/contrib/sessions"
 	// gsessions "github.com/gorilla/sessions"
 
 	"auth-proxy/primitiveproxy"
@@ -27,28 +26,21 @@ func LandingPage(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	session := sessions.Default(c)
+
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	if auth.CheckUserPassword(username, password) {
-		session.Set("user", username)
-		// session.Options(sessions.Options{MaxAge: 0})
-
-		err := session.Save()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate session token"})
-		} else {
-			c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated " + username})
-		}
+	err := auth.Login(c, username, password)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()}) // http.StatusUnauthorized
 	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated " + username})
 	}
 }
 
 func Logout(c *gin.Context) {
 	username := auth.GetUserName(c)
-	auth.DeleteSession(c)
+	auth.Logout(c)
 	c.JSON(http.StatusOK, gin.H{"message": username + " successfully logged out"})
 }
 

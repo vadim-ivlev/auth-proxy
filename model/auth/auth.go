@@ -3,6 +3,7 @@ package auth
 import (
 	"auth-proxy/model/db"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -115,4 +116,23 @@ func AppUserRoleExist(appname, username, rolename string) bool {
 		WHERE appname = $1 AND username = $2 AND rolename = $3 ;`,
 		appname, username, rolename)
 	return (err != nil)
+}
+
+func Logout(c *gin.Context) {
+	DeleteSession(c)
+}
+
+func Login(c *gin.Context, username, password string) error {
+	session := sessions.Default(c)
+	if CheckUserPassword(username, password) {
+		session.Set("user", username)
+		// session.Options(sessions.Options{MaxAge: 0})
+		err := session.Save()
+		if err != nil {
+			log.Println(err)
+		}
+		return err
+	} else {
+		return errors.New("Authentication failed")
+	}
 }

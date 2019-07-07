@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"auth-proxy/model/auth"
 	"auth-proxy/model/db"
 	"fmt"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	gq "github.com/graphql-go/graphql"
 )
 
@@ -15,7 +17,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 	Fields: gq.Fields{
 
 		"login": &gq.Field{
-			Type:        fullUserObject,
+			Type:        gq.String,
 			Description: "Войти по имени и паролю",
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
@@ -28,16 +30,27 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panic("Not implemented")
+				c, _ := params.Context.Value("ginContext").(*gin.Context)
+				username, _ := params.Args["username"].(string)
+				password, _ := params.Args["password"].(string)
+
+				err := auth.Login(c, username, password)
+				if err != nil {
+					return "Authentication failed", err
+				} else {
+					return "Successfully authenticated " + username, nil
+				}
 			},
 		},
 
 		"logout": &gq.Field{
-			Type:        fullUserObject,
+			Type:        gq.String,
 			Description: "Выйти",
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panic("Not implemented")
+				c, _ := params.Context.Value("ginContext").(*gin.Context)
+				auth.Logout(c)
+				return "Successfully logged out", nil
 			},
 		},
 
