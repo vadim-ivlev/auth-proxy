@@ -13,7 +13,7 @@ SELECT jsonb_agg(subtable) from
                         ( 
                         SELECT 
                         a.rolename,
-                        a.role_description
+                        a.app_role_description
                         FROM app_user_role_extended AS a
                         WHERE a.username = aur.username 
                         AND   a.appname  = aur.appname
@@ -63,7 +63,7 @@ SELECT DISTINCT
             ( 
             SELECT 
             a.rolename,
-            a.role_description
+            a.app_role_description
             FROM app_user_role_extended AS a
             WHERE a.username = aur.username 
             AND   a.appname  = aur.appname

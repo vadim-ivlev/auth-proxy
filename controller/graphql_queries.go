@@ -83,8 +83,8 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 				"order": &gq.ArgumentConfig{
 					Type:         gq.String,
-					Description:  "сортировка строк в определённом порядке. По умолчанию 'id DESC'",
-					DefaultValue: "id DESC",
+					Description:  "сортировка строк в определённом порядке. По умолчанию 'username ASC'",
+					DefaultValue: "username ASC",
 				},
 				"limit": &gq.ArgumentConfig{
 					Type:         gq.Int,
@@ -98,7 +98,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				wherePart, orderAndLimits := queryEnd(params)
+				wherePart, orderAndLimits := userQueryEnd(params)
 				fields := getSelectedFields([]string{"list_user", "list"}, params)
 
 				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "user"` + wherePart + orderAndLimits)
@@ -106,6 +106,53 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					return nil, err
 				}
 				count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "user"` + wherePart)
+				if err != nil {
+					return nil, err
+				}
+
+				m := map[string]interface{}{
+					"length": count["count"],
+					"list":   list,
+				}
+
+				return m, nil
+
+			},
+		},
+
+		"list_app": &gq.Field{
+			Type:        listAppGQType,
+			Description: "Получить список приложений и их количество.",
+			Args: gq.FieldConfigArgument{
+				"search": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Строка полнотекстового поиска.",
+				},
+				"order": &gq.ArgumentConfig{
+					Type:         gq.String,
+					Description:  "сортировка строк в определённом порядке. По умолчанию 'appname ASC'",
+					DefaultValue: "appname ASC",
+				},
+				"limit": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "возвратить не больше заданного числа строк. По умолчанию 100.",
+					DefaultValue: 100,
+				},
+				"offset": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "пропустить указанное число строк, прежде чем начать выдавать строки. По умолчанию 0.",
+					DefaultValue: 0,
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				wherePart, orderAndLimits := appQueryEnd(params)
+				fields := getSelectedFields([]string{"list_user", "list"}, params)
+
+				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "app"` + wherePart + orderAndLimits)
+				if err != nil {
+					return nil, err
+				}
+				count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "app"` + wherePart)
 				if err != nil {
 					return nil, err
 				}
@@ -417,37 +464,39 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 // queryEnd возвращает вторую часть запроса на поиск трансляций
 func queryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+	return wherePart, orderAndLimits
+}
 
+func userQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
 	var searchConditions []string
-
 	search, ok := params.Args["search"].(string)
+	search = strings.Trim(search, " ")
 	if ok && len(search) > 0 {
 		searchConditions = append(searchConditions,
-			fmt.Sprintf("to_tsvector('russian', title) @@ plainto_tsquery('russian','%s') ", search))
+			fmt.Sprintf("to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ) @@ plainto_tsquery('russian','%s') ", search))
 	}
-
-	addIntSearchConditionForField(&searchConditions, params, "is_ended")
-	addIntSearchConditionForField(&searchConditions, params, "id")
-	addIntSearchConditionForField(&searchConditions, params, "time_created")
-	addIntSearchConditionForField(&searchConditions, params, "time_begin")
-	addIntSearchConditionForField(&searchConditions, params, "show_date")
-	addIntSearchConditionForField(&searchConditions, params, "show_time")
-	addIntSearchConditionForField(&searchConditions, params, "show_main_page")
-	addIntSearchConditionForField(&searchConditions, params, "groups_create")
-	addIntSearchConditionForField(&searchConditions, params, "is_diary")
-
+	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
 	if len(searchConditions) > 0 {
 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
 	}
-
-	orderAndLimits = fmt.Sprintf(" ORDER BY %s LIMIT %d OFFSET %d ;",
-		params.Args["order"].(string),
-		params.Args["limit"].(int),
-		params.Args["offset"].(int),
-	)
-
+	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
 	return wherePart, orderAndLimits
+}
 
+func appQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+	var searchConditions []string
+	search, ok := params.Args["search"].(string)
+	search = strings.Trim(search, " ")
+	if ok && len(search) > 0 {
+		searchConditions = append(searchConditions,
+			fmt.Sprintf("to_tsvector('russian', appname || ' ' || description ) @@ plainto_tsquery('russian','%s') ", search))
+	}
+	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
+	if len(searchConditions) > 0 {
+		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+	}
+	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
+	return wherePart, orderAndLimits
 }
 
 // addIntSearchConditionForField добавляет условие поиска для поля fieldName в массив searchConditions.

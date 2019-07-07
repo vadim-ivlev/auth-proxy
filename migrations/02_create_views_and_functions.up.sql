@@ -22,29 +22,19 @@
 -- С дополнительными полями из справочных таблиц 
 CREATE OR REPLACE VIEW app_user_role_extended AS
     SELECT 
-    aur.*,
-    (
-        SELECT DISTINCT
-        app.description 
-        FROM app 
-        WHERE app.appname = aur.appname
-    ) as app_description,
-    (
-        SELECT DISTINCT
-        description 
-        FROM app_role 
-        WHERE app_role.appname = aur.appname 
-        AND app_role.rolename = aur.rolename
-    ) as role_description,
-
-    (
-        SELECT DISTINCT
-        "user".fullname 
-        FROM "user" 
-        WHERE "user".username = aur.username
-    ) as user_fullname
-
-    FROM app_user_role AS aur
+        aur.appname    AS appname,
+        aur.username   AS username,
+        aur.rolename   AS rolename,
+        u.email        AS user_email,
+        u.fullname     AS user_fullname,
+        u.description  AS user_description,
+        a.description  AS app_description,
+        ar.description AS app_role_description
+    
+    FROM app_user_role   AS aur
+    INNER JOIN "user"    AS u   ON aur.username = u.username
+    INNER JOIN app       AS a   ON aur.appname  = a.appname
+    INNER JOIN app_role  AS ar  ON aur.appname = ar.appname AND aur.rolename = ar.rolename
 ;
 
 
@@ -88,7 +78,7 @@ CREATE OR REPLACE VIEW full_user2 AS
                         ( 
                         SELECT 
                         a.rolename,
-                        a.role_description
+                        a.app_role_description
                         FROM app_user_role_extended AS a
                         WHERE a.username = aur.username 
                         AND   a.appname  = aur.appname
@@ -127,7 +117,7 @@ CREATE OR REPLACE VIEW user_roles AS
                 ( 
                 SELECT 
                 a.rolename,
-                a.role_description
+                a.app_role_description
                 FROM app_user_role_extended AS a
                 WHERE a.username = aur.username 
                 AND   a.appname  = aur.appname
