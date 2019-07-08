@@ -20,6 +20,7 @@ import (
 
 var Cache = cache.New(2*time.Minute, 4*time.Minute)
 
+// GetUserName возвращает имя текущего пользователя или пустую строку
 func GetUserName(c *gin.Context) string {
 	session := sessions.Default(c)
 	user := session.Get("user")
@@ -30,6 +31,7 @@ func GetUserName(c *gin.Context) string {
 	}
 }
 
+// DeleteSession удаляет текущую сессию (стирает куки на стороне клиента)
 func DeleteSession(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
@@ -53,6 +55,7 @@ func DeleteSession(c *gin.Context) {
 // 	}
 // }
 
+// CheckUserPassword проверяет пароль пользователя. Возвращает true если проверка прошла успешно.
 func CheckUserPassword(username, password string) bool {
 	record, err := db.QueryRowMap(`SELECT password FROM "user" WHERE username = $1;`, username)
 	if err != nil {
@@ -69,6 +72,7 @@ func CheckUserPassword(username, password string) bool {
 	return false
 }
 
+// GetUserRoles возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
 func GetUserRoles(user, app string) string {
 	cacheKey := user + "-" + app + "-roles"
 	cachedValue, found := Cache.Get(cacheKey)
@@ -90,6 +94,7 @@ func GetUserRoles(user, app string) string {
 	return roles
 }
 
+// GetUserInfo возвращает сериализованную информацию о пользователе
 func GetUserInfo(user string) string {
 	cacheKey := user + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
@@ -111,6 +116,7 @@ func GetUserInfo(user string) string {
 	return jsonString
 }
 
+// AppUserRoleExist проверят наличие связки appname-username-rolename в таблице app_user_role.
 func AppUserRoleExist(appname, username, rolename string) bool {
 	_, err := db.QueryRowMap(`SELECT * FROM  app_user_role  
 		WHERE appname = $1 AND username = $2 AND rolename = $3 ;`,
@@ -118,10 +124,12 @@ func AppUserRoleExist(appname, username, rolename string) bool {
 	return (err != nil)
 }
 
+// Logout разлогинить текущего пользователя
 func Logout(c *gin.Context) {
 	DeleteSession(c)
 }
 
+// Login залогинить пользователя
 func Login(c *gin.Context, username, password string) error {
 	session := sessions.Default(c)
 	if CheckUserPassword(username, password) {
@@ -129,7 +137,7 @@ func Login(c *gin.Context, username, password string) error {
 		// session.Options(sessions.Options{MaxAge: 0})
 		err := session.Save()
 		if err != nil {
-			log.Println(err)
+			log.Println("ERROR: Login():session.Set()", err)
 		}
 		return err
 	} else {

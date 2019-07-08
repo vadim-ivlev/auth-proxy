@@ -2,6 +2,7 @@ package controller
 
 import (
 	"auth-proxy/model/auth"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -16,13 +17,10 @@ import (
 )
 
 func LandingPage(c *gin.Context) {
-	c.Header("Content-Type", "text/html; charset=utf-8")
-	username := auth.GetUserName(c)
-	data := map[string]interface{}{
-		"username": username,
-		"info":     auth.GetUserInfo(username),
-	}
-	c.HTML(200, "index.html", data)
+	// c.HTML(200, "index.html", map[string]interface{}{})
+
+	htmlFile, _ := ioutil.ReadFile("./templates/index.html")
+	c.Data(http.StatusOK, "text/html; charset=utf-8", htmlFile)
 }
 
 func Login(c *gin.Context) {

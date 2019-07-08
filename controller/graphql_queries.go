@@ -38,19 +38,20 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				if err != nil {
 					return "Authentication failed", err
 				} else {
-					return "Successfully authenticated " + username, nil
+					return gin.H{"username": username, "message": "Successfully authenticated"}, nil
 				}
 			},
 		},
 
 		"logout": &gq.Field{
-			Type:        gq.String,
+			Type:        authMessageObject,
 			Description: "Выйти",
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				c, _ := params.Context.Value("ginContext").(*gin.Context)
+				username := auth.GetUserName(c)
 				auth.Logout(c)
-				return "Successfully logged out", nil
+				return gin.H{"username": username, "message": "Successfully logged out"}, nil
 			},
 		},
 

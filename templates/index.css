@@ -5,84 +5,47 @@ body {
     margin: 30px;
 }
 
-a {
-    /* text-decoration: none; */
-}
-
 h4 {
-    border-top: 1px solid silver;
-    font-weight: bold;
+    margin-top: 30px;
 }
 
-h5 {
-    font-weight: 400;
+.logo {
+    width:80px; 
+    vertical-align: middle;
+    margin-right: 30px;
 }
 
-.or {
-    color: orangered;
-}
-
-.rgru {
-    letter-spacing: -6px;
-    font-family: "Open Sans";
-}
-
-input[type] {
-    width: 200px;
-    margin-bottom: 2px;
-    height: 24px;
-}
-
-input[type="number"] {
-    border-color: blueviolet;
-    background-color: white;
-}
-
-input[type="text"] {
-    background-color: white;
-}
-
-input[type="submit"] {
-    margin-top: 10px;
-    height: 38px;
-}
-
-input[type="button"] {
-    margin-top: 10px;
-    height: 38px;
-    background-color: white;
-    color: darkmagenta;
-}
-
-form {
-    flex: 1 1;
-    padding: 0;
-    margin: 0 !important;
-    background-color: whitesmoke;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid silver;
-}
 
 pre {
-    flex: 1 1;
-    width: 100%;
     margin: 0;
     margin-left: 5px;
     resize: vertical;
     overflow: auto;
     font-size: 90%;
-    border: 1px solid silver;
-    border-radius: 8px;
+    border: none;
+    /* border-left: 1px dashed silver; */
+    /* border-radius: 8px; */
     font-family: "Roboto Mono";
+    background-color: transparent;
 }
 
 .flexed {
     display: flex;
 }
 
+.flexed>form {
+    width:40%;
+}
 
 .ui-widget {
     font-family: "Roboto", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    /* font-size: 1em; */
+}
+
+.menu {
+    margin-bottom: 50px;
+    margin-top:50px;
+}
+
+.underlined {
+    border-bottom: 1px dashed silver ;
 }

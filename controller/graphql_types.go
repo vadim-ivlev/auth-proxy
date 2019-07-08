@@ -221,3 +221,20 @@ var fullAppObject = gq.NewObject(gq.ObjectConfig{
 	Description: "Приложение его роли",
 	Fields:      fullAppFields,
 })
+
+// AUTH messages
+
+var authMessageObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "AuthMessage",
+	Description: "Сообщения аутентификации",
+	Fields: gq.Fields{
+		"username": &gq.Field{
+			Type:        gq.String,
+			Description: "Имя пользователя",
+		},
+		"message": &gq.Field{
+			Type:        gq.String,
+			Description: "Сообщение",
+		},
+	},
+})

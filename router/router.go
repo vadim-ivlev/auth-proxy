@@ -22,7 +22,7 @@ func Setup() *gin.Engine {
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 	r.Static("/templates", "./templates")
-	r.LoadHTMLGlob("templates/*.*")
+	r.LoadHTMLGlob("templates/*.html")
 
 	r.Use(middleware.HeadersMiddleware())
 

@@ -1,0 +1,11 @@
+            {{#logined}}
+            <a href="" class="button button-clear"  onclick="return showPage('apps')">Приложения</a>
+            <a href="" class="button button-clear"  onclick="return showPage('users')">Пользователи</a>
+            <a href="" class="button button-clear"  onclick="return showPage('app')">Новое приложение</a>
+            <a href="" class="button button-clear"  onclick="return showPage('user')">Новый пользователь</a>
+            <a href="" class="button button-clear"  onclick="return showPage('logout')">Logout</a>
+            {{/logined}}
+            {{^logined}}
+            <a href="" class="button button-clear"  onclick="return showPage('login')">Login</a>
+            <a href="" class="button button-clear"  onclick="return showPage('user')">Новый пользователь</a>
+            {{/logined}}

@@ -10,37 +10,38 @@
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
     <script src="templates/jquery.json-viewer.js"></script>
-
+    
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
-
-
-
+    
+    
+    
     <link rel="stylesheet" type="text/css" href="templates/index.css" />
     <link rel="stylesheet" type="text/css" href="templates/jquery.json-viewer.css" />
-
-    <script src="templates/index.js"></script>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
 
 </head>
 
 <body>
-    <h1><span class="rgru"><span>RG.</span><span class="or">RU</span></span></h1>
-    <h4>Auth-Proxy</h4>
-    <h3>Сервис Авторизации админок RG.RU</h3>
+
+    <h3><img src="templates/rgru-logo.png" class="logo"><b>Auth-Proxy</b> Сервис Авторизации</h3>
     <p><a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API &#x25B6;</a></p>
-    <div><b>{{.username}}</b>
-    <!-- {{.info}} -->
-    {{if eq .username ""}} Login first {{else}} logined {{end}}
-    </div>
-                    
-        <div class="flexed">
-            <form  id="form0" onsubmit="loginFormSubmit(event)">
+
+    <div id="menu" class="menu underlined"></div>
+
+    <div class="page" id="loginPage">
+    <!--    
+        <h4>Login REST</h4>
+        <div class="flexed underlined">
+            <form id="formLoginRest" onsubmit="loginRestFormSubmit(event)">
                 <div>
-                    <span class="param-name">username</span>
+                    <label class="param-name">username</label>
                     <input name="username" type="text" value="vadim">
                 </div>
                 <div>
@@ -49,34 +50,82 @@
                 </div>
                 <div>
                     <span class="param-name"></span>
-                    <input type="submit" value="Login">
+                    <input type="submit" class="button button-outline" value="Login">
                 </div>
             </form>
-            <pre  id="result0"></pre>
+            <pre id="resultLoginRest"></pre>
         </div>
-
+    -->
+        <h4>Login</h4>
         <div class="flexed">
-            <form  id="form1" onsubmit="logoutFormSubmit(event)">
+            <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
+                <div>
+                    <label class="param-name">username</label>
+                    <input name="username" type="text" value="vadim">
+                </div>
+                <div>
+                    <span class="param-name">password</span>
+                    <input name="password" type="text" value="1">
+                </div>
                 <div>
                     <span class="param-name"></span>
-                    <input type="submit" value="Logout">
+                    <input type="submit" class="button button-outline" value="Login">
                 </div>
             </form>
-            <pre  id="result1"></pre>
+            <pre id="resultLoginGraphQL"></pre>
         </div>
 
-        <br><br>
-        <h4>Приложения</h4>
+    </div>
 
+
+    <div class="page" id="logoutPage">
+        <!--
+        <h4>Logout REST</h4>
+        <div class="flexed">
+            <form id="formLogoutRest" onsubmit="return logoutRestFormSubmit(event)">
+                <div>
+                    <span class="param-name"></span>
+                    <input type="submit" class="button button-outline" value="Logout">
+                </div>
+            </form>
+            <pre id="resultLogoutRest"></pre>
+        </div>
+        -->
+        <h4>Logout</h4>
+        <div class="flexed">
+            <form id="formLogoutGraphQL" onsubmit="logoutGraphQLFormSubmit(event)">
+                <div>
+                    <span class="param-name"></span>
+                    <input type="submit" class="button button-outline" value="Logout">
+                </div>
+            </form>
+            <pre id="resultLogoutGraphQL"></pre>
+        </div>
+    </div>
+
+
+    <div class="page" id="appsPage">
+        <h4>Приложения</h4>
         <p><a target="_blank" href="/apps/app1">app1</a></p>
         <p><a target="_blank" href="/apps/app2">app2</a></p>
         <p><a target="onlinebc" href="/apps/onlinebc">onlinebc</a></p>
-        
+    </div>
 
-<script>
+    <div class="page" id="usersPage">
+        <h4>Пользователи</h4>
+    </div>
+
+    <div class="page" id="userPage">
+        <h4>Пользователь</h4>
+    </div>
+
+    <div class="page" id="appPage">
+        <h4>Приложение</h4>
+    </div>
 
 
-</script>
+
+    <script src="templates/index.js"></script>
 </body>
 
 </html>
