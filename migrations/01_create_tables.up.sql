@@ -36,8 +36,9 @@ CREATE TABLE IF NOT EXISTS app_user_role (
 
 -- TODO: get rid of because of sqlite
 -- индексы для ускорения выборок
--- CREATE INDEX IF NOT EXISTS role_appname_idx ON app_role (appname);
-CREATE INDEX IF NOT EXISTS user_textsearch_idx ON "user" USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
-CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
+CREATE INDEX IF NOT EXISTS aur_appname_idx ON app_user_role (appname);
+CREATE INDEX IF NOT EXISTS aur_username_idx ON app_user_role (username);
+-- CREATE INDEX IF NOT EXISTS user_textsearch_idx ON "user" USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
+-- CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
 
 

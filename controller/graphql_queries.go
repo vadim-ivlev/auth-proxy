@@ -110,7 +110,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				wherePart, orderAndLimits := userQueryEnd(params)
+				wherePart, orderAndLimits := QueryEnd(params, "fullname,description,email,username")
 				fields := getSelectedFields([]string{"list_user", "list"}, params)
 
 				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "user"` + wherePart + orderAndLimits)
@@ -157,7 +157,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				wherePart, orderAndLimits := appQueryEnd(params)
+				wherePart, orderAndLimits := QueryEnd(params, "appname,description")
 				fields := getSelectedFields([]string{"list_app", "list"}, params)
 
 				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "app"` + wherePart + orderAndLimits)
@@ -204,7 +204,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				wherePart, orderAndLimits := app_user_roleQueryEnd(params)
+				wherePart, orderAndLimits := QueryEnd(params, "appname,username,rolename")
 				fields := getSelectedFields([]string{"list_app_user_role", "list"}, params)
 
 				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "app_user_role"` + wherePart + orderAndLimits)
@@ -228,13 +228,77 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 	},
 })
 
-func userQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+// func userQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+// 	var searchConditions []string
+// 	search, ok := params.Args["search"].(string)
+// 	search = strings.Trim(search, " ")
+// 	if ok && len(search) > 0 {
+// 		// searchConditions = append(searchConditions,
+// 		// 	fmt.Sprintf("to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ) @@ plainto_tsquery('russian','%s') ", search))
+// 		search = strings.ReplaceAll(search, " ", "%")
+// 		// searchConditions = append(searchConditions,
+// 		// 	`  fullname    LIKE '%`+search+`%'
+// 		// 	OR description LIKE '%`+search+`%'
+// 		// 	OR email       LIKE '%`+search+`%'
+// 		// 	OR username    LIKE '%`+search+`%' `)
+// 		searchConditions = append(searchConditions, Like("fullname,description,email,username", search))
+// 	}
+// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
+// 	if len(searchConditions) > 0 {
+// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+// 	}
+// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
+// 	return wherePart, orderAndLimits
+// }
+
+// func appQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+// 	var searchConditions []string
+// 	search, ok := params.Args["search"].(string)
+// 	search = strings.Trim(search, " ")
+// 	if ok && len(search) > 0 {
+// 		// searchConditions = append(searchConditions,
+// 		// 	fmt.Sprintf("to_tsvector('russian', appname || ' ' || description ) @@ plainto_tsquery('russian','%s') ", search))
+// 		search = strings.ReplaceAll(search, " ", "%")
+// 		// searchConditions = append(searchConditions,
+// 		// 	`   LOWER(appname) LIKE LOWER('%`+search+`%')
+// 		// 	OR LOWER(description) LIKE LOWER('%`+search+`%') `)
+// 		searchConditions = append(searchConditions, Like("appname,description", search))
+// 	}
+// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
+// 	if len(searchConditions) > 0 {
+// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+// 	}
+// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
+// 	return wherePart, orderAndLimits
+// }
+
+// func app_user_roleQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
+// 	var searchConditions []string
+// 	search, ok := params.Args["search"].(string)
+// 	search = strings.Trim(search, " ")
+// 	if ok && len(search) > 0 {
+// 		search = strings.ReplaceAll(search, " ", "%")
+// 		// searchConditions = append(searchConditions,
+// 		// 	`   appname LIKE '%`+search+`%'
+// 		// 	OR username LIKE '%`+search+`%'
+// 		// 	OR rolename LIKE '%`+search+`%' `)
+// 		searchConditions = append(searchConditions, Like("appname,username,rolename", search))
+// 	}
+// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
+// 	if len(searchConditions) > 0 {
+// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+// 	}
+// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
+// 	return wherePart, orderAndLimits
+// }
+
+func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orderAndLimits string) {
 	var searchConditions []string
 	search, ok := params.Args["search"].(string)
 	search = strings.Trim(search, " ")
 	if ok && len(search) > 0 {
-		searchConditions = append(searchConditions,
-			fmt.Sprintf("to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ) @@ plainto_tsquery('russian','%s') ", search))
+		search = strings.ReplaceAll(search, " ", "%")
+		searchConditions = append(searchConditions, Like(fieldList, search))
 	}
 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
 	if len(searchConditions) > 0 {
@@ -244,36 +308,11 @@ func userQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits str
 	return wherePart, orderAndLimits
 }
 
-func appQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
-	var searchConditions []string
-	search, ok := params.Args["search"].(string)
-	search = strings.Trim(search, " ")
-	if ok && len(search) > 0 {
-		searchConditions = append(searchConditions,
-			fmt.Sprintf("to_tsvector('russian', appname || ' ' || description ) @@ plainto_tsquery('russian','%s') ", search))
+func Like(fieldsString, search string) string {
+	fields := strings.Split(fieldsString, ",")
+	var chunks []string
+	for _, field := range fields {
+		chunks = append(chunks, ` LOWER(`+field+`) LIKE LOWER('%`+search+`%') `)
 	}
-	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
-	if len(searchConditions) > 0 {
-		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
-	}
-	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
-	return wherePart, orderAndLimits
-}
-
-func app_user_roleQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
-	var searchConditions []string
-	search, ok := params.Args["search"].(string)
-	search = strings.Trim(search, " ")
-	if ok && len(search) > 0 {
-		searchConditions = append(searchConditions,
-			`   appname LIKE '%`+search+`%' 
-			OR username LIKE '%`+search+`%' 
-			OR rolename LIKE '%`+search+`%' `)
-	}
-	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
-	if len(searchConditions) > 0 {
-		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
-	}
-	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
-	return wherePart, orderAndLimits
+	return strings.Join(chunks, " OR ")
 }

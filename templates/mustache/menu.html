@@ -1,6 +1,6 @@
             {{#logined}}
-            <a href="" class="button button-clear"  onclick="return showPage('apps')">Приложения</a>
-            <a href="" class="button button-clear"  onclick="return showPage('users')">Пользователи</a>
+            <a href="" class="button button-clear"  onclick="showPage('apps', '.app-search-results');  return formListAppSubmit()">Приложения</a>
+            <a href="" class="button button-clear"  onclick="showPage('users','.user-search-results'); return formListUserSubmit()">Пользователи</a>
             <a href="" class="button button-clear"  onclick="return showPage('app')">Новое приложение</a>
             <a href="" class="button button-clear"  onclick="return showPage('user')">Новый пользователь</a>
             <a href="" class="button button-clear"  onclick="return showPage('logout')">Logout</a>

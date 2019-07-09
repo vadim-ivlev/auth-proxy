@@ -30,11 +30,18 @@ pre {
 }
 
 .flexed {
-    display: flex;
+    display: grid;
+    grid-template-columns: 50% 1fr;
+    /* justify-content: center; */
 }
 
 .flexed>form {
-    width:40%;
+    /* width:60%; */
+    /* margin: auto; */
+}
+
+.flexed>pre {
+    display: none;
 }
 
 .ui-widget {
@@ -48,4 +55,28 @@ pre {
 
 .underlined {
     border-bottom: 1px dashed silver ;
+}
+
+/* fix skeleton */
+li {
+    margin-bottom: 0;
+}
+/* fix milligram */
+ol ol, ol ul, ul ol, ul ul {
+    font-size: 100%;
+}
+
+.grided {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    grid-column-gap: 5px;
+    align-items: end;
+}
+.grided input {
+    margin-bottom: 15px;
+}
+
+table .button {
+    margin-bottom: 0;
+    padding-left: 0;
 }

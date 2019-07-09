@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
     
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
     
     
     <link rel="stylesheet" type="text/css" href="templates/index.css" />
@@ -30,90 +31,55 @@
 
 <body>
 
-    <h3><img src="templates/rgru-logo.png" class="logo"><b>Auth-Proxy</b> Сервис Авторизации</h3>
+    <h3><img src="templates/images/rgru-logo.png" class="logo"><b>Auth-Proxy</b> Сервис Авторизации</h3>
     <p><a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API &#x25B6;</a></p>
 
     <div id="menu" class="menu underlined"></div>
 
-    <div class="page" id="loginPage">
-    <!--    
-        <h4>Login REST</h4>
-        <div class="flexed underlined">
-            <form id="formLoginRest" onsubmit="loginRestFormSubmit(event)">
-                <div>
-                    <label class="param-name">username</label>
-                    <input name="username" type="text" value="vadim">
-                </div>
-                <div>
-                    <span class="param-name">password</span>
-                    <input name="password" type="text" value="1">
-                </div>
-                <div>
-                    <span class="param-name"></span>
-                    <input type="submit" class="button button-outline" value="Login">
-                </div>
-            </form>
-            <pre id="resultLoginRest"></pre>
-        </div>
-    -->
-        <h4>Login</h4>
-        <div class="flexed">
-            <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
-                <div>
-                    <label class="param-name">username</label>
-                    <input name="username" type="text" value="vadim">
-                </div>
-                <div>
-                    <span class="param-name">password</span>
-                    <input name="password" type="text" value="1">
-                </div>
-                <div>
-                    <span class="param-name"></span>
-                    <input type="submit" class="button button-outline" value="Login">
-                </div>
-            </form>
-            <pre id="resultLoginGraphQL"></pre>
-        </div>
 
+    <div class="page" id="loginPage">
     </div>
 
 
     <div class="page" id="logoutPage">
-        <!--
-        <h4>Logout REST</h4>
-        <div class="flexed">
-            <form id="formLogoutRest" onsubmit="return logoutRestFormSubmit(event)">
-                <div>
-                    <span class="param-name"></span>
-                    <input type="submit" class="button button-outline" value="Logout">
-                </div>
-            </form>
-            <pre id="resultLogoutRest"></pre>
-        </div>
-        -->
-        <h4>Logout</h4>
-        <div class="flexed">
-            <form id="formLogoutGraphQL" onsubmit="logoutGraphQLFormSubmit(event)">
-                <div>
-                    <span class="param-name"></span>
-                    <input type="submit" class="button button-outline" value="Logout">
-                </div>
-            </form>
-            <pre id="resultLogoutGraphQL"></pre>
-        </div>
     </div>
 
 
     <div class="page" id="appsPage">
-        <h4>Приложения</h4>
-        <p><a target="_blank" href="/apps/app1">app1</a></p>
-        <p><a target="_blank" href="/apps/app2">app2</a></p>
-        <p><a target="onlinebc" href="/apps/onlinebc">onlinebc</a></p>
-    </div>
+        <h2>Приложения</h2>
+        <div class="flexed">
+            <form id="formListApp" class="grided" onsubmit="return formListAppSubmit(event)">
+                <div>
+                    <label  for="search"></label>
+                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListAppSubmit)">
+                </div>
+                <input type="submit" class="button button-outline" value="искать">
+            </form>
+            <pre id="resultListApp"></pre>
+        </div>
+        <div class="app-search-results"></div>
+   </div>
+
+
+
 
     <div class="page" id="usersPage">
-        <h4>Пользователи</h4>
+        <h2>Пользователи</h2>
+        <div class="flexed">
+            <form id="formListUser" class="grided" onsubmit="return formListUserSubmit(event)">
+                <div>
+                    <label  for="search"></label>
+                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)">
+                </div>
+                <input type="submit" class="button button-outline" value="искать">
+            </form>
+            <pre id="resultListUser"></pre>
+        </div>
+        <div class="user-search-results"></div>
     </div>
+
+
+
 
     <div class="page" id="userPage">
         <h4>Пользователь</h4>

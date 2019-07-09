@@ -13,8 +13,8 @@ var model = {
 
 // F U N C T I O N S  *********************************************************************************
 
-function showPage(pageid){
-    renderPage(pageid)
+function showPage(pageid, elemSelector){
+    renderPage(pageid, elemSelector)
     $('.page').hide()
     $('#'+pageid+'Page').show()
     return false
@@ -27,6 +27,20 @@ function renderTemplateFile(templateFile, data, targetSelector) {
         $(targetSelector).html(rendered);
       });
 }
+
+
+
+function renderPage(pageid, elemSelector) {
+    renderTemplateFile('templates/mustache/'+pageid+'.html', model, 
+    (elemSelector ? elemSelector : '#'+pageid+'Page')
+    )
+}
+
+function renderMenu(){
+    renderTemplateFile('templates/mustache/menu.html', model, '#menu')
+}
+
+
 
 
 function onError(e, msg){
@@ -64,14 +78,6 @@ function getCookie(cname) {
 // R E N D E R I N G  *********************************************************
 
 
-function renderMenu(){
-    renderTemplateFile('templates/menu-template.mustache', model, '#menu')
-}
-
-
-function renderPage(pageid) {
-    renderTemplateFile('templates/'+pageid+'-template.mustache', model, '#'+pageid+'Page')
-}
 
 
 
@@ -152,7 +158,8 @@ function formListAppSubmit(event) {
     var query =`
     query {
         list_app(
-        search: "${search}"
+        search: "${search}",
+        order: "description ASC"
         ) {
             length
             list {
@@ -165,13 +172,53 @@ function formListAppSubmit(event) {
         success: (res) => {
             showJSON(res,'#resultListApp')
             model.apps = res.data.list_app.list
-            renderPage('apps')
+            renderPage('apps','.app-search-results')
         } 
     
     })
     return false       
 }
 
+
+function formListUserSubmit(event) {
+    if (event) event.preventDefault()
+    $("#resultListUser").html("")
+    let search = $("#formListUser input[name='search']").val()
+    var query =`
+    query {
+        list_user(
+        search: "${search}",
+        order: "fullname ASC"
+        ) {
+            length
+            list {
+              description
+              email
+              fullname
+              password
+              username
+            }
+          }
+        }        
+        `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+        success: (res) => {
+            showJSON(res,'#resultListUser')
+            model.users = res.data.list_user.list
+            renderPage('users','.user-search-results')
+        } 
+    
+    })
+    return false       
+}
+
+
+var delayTimeout
+function delayFunc(f) {
+   clearTimeout(delayTimeout) 
+   delayTimeout = setTimeout(f, 500)  
+   return false 
+}
 
 
 

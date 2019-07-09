@@ -1,0 +1,32 @@
+<table>
+        <thead>
+            <tr>
+                <th>username</th>
+                <th>password</th>
+                <th>email</th>
+                <th>fullname</th>
+                <th>description</th>
+                <th>actions</th>
+            <tr>
+        </thead>
+        <tbody>
+            {{#users}}
+            <tr>
+                <td>
+                    <a href="apps/{{appname}}" target="_blank" >{{username}}/</a>
+                </td>
+                <td>{{password}}</td>
+                <td>
+                    <a href="mailto:{{email}}" target="_blank" >{{email}}/</a>
+                </td>
+                <td>{{fullname}}</td>
+                <td>{{description}}</td>
+                <td>
+                    <a href="" class="button button-clear">редактировать</a>
+                    <a href="" class="button button-clear">удалить</a>
+                </td>
+            <tr>
+            {{/users}}
+        </tbody>
+    <table>
+
