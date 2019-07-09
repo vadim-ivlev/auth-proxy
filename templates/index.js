@@ -20,6 +20,15 @@ function showPage(pageid, elemSelector){
     return false
 }
 
+// blinkStatus показывает исчезающее сообщение
+function blinkStatus(selector, message) {
+    let status = $(selector)
+    status.text(message)
+    status.show()
+    status.hide(1000)
+}
+
+
 
 function renderTemplateFile(templateFile, data, targetSelector) {
     $.get(templateFile, function(template) {
@@ -74,6 +83,15 @@ function getCookie(cname) {
     }
     return "";
 }
+
+
+var delayTimeout
+function delayFunc(f) {
+   clearTimeout(delayTimeout) 
+   delayTimeout = setTimeout(f, 500)  
+   return false 
+}
+
 
 // R E N D E R I N G  *********************************************************
 
@@ -195,7 +213,6 @@ function formListUserSubmit(event) {
               description
               email
               fullname
-              password
               username
             }
           }
@@ -213,12 +230,76 @@ function formListUserSubmit(event) {
 }
 
 
-var delayTimeout
-function delayFunc(f) {
-   clearTimeout(delayTimeout) 
-   delayTimeout = setTimeout(f, 500)  
-   return false 
+function formUserSubmit(event, userOperationName = 'create_user') {
+    if (event) event.preventDefault()
+    $("#resultUser").html("")
+    let username = $("#formUser input[name='username']").val()
+    let password = $("#formUser input[name='password']").val()
+    let email = $("#formUser input[name='email']").val()
+    let fullname = $("#formUser input[name='fullname']").val()
+    let description = $("#formUser input[name='description']").val()
+    var query =`
+    mutation {
+        ${userOperationName}(
+        username: "${username}",
+        password: "${password}",
+        email: "${email}",
+        fullname: "${fullname}",
+        description: "${description}"
+        ) {
+            apps {
+                appname
+            }
+            description
+            email
+            fullname
+            password
+            username
+          }
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+        success: (res) => {
+            showJSON(res,'#resultUser')
+            model.user = res.data[userOperationName]
+            renderPage('user')
+            blinkStatus("#formUser .status", userOperationName+" success" )
+        } 
+    })
+    return false       
 }
+
+function getUser(username) {
+    $("#resultUser").html("")
+    var query =`
+    query {
+        get_user(
+        username: "${username}"
+        ) {
+            apps {
+              appname
+            }
+            description
+            email
+            fullname
+            password
+            username
+          }
+        }    
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+        success: (res) => {
+            showJSON(res,'#resultUser')
+            model.user = res.data.get_user
+            renderPage('user')
+            blinkStatus("#formUser .status", "Значение в бд" )
+        } 
+    })
+    return false       
+}
+
+
+
 
 
 

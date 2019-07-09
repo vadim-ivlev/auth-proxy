@@ -42,7 +42,7 @@ pre {
 }
 
 .flexed>pre {
-    display: none;
+    /* display: none; */
 }
 
 .ui-widget {

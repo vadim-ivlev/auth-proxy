@@ -1,11 +1,11 @@
 
-DO 
-$$
-BEGIN
--- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
+-- DO 
+-- $$
+-- BEGIN
+-- -- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
 
-SET CONSTRAINTS app_user_role_fk_u DEFERRED;
-SET CONSTRAINTS app_user_role_fk_a DEFERRED;
+-- SET CONSTRAINTS app_user_role_fk_u DEFERRED;
+-- SET CONSTRAINTS app_user_role_fk_a DEFERRED;
 
 -- данные
 
@@ -300,7 +300,7 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('onlinebc_admin'
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('onlinebc_admin', 'serg' , 'editor');
 
 
-EXCEPTION WHEN OTHERS THEN 
-    RAISE EXCEPTION 'Тестовые данные уже существуют.';
-END;
-$$;
+-- EXCEPTION WHEN OTHERS THEN 
+--     RAISE EXCEPTION 'Тестовые данные уже существуют.';
+-- END;
+-- $$;

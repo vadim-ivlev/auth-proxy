@@ -12,16 +12,16 @@
             {{#users}}
             <tr>
                 <td>
-                    <a href="apps/{{appname}}" target="_blank" >{{username}}</a>
+                    <a href="" >{{username}}</a>
                 </td>
                 <td>
                     <a href="mailto:{{email}}" target="_blank" >{{email}}/</a>
                 </td>
-                <td>{{fullname}}</td>
+                <td><a href="" >{{fullname}}</a></td>
                 <td>{{description}}</td>
                 <td>
-                    <a href="" class="button button-clear">редактировать</a>
-                    <a href="" class="button button-clear">удалить</a>
+                    <button class="button button-clear" onclick="getUser('{{username}}');" >редактировать</button>
+                    <button class="button button-clear" onclick="deleteUser('{{username}}'); showPage('users');" >удалить</button>
                 </td>
             <tr>
             {{/users}}

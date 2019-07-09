@@ -5,9 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -67,10 +64,3 @@ func printIf(msg string, err error) {
 	}
 }
 
-// CreateDatabaseIfNotExists порождает объекты базы данных и наполняет базу тестовыми данными
-func CreateDatabaseIfNotExists() {
-	fmt.Println("Миграция ...")
-	m, err := migrate.New("file://migrations/", connectURL)
-	panicIf(err)
-	printIf("CreateDatabaseIfNotExists()", m.Up())
-}

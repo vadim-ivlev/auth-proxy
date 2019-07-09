@@ -3,7 +3,8 @@
 
 -- Расширенное представление основной таблицы
 -- С дополнительными полями из справочных таблиц 
-CREATE OR REPLACE VIEW app_user_role_extended AS
+DROP VIEW IF EXISTS app_user_role_extended;
+CREATE VIEW app_user_role_extended AS
     SELECT 
         aur.appname    AS appname,
         aur.username   AS username,
@@ -19,8 +20,8 @@ CREATE OR REPLACE VIEW app_user_role_extended AS
 ;
 
 
-
-CREATE OR REPLACE VIEW full_app AS
+DROP VIEW IF EXISTS full_app;
+CREATE VIEW full_app AS
     SELECT  *,  
         ( select jsonb_agg(subtable) from  
             -- ( SELECT * FROM app_role WHERE appname = app.appname ) 
@@ -32,7 +33,8 @@ CREATE OR REPLACE VIEW full_app AS
 
 -- Пользователь с выборкой его ролей в приложениях 
 -- в виде JSON поля
-CREATE OR REPLACE VIEW full_user AS
+DROP VIEW IF EXISTS full_user;
+CREATE VIEW full_user AS
     SELECT  *,  
         ( select json_agg(subtable) from  
             ( SELECT DISTINCT appname  FROM app_user_role WHERE username = "user".username ) 

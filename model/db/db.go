@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,14 +8,27 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/jmoiron/sqlx"
 	//blank import
 	_ "github.com/lib/pq"
+	//blank import
+	_ "github.com/mattn/go-sqlite3"
 )
+
+func getDB() (*sqlx.DB, error) {
+	if SQLite {
+		return sqlx.Open("sqlite3", "./auth.db")
+	}
+	return sqlx.Open("postgres", connectStr)
+}
 
 // dbAvailable проверяет, доступна ли база данных
 func dbAvailable() bool {
-	conn, err := sql.Open("postgres", connectStr)
+	conn, err := getDB()
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
@@ -51,7 +63,7 @@ func WaitForDbOrExit(attempts int) {
 // QuerySliceMap возвращает результат запроса заданного sqlText, как срез отображений ключ - значение.
 // Применяется для запросов SELECT возвращающих набор записей.
 func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{}, error) {
-	conn, err := sqlx.Open("postgres", connectStr)
+	conn, err := getDB()
 	panicIf(err)
 	defer conn.Close()
 
@@ -78,7 +90,7 @@ func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{
 // QueryRowMap возвращает результат запроса заданного sqlText, с возможными параметрами args.
 // Применяется для исполнения запросов , INSERT, SELECT.
 func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, error) {
-	conn, err := sqlx.Open("postgres", connectStr)
+	conn, err := getDB()
 	panicIf(err)
 	defer conn.Close()
 	result := make(map[string]interface{})
@@ -163,4 +175,16 @@ func getKeysAndValues(vars map[string]interface{}) ([]string, []interface{}, []s
 		n++
 	}
 	return keys, values, dollars
+}
+
+// CreateDatabaseIfNotExists порождает объекты базы данных и наполняет базу тестовыми данными
+func CreateDatabaseIfNotExists() {
+	fmt.Println("Миграция ...")
+	if SQLite {
+		// url = "sqlite3://.auth.db"
+		return
+	}
+	m, err := migrate.New("file://migrations/", connectURL)
+	panicIf(err)
+	printIf("CreateDatabaseIfNotExists()", m.Up())
 }
