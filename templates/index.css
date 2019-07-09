@@ -31,13 +31,14 @@ pre {
 
 .flexed {
     display: grid;
-    grid-template-columns: 50% 1fr;
-    /* justify-content: center; */
+    grid-template-columns: 1fr;
+    justify-content: center;
 }
 
-.flexed>form {
-    /* width:60%; */
-    /* margin: auto; */
+.flexed>* {
+    width: 100%;
+    max-width: 800px;
+    justify-self: center;
 }
 
 .flexed>pre {
@@ -75,6 +76,10 @@ ol ol, ol ul, ul ol, ul ul {
 .grided input {
     margin-bottom: 15px;
 }
+.grided button {
+    margin-bottom: 15px;
+}
+
 
 table .button {
     margin-bottom: 0;

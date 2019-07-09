@@ -12,6 +12,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// SQLite Использовать SQLite
+var SQLite bool = false
+
 // Вспомогательные функции /////////////////////////////////////////////////////
 
 type connectionParams struct {
