@@ -3,6 +3,7 @@
 
 body {
     margin: 30px;
+    margin-bottom: 300px;
 }
 
 h4 {
@@ -42,7 +43,7 @@ pre {
 }
 
 .flexed>pre {
-    /* display: none; */
+    display: none;
 }
 
 .ui-widget {
@@ -84,4 +85,12 @@ ol ol, ol ul, ul ol, ul ul {
 table .button {
     margin-bottom: 0;
     padding-left: 0;
+}
+
+.grayed {
+    opacity: 0.5;
+}
+
+.status {
+    text-align: right;
 }

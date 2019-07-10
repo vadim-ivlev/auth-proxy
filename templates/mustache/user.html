@@ -1,38 +1,52 @@
 <div class="flexed">
-    <h2>Пользователь {{username}}.</h2>
+    {{^user}}
+    <h2>Новый пользователь <b id="newUserName"></b></h2>
+    {{/user}}
+    {{#user}}
+    <h2>Пользователь <b>{{user.username}}</b></h2>
+    {{/user}}
+
     <form id="formUser" onsubmit="event.preventDefault();">
         <div>
             <label >username</label>
-            <input name="username" type="text" value="{{username}}">
+            <input name="username"  
+            {{#user}} disabled class="grayed" {{/user}}
+            oninput=" $('#newUserName').text(event.target.value) "
+            type="text" value="{{user.username}}">
         </div>
         <div>
             <label >password</label>
-            <input name="password" type="text" value="{{password}}">
+            <input name="password" type="text" value="{{user.password}}">
         </div>
         <div>
             <label >email</label>
-            <input name="email" type="text" value="{{email}}">
+            <input name="email" type="text" value="{{user.email}}">
         </div>
 
         <div>
             <label >fullname</label>
-            <input name="fullname" type="text" value="{{fullname}}">
+            <input name="fullname" type="text" value="{{user.fullname}}">
         </div>
         <div>
             <label >description</label>
-            <input name="description" type="text" value="{{description}}">
+            <input name="description" type="text" value="{{user.description}}">
         </div>
         <div style="text-align: right;">
             <label></label>
-            <button type="button" class="button button-outline" onclick="return formUserSubmit(event, 'create_user')" >создать</button>
-            <button type="button" class="button button-outline" onclick="return formUserSubmit(event, 'update_user')">сохранить</button>
+            {{^user}}
+            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'create_user')" >создать</button>
+            {{/user}}
+            {{#user}}
+            <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
+            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'update_user')">сохранить</button>
+            {{/user}}
         </div>
-        <div class="status">status</div>
+        <div id="userStatus" class="status"></div>
         
     </form>
-    <hr>
+    <!-- <hr> -->
     <pre id="resultUser"></pre>
-    <hr>
+    <!-- <hr> -->
 </div>
 
 

@@ -1,11 +1,12 @@
             {{#logined}}
-            <a href="" class="button button-clear"  onclick="showPage('apps', '.app-search-results');  return formListAppSubmit()">Приложения</a>
-            <a href="" class="button button-clear"  onclick="showPage('users','.user-search-results'); return formListUserSubmit()">Пользователи</a>
-            <a href="" class="button button-clear"  onclick="return showPage('app')">Новое приложение</a>
-            <a href="" class="button button-clear"  onclick="return showPage('user')">Новый пользователь</a>
-            <a href="" class="button button-clear"  onclick="return showPage('logout')">Logout</a>
+            <a href="" class="button button-clear"  onclick="formListAppSubmit();  return showPage('apps') ;">Приложения</a>
+            <a href="" class="button button-clear"  onclick="formListUserSubmit(); return showPage('users');">Пользователи</a>
+            <a href="" class="button button-clear"  onclick="model.app  = null;    return showPage('app')  ;">Новое приложение</a>
+            <a href="" class="button button-clear"  onclick="model.user = null;    return showPage('user') ;">Новый пользователь</a>
+            <!-- <a href="" class="button button-clear"  onclick="renderPage('logout','#logoutPage'); return showPage('logout')">Logout</a> -->
+            <a href="" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); renderPage('login','#loginPage');  return showPage('login')">Logout</a>
             {{/logined}}
             {{^logined}}
-            <a href="" class="button button-clear"  onclick="return showPage('login')">Login</a>
-            <a href="" class="button button-clear"  onclick="return showPage('user')">Новый пользователь</a>
+            <a href="" class="button button-clear"  onclick="renderPage('login','#loginPage');  return showPage('login')">Login</a>
+            <a href="" class="button button-clear"  onclick="model.user = null;    return showPage('user') ;">Новый пользователь</a>
             {{/logined}}

@@ -1,20 +1,48 @@
 // M O D E L  ******************************************************************************************
 
 var model = {
-    user: null,
-    app: null,
-    apps: [],
-    users: [],
+    _user: null,
+    _app: null,
+    _apps: null,
+    _users: null,
     get logined(){
-        return getCookie('auth-proxy') != ""
+        return (getCookie('auth-proxy') != "")
     },
+    set user(v) {
+        this._user = v
+        renderPage('user','#userPage')
+    },
+    get user() {
+        return this._user
+    },
+    set app(v) {
+        this._app = v
+        renderPage('app','#appPage')
+    },
+    get app() {
+        return this._app
+    },
+    set users(v) {
+        this._users = v
+        renderPage('users','.user-search-results')
+    },
+    get users() {
+        return this._users
+    },
+    set apps(v) {
+        this._apps = v
+        renderPage('apps','.app-search-results')
+    },
+    get apps() {
+        return this._apps
+    },
+
 }
 
 
 // F U N C T I O N S  *********************************************************************************
 
 function showPage(pageid, elemSelector){
-    renderPage(pageid, elemSelector)
     $('.page').hide()
     $('#'+pageid+'Page').show()
     return false
@@ -22,10 +50,10 @@ function showPage(pageid, elemSelector){
 
 // blinkStatus показывает исчезающее сообщение
 function blinkStatus(selector, message) {
-    let status = $(selector)
-    status.text(message)
-    status.show()
-    status.hide(1000)
+    let st = $(selector)
+    st.text(message)
+    st.fadeTo(0,1)
+    st.fadeTo(2000, 0.001)
 }
 
 
@@ -34,15 +62,13 @@ function renderTemplateFile(templateFile, data, targetSelector) {
     $.get(templateFile, function(template) {
         var rendered = Mustache.render(template, data);
         $(targetSelector).html(rendered);
-      });
+    });
 }
 
 
 
 function renderPage(pageid, elemSelector) {
-    renderTemplateFile('templates/mustache/'+pageid+'.html', model, 
-    (elemSelector ? elemSelector : '#'+pageid+'Page')
-    )
+    renderTemplateFile('templates/mustache/'+pageid+'.html', model, elemSelector)
 }
 
 function renderMenu(){
@@ -147,7 +173,15 @@ function loginGraphQLFormSubmit(event) {
         }    
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
-        success: showResponseIn('#resultLoginGraphQL',true) })
+        // success: showResponseIn('#resultLoginGraphQL',true) 
+        success: (res) => {
+            showJSON(res,'#resultLoginGraphQL')
+            renderMenu();
+            formListAppSubmit();  
+            showPage('apps') ;
+        }
+    
+    })
     return false       
 }
 
@@ -165,7 +199,14 @@ function logoutGraphQLFormSubmit(event) {
         }
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
-        success: showResponseIn('#resultLogoutGraphQL',true) })
+        // success: showResponseIn('#resultLogoutGraphQL',true) 
+        success: (res) => {
+            showJSON(res,'#resultLogoutGraphQL')
+            renderMenu();
+            showPage('login') ;
+        }
+       
+    })
     return false       
 }
 
@@ -190,7 +231,6 @@ function formListAppSubmit(event) {
         success: (res) => {
             showJSON(res,'#resultListApp')
             model.apps = res.data.list_app.list
-            renderPage('apps','.app-search-results')
         } 
     
     })
@@ -222,7 +262,6 @@ function formListUserSubmit(event) {
         success: (res) => {
             showJSON(res,'#resultListUser')
             model.users = res.data.list_user.list
-            renderPage('users','.user-search-results')
         } 
     
     })
@@ -262,8 +301,8 @@ function formUserSubmit(event, userOperationName = 'create_user') {
         success: (res) => {
             showJSON(res,'#resultUser')
             model.user = res.data[userOperationName]
-            renderPage('user')
-            blinkStatus("#formUser .status", userOperationName+" success" )
+            setTimeout(()=>blinkStatus("#userStatus", userOperationName+" success" ), 100)
+            
         } 
     })
     return false       
@@ -291,8 +330,7 @@ function getUser(username) {
         success: (res) => {
             showJSON(res,'#resultUser')
             model.user = res.data.get_user
-            renderPage('user')
-            blinkStatus("#formUser .status", "Значение в бд" )
+            blinkStatus("#msg", "Значение в бд" )
         } 
     })
     return false       
@@ -307,4 +345,13 @@ function getUser(username) {
 
 
 renderMenu()
-showPage(model.logined ?'logout': 'login')
+// renderPage('user')
+// renderPage('app')
+
+if (model.logined) {
+    formListAppSubmit();  
+    showPage('apps') ;
+} else {
+    renderPage('login','#loginPage');
+    showPage('login')
+}
