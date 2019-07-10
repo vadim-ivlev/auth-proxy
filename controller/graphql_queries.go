@@ -180,117 +180,48 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 		},
 
 		"list_app_user_role": &gq.Field{
-			Type:        listAppUserRoleGQType,
+			Type:        gq.NewList(app_user_role_extendedObject),
 			Description: "Получить список приложений пользователей и их ролей.",
 			Args: gq.FieldConfigArgument{
-				"search": &gq.ArgumentConfig{
+				"appname": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "Строка полнотекстового поиска.",
+					Description: "Идентификатор приложения",
 				},
-				"order": &gq.ArgumentConfig{
-					Type:         gq.String,
-					Description:  "сортировка строк в определённом порядке. По умолчанию 'appname ASC'",
-					DefaultValue: "appname ASC",
+				"username": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Идентификатор пользователя",
 				},
-				"limit": &gq.ArgumentConfig{
-					Type:         gq.Int,
-					Description:  "возвратить не больше заданного числа строк. По умолчанию 100.",
-					DefaultValue: 1000,
-				},
-				"offset": &gq.ArgumentConfig{
-					Type:         gq.Int,
-					Description:  "пропустить указанное число строк, прежде чем начать выдавать строки. По умолчанию 0.",
-					DefaultValue: 0,
+				"rolename": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Идентификатор роли",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				wherePart, orderAndLimits := QueryEnd(params, "appname,username,rolename")
-				fields := getSelectedFields([]string{"list_app_user_role", "list"}, params)
-
-				list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "app_user_role"` + wherePart + orderAndLimits)
-				if err != nil {
-					return nil, err
-				}
-				count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "app_user_role"` + wherePart)
-				if err != nil {
-					return nil, err
-				}
-
-				m := map[string]interface{}{
-					"length": count["count"],
-					"list":   list,
-				}
-
-				return m, nil
-
+				fields := getSelectedFields([]string{"list_app_user_role"}, params)
+				wherePart := list_app_user_roleWherePart(params)
+				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s`, fields, wherePart)
+				// println(query)
+				return db.QuerySliceMap(query)
 			},
 		},
 	},
 })
 
-// func userQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
-// 	var searchConditions []string
-// 	search, ok := params.Args["search"].(string)
-// 	search = strings.Trim(search, " ")
-// 	if ok && len(search) > 0 {
-// 		// searchConditions = append(searchConditions,
-// 		// 	fmt.Sprintf("to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ) @@ plainto_tsquery('russian','%s') ", search))
-// 		search = strings.ReplaceAll(search, " ", "%")
-// 		// searchConditions = append(searchConditions,
-// 		// 	`  fullname    LIKE '%`+search+`%'
-// 		// 	OR description LIKE '%`+search+`%'
-// 		// 	OR email       LIKE '%`+search+`%'
-// 		// 	OR username    LIKE '%`+search+`%' `)
-// 		searchConditions = append(searchConditions, Like("fullname,description,email,username", search))
-// 	}
-// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
-// 	if len(searchConditions) > 0 {
-// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
-// 	}
-// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
-// 	return wherePart, orderAndLimits
-// }
+func list_app_user_roleWherePart(params gq.ResolveParams) (wherePart string) {
+	var searchConditions []string
 
-// func appQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
-// 	var searchConditions []string
-// 	search, ok := params.Args["search"].(string)
-// 	search = strings.Trim(search, " ")
-// 	if ok && len(search) > 0 {
-// 		// searchConditions = append(searchConditions,
-// 		// 	fmt.Sprintf("to_tsvector('russian', appname || ' ' || description ) @@ plainto_tsquery('russian','%s') ", search))
-// 		search = strings.ReplaceAll(search, " ", "%")
-// 		// searchConditions = append(searchConditions,
-// 		// 	`   LOWER(appname) LIKE LOWER('%`+search+`%')
-// 		// 	OR LOWER(description) LIKE LOWER('%`+search+`%') `)
-// 		searchConditions = append(searchConditions, Like("appname,description", search))
-// 	}
-// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
-// 	if len(searchConditions) > 0 {
-// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
-// 	}
-// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
-// 	return wherePart, orderAndLimits
-// }
-
-// func app_user_roleQueryEnd(params gq.ResolveParams) (wherePart string, orderAndLimits string) {
-// 	var searchConditions []string
-// 	search, ok := params.Args["search"].(string)
-// 	search = strings.Trim(search, " ")
-// 	if ok && len(search) > 0 {
-// 		search = strings.ReplaceAll(search, " ", "%")
-// 		// searchConditions = append(searchConditions,
-// 		// 	`   appname LIKE '%`+search+`%'
-// 		// 	OR username LIKE '%`+search+`%'
-// 		// 	OR rolename LIKE '%`+search+`%' `)
-// 		searchConditions = append(searchConditions, Like("appname,username,rolename", search))
-// 	}
-// 	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
-// 	if len(searchConditions) > 0 {
-// 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
-// 	}
-// 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
-// 	return wherePart, orderAndLimits
-// }
+	for paramName, v := range params.Args {
+		s, ok := v.(string)
+		s = strings.Trim(s, " ")
+		if ok && len(s) > 0 {
+			searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, s))
+		}
+	}
+	if len(searchConditions) > 0 {
+		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+	}
+	return wherePart
+}
 
 func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orderAndLimits string) {
 	var searchConditions []string

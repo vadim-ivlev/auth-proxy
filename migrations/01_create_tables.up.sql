@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 -- Приложение с описанием
 CREATE TABLE IF NOT EXISTS app (
     appname text NOT NULL,
+    url text,
     description text,
 
     CONSTRAINT app_pkey PRIMARY KEY (appname)

@@ -9,10 +9,10 @@
 
 -- данные
 
-INSERT INTO app (appname, description) VALUES ('app1'          , 'Тестовое express приложение 1 test0');
-INSERT INTO app (appname, description) VALUES ('app2'          , 'Тестовое express приложение 2 test0');
-INSERT INTO app (appname, description) VALUES ('onlinebc_admin', 'Тестовые трансляции test0'          );
-INSERT INTO app (appname, description) VALUES ('rg'            , 'Сайт rg.ru test0'                   );
+INSERT INTO app (appname, url, description) VALUES ('app1'          ,'http://localhost:3001', 'Тестовое express приложение 1 test0');
+INSERT INTO app (appname, url, description) VALUES ('app2'          ,'http://localhost:3002', 'Тестовое express приложение 2 test0');
+INSERT INTO app (appname, url, description) VALUES ('onlinebc_admin','http://localhost:7700', 'Тестовые трансляции test0'          );
+INSERT INTO app (appname, url, description) VALUES ('rg'            ,'https://rg.ru'        , 'Сайт rg.ru test0'                   );
 
 INSERT INTO app (appname, description) VALUES ('app10', 'phpMemcachedAdmin test');
 INSERT INTO app (appname, description) VALUES ('app11', 'Push-уведомления test');

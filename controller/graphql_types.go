@@ -72,6 +72,10 @@ var appFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Дополнительная информация",
 	},
+	"url": &gq.Field{
+		Type:        gq.String,
+		Description: "URL приложения относительно сервера авторизации",
+	},
 }
 
 var app_roleFields = gq.Fields{
@@ -99,6 +103,42 @@ var app_user_roleFields = gq.Fields{
 	"rolename": &gq.Field{
 		Type:        gq.String,
 		Description: "Роль пользователя в данном приложении",
+	},
+}
+
+var app_user_role_extendedFields = gq.Fields{
+	"appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Идентификатор приложения",
+	},
+	"username": &gq.Field{
+		Type:        gq.String,
+		Description: "Идентификатор пользователя",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль пользователя в данном приложении",
+	},
+
+	"user_email": &gq.Field{
+		Type:        gq.String,
+		Description: "Емайл пользователя",
+	},
+	"user_fullname": &gq.Field{
+		Type:        gq.String,
+		Description: "Полное имя пользователя",
+	},
+	"user_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание пользователя",
+	},
+	"app_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание приложения",
+	},
+	"app_url": &gq.Field{
+		Type:        gq.String,
+		Description: "URL приложения относительно сервера авторизации",
 	},
 }
 
@@ -184,8 +224,14 @@ var user_appObject = gq.NewObject(gq.ObjectConfig{
 
 var app_user_roleObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AppUserRole",
-	Description: "Приложения пользователя",
+	Description: "Роль пользователя в приложении",
 	Fields:      app_user_roleFields,
+})
+
+var app_user_role_extendedObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "AppUserRoleExtended",
+	Description: "Роль пользователя в приложении с дополнительными полями из справочных таблиц",
+	Fields:      app_user_role_extendedFields,
 })
 
 // LISTS *************************************************************

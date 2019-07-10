@@ -3,6 +3,7 @@
                 <thead>
                     <tr>
                         <th>путь</th>
+                        <th>реальный url</th>
                         <th>описание</th>
                         <th>действия</th>
                     <tr>
@@ -11,8 +12,11 @@
                     {{#apps}}
                     <tr>
                         <td>
-                            <a href="apps/{{appname}}" target="_blank" >/apps/{{appname}}/</a>
+                            <a href="apps/{{appname}}" target="_blank" >/apps/{{appname}}</a>
                             <!-- &#x25B6; -->
+                        </td>
+                        <td>
+                            <a href="{{url}}" target="_blank" >{{url}}</a>
                         </td>
                         <td>{{description}}</td>
                         <td>

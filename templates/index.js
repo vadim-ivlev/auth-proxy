@@ -1,6 +1,7 @@
 // M O D E L  ******************************************************************************************
 
 var model = {
+    origin: document.location.origin,
     _user: null,
     _app: null,
     _apps: null,
@@ -43,19 +44,23 @@ var model = {
 // F U N C T I O N S  *********************************************************************************
 
 function showPage(pageid, elemSelector){
+    // $('.tab').css("border-top","1px solid transparent")
+    // $('#'+pageid+'Tab').css("border-top","1px solid #9b4dca")
+
     $('.page').hide()
     $('#'+pageid+'Page').show()
     return false
 }
 
+
 // blinkStatus показывает исчезающее сообщение
 function blinkStatus(selector, message) {
+    console.log("blink:", message)
     let st = $(selector)
     st.text(message)
     st.fadeTo(0,1)
     st.fadeTo(2000, 0.001)
 }
-
 
 
 function renderTemplateFile(templateFile, data, targetSelector) {
@@ -66,29 +71,27 @@ function renderTemplateFile(templateFile, data, targetSelector) {
 }
 
 
-
 function renderPage(pageid, elemSelector) {
     renderTemplateFile('templates/mustache/'+pageid+'.html', model, elemSelector)
 }
+
 
 function renderMenu(){
     renderTemplateFile('templates/mustache/menu.html', model, '#menu')
 }
 
 
-
-
-function onError(e, msg){
+function alertOnError(e, msg){
     alert(msg, e)
 }
 
-function showResponseIn(elementID, showLoginPage=false) {
-    return function(response){
-        $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false})
-        renderMenu()
-        if (showLoginPage) showPage(model.logined ?'logout': 'login')
-    }
-} 
+// function showResponseIn(elementID, showLoginPage=false) {
+//     return function(response){
+//         $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false})
+//         renderMenu()
+//         if (showLoginPage) showPage(model.logined ?'logout': 'login')
+//     }
+// } 
 
 function showJSON(response, elementID) {
      $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false}) 
@@ -126,35 +129,37 @@ function delayFunc(f) {
 
 
 
-
+/*
 // R E Q U E S T S  *******************************************************
 
-function loginRestFormSubmit(event) {
-    if (event) event.preventDefault()
-    $("#resultLoginRest").html("")
-    $("#resultLogoutRest").html("")
-    $("#formLoginRest").ajaxSubmit({
-        url: "/login",
-        type: "POST",
-        success: showResponseIn('#resultLoginRest',true),
-        error: onError
-    })
-    return false       
-}
+// function loginRestFormSubmit(event) {
+//     if (event) event.preventDefault()
+//     $("#resultLoginRest").html("")
+//     $("#resultLogoutRest").html("")
+//     $("#formLoginRest").ajaxSubmit({
+//         url: "/login",
+//         type: "POST",
+//         success: showResponseIn('#resultLoginRest',true),
+//         error: alertOnError
+//     })
+//     return false       
+// }
 
-function logoutRestFormSubmit(event) {
-    if (event) event.preventDefault()
-    $("#resultLoginRest").html("")
-    $("#resultLogoutRest").html("")
-    $("#formLogoutRest").ajaxSubmit({
-        url: "/logout",
-        type: "GET",
-        success: showResponseIn('#resultLogoutRest',true),
-        error: onError
-    })
-    return false
-}
+// function logoutRestFormSubmit(event) {
+//     if (event) event.preventDefault()
+//     $("#resultLoginRest").html("")
+//     $("#resultLogoutRest").html("")
+//     $("#formLogoutRest").ajaxSubmit({
+//         url: "/logout",
+//         type: "GET",
+//         success: showResponseIn('#resultLogoutRest',true),
+//         error: alertOnError
+//     })
+//     return false
+// }
+*/
 
+// L O G I N  *****************************************************************************
 
 function loginGraphQLFormSubmit(event) {
     if (event) event.preventDefault()
@@ -172,18 +177,21 @@ function loginGraphQLFormSubmit(event) {
         )
         }    
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
-        // success: showResponseIn('#resultLoginGraphQL',true) 
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultLoginGraphQL')
             renderMenu();
+            if (res.errors){
+                blinkStatus("#loginStatus", "Пароль или имя или емайл не подходят")
+                return
+            }
             formListAppSubmit();  
             showPage('apps') ;
-        }
-    
+        }   
     })
     return false       
 }
+
 
 
 function logoutGraphQLFormSubmit(event) {
@@ -198,8 +206,7 @@ function logoutGraphQLFormSubmit(event) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
-        // success: showResponseIn('#resultLogoutGraphQL',true) 
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultLogoutGraphQL')
             renderMenu();
@@ -209,6 +216,8 @@ function logoutGraphQLFormSubmit(event) {
     })
     return false       
 }
+
+// A P P S  *******************************************************************
 
 function formListAppSubmit(event) {
     if (event) event.preventDefault()
@@ -224,10 +233,11 @@ function formListAppSubmit(event) {
             list {
               appname
               description
+              url
             }
           }
         }    `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultListApp')
             model.apps = res.data.list_app.list
@@ -237,6 +247,7 @@ function formListAppSubmit(event) {
     return false       
 }
 
+// U S E R S  *******************************************************************
 
 function formListUserSubmit(event) {
     if (event) event.preventDefault()
@@ -258,7 +269,7 @@ function formListUserSubmit(event) {
           }
         }        
         `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultListUser')
             model.users = res.data.list_user.list
@@ -267,6 +278,7 @@ function formListUserSubmit(event) {
     })
     return false       
 }
+
 
 
 function formUserSubmit(event, userOperationName = 'create_user') {
@@ -286,27 +298,31 @@ function formUserSubmit(event, userOperationName = 'create_user') {
         fullname: "${fullname}",
         description: "${description}"
         ) {
-            apps {
-                appname
-            }
             description
             email
             fullname
             password
             username
           }
+
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultUser')
+            if (res.errors){
+                blinkStatus("#userStatus", res.errors[0].message)
+                return
+            }
             model.user = res.data[userOperationName]
             setTimeout(()=>blinkStatus("#userStatus", userOperationName+" success" ), 100)
-            
+            getUser(username)
         } 
     })
     return false       
 }
+
+
 
 function getUser(username) {
     $("#resultUser").html("")
@@ -315,23 +331,88 @@ function getUser(username) {
         get_user(
         username: "${username}"
         ) {
-            apps {
-              appname
-            }
             description
             email
             fullname
             password
             username
           }
-        }    
+        
+        list_app_user_role(
+        username: "${username}"
+        ) {
+            app_description
+            appname
+            rolename
+            username
+          }
+        
+        }
+
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: onError,
+
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultUser')
+            if (res.errors){
+                blinkStatus("#userStatus", res.errors[0].message)
+                return
+            }
             model.user = res.data.get_user
-            blinkStatus("#msg", "Значение в бд" )
+            model.user.apps = groupApps(res.data.list_app_user_role)
+            setTimeout(()=>blinkStatus("#userStatus", "Значение в бд" ), 100)
         } 
+    })
+    return false       
+}
+
+
+function groupApps(list_app_user_role) {
+    let gr = {}
+    for (let aur of list_app_user_role ){
+        gr[aur.appname] =[]
+    }
+    for (let aur of list_app_user_role ){
+        gr[aur.appname].push(aur)
+    }
+
+    let arr = []
+
+    for (let [key, value] of Object.entries(gr)) {
+        console.log(`${key}: ${value}`);
+        let rec = {}
+        rec.appname =key
+        rec.app_description = value[0].app_description
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
+
+
+
+function deleteUser(username) {
+    $("#resultUser").html("")
+    var query =`
+    mutation {
+        delete_user(
+        username: "${username}"
+        ) {
+            username
+          }
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultUser')
+            if (res.errors){
+                blinkStatus("#userStatus", res.errors[0].message)
+                return
+            }
+            model.user = null
+            formListUserSubmit();  
+            showPage('users') ;
+         } 
     })
     return false       
 }

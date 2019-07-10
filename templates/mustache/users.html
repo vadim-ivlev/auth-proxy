@@ -12,12 +12,12 @@
             {{#users}}
             <tr>
                 <td>
-                    <a href="" >{{username}}</a>
+                    <a href="" onclick="getUser('{{username}}'); return showPage('user');">{{username}}</a>
                 </td>
                 <td>
                     <a href="mailto:{{email}}" target="_blank" >{{email}}</a>
                 </td>
-                <td><a href="" >{{fullname}}</a></td>
+                <td><a href="" onclick="getUser('{{username}}'); return showPage('user');" >{{fullname}}</a></td>
                 <td>{{description}}</td>
                 <td>
                     <button class="button button-clear" onclick="getUser('{{username}}'); showPage('user');" >редактировать</button>

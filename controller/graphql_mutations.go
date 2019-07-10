@@ -37,6 +37,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
 				return createRecord("username", params, "user", "full_user")
 			},
 		},
@@ -99,6 +100,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
 				return createRecord("appname", params, "app", "full_app")
 			},
 		},

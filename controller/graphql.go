@@ -213,6 +213,14 @@ func panicIfNotUser(params gq.ResolveParams) {
 	}
 }
 
+func panicIfEmpty(v interface{}, message string) {
+	username, _ := v.(string)
+	username = strings.Trim(username, " ")
+	if len(username) == 0 {
+		panic(errors.New("ERR: " + message))
+	}
+}
+
 // G R A P H Q L ********************************************************************************
 
 var schema, _ = gq.NewSchema(gq.SchemaConfig{

@@ -94,3 +94,34 @@ table .button {
 .status {
     text-align: right;
 }
+
+.role {
+    border: 1px solid #9b4dca;
+    border-radius: 20px;
+    padding: 1px;
+    padding-left:7px;
+    padding-right:7px;
+    position:relative;
+    color:#9b4dca;
+}
+
+span.role::after {
+    content: "✕";
+    padding-left: 10px;
+    color: #9b4dca;
+
+}
+
+.plus {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 1px;
+    padding-left:7px;
+    padding-right:7px;
+    color:#9b4dca;
+    /* font-weight: bold; */
+}
+
+#loginTab, #logoutTab {
+    float: right;
+}

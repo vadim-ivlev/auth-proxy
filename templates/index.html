@@ -69,7 +69,7 @@
             <form id="formListUser" class="grided" onsubmit="return formListUserSubmit(event)">
                 <div>
                     <label  for="search"></label>
-                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)">
+                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)" value="vadim">
                 </div>
                 <button type="submit" class="fa fa-search button button-outline" ></button>
             </form>
@@ -83,8 +83,9 @@
 
     <div class="page" id="appPage"></div>
 
-
-
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>
+    <button class="button button-clear" onclick="$('<style>.flexed>pre { display: none; }</style>').appendTo('head')">hide responses</button>
     <script src="templates/index.js"></script>
 </body>
 
