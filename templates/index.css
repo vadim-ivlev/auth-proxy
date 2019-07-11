@@ -81,6 +81,10 @@ ol ol, ol ul, ul ol, ul ul {
     margin-bottom: 15px;
 }
 
+.threeColumns {
+    /* grid-template-columns: 1fr 1fr 120px;  */
+    grid-template-columns: 1fr 1fr 1fr; 
+}
 
 table .button {
     margin-bottom: 0;

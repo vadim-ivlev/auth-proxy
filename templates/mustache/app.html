@@ -1,0 +1,75 @@
+<div class="flexed">
+    {{^app}}
+    <h2>Новое приложение <b id="newAppName"></b></h2>
+    {{/app}}
+    {{#app}}
+    <h2>Приложение <b>{{app.appname}}</b></h2>
+    {{/app}}
+
+    <form id="formApp" onsubmit="event.preventDefault();">
+        <div>
+            <label >appname *</label>
+            <input name="appname" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
+            {{#app}} disabled class="grayed" {{/app}}
+            oninput="
+            $('#newAppName').text(event.target.value);
+            $('#newAppUrl').text(location.origin+'/apps/'+event.target.value);
+            $('#newAppUrl').href(location.origin+'/apps/'+event.target.value);
+            "
+            value="{{app.appname}}">
+        </div>
+        <div>
+            <label >описание</label>
+            <input name="description" placeholder="описание. Например: Админка видео сервиса" value="{{app.description}}">
+        </div>
+        <div>
+            <label >url</label>
+            <input name="description" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
+            Доступно по: <a id="newAppUrl" href=""></a>
+        </div>
+        <div style="text-align: right;">
+            <label></label>
+            {{^app}}
+            <button type="button" class="button button-outline" onclick="formAppSubmit(event, 'create_app')" >создать</button>
+            {{/app}}
+            {{#app}}
+            <button type="button" class="button button-outline" onclick="deleteApp('{{app.appname}}'); showPage('apps');">удалить</button>
+            <button type="button" class="button button-outline" onclick="formAppSubmit(event, 'update_app')">сохранить</button>
+            {{/app}}
+        </div>
+        <div id="appStatus" class="status"> </div>
+        
+    </form>
+    <!-- <hr> -->
+    <pre id="resultApp"></pre>
+    <!-- <hr> -->
+
+    <hr>
+
+<h2>Пользователи приложения <b>{{app.appname}}</b></h2>
+<table>
+    <tr>
+        <th>пользователь</th>
+        <th>полное имя</th>
+        <th>роли</th>
+    </tr>
+    {{#app.users}}
+    <tr>
+        <td>{{username}}</td>
+        <td>{{user_fullname}}</td>
+        <td>
+            {{#items}}
+            <span class="role">{{rolename}}</span>
+            {{/items}} 
+            <span class="plus">+</span>
+        </td>
+    </tr>
+    {{/app.users}}
+
+
+</table>
+<button class="button button-clear">добавить пользователя &#x25BC;</button>
+</div>
+
+
+

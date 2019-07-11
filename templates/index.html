@@ -79,9 +79,37 @@
     </div>
 
 
+    <div class="page" id="rolesPage">
+        <div class="flexed">
+            <h2>Роли пользователей в приложениях</h2>
+            <form id="formListApp" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
+                <div>
+                    <label >приложение</label>
+                    <select name="appname" onchange="return formListRoleSubmit(event)"></select>
+                </div>
+                <div>
+                    <label >пользователь</label>
+                    <select name="username" onchange="return formListRoleSubmit(event)"></select>
+                </div>
+                <button type="submit" class="fa fa-search button button-outline" ></button>
+            </form>
+            <pre id="resultListRole"></pre>
+        </div>
+        <div class="app-user-roles-search-results"></div>
+   </div>
+
+
+
     <div class="page" id="userPage"></div>
 
     <div class="page" id="appPage"></div>
+
+
+
+
+
+
+
 
     <br><br><br><br><br><br><br><br><br><br><br><br>
     <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>

@@ -1,0 +1,26 @@
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>приложение</th>
+                        <th>пользователь url</th>
+                        <th>роли</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {{#app_user_roles}}
+                    <tr>
+                        <td>
+                            <a href="">{{appname}}</a>
+                        </td>
+                        <td>
+                            <a href="">{{username}}</a>
+                        </td>
+                        <td>
+                            список ролей +
+                        </td>
+                    <tr>
+                    {{/app_user_roles}}
+                </tbody>
+            <table>
+

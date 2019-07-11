@@ -8,28 +8,28 @@
 
     <form id="formUser" onsubmit="event.preventDefault();">
         <div>
-            <label >username</label>
-            <input name="username"  
+            <label >username *</label>
+            <input name="username" placeholder="уникальный идентификатор пользователя"
             {{#user}} disabled class="grayed" {{/user}}
             oninput=" $('#newUserName').text(event.target.value) "
-            type="text" value="{{user.username}}">
+            value="{{user.username}}">
         </div>
         <div>
-            <label >password</label>
-            <input name="password" type="text" value="{{user.password}}">
+            <label >password *</label>
+            <input name="password" placeholder="пароль" value="{{user.password}}">
         </div>
         <div>
             <label >email</label>
-            <input name="email" type="text" value="{{user.email}}">
+            <input name="email" placeholder="емайл" value="{{user.email}}">
         </div>
 
         <div>
-            <label >fullname</label>
-            <input name="fullname" type="text" value="{{user.fullname}}">
+            <label >fullname - </label>
+            <input name="fullname"  placeholder="полное имя" value="{{user.fullname}}">
         </div>
         <div>
-            <label >description</label>
-            <input name="description" type="text" value="{{user.description}}">
+            <label >description </label>
+            <input name="description"  placeholder="дополнительная информация" value="{{user.description}}">
         </div>
         <div style="text-align: right;">
             <label></label>

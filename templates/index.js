@@ -217,36 +217,6 @@ function logoutGraphQLFormSubmit(event) {
     return false       
 }
 
-// A P P S  *******************************************************************
-
-function formListAppSubmit(event) {
-    if (event) event.preventDefault()
-    $("#resultListApp").html("")
-    let search = $("#formListApp input[name='search']").val()
-    var query =`
-    query {
-        list_app(
-        search: "${search}",
-        order: "description ASC"
-        ) {
-            length
-            list {
-              appname
-              description
-              url
-            }
-          }
-        }    `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            showJSON(res,'#resultListApp')
-            model.apps = res.data.list_app.list
-        } 
-    
-    })
-    return false       
-}
-
 // U S E R S  *******************************************************************
 
 function formListUserSubmit(event) {
@@ -417,6 +387,70 @@ function deleteUser(username) {
     return false       
 }
 
+
+// A P P S  *******************************************************************
+
+function formListAppSubmit(event) {
+    if (event) event.preventDefault()
+    $("#resultListApp").html("")
+    let search = $("#formListApp input[name='search']").val()
+    var query =`
+    query {
+        list_app(
+        search: "${search}",
+        order: "description ASC"
+        ) {
+            length
+            list {
+              appname
+              description
+              url
+            }
+          }
+        }    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultListApp')
+            model.apps = res.data.list_app.list
+        } 
+    
+    })
+    return false       
+}
+
+
+
+// A P P   U S E R   R O L E   **************************************************************************************************
+
+function formListRoleSubmit(event) {
+    if (event) event.preventDefault()
+    // $("#resultListUser").html("")
+    // let search = $("#formListUser input[name='search']").val()
+    // var query =`
+    // query {
+    //     list_user(
+    //     search: "${search}",
+    //     order: "fullname ASC"
+    //     ) {
+    //         length
+    //         list {
+    //           description
+    //           email
+    //           fullname
+    //           username
+    //         }
+    //       }
+    //     }        
+    //     `
+    // $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+    //     success: (res) => {
+    //         showJSON(res,'#resultListUser')
+    //         model.users = res.data.list_user.list
+    //     } 
+    
+    // })
+    return false       
+}
 
 
 
