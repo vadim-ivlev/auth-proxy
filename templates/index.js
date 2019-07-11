@@ -2,13 +2,13 @@
 
 var model = {
     origin: document.location.origin,
-    _user: null,
-    _app: null,
-    _apps: null,
-    _users: null,
+
     get logined(){
         return (getCookie('auth-proxy') != "")
     },
+    
+    //---------------------------
+    _user: null,
     set user(v) {
         this._user = v
         renderPage('user','#userPage')
@@ -16,6 +16,9 @@ var model = {
     get user() {
         return this._user
     },
+    
+    //---------------------------
+    _app: null,
     set app(v) {
         this._app = v
         renderPage('app','#appPage')
@@ -23,6 +26,9 @@ var model = {
     get app() {
         return this._app
     },
+    
+    //---------------------------
+    _users: null,
     set users(v) {
         this._users = v
         renderPage('users','.user-search-results')
@@ -30,6 +36,9 @@ var model = {
     get users() {
         return this._users
     },
+    
+    //---------------------------
+    _apps: null,
     set apps(v) {
         this._apps = v
         renderPage('apps','.app-search-results')
@@ -38,10 +47,33 @@ var model = {
         return this._apps
     },
 
+
+    //---------------------------
+    _allApps: null,
+    set allApps(v) {
+        this._allApps = v
+        addOptions("#allApps",v, "appname", "description")
+    },
+    get allApps() {
+        return this._allApps
+    },
+
 }
 
 
+
 // F U N C T I O N S  *********************************************************************************
+
+function addOptions(selector, selectValues, keyProp, textProp) {
+    var output = [];
+    $.each(selectValues, function(key, value)
+    {
+      output.push('<option value="'+ value[keyProp] +'">'+ value[textProp] +'</option>');
+    });
+    
+    $(selector).html(output.join(''));
+}
+
 
 function showPage(pageid, elemSelector){
     // $('.tab').css("border-top","1px solid transparent")
@@ -340,9 +372,7 @@ function getUser(username) {
 function groupApps(list_app_user_role) {
     let gr = {}
     for (let aur of list_app_user_role ){
-        gr[aur.appname] =[]
-    }
-    for (let aur of list_app_user_role ){
+        if (!gr[aur.appname]) gr[aur.appname] =[]
         gr[aur.appname].push(aur)
     }
 
@@ -502,16 +532,13 @@ function getApp(appname) {
 function groupUsers(list_app_user_role) {
     let gr = {}
     for (let aur of list_app_user_role ){
-        gr[aur.username] =[]
-    }
-    for (let aur of list_app_user_role ){
+        if (!gr[aur.username]) gr[aur.username] =[]
         gr[aur.username].push(aur)
     }
 
     let arr = []
 
     for (let [key, value] of Object.entries(gr)) {
-        console.log(`${key}: ${value}`);
         let rec = {}
         rec.username =key
         rec.user_fullname = value[0].user_fullname
@@ -553,6 +580,30 @@ function deleteApp(appname) {
 
 
 // A P P   U S E R   R O L E   **************************************************************************************************
+
+function getAllApps(event) {
+    if (event) event.preventDefault()
+    var query =`
+    query {
+        list_app(
+        order: "description ASC"
+        ) {
+            length
+            list {
+              appname
+              description
+              url
+            }
+          }
+        }    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            model.allApps = res.data.list_app.list
+        } 
+    
+    })
+    return false       
+}
 
 function formListRoleSubmit(event) {
     if (event) event.preventDefault()
@@ -596,9 +647,11 @@ renderMenu()
 // renderPage('app')
 
 if (model.logined) {
-    formListAppSubmit();  
-    showPage('apps') ;
+    formListAppSubmit()  
+    showPage('apps') 
 } else {
-    renderPage('login','#loginPage');
+    renderPage('login','#loginPage')
     showPage('login')
 }
+
+getAllApps()
