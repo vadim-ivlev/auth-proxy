@@ -1,16 +1,17 @@
 package db
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	// _ "github.com/golang-migrate/migrate/v4/database/postgres"
+	// _ "github.com/golang-migrate/migrate/v4/source/file"
 
 	"github.com/jmoiron/sqlx"
 	//blank import
@@ -43,6 +44,14 @@ func dbAvailable() bool {
 	return true
 }
 
+// QueryExec исполняет запросы заданные в sqlText.
+func QueryExec(sqlText string) (sql.Result, error) {
+	conn, err := getDB()
+	panicIf(err)
+	defer conn.Close()
+	return conn.Exec(sqlText)
+}
+
 // WaitForDbOrExit ожидает доступности базы данных
 // делая несколько попыток. Если все попытки неудачны
 // завершает программу. Нужна для запуска программы в докерах,
@@ -58,6 +67,22 @@ func WaitForDbOrExit(attempts int) {
 	}
 	fmt.Println("Не удалось подключиться к базе данных.")
 	os.Exit(7777)
+}
+
+// mapValuesToStrings фикс драйвера sqlite3. Преобразует []uint8 -> string
+func mapValuesToStrings(m map[string]interface{}) map[string]interface{} {
+	mm := make(map[string]interface{})
+	for k, v := range m {
+		bytes, ok := v.([]byte)
+		if ok {
+			// s := string(bytes)
+			mm[k] = string(bytes)
+		} else {
+			println("not ok:", k, v)
+			mm[k] = v
+		}
+	}
+	return mm
 }
 
 // QuerySliceMap возвращает результат запроса заданного sqlText, как срез отображений ключ - значение.
@@ -81,7 +106,11 @@ func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{
 		if err != nil {
 			log.Println("QuerySliceMap(): ", err)
 		}
-		results = append(results, row)
+		if SQLite {
+			results = append(results, mapValuesToStrings(row))
+		} else {
+			results = append(results, row)
+		}
 	}
 
 	return results, nil
@@ -96,6 +125,9 @@ func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, e
 	result := make(map[string]interface{})
 	err = conn.QueryRowx(sqlText, args...).MapScan(result)
 	printIf("QueryRowMap() sqlText="+sqlText, err)
+	if SQLite {
+		return mapValuesToStrings(result), err
+	}
 	return result, err
 }
 
@@ -180,11 +212,32 @@ func getKeysAndValues(vars map[string]interface{}) ([]string, []interface{}, []s
 // CreateDatabaseIfNotExists порождает объекты базы данных и наполняет базу тестовыми данными
 func CreateDatabaseIfNotExists() {
 	fmt.Println("Миграция ...")
-	if SQLite {
-		// url = "sqlite3://.auth.db"
-		return
-	}
-	m, err := migrate.New("file://migrations/", connectURL)
+	// if SQLite {
+	// 	// url = "sqlite3://.auth.db"
+	// 	return
+	// }
+	// // mig, err := migrate.New("file://migrations/", connectURL)
+	// // panicIf(err)
+	// printIf("CreateDatabaseIfNotExists()", mig.Up())
+
+	MigrateUp("./migrations/")
+}
+
+func MigrateUp(dirname string) {
+	files, err := ioutil.ReadDir(dirname)
 	panicIf(err)
-	printIf("CreateDatabaseIfNotExists()", m.Up())
+
+	for _, file := range files {
+		fileName := file.Name()
+
+		if strings.HasSuffix(fileName, "up.sql") {
+			sqlBytes, err := ioutil.ReadFile(dirname + fileName)
+			panicIf(err)
+			sqlText := string(sqlBytes)
+			// result, err := QueryExec(sqlText)
+			_, _ = QueryExec(sqlText)
+			// n, _ := result.RowsAffected()
+			fmt.Printf("Executed: %s \n", fileName)
+		}
+	}
 }
