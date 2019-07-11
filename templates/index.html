@@ -12,7 +12,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
-    <script src="templates/jquery.json-viewer.js"></script>
+    <script src="templates/js/jquery.json-viewer.js"></script>
     
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
@@ -23,8 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
-    <link rel="stylesheet" type="text/css" href="templates/index.css" />
-    <link rel="stylesheet" type="text/css" href="templates/jquery.json-viewer.css" />
+    <link rel="stylesheet" type="text/css" href="templates/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="templates/css/jquery.json-viewer.css" />
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
@@ -82,20 +82,20 @@
     <div class="page" id="rolesPage">
         <div class="flexed">
             <h2>Роли пользователей в приложениях</h2>
-            <form id="formListRoles" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
+            <form id="formListRole" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
                 <div>
-                    <label >приложение</label>
+                    <label>приложение</label>
                     <select id="allApps" name="appname" onchange="return formListRoleSubmit(event)"></select>
                 </div>
                 <div>
                     <label >пользователь</label>
-                    <select id="allUsers" name="username" onchange="return formListRoleSubmit(event)"></select>
+                    <select id="allUsers" name="username"  onchange="return formListRoleSubmit(event)"></select>
                 </div>
-                <button type="submit" class="fa fa-search button button-outline" ></button>
+                <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
             </form>
             <pre id="resultListRole"></pre>
+            <div class="app-user-roles-results"></div>
         </div>
-        <div class="app-user-roles-search-results"></div>
    </div>
 
 
@@ -114,7 +114,7 @@
     <br><br><br><br><br><br><br><br><br><br><br><br>
     <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>
     <button class="button button-clear" onclick="$('<style>.flexed>pre { display: none; }</style>').appendTo('head')">hide responses</button>
-    <script src="templates/index.js"></script>
+    <script src="templates/js/index.js"></script>
 </body>
 
 </html>

@@ -83,7 +83,7 @@ ol ol, ol ul, ul ol, ul ul {
 
 .threeColumns {
     /* grid-template-columns: 1fr 1fr 120px;  */
-    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-columns: 1fr 1fr; 
 }
 
 table .button {
@@ -108,17 +108,18 @@ table .button {
     border: 1px solid #9b4dca;
     border-radius: 20px;
     padding: 1px;
-    padding-left:7px;
+    padding-left:9px;
     padding-right:7px;
     position:relative;
     color:#9b4dca;
+    height:26px;
+    line-height:24px;
 }
 
-span.role::after {
+.role::after {
     content: "✕";
     padding-left: 10px;
     color: #9b4dca;
-
 }
 
 .plus {

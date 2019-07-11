@@ -1,26 +1,9 @@
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>приложение</th>
-                        <th>пользователь url</th>
-                        <th>роли</th>
-                    <tr>
-                </thead>
-                <tbody>
-                    {{#app_user_roles}}
-                    <tr>
-                        <td>
-                            <a href="">{{appname}}</a>
-                        </td>
-                        <td>
-                            <a href="">{{username}}</a>
-                        </td>
-                        <td>
-                            список ролей +
-                        </td>
-                    <tr>
-                    {{/app_user_roles}}
-                </tbody>
-            <table>
-
+<div>
+    <h3>роли</h3>
+    {{#app_user_roles}}
+    <button class="button button-outline role">{{rolename}}</button>
+    {{/app_user_roles}} 
+    <span class="plus">+</span>
+</div>
+        

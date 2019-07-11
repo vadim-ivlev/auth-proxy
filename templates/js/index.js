@@ -53,11 +53,35 @@ var model = {
     set allApps(v) {
         this._allApps = v
         addOptions("#allApps",v, "appname", "description")
+        $("#allApps").val("app1")
     },
     get allApps() {
         return this._allApps
     },
 
+    //---------------------------
+    _allUsers: null,
+    set allUsers(v) {
+        this._allUsers = v
+        addOptions("#allUsers",v, "username", "fullname")
+        $("#allUsers").val("vadim")
+    },
+    get allApps() {
+        return this._allUsers
+    },
+    
+    //---------------------------
+    _app_user_roles: null,
+    set app_user_roles(v) {
+        this._app_user_roles = v
+        renderPage('roles','.app-user-roles-results')
+    },
+    get app_user_roles() {
+        return this._app_user_roles
+    },
+
+
+    
 }
 
 
@@ -117,13 +141,6 @@ function alertOnError(e, msg){
     alert(msg, e)
 }
 
-// function showResponseIn(elementID, showLoginPage=false) {
-//     return function(response){
-//         $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false})
-//         renderMenu()
-//         if (showLoginPage) showPage(model.logined ?'logout': 'login')
-//     }
-// } 
 
 function showJSON(response, elementID) {
      $(elementID).jsonViewer(response, {collapsed: true, rootCollapsable: false}) 
@@ -592,7 +609,6 @@ function getAllApps(event) {
             list {
               appname
               description
-              url
             }
           }
         }    `
@@ -605,33 +621,53 @@ function getAllApps(event) {
     return false       
 }
 
+function getAllUsers(event) {
+    if (event) event.preventDefault()
+    var query =`
+    query {
+        list_user(
+        order: "fullname ASC"
+        ) {
+            length
+            list {
+              username
+              fullname
+            }
+          }
+        }    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            model.allUsers = res.data.list_user.list
+        } 
+    
+    })
+    return false       
+}
+
 function formListRoleSubmit(event) {
     if (event) event.preventDefault()
-    // $("#resultListUser").html("")
-    // let search = $("#formListUser input[name='search']").val()
-    // var query =`
-    // query {
-    //     list_user(
-    //     search: "${search}",
-    //     order: "fullname ASC"
-    //     ) {
-    //         length
-    //         list {
-    //           description
-    //           email
-    //           fullname
-    //           username
-    //         }
-    //       }
-    //     }        
-    //     `
-    // $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-    //     success: (res) => {
-    //         showJSON(res,'#resultListUser')
-    //         model.users = res.data.list_user.list
-    //     } 
+    $("#resultListRole").html("")
+    let appname = $("#formListRole select[name='appname']").val()
+    let username = $("#formListRole select[name='username']").val()
+    if (!appname || !username) return
+
+    var query =`
+    query {
+        list_app_user_role(
+        appname: "${appname}",
+        username: "${username}"
+        ) {
+            rolename
+          }
+        }        
+        `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultListRole')
+            model.app_user_roles = res.data.list_app_user_role
+        } 
     
-    // })
+    })
     return false       
 }
 
@@ -655,3 +691,4 @@ if (model.logined) {
 }
 
 getAllApps()
+getAllUsers()
