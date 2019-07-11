@@ -24,7 +24,7 @@
         </div>
 
         <div>
-            <label >fullname - </label>
+            <label >fullname</label>
             <input name="fullname"  placeholder="полное имя" value="{{user.fullname}}">
         </div>
         <div>
@@ -54,7 +54,7 @@
 <table>
     <tr>
         <th>приложение</th>
-        <th>описание</th>
+        <th></th>
         <th>роли</th>
     </tr>
     {{#user.apps}}
@@ -69,10 +69,19 @@
         </td>
     </tr>
     {{/user.apps}}
-
+    <tr>
+        <td>
+            <select class="nomargin"></select>
+        </td>
+        <td></td>
+        <td>
+            <span class="plus">+</span>
+        </td>
+    </tr>
+    
 
 </table>
-<button class="button button-clear">добавить приложение &#x25BC;</button>
+<!-- <button class="button button-clear">добавить приложение &#x25BC;</button> -->
 </div>
 
 

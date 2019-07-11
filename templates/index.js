@@ -420,6 +420,138 @@ function formListAppSubmit(event) {
 
 
 
+
+function formAppSubmit(event, appOperationName = 'create_app') {
+    if (event) event.preventDefault()
+    $("#resultApp").html("")
+    let appname = $("#formApp input[name='appname']").val()
+    let url = $("#formApp input[name='url']").val()
+    let description = $("#formApp input[name='description']").val()
+    var query =`
+    mutation {
+        ${appOperationName}(
+        appname: "${appname}",
+        url: "${url}",
+        description: "${description}"
+        ) {
+            description
+            appname
+            url
+          }
+
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultApp')
+            if (res.errors){
+                blinkStatus("#appStatus", res.errors[0].message)
+                return
+            }
+            model.app = res.data[appOperationName]
+            setTimeout(()=>blinkStatus("#appStatus", appOperationName+" success" ), 100)
+            getApp(appname)
+        } 
+    })
+    return false       
+}
+
+
+
+function getApp(appname) {
+    $("#resultApp").html("")
+    var query =`
+    query {
+        get_app(
+        appname: "${appname}"
+        ) {
+            description
+            appname
+            url
+          }
+        
+        list_app_user_role(
+        appname: "${appname}"
+        ) {
+            appname
+            rolename
+            user_fullname
+            username
+          }
+        
+        }
+
+    `
+
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultApp')
+            if (res.errors){
+                blinkStatus("#appStatus", res.errors[0].message)
+                return
+            }
+            model.app = res.data.get_app
+            model.app.users = groupUsers(res.data.list_app_user_role)
+            setTimeout(()=>blinkStatus("#appStatus", "Значение в бд" ), 100)
+        } 
+    })
+    return false       
+}
+
+
+function groupUsers(list_app_user_role) {
+    let gr = {}
+    for (let aur of list_app_user_role ){
+        gr[aur.username] =[]
+    }
+    for (let aur of list_app_user_role ){
+        gr[aur.username].push(aur)
+    }
+
+    let arr = []
+
+    for (let [key, value] of Object.entries(gr)) {
+        console.log(`${key}: ${value}`);
+        let rec = {}
+        rec.username =key
+        rec.user_fullname = value[0].user_fullname
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
+
+
+
+function deleteApp(appname) {
+    $("#resultApp").html("")
+    var query =`
+    mutation {
+        delete_app(
+        appname: "${appname}"
+        ) {
+            appname
+          }
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showJSON(res,'#resultApp')
+            if (res.errors){
+                blinkStatus("#appStatus", res.errors[0].message)
+                return
+            }
+            model.app = null
+            formListAppSubmit();  
+            showPage('apps') ;
+         } 
+    })
+    return false       
+}
+
+
+
+
 // A P P   U S E R   R O L E   **************************************************************************************************
 
 function formListRoleSubmit(event) {

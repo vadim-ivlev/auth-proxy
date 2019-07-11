@@ -91,6 +91,11 @@ table .button {
     padding-left: 0;
 }
 
+.nomargin {
+    margin: 0;
+}
+
+
 .grayed {
     opacity: 0.5;
 }

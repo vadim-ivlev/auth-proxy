@@ -14,7 +14,7 @@
             oninput="
             $('#newAppName').text(event.target.value);
             $('#newAppUrl').text(location.origin+'/apps/'+event.target.value);
-            $('#newAppUrl').href(location.origin+'/apps/'+event.target.value);
+            $('#newAppUrl').attr('href',location.origin+'/apps/'+event.target.value);
             "
             value="{{app.appname}}">
         </div>
@@ -24,8 +24,8 @@
         </div>
         <div>
             <label >url</label>
-            <input name="description" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
-            Доступно по: <a id="newAppUrl" href=""></a>
+            <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
+            Доступно по: <a id="newAppUrl" href="/apps/{{app.appname}}">{{origin}}/apps/{{app.appname}}</a>
         </div>
         <div style="text-align: right;">
             <label></label>
@@ -50,7 +50,7 @@
 <table>
     <tr>
         <th>пользователь</th>
-        <th>полное имя</th>
+        <th></th>
         <th>роли</th>
     </tr>
     {{#app.users}}
@@ -65,10 +65,19 @@
         </td>
     </tr>
     {{/app.users}}
+    <tr>
+        <td>
+            <select class="nomargin"></select>
+        </td>
+        <td></td>
+        <td>
+            <span class="plus">+</span>
+        </td>
+    </tr>
 
 
 </table>
-<button class="button button-clear">добавить пользователя &#x25BC;</button>
+<!-- <button class="button button-clear">добавить пользователя &#x25BC;</button> -->
 </div>
 
 

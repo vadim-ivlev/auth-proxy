@@ -3,8 +3,8 @@
                 <thead>
                     <tr>
                         <th>путь</th>
-                        <th>реальный url</th>
                         <th>описание</th>
+                        <th>реальный url</th>
                         <th>действия</th>
                     <tr>
                 </thead>
@@ -16,12 +16,14 @@
                             <!-- &#x25B6; -->
                         </td>
                         <td>
+                            <a href="" onclick="getApp('{{appname}}'); return showPage('app');">{{description}}</a>
+                        </td>
+                        <td>
                             <a href="{{url}}" target="_blank" >{{url}}</a>
                         </td>
-                        <td>{{description}}</td>
                         <td>
-                            <a href="" class="button button-clear">редактировать</a>
-                            <a href="" class="button button-clear">удалить</a>
+                            <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app');">редактировать</button>
+                            <button class="button button-clear" onclick="deleteApp('{{appname}}'); showPage('apps');">✕</button>
                         </td>
                     <tr>
                     {{/apps}}

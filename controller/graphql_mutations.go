@@ -98,6 +98,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Описание",
 				},
+				"url": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "url",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
@@ -116,6 +120,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
 					Description: "Описание",
+				},
+				"url": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "url",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
