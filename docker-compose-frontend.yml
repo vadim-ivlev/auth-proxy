@@ -31,16 +31,21 @@ services:
       - db
 
 
+  # server with test applications
+  node:
+    image: "node:alpine"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./test_apps:/home/node/app
+    expose:
+      - "3001"
+      - "3002"
+    ports:
+      - 3001:3001
+      - 3002:3002
+    command: "npm run start12"
 
-  # Раскомментируйте если хотите просматривать базу данных в браузере http://localhost:8080
-  # adminer:
-  #   image: adminer
-  #   container_name: adminer-com
-  #   # network_mode: bridge
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - db
-  #   links:
-  #     - db
+

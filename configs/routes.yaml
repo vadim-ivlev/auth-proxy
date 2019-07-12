@@ -10,9 +10,9 @@ dev:
 
 
 docker:
-  app1:     http://localhost:3001
-  app2:     http://localhost:3002
-  onlinebc: http://localhost:7700
+  app1:     http://node:3001
+  app2:     http://node:3002
+  onlinebc: http://onlinebc:7700
   rg:       https://rg.ru 
 
 

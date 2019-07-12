@@ -2,12 +2,14 @@ FROM ubuntu:18.04
 #FROM debian:stable-slim
 LABEL maintainer="RGRU <ivlev@rg.ru>"
 
-RUN apt-get -y update && apt-get -y install sshpass 
+# RUN apt-get -y update && apt-get -y install sshpass 
 
 COPY configs  /app/configs
 COPY migrations  /app/migrations
 COPY templates  /app/templates
-COPY docs  /app/docs
+COPY test_apps  /app/test_apps
+COPY greetings.txt  /app/greetings.txt
+
 
 COPY auth-proxy  /app/auth
 
