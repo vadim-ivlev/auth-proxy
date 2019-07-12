@@ -1,9 +1,23 @@
 
-<div>
-    <h3>роли</h3>
+<div style="text-align: center;">
+    <br>
+    <br>
+    <label>роли</label>
+    <br>
     {{#app_user_roles}}
-    <button class="button button-outline role">{{rolename}}</button>
+    <button class="button button-outline role" 
+        onclick="modifyRole('delete', $('#allApps').val(), $('#allUsers').val(),'{{rolename}}' )"
+        >
+        {{rolename}}
+    </button>
     {{/app_user_roles}} 
-    <span class="plus">+</span>
+    <span class="button button-outline role-nocross">
+        <input id="newRoleName" class="role-input">
+        <button class="button button-outline role-add" 
+        onclick="modifyRole('create', $('#allApps').val(), $('#allUsers').val(), $('#newRoleName').val() )"
+        >
+        +
+    </button>
+    </span>
 </div>
         

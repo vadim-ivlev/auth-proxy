@@ -147,7 +147,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"create_app_user_role": &gq.Field{
 			Description: "Создать роль пользователя для приложения",
-			Type:        fullAppObject,
+			Type:        app_user_roleObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -169,7 +169,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"update_app_user_role": &gq.Field{
 			Description: "Обновить роль пользователя для приложения",
-			Type:        fullAppObject,
+			Type:        app_user_roleObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -202,7 +202,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"delete_app_user_role": &gq.Field{
 			Description: "Удалить роль пользователя для приложения",
-			Type:        fullAppObject,
+			Type:        app_user_roleObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),

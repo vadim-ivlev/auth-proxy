@@ -135,3 +135,39 @@ table .button {
 #loginTab, #logoutTab {
     float: right;
 }
+
+
+.role-add {
+    padding: 0; margin:0;
+    line-height: 0;
+    height: 20px;
+    width: 20px;
+    border-radius: 19px;
+}
+
+input.role-input {
+    width:80px; 
+    height: 20px; 
+    padding:0; margin: 0;  
+    border-radius: 0;
+    border-color:transparent;
+    position: relative;
+    top: -1px;
+}
+
+.role-nocross {
+    border: 1px solid #9b4dca;
+    border-radius: 20px;
+    padding: 1px;
+    padding-left:9px;
+    padding-right:3px;
+    position:relative;
+    color:#9b4dca;
+    height:26px;
+    line-height:24px;
+    font-weight: bold;
+    position: relative;
+    top: -1px;
+    border-style: dashed;
+    border-color: silver;
+}

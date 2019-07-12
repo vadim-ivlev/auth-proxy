@@ -672,7 +672,27 @@ function formListRoleSubmit(event) {
 }
 
 
+function modifyRole(action,appname,username,rolename) {
+    if (!appname || !username || !rolename) return
 
+    var query =`
+    mutation {
+        ${action}_app_user_role(
+        appname: "${appname}",
+        username: "${username}",
+        rolename: "${rolename}"
+        ) {
+            rolename
+          }
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            formListRoleSubmit()
+        } 
+    })
+    return false       
+}
 
 
 // O N   P A G E   L O A D  ****************************************************************************************
