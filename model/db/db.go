@@ -75,10 +75,8 @@ func mapValuesToStrings(m map[string]interface{}) map[string]interface{} {
 	for k, v := range m {
 		bytes, ok := v.([]byte)
 		if ok {
-			// s := string(bytes)
 			mm[k] = string(bytes)
 		} else {
-			println("not ok:", k, v)
 			mm[k] = v
 		}
 	}

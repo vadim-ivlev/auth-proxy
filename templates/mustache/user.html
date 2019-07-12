@@ -62,23 +62,67 @@
         <td>{{appname}}</td>
         <td>{{app_description}}</td>
         <td>
+
+
             {{#items}}
-            <span class="role">{{rolename}}</span>
+            <button class="button button-outline role" 
+                onclick="modifyRole('delete', '{{appname}}', '{{user.username}}','{{rolename}}',()=>{ getUser('{{user.username}}') } )"
+                >
+                {{rolename}}
+            </button>
             {{/items}} 
-            <span class="plus">+</span>
+            <span class="button button-outline role-nocross">
+                <input id="newRoleName-{{appname}}" class="role-input">
+                <button class="button button-outline role-add" 
+                    onclick="modifyRole('create', '{{appname}}', '{{user.username}}', $('#newRoleName-{{appname}}').val(), ()=>{ getUser('{{user.username}}') }  )"
+                    >
+                +
+                </button>
+            </span>
+
         </td>
     </tr>
     {{/user.apps}}
+    <!--
     <tr>
-        <td>
-            <select class="nomargin"></select>
-        </td>
         <td></td>
+        <td>
+            <select class="nomargin">
+                <option value=""> добавить приложение</option>
+                {{{all_app_options}}}
+            </select>
+        </td>
         <td>
             <span class="plus">+</span>
         </td>
     </tr>
+    -->
+
+    <tr>
+        <td id="newUserAppname"></td>
+        <td>
+            <select class="nomargin" onchange="$('#newUserAppname').text(this.value)">
+                <option value=""> добавить приложение</option>
+                {{{all_app_options}}}
+            </select>
+        </td>
+        <td>
+            <span class="button button-outline role-nocross">
+                    <input id="newUserRolename" class="role-input">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyRole('create', $('#newUserAppname').text(), '{{user.username}}',  $('#newUserRolename').val(), ()=>{ getUser('{{user.username}}') }  )"
+                        >
+                    +
+                    </button>
+            </span>
+        </td>
+    </tr>
     
+
+
+
+
+
 
 </table>
 <!-- <button class="button button-clear">добавить приложение &#x25BC;</button> -->

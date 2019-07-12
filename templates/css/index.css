@@ -86,10 +86,6 @@ ol ol, ol ul, ul ol, ul ul {
     grid-template-columns: 1fr 1fr; 
 }
 
-table .button {
-    margin-bottom: 0;
-    padding-left: 0;
-}
 
 .nomargin {
     margin: 0;

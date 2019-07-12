@@ -47,12 +47,15 @@ var model = {
         return this._apps
     },
 
-
+    //---------------------------
+    all_app_options: null,
+    all_user_options:null,
     //---------------------------
     _allApps: null,
     set allApps(v) {
         this._allApps = v
-        addOptions("#allApps",v, "appname", "description")
+        this.all_app_options = createOptions(v, "appname", "description")
+        $("#allApps").html(this.all_app_options)
         $("#allApps").val("app1")
     },
     get allApps() {
@@ -63,7 +66,8 @@ var model = {
     _allUsers: null,
     set allUsers(v) {
         this._allUsers = v
-        addOptions("#allUsers",v, "username", "fullname")
+        this.all_user_options = createOptions(v, "username", "fullname")
+        $("#allUsers").html(this.all_user_options)
         $("#allUsers").val("vadim")
     },
     get allApps() {
@@ -80,7 +84,6 @@ var model = {
         return this._app_user_roles
     },
 
-
     
 }
 
@@ -88,14 +91,14 @@ var model = {
 
 // F U N C T I O N S  *********************************************************************************
 
-function addOptions(selector, selectValues, keyProp, textProp) {
-    var output = [];
+function createOptions(selectValues, keyProp, textProp) {
+    var output = []
     $.each(selectValues, function(key, value)
     {
       output.push('<option value="'+ value[keyProp] +'">'+ value[textProp] +'</option>');
-    });
-    
-    $(selector).html(output.join(''));
+    })
+    let optionText = output.join('')
+    return optionText
 }
 
 
@@ -645,7 +648,7 @@ function getAllUsers(event) {
 }
 
 function formListRoleSubmit(event) {
-    if (event) event.preventDefault()
+    if (event && event.preventDefault ) event.preventDefault()
     $("#resultListRole").html("")
     let appname = $("#formListRole select[name='appname']").val()
     let username = $("#formListRole select[name='username']").val()
@@ -672,7 +675,7 @@ function formListRoleSubmit(event) {
 }
 
 
-function modifyRole(action,appname,username,rolename) {
+function modifyRole(action,appname,username,rolename, onsuccess ) {
     if (!appname || !username || !rolename) return
 
     var query =`
@@ -686,10 +689,10 @@ function modifyRole(action,appname,username,rolename) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            formListRoleSubmit()
-        } 
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, success: onsuccess
+        // success: (res) => {
+        //     formListRoleSubmit()
+        // } 
     })
     return false       
 }

@@ -45,8 +45,11 @@
     <!-- <hr> -->
 
     <hr>
-
-<h2>Пользователи приложения <b>{{app.appname}}</b></h2>
+<h2>
+    <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;"> 
+    Пользователи приложения 
+    <b>{{app.appname}}</b>
+</h2>
 <table>
     <tr>
         <th>пользователь</th>
@@ -58,20 +61,47 @@
         <td>{{username}}</td>
         <td>{{user_fullname}}</td>
         <td>
+
+
             {{#items}}
-            <span class="role">{{rolename}}</span>
+            <button class="button button-outline role" 
+                onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
+                >
+                {{rolename}}
+            </button>
             {{/items}} 
-            <span class="plus">+</span>
+            <span class="button button-outline role-nocross">
+                <input id="newRoleName-{{username}}" class="role-input">
+                <button class="button button-outline role-add" 
+                    onclick="modifyRole('create', '{{app.appname}}', '{{username}}', $('#newRoleName-{{username}}').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                    >
+                +
+                </button>
+            </span>
+
+
+
+
         </td>
     </tr>
     {{/app.users}}
     <tr>
+        <td id="newAppUsername"></td>
         <td>
-            <select class="nomargin"></select>
+            <select class="nomargin" onchange="$('#newAppUsername').text(this.value)">
+                <option value=""> добавить пользователя</option>
+                {{{all_user_options}}}
+            </select>
         </td>
-        <td></td>
         <td>
-            <span class="plus">+</span>
+            <span class="button button-outline role-nocross">
+                    <input id="newAppRolename" class="role-input">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyRole('create', '{{app.appname}}', $('#newAppUsername').text(), $('#newAppRolename').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                        >
+                    +
+                    </button>
+            </span>
         </td>
     </tr>
 
