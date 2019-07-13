@@ -168,6 +168,13 @@ input.role-input {
     border-color: silver;
 }
 
-.page {
-    /* display: none; */
+.msg {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background-color: blueviolet;
+    color: white;
 }

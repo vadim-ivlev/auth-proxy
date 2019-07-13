@@ -116,7 +116,7 @@ function showPage(pageid, dontpush){
     $('#'+pageid+'Page').show()
 
     if (!dontpush){
-        if (history.state.pageid != pageid ){
+        if (!history.state || history.state.pageid != pageid ){
             history.pushState({pageid:pageid},pageid, "#"+pageid) 
             console.log("push", pageid)   
         }
@@ -126,12 +126,14 @@ function showPage(pageid, dontpush){
 
 
 // blinkStatus shows fading message
-function blinkStatus(selector, message) {
+function blinkStatus(message) {
     console.log("blink:", message)
-    let st = $(selector)
+    let st = $("#msg")
     st.text(message)
+    // st.show()
     st.fadeTo(0,1)
-    st.fadeTo(2000, 0.001)
+    st.fadeTo(2000, 0.0)
+    // st.hide(2000)
 }
 
 
@@ -247,7 +249,7 @@ function loginGraphQLFormSubmit(event) {
             showJSON(res,'#resultLoginGraphQL')
             renderMenu();
             if (res.errors){
-                blinkStatus("#loginStatus", "Пароль или имя или емайл не подходят")
+                blinkStatus("Пароль или имя или емайл не подходят")
                 return
             }
             formListAppSubmit();  
@@ -275,7 +277,7 @@ function logoutGraphQLFormSubmit(event) {
         success: (res) => {
             showJSON(res,'#resultLogoutGraphQL')
             renderMenu();
-            showPage('login') ;
+            showPage('login',true) ;
         }
        
     })
@@ -346,11 +348,11 @@ function formUserSubmit(event, userOperationName = 'create_user') {
         success: (res) => {
             showJSON(res,'#resultUser')
             if (res.errors){
-                blinkStatus("#userStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.user = res.data[userOperationName]
-            setTimeout(()=>blinkStatus("#userStatus", userOperationName+" success" ), 100)
+            blinkStatus( userOperationName+" success" )
             getUser(username)
         } 
     })
@@ -390,12 +392,12 @@ function getUser(username) {
         success: (res) => {
             showJSON(res,'#resultUser')
             if (res.errors){
-                blinkStatus("#userStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.user = res.data.get_user
             model.user.apps = groupApps(res.data.list_app_user_role)
-            setTimeout(()=>blinkStatus("#userStatus", "Значение в бд" ), 100)
+            // blinkStatus( "Значение в бд" )
         } 
     })
     return false       
@@ -439,7 +441,7 @@ function deleteUser(username) {
         success: (res) => {
             showJSON(res,'#resultUser')
             if (res.errors){
-                blinkStatus("#userStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.user = null
@@ -507,11 +509,11 @@ function formAppSubmit(event, appOperationName = 'create_app') {
         success: (res) => {
             showJSON(res,'#resultApp')
             if (res.errors){
-                blinkStatus("#appStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.app = res.data[appOperationName]
-            setTimeout(()=>blinkStatus("#appStatus", appOperationName+" success" ), 100)
+            blinkStatus( appOperationName+" success" )
             getApp(appname)
         } 
     })
@@ -549,12 +551,12 @@ function getApp(appname) {
         success: (res) => {
             showJSON(res,'#resultApp')
             if (res.errors){
-                blinkStatus("#appStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.app = res.data.get_app
             model.app.users = groupUsers(res.data.list_app_user_role)
-            setTimeout(()=>blinkStatus("#appStatus", "Значение в бд" ), 100)
+            // blinkStatus( "Значение в бд" )
         } 
     })
     return false       
@@ -597,7 +599,7 @@ function deleteApp(appname) {
         success: (res) => {
             showJSON(res,'#resultApp')
             if (res.errors){
-                blinkStatus("#appStatus", res.errors[0].message)
+                blinkStatus( res.errors[0].message)
                 return
             }
             model.app = null
@@ -722,7 +724,11 @@ function refreshData() {
     } else {
         // nullify model's inner props
         for (const k of Object.keys(model)) {
-            if (k.startsWith('_')) model[k] = null
+            if (k.startsWith('_')) {
+                model[k] = null
+                console.log(`model.${k} = null`)
+            }
+
         }
    }    
 }
@@ -740,14 +746,26 @@ function refreshApp(params) {
     if (model.logined) {
         showPage(getLandingPageid()) 
     } else {
-        showPage('login')
+        showPage('login',true)
     }    
 }
 
 
 window.onpopstate = function(event) {
-    console.log( history.length, "state: " + JSON.stringify(event.state));
-    if (event.state) showPage(event.state.pageid, true)
+
+    // console.log( "event.state: " + JSON.stringify(event.state));
+    if (event.state) {
+        let nextPageid = event.state.pageid
+        if ($('#userPage').is(':visible')){
+            showPage('users', true)
+            return
+        }
+        if ($('#appPage').is(':visible')){
+            showPage('apps', true)
+            return
+        }
+        showPage(event.state.pageid, true)
+    }
 }
 
 refreshApp()

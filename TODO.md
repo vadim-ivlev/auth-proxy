@@ -22,6 +22,6 @@
 ## CLIENT
 - refresh allApps allUsers after delete/update/create apps and users
 - get rid of json viewer , jquery-ui
-- add history to browser
+- ! add history to browser
 - english version
 
