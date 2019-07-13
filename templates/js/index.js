@@ -247,13 +247,11 @@ function loginGraphQLFormSubmit(event) {
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultLoginGraphQL')
-            renderMenu();
             if (res.errors){
                 blinkStatus("Пароль или имя или емайл не подходят")
                 return
             }
-            formListAppSubmit();  
-            showPage('apps') ;
+            refreshApp()
         }   
     })
     return false       
@@ -276,8 +274,11 @@ function logoutGraphQLFormSubmit(event) {
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showJSON(res,'#resultLogoutGraphQL')
-            renderMenu();
-            showPage('login',true) ;
+            if (res.errors){
+                blinkStatus("Пароль или имя или емайл не подходят")
+                return
+            }
+            refreshApp()
         }
        
     })
@@ -351,8 +352,9 @@ function formUserSubmit(event, userOperationName = 'create_user') {
                 blinkStatus( res.errors[0].message)
                 return
             }
-            model.user = res.data[userOperationName]
             blinkStatus( userOperationName+" success" )
+            refreshData()
+            model.user = res.data[userOperationName]
             getUser(username)
         } 
     })
@@ -397,7 +399,6 @@ function getUser(username) {
             }
             model.user = res.data.get_user
             model.user.apps = groupApps(res.data.list_app_user_role)
-            // blinkStatus( "Значение в бд" )
         } 
     })
     return false       
@@ -445,7 +446,7 @@ function deleteUser(username) {
                 return
             }
             model.user = null
-            formListUserSubmit();  
+            refreshData()
             showPage('users') ;
          } 
     })
@@ -512,8 +513,9 @@ function formAppSubmit(event, appOperationName = 'create_app') {
                 blinkStatus( res.errors[0].message)
                 return
             }
-            model.app = res.data[appOperationName]
             blinkStatus( appOperationName+" success" )
+            model.app = res.data[appOperationName]
+            refreshData()
             getApp(appname)
         } 
     })
@@ -556,7 +558,6 @@ function getApp(appname) {
             }
             model.app = res.data.get_app
             model.app.users = groupUsers(res.data.list_app_user_role)
-            // blinkStatus( "Значение в бд" )
         } 
     })
     return false       
@@ -603,7 +604,7 @@ function deleteApp(appname) {
                 return
             }
             model.app = null
-            formListAppSubmit();  
+            refreshData()
             showPage('apps') ;
          } 
     })
@@ -704,9 +705,6 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
         }
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, success: onsuccess
-        // success: (res) => {
-        //     formListRoleSubmit()
-        // } 
     })
     return false       
 }
