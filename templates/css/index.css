@@ -30,6 +30,8 @@ pre {
     background-color: transparent;
 }
 
+
+
 .flexed {
     display: grid;
     grid-template-columns: 1fr;
@@ -53,11 +55,9 @@ pre {
 .menu {
     margin-bottom: 50px;
     margin-top:50px;
-}
-
-.underlined {
     border-bottom: 1px dashed silver ;
 }
+
 
 /* fix skeleton */
 li {
@@ -128,7 +128,7 @@ ol ol, ol ul, ul ol, ul ul {
     /* font-weight: bold; */
 }
 
-#loginTab, #logoutTab {
+.right {
     float: right;
 }
 
@@ -166,4 +166,8 @@ input.role-input {
     top: -1px;
     border-style: dashed;
     border-color: silver;
+}
+
+.page {
+    /* display: none; */
 }

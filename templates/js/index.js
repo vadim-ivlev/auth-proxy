@@ -102,17 +102,30 @@ function createOptions(selectValues, keyProp, textProp) {
 }
 
 
-function showPage(pageid, elemSelector){
-    // $('.tab').css("border-top","1px solid transparent")
-    // $('#'+pageid+'Tab').css("border-top","1px solid #9b4dca")
+function highlightTab(tabid) {
+    $('.tab').css("border-bottom","1px solid transparent")
+    $('#'+tabid+'Tab').css("border-bottom","1px solid #9b4dca")   
+}
 
+
+
+function showPage(pageid, dontpush){
+    highlightTab(pageid)
+    
     $('.page').hide()
     $('#'+pageid+'Page').show()
+
+    if (!dontpush){
+        if (history.state.pageid != pageid ){
+            history.pushState({pageid:pageid},pageid, "#"+pageid) 
+            console.log("push", pageid)   
+        }
+    }
     return false
 }
 
 
-// blinkStatus показывает исчезающее сообщение
+// blinkStatus shows fading message
 function blinkStatus(selector, message) {
     console.log("blink:", message)
     let st = $(selector)
@@ -399,7 +412,7 @@ function groupApps(list_app_user_role) {
     let arr = []
 
     for (let [key, value] of Object.entries(gr)) {
-        console.log(`${key}: ${value}`);
+        // console.log(`${key}: ${value}`);
         let rec = {}
         rec.appname =key
         rec.app_description = value[0].app_description
@@ -467,7 +480,6 @@ function formListAppSubmit(event) {
     })
     return false       
 }
-
 
 
 
@@ -700,18 +712,42 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
 
 // O N   P A G E   L O A D  ****************************************************************************************
 
-
-renderMenu()
-// renderPage('user')
-// renderPage('app')
-
-if (model.logined) {
-    formListAppSubmit()  
-    showPage('apps') 
-} else {
-    renderPage('login','#loginPage')
-    showPage('login')
+function refreshData() {
+    if (model.logined) {
+        getAllApps()
+        getAllUsers()
+        formListAppSubmit()
+        formListUserSubmit()  
+        delayFunc(formListRoleSubmit)  
+    } else {
+        // nullify model's inner props
+        for (const k of Object.keys(model)) {
+            if (k.startsWith('_')) model[k] = null
+        }
+   }    
 }
 
-getAllApps()
-getAllUsers()
+function getLandingPageid(){
+    var p = location.hash.slice(1)
+    return p ? p : 'apps'
+}
+
+function refreshApp(params) {
+    refreshData()
+    renderMenu() 
+    renderPage('login','#loginPage')
+
+    if (model.logined) {
+        showPage(getLandingPageid()) 
+    } else {
+        showPage('login')
+    }    
+}
+
+
+window.onpopstate = function(event) {
+    console.log( history.length, "state: " + JSON.stringify(event.state));
+    if (event.state) showPage(event.state.pageid, true)
+}
+
+refreshApp()

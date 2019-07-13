@@ -45,6 +45,9 @@
     <!-- <hr> -->
 
     <hr>
+
+{{#app}}
+
 <h2>
     <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;"> 
     Пользователи приложения 
@@ -56,35 +59,35 @@
         <th></th>
         <th>роли</th>
     </tr>
-    {{#app.users}}
-    <tr>
-        <td>{{username}}</td>
-        <td>{{user_fullname}}</td>
-        <td>
+        {{#app.users}}
+        <tr>
+            <td>{{username}}</td>
+            <td>{{user_fullname}}</td>
+            <td>
 
 
-            {{#items}}
-            <button class="button button-outline role" 
-                onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
-                >
-                {{rolename}}
-            </button>
-            {{/items}} 
-            <span class="button button-outline role-nocross">
-                <input id="newRoleName-{{username}}" class="role-input">
-                <button class="button button-outline role-add" 
-                    onclick="modifyRole('create', '{{app.appname}}', '{{username}}', $('#newRoleName-{{username}}').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                {{#items}}
+                <button class="button button-outline role" 
+                    onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
                     >
-                +
+                    {{rolename}}
                 </button>
-            </span>
+                {{/items}} 
+                <span class="button button-outline role-nocross">
+                    <input id="newRoleName-{{username}}" class="role-input">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyRole('create', '{{app.appname}}', '{{username}}', $('#newRoleName-{{username}}').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                        >
+                    +
+                    </button>
+                </span>
 
 
 
 
-        </td>
-    </tr>
-    {{/app.users}}
+            </td>
+        </tr>
+        {{/app.users}}
     <tr>
         <td id="newAppUsername"></td>
         <td>
@@ -107,7 +110,8 @@
 
 
 </table>
-<!-- <button class="button button-clear">добавить пользователя &#x25BC;</button> -->
+
+{{/app}}
 </div>
 
 

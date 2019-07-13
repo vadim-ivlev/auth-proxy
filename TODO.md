@@ -1,6 +1,7 @@
 ## SERVER
 
 - add role checking to graphql
+- add field active to user, app
 - ? get rid of REST
 - build containers (add onlinebc to dev env)
 - encrypt passwords in db
@@ -19,6 +20,7 @@
 - SQLite
 
 ## CLIENT
+- refresh allApps allUsers after delete/update/create apps and users
 - get rid of json viewer , jquery-ui
 - add history to browser
 - english version

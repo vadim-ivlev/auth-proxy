@@ -12,17 +12,17 @@
                     {{#apps}}
                     <tr>
                         <td>
-                            <a href="apps/{{appname}}" target="_blank" >/apps/{{appname}}</a>
+                            <a href="apps/{{appname}}" target="_blank" >{{appname}}</a>
                             <!-- &#x25B6; -->
                         </td>
                         <td>
-                            <a href="" onclick="getApp('{{appname}}'); return showPage('app');">{{description}}</a>
+                            <a href="" onclick="getApp('{{appname}}'); return showPage('app',true);">{{description}}</a>
                         </td>
                         <td>
                             <a href="{{url}}" target="_blank" >{{url}}</a>
                         </td>
                         <td>
-                            <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app');">редактировать</button>
+                            <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app',true);">редактировать</button>
                             <button class="button button-clear" onclick="deleteApp('{{appname}}'); showPage('apps');">✕</button>
                         </td>
                     <tr>

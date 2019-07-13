@@ -12,15 +12,25 @@
             {{#users}}
             <tr>
                 <td>
-                    <a href="" onclick="getUser('{{username}}'); return showPage('user');">{{username}}</a>
+                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);">
+                        {{username}}
+                    </a>
                 </td>
                 <td>
                     <a href="mailto:{{email}}" target="_blank" >{{email}}</a>
                 </td>
-                <td><a href="" onclick="getUser('{{username}}'); return showPage('user');" >{{fullname}}</a></td>
-                <td>{{description}}</td>
                 <td>
-                    <button class="button button-clear" onclick="getUser('{{username}}'); showPage('user');" >редактировать</button>
+                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);" >
+                        {{fullname}}
+                    </a>
+                </td>
+                <td>
+                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);">
+                        {{description}}
+                    </a>
+                </td>
+                <td>
+                    <button class="button button-clear" onclick="getUser('{{username}}'); showPage('user',true);" >редактировать</button>
                     <button class="button button-clear" onclick="deleteUser('{{username}}'); showPage('users');" >✕</button>
                 </td>
             <tr>

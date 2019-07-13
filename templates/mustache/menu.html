@@ -1,12 +1,12 @@
             {{#logined}}
             <a href="" id="appsTab"  class="button button-clear tab"  onclick="formListAppSubmit();  return showPage('apps') ;">Приложения</a>
             <a href="" id="usersTab" class="button button-clear tab"  onclick="formListUserSubmit(); return showPage('users');">Пользователи</a>
-            <a href="" id="usersTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
-            <a href="" id="appTab"   class="button button-clear tab"  onclick="model.app  = null;    return showPage('app')  ;">Новое приложение</a>
-            <a href="" id="userTab"  class="button button-clear tab"  onclick="model.user = null;    return showPage('user') ;">Новый пользователь</a>
-            <a href="" id="loginTab" class="button button-clear tab"  onclick="logoutGraphQLFormSubmit(); renderPage('login','#loginPage');  return showPage('login')">Logout</a>
+            <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
+            <!-- <a href="" id="appTab"   class="button button-clear tab"  onclick="model.app  = null;    return showPage('app',true)  ;">Новое приложение</a>
+            <a href="" id="userTab"  class="button button-clear tab"  onclick="model.user = null;    return showPage('user',true) ;">Новый пользователь</a> -->
+            <a href="" id="loginTab" class="button button-clear tab right"  onclick="logoutGraphQLFormSubmit(); renderPage('login','#loginPage');  return showPage('login',true)">Logout</a>
             {{/logined}}
             {{^logined}}
-            <a href="" id="loginTab" class="button button-clear tab"  onclick="renderPage('login','#loginPage');  return showPage('login')">Login</a>
-            <a href="" id="userTab"  class="button button-clear tab"  onclick="model.user = null;    return showPage('user') ;">Новый пользователь</a>
+            <a href="" id="loginTab" class="button button-clear tab right"  onclick="renderPage('login','#loginPage');  return showPage('login',true)">Login</a>
+            <!-- <a href="" id="userTab"  class="button button-clear tab"  onclick="model.user = null;    return showPage('user',true) ;">Новый пользователь</a> -->
             {{/logined}}
