@@ -1,4 +1,4 @@
-<div class="flexed">
+<div class="flexed max-width-600">
     {{^app}}
     <h2>Новое приложение <b id="newAppName"></b></h2>
     {{/app}}
@@ -9,7 +9,7 @@
     <form id="formApp" onsubmit="event.preventDefault();">
         <div>
             <label >appname *</label>
-            <input name="appname" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
+            <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
             {{#app}} disabled class="grayed" {{/app}}
             oninput="
             $('#newAppName').text(event.target.value);
@@ -44,74 +44,74 @@
     <!-- <hr> -->
 
     <hr>
-
-{{#app}}
-
-<h2>
-    <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;"> 
-    Пользователи приложения 
-    <b>{{app.appname}}</b>
-</h2>
-<table>
-    <tr>
-        <th>пользователь</th>
-        <th></th>
-        <th>роли</th>
-    </tr>
-        {{#app.users}}
-        <tr>
-            <td>{{username}}</td>
-            <td>{{user_fullname}}</td>
-            <td>
-
-
-                {{#items}}
-                <button class="button button-outline role" 
-                    onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
-                    >
-                    {{rolename}}
-                </button>
-                {{/items}} 
-                <span class="button button-outline role-nocross">
-                    <input id="newRoleName-{{username}}" class="role-input">
-                    <button class="button button-outline role-add" 
-                        onclick="modifyRole('create', '{{app.appname}}', '{{username}}', $('#newRoleName-{{username}}').val(), ()=>{ getApp('{{app.appname}}') }  )"
-                        >
-                    +
-                    </button>
-                </span>
-
-
-
-
-            </td>
-        </tr>
-        {{/app.users}}
-    <tr>
-        <td id="newAppUsername"></td>
-        <td>
-            <select class="nomargin" onchange="$('#newAppUsername').text(this.value)">
-                <option value=""> добавить пользователя</option>
-                {{{all_user_options}}}
-            </select>
-        </td>
-        <td>
-            <span class="button button-outline role-nocross">
-                    <input id="newAppRolename" class="role-input">
-                    <button class="button button-outline role-add" 
-                        onclick="modifyRole('create', '{{app.appname}}', $('#newAppUsername').text(), $('#newAppRolename').val(), ()=>{ getApp('{{app.appname}}') }  )"
-                        >
-                    +
-                    </button>
-            </span>
-        </td>
-    </tr>
-
-
-</table>
-
-{{/app}}
 </div>
 
+
+{{#app}}
+<div class="flexed">
+    <h2>
+        <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;"> 
+        Пользователи приложения 
+        <b>{{app.appname}}</b>
+    </h2>
+    <table>
+        <tr>
+            <th>пользователь</th>
+            <th></th>
+            <th>роли</th>
+        </tr>
+            {{#app.users}}
+            <tr>
+                <td>{{username}}</td>
+                <td>{{user_fullname}}</td>
+                <td>
+
+
+                    {{#items}}
+                    <button class="button button-outline role" 
+                        onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
+                        >
+                        {{rolename}}
+                    </button>
+                    {{/items}} 
+                    <span class="button button-outline role-nocross">
+                        <input id="newRoleName-{{username}}" class="role-input">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyRole('create', '{{app.appname}}', '{{username}}', $('#newRoleName-{{username}}').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                            >
+                        +
+                        </button>
+                    </span>
+
+
+
+
+                </td>
+            </tr>
+            {{/app.users}}
+        <tr>
+            <td id="newAppUsername"></td>
+            <td>
+                <select class="nomargin" onchange="$('#newAppUsername').text(this.value)">
+                    <option value=""> добавить пользователя</option>
+                    {{{all_user_options}}}
+                </select>
+            </td>
+            <td>
+                <span class="button button-outline role-nocross">
+                        <input id="newAppRolename" class="role-input">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyRole('create', '{{app.appname}}', $('#newAppUsername').text(), $('#newAppRolename').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                            >
+                        +
+                        </button>
+                </span>
+            </td>
+        </tr>
+
+
+    </table>
+</div>
+{{/app}}
 
 

@@ -2,13 +2,29 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:300,400");
 
 body {
-    margin: 30px;
-    margin-bottom: 300px;
+    margin: 0;
+    padding: 0;
 }
 
-h4 {
-    margin-top: 30px;
+#page-container {
+    position: relative;
+    min-height: 100vh;
 }
+  
+#content {
+    padding:30px;
+    padding-bottom: 100px;    /* Footer height */
+}
+  
+#footer {
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;            /* Footer height */
+}
+
+
 
 .logo {
     width:80px; 
@@ -44,6 +60,11 @@ pre {
     justify-self: center;
 }
 
+.max-width-500>* { max-width: 500px; }
+.max-width-400>* { max-width: 400px; }
+.max-width-600>* { max-width: 600px; }
+
+
 .flexed>pre {
     display: none;
 }
@@ -55,9 +76,15 @@ pre {
 .menu {
     margin-bottom: 50px;
     margin-top:50px;
-    border-bottom: 1px dashed silver ;
+    /* border-bottom: 1px dashed silver ; */
 }
 
+
+
+.tab {
+    border-radius: 0;
+    border-width: 1px;
+}
 
 /* fix skeleton */
 li {
@@ -177,4 +204,8 @@ input.role-input {
     text-align: center;
     background-color: blueviolet;
     color: white;
+}
+
+#loginPage {
+    margin-top:100px;
 }

@@ -103,8 +103,8 @@ function createOptions(selectValues, keyProp, textProp) {
 
 
 function highlightTab(tabid) {
-    $('.tab').css("border-bottom","1px solid transparent")
-    $('#'+tabid+'Tab').css("border-bottom","1px solid #9b4dca")   
+    $('.tab').css("border-bottom-color","transparent")
+    $('#'+tabid+'Tab').css("border-bottom-color","#9b4dca")   
 }
 
 
@@ -114,6 +114,9 @@ function showPage(pageid, dontpush){
     
     $('.page').hide()
     $('#'+pageid+'Page').show()
+    // var text = $('#'+pageid+'Page input[type="text"]')[0]
+    // if(text) 
+    //     text.focus()
 
     if (!dontpush){
         if (!history.state || history.state.pageid != pageid ){
@@ -150,11 +153,6 @@ function renderPage(pageid, elemSelector) {
 }
 
 
-function renderMenu(){
-    renderTemplateFile('templates/mustache/menu.html', model, '#menu')
-}
-
-
 function alertOnError(e, msg){
     alert(msg, e)
 }
@@ -182,9 +180,9 @@ function getCookie(cname) {
 
 
 var delayTimeout
-function delayFunc(f) {
+function delayFunc(f, delay=500) {
    clearTimeout(delayTimeout) 
-   delayTimeout = setTimeout(f, 500)  
+   delayTimeout = setTimeout(f, delay)  
    return false 
 }
 
@@ -650,6 +648,8 @@ function getAllUsers(event) {
             list {
               username
               fullname
+              email
+              description
             }
           }
         }    `
@@ -738,13 +738,17 @@ function getLandingPageid(){
 
 function refreshApp(params) {
     refreshData()
-    renderMenu() 
-    renderPage('login','#loginPage')
 
     if (model.logined) {
         showPage(getLandingPageid()) 
+        $('#loginButton').hide()
+        $('#logoutButton').show()
+        $('#menu').show()
     } else {
         showPage('login',true)
+        $('#loginButton').show()
+        $('#logoutButton').hide()
+        $('#menu').hide()
     }    
 }
 

@@ -32,83 +32,118 @@
 </head>
 
 <body>
-    <div id="msg" class="msg info">a</div>
+    <div id="page-container">
+        <div id="content">  
+            <div id="msg" class="msg info">a</div>
 
-    <h4><img src="templates/images/rgru-logo.png" class="logo">
-        <b>Auth-Proxy</b> Сервис Авторизации
-    </h4>
+            <button id="loginButton" class="button button-clear tab right"  onclick="showPage('login',true)">Login</button>
+            <button id="logoutButton" class="button button-clear tab right"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Logout</button>
 
-    <div id="menu"      class="menu"></div>
-    <div id="loginPage" class="page"></div>
-    <div id="userPage"  class="page"></div>
-    <div id="appPage"   class="page"></div>
+            <h4><img src="templates/images/rgru-logo.png" class="logo">
+                <b>Auth-Proxy</b> Сервис Авторизации
+            </h4>
 
-        
-    <div class="page" id="appsPage">
-        <div class="flexed">
+            <div id="menu" class="menu">
+                <a href="" id="appsTab"  class="button button-clear tab"  onclick="formListAppSubmit();  return showPage('apps') ;">Приложения</a>
+                <a href="" id="usersTab" class="button button-clear tab"  onclick="formListUserSubmit(); return showPage('users');">Пользователи</a>
+                <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
+            </div>
+
+            <div id="userPage"  class="page"></div>
+            <div id="appPage"   class="page"></div>
             
-            <h2>
-                Приложения
-            </h2>
-            <form id="formListApp" class="grided" onsubmit="return formListAppSubmit(event)">
-                    <div>
-                        <label  for="search"></label>
-                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListAppSubmit)"  value="test0">
+            <div id="loginPage" class="page">
+            <div class="flexed max-width-400">
+                    
+                    <h2>Login</h2>
+                    <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
+                        <div>
+                            <label class="param-name">username</label>
+                            <input name="username" type="text" value="vadim">
+                        </div>
+                        <div>
+                            <label class="param-name">password</label>
+                            <input name="password" type="password" value="1">
+                        </div>
+                        
+                        <div style="text-align: right;">
+                            <label class="param-name"></label>
+                            <input type="submit" class="button button-outline" value="Login">
+                        </div>
+                    </form>
+                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
+                    <pre id="resultLoginGraphQL"></pre>
                 </div>
-                <button type="submit" class="fa fa-search button button-outline" ></button>
-            </form>
-            <button class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
-            <br>
-            <pre id="resultListApp"></pre>
+            </div>
+                
+            <div class="page" id="appsPage">
+                <div class="flexed max-width-600">           
+                    <h2>
+                        Приложения
+                    </h2>
+                    <form id="formListApp" class="grided" onsubmit="return formListAppSubmit(event)">
+                            <div>
+                                <label  for="search"></label>
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListAppSubmit)"  value="test0">
+                        </div>
+                        <button type="submit" class="fa fa-search button button-outline" ></button>
+                    </form>
+                    <button class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
+                    <br>
+                    <pre id="resultListApp"></pre>
+                </div>
+                <div class="app-search-results"></div>
         </div>
-        <div class="app-search-results"></div>
-   </div>
 
 
-    <div class="page" id="usersPage">
-        <div class="flexed">
-            <h2>Пользователи</h2>
-            <form id="formListUser" class="grided" onsubmit="return formListUserSubmit(event)">
-                <div>
-                    <label  for="search"></label>
-                    <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)" value="test0">
+            <div class="page" id="usersPage">
+                <div class="flexed max-width-600">
+                    <h2>Пользователи</h2>
+                    <form id="formListUser" class="grided" onsubmit="return formListUserSubmit(event)">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)" value="test0">
+                        </div>
+                        <button type="submit" class="fa fa-search button button-outline" ></button>
+                    </form>
+                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
+                    <br>
+                    <pre id="resultListUser"></pre>
                 </div>
-                <button type="submit" class="fa fa-search button button-outline" ></button>
-            </form>
-            <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
-            <br>
-            <pre id="resultListUser"></pre>
+                <div class="user-search-results"></div>
+            </div>
+
+
+            <div class="page" id="rolesPage">
+                <div class="flexed">
+                    <h2>Роли пользователя в приложении</h2>
+                    <form id="formListRole" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
+                        <div>
+                            <label >пользователь</label>
+                            <select id="allUsers" name="username"  onchange="return formListRoleSubmit(event)"></select>
+                        </div>
+                        <div>
+                            <label>приложение</label>
+                            <select id="allApps" name="appname" onchange="return formListRoleSubmit(event)"></select>
+                        </div>
+                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
+                    </form>
+                    <pre id="resultListRole"></pre>
+                    <div class="app-user-roles-results"></div>
+                </div>
         </div>
-        <div class="user-search-results"></div>
+
+
+
+
+        </div>  
+        <div id="footer">
+            <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>
+            <button class="button button-clear" onclick="$('<style>.flexed>pre { display: none; }</style>').appendTo('head')">hide responses</button>
+            <a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API &#x25B6;</a>
+        </div>
     </div>
 
-
-    <div class="page" id="rolesPage">
-        <div class="flexed">
-            <h2>Роли пользователя в приложении</h2>
-            <form id="formListRole" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
-                <div>
-                    <label >пользователь</label>
-                    <select id="allUsers" name="username"  onchange="return formListRoleSubmit(event)"></select>
-                </div>
-                <div>
-                    <label>приложение</label>
-                    <select id="allApps" name="appname" onchange="return formListRoleSubmit(event)"></select>
-                </div>
-                <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
-            </form>
-            <pre id="resultListRole"></pre>
-            <div class="app-user-roles-results"></div>
-        </div>
-   </div>
-
-
-
-
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>
-    <button class="button button-clear" onclick="$('<style>.flexed>pre { display: none; }</style>').appendTo('head')">hide responses</button>
-    <p><a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API &#x25B6;</a></p>
     <script src="templates/js/index.js"></script>
 </body>
 
