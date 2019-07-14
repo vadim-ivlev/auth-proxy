@@ -65,6 +65,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotOwnerOrAdmin(params)
 				fields := getSelectedFields([]string{"get_user"}, params)
 				return db.QueryRowMap("SELECT "+fields+" FROM full_user WHERE username = $1 ;", params.Args["username"])
 			},
@@ -80,6 +81,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				fields := getSelectedFields([]string{"get_app"}, params)
 				return db.QueryRowMap("SELECT "+fields+" FROM full_app WHERE appname = $1 ;", params.Args["appname"])
 			},
@@ -110,6 +112,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				wherePart, orderAndLimits := QueryEnd(params, "fullname,description,email,username")
 				fields := getSelectedFields([]string{"list_user", "list"}, params)
 
@@ -157,6 +160,8 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotUser(params)
+
 				wherePart, orderAndLimits := QueryEnd(params, "appname,description")
 				fields := getSelectedFields([]string{"list_app", "list"}, params)
 
@@ -197,6 +202,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotOwnerOrAdmin(params)
 				fields := getSelectedFields([]string{"list_app_user_role"}, params)
 				wherePart := list_app_user_roleWherePart(params)
 				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s`, fields, wherePart)

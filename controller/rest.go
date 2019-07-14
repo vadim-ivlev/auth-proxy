@@ -24,10 +24,8 @@ func LandingPage(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-
 	username := c.PostForm("username")
 	password := c.PostForm("password")
-
 	err := auth.Login(c, username, password)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err.Error()}) // http.StatusUnauthorized

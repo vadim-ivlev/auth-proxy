@@ -9,6 +9,7 @@ BEGIN;
 
 -- данные
 
+INSERT INTO app (appname, url, description) VALUES ('auth'          ,'', 'Сервис авторизации');
 INSERT INTO app (appname, url, description) VALUES ('app1'          ,'http://localhost:3001', 'Тестовое express приложение 1 test0');
 INSERT INTO app (appname, url, description) VALUES ('app2'          ,'http://localhost:3002', 'Тестовое express приложение 2 test0');
 INSERT INTO app (appname, url, description) VALUES ('onlinebc_admin','http://localhost:7700', 'Тестовые трансляции test0'          );
@@ -279,6 +280,9 @@ INSERT INTO "user" (username, password, email, fullname, description) VALUES ('z
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('zinkler', 'q', 'zinkler@yandex.ru', 'Цинклер Евгения', 'test');
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('zzzebra', 'q', 'zzzebra@gmail.com', 'Благовещенский Антон', 'test');
 
+
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('auth', 'vadim', 'authadmin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('auth', 'vadim', 'manager');
 
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'manager');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('app1', 'vadim', 'worker');

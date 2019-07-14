@@ -68,6 +68,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotOwnerOrAdmin(params)
 				return updateRecord("username", params, "user", "full_user")
 			},
 		},
@@ -82,6 +83,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotOwnerOrAdmin(params)
 				return deleteRecord("username", params, "user", "full_user")
 			},
 		},
@@ -104,6 +106,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
 				return createRecord("appname", params, "app", "full_app")
 			},
@@ -127,6 +130,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				return updateRecord("appname", params, "app", "full_app")
 			},
 		},
@@ -141,6 +145,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				return deleteRecord("appname", params, "app", "full_app")
 			},
 		},
@@ -163,40 +168,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				return db.CreateRow("app_user_role", params.Args)
-			},
-		},
-
-		"update_app_user_role": &gq.Field{
-			Description: "Обновить роль пользователя для приложения",
-			Type:        app_user_roleObject,
-			Args: gq.FieldConfigArgument{
-				"appname": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя приложения (уникальное)",
-				},
-				"username": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя пользователя (уникальное)",
-				},
-				"old_rolename": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Старое имя роли",
-				},
-				"new_rolename": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Новое имя роли",
-				},
-			},
-			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				sqlText := fmt.Sprintf(
-					`UPDATE app_user_role SET rolename = '%v' WHERE appname = '%v' AND username = '%v' AND rolename = '%v' RETURNING * ;`,
-					params.Args["new_rolename"],
-					params.Args["appname"],
-					params.Args["username"],
-					params.Args["old_rolename"],
-				)
-				return db.QueryRowMap(sqlText)
 			},
 		},
 
@@ -218,6 +191,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
 				sqlText := fmt.Sprintf(
 					`DELETE FROM app_user_role WHERE appname = '%v' AND username = '%v' AND rolename = '%v' RETURNING * ;`,
 					params.Args["appname"],

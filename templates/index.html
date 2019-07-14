@@ -36,8 +36,13 @@
         <div id="content">  
             <div id="msg" class="msg info">a</div>
 
-            <button id="loginButton" class="button button-clear tab right"  onclick="showPage('login',true)">Login</button>
-            <button id="logoutButton" class="button button-clear tab right"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Logout</button>
+            <button id="loginButton" class="button button-clear right"  onclick="showPage('login',true)">Login</button>
+            <div id="loginedArea" class="right">
+                <span id="loginedUser"></span>
+                <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser); showPage('user',true);">профиль</button>
+                <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Logout</button>
+            </div>
+
 
             <h4><img src="templates/images/rgru-logo.png" class="logo">
                 <b>Auth-Proxy</b> Сервис Авторизации
@@ -54,7 +59,7 @@
             
             <div id="loginPage" class="page">
             <div class="flexed max-width-400">
-                    
+
                     <h2>Login</h2>
                     <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                         <div>
