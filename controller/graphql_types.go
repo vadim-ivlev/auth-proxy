@@ -45,10 +45,10 @@ var userFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Уникальный идентификатор пользователя",
 	},
-	"password": &gq.Field{
-		Type:        gq.String,
-		Description: "Пароль",
-	},
+	// "password": &gq.Field{
+	// 	Type:        gq.String,
+	// 	Description: "Пароль",
+	// },
 	"email": &gq.Field{
 		Type:        gq.String,
 		Description: "Емайл",
@@ -144,25 +144,25 @@ var app_user_role_extendedFields = gq.Fields{
 
 // FULL FIELDS поля с древовидной структурой  ****************************************************
 
-var fullUserFields = addFields(userFields, gq.Fields{
-	"apps": &gq.Field{
-		Type:        gq.NewList(user_appObject),
-		Description: "Приложения пользователя",
-		Resolve: func(params gq.ResolveParams) (interface{}, error) {
-			return JSONParamToMap(params, "apps")
-		},
-	},
-})
+// var fullUserFields = addFields(userFields, gq.Fields{
+// 	"apps": &gq.Field{
+// 		Type:        gq.NewList(user_appObject),
+// 		Description: "Приложения пользователя",
+// 		Resolve: func(params gq.ResolveParams) (interface{}, error) {
+// 			return JSONParamToMap(params, "apps")
+// 		},
+// 	},
+// })
 
-var fullAppFields = addFields(appFields, gq.Fields{
-	"roles": &gq.Field{
-		Type:        gq.NewList(app_roleObject),
-		Description: "Роли определенные в приложениях",
-		Resolve: func(params gq.ResolveParams) (interface{}, error) {
-			return JSONParamToMap(params, "roles")
-		},
-	},
-})
+// var fullAppFields = addFields(appFields, gq.Fields{
+// 	"roles": &gq.Field{
+// 		Type:        gq.NewList(app_roleObject),
+// 		Description: "Роли определенные в приложениях",
+// 		Resolve: func(params gq.ResolveParams) (interface{}, error) {
+// 			return JSONParamToMap(params, "roles")
+// 		},
+// 	},
+// })
 
 var listUserFields = gq.Fields{
 	"length": &gq.Field{
@@ -256,17 +256,17 @@ var listAppUserRoleGQType = gq.NewObject(gq.ObjectConfig{
 
 // FULL TYPES типы с древовидной структурой *************
 
-var fullUserObject = gq.NewObject(gq.ObjectConfig{
-	Name:        "FullUser",
-	Description: "Пользователь и его приложения",
-	Fields:      fullUserFields,
-})
+// var fullUserObject = gq.NewObject(gq.ObjectConfig{
+// 	Name:        "FullUser",
+// 	Description: "Пользователь и его приложения",
+// 	Fields:      fullUserFields,
+// })
 
-var fullAppObject = gq.NewObject(gq.ObjectConfig{
-	Name:        "FullApp",
-	Description: "Приложение его роли",
-	Fields:      fullAppFields,
-})
+// var fullAppObject = gq.NewObject(gq.ObjectConfig{
+// 	Name:        "FullApp",
+// 	Description: "Приложение его роли",
+// 	Fields:      fullAppFields,
+// })
 
 // AUTH messages
 

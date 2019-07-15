@@ -1,31 +1,9 @@
 
--- V I E W S ------------------------------------------------------------------
-
--- Расширенное представление основной таблицы
--- С дополнительными полями из справочных таблиц 
-DROP VIEW IF EXISTS app_user_role_extended;
-CREATE VIEW app_user_role_extended AS
-    SELECT 
-        aur.appname    AS appname,
-        aur.username   AS username,
-        aur.rolename   AS rolename,
-        u.email        AS user_email,
-        u.fullname     AS user_fullname,
-        u.description  AS user_description,
-        a.description  AS app_description,
-        a.url          AS app_url
-    
-    FROM app_user_role   AS aur
-    INNER JOIN "user"    AS u   ON aur.username = u.username
-    INNER JOIN app       AS a   ON aur.appname  = a.appname
-;
-
 
 DROP VIEW IF EXISTS full_app;
 CREATE VIEW full_app AS
     SELECT  *,  
         ( select jsonb_agg(subtable) from  
-            -- ( SELECT * FROM app_role WHERE appname = app.appname ) 
             ( SELECT DISTINCT rolename FROM app_user_role WHERE appname = app.appname ) 
             as subtable 
         ) AS roles
@@ -43,6 +21,8 @@ CREATE VIEW full_user AS
         ) AS apps
     FROM "user" 
 ;
+
+
 
 -- -- TODO: delete
 -- -- Пользователь с выборкой его приложений и его ролей в них 

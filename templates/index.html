@@ -32,14 +32,20 @@
 </head>
 
 <body>
+    <div id="jsonViewer" class="json-viewer">
+        <div class="json-viewer-close" onclick="$('#jsonViewer').hide()">x</div>
+        <pre id="jsonViewerView"></pre>
+    </div>
+    <div id="blinkMessage" class="blink-message info">a</div>
+
+
     <div id="page-container">
-        <div id="content">  
-            <div id="msg" class="msg info">a</div>
+        <div id="content">
 
             <button id="loginButton" class="button button-clear right"  onclick="showPage('login',true)">Login</button>
             <div id="loginedArea" class="right">
                 <span id="loginedUser"></span>
-                <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser); showPage('user',true);">профиль</button>
+                <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser.username); showPage('user',true);">профиль</button>
                 <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Logout</button>
             </div>
 
@@ -77,7 +83,6 @@
                         </div>
                     </form>
                     <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
-                    <pre id="resultLoginGraphQL"></pre>
                 </div>
             </div>
                 
@@ -95,7 +100,6 @@
                     </form>
                     <button class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
                     <br>
-                    <pre id="resultListApp"></pre>
                 </div>
                 <div class="app-search-results"></div>
         </div>
@@ -113,7 +117,6 @@
                     </form>
                     <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
                     <br>
-                    <pre id="resultListUser"></pre>
                 </div>
                 <div class="user-search-results"></div>
             </div>
@@ -131,9 +134,7 @@
                             <label>приложение</label>
                             <select id="allApps" name="appname" onchange="return formListRoleSubmit(event)"></select>
                         </div>
-                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
                     </form>
-                    <pre id="resultListRole"></pre>
                     <div class="app-user-roles-results"></div>
                 </div>
         </div>
@@ -143,9 +144,12 @@
 
         </div>  
         <div id="footer">
-            <button class="button button-clear" onclick="$('<style>.flexed>pre { display: block; }</style>').appendTo('head')">show responses</button>
-            <button class="button button-clear" onclick="$('<style>.flexed>pre { display: none; }</style>').appendTo('head')">hide responses</button>
-            <a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API &#x25B6;</a>
+            <span >local search</span>
+            <input id="chkLocalSearch" type="checkbox" checked>
+            <span >show responses</span>
+            <input id="chkShowResponses" type="checkbox" onclick="$('#jsonViewer').toggle()">
+            <a href="" onclick="return showModel()">show model</a>
+            <a target="_blank" href="https://graphql-test.now.sh/">&nbsp;&nbsp;&nbsp;GraphQL API &#x25B6;</a>
         </div>
     </div>
 

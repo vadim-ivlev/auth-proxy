@@ -40,7 +40,7 @@ pre {
     overflow: auto;
     font-size: 90%;
     border: none;
-    /* border-left: 1px dashed silver; */
+    border-left: 1px dashed silver;
     /* border-radius: 8px; */
     font-family: "Roboto Mono";
     background-color: transparent;
@@ -195,7 +195,7 @@ input.role-input {
     border-color: silver;
 }
 
-.msg {
+.blink-message {
     display: none;
     position: fixed;
     top: 0;
@@ -204,8 +204,35 @@ input.role-input {
     text-align: center;
     background-color: blueviolet;
     color: white;
+    z-index: 2;
 }
 
 #loginPage {
     margin-top:100px;
+}
+
+.json-viewer {
+    position: fixed;
+    width: 100%;
+    min-height: 100px;
+    max-height: 100vh;
+    overflow: auto;
+    background-color:white;
+    border:1px solid silver;
+    padding:10px;
+    z-index: 1;
+    cursor: pointer;
+    display:none;
+}
+
+.json-viewer-close {
+    position: fixed;
+    right:20px;
+    top:20px;
+    width:30px;
+    height:30px;
+    border: 1px solid silver;
+    text-align: center;
+    border-radius: 20;
+    z-index: 1;
 }

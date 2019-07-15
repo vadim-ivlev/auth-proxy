@@ -13,7 +13,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"create_user": &gq.Field{
 			Description: "Создать пользователя",
-			Type:        fullUserObject,
+			// Type:        fullUserObject,
+			Type: userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -38,13 +39,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
-				return createRecord("username", params, "user", "full_user")
+				// return createRecord("username", params, "user", "full_user")
+				return createRecord("username", params, "user", "user")
 			},
 		},
 
 		"update_user": &gq.Field{
 			Description: "Обновить пользователя",
-			Type:        fullUserObject,
+			// Type:        fullUserObject,
+			Type: userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -69,13 +72,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
-				return updateRecord("username", params, "user", "full_user")
+				// return updateRecord("username", params, "user", "full_user")
+				return updateRecord("username", params, "user", "user")
 			},
 		},
 
 		"delete_user": &gq.Field{
 			Description: "Удалить пользователя",
-			Type:        fullUserObject,
+			// Type:        fullUserObject,
+			Type: userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -84,13 +89,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
-				return deleteRecord("username", params, "user", "full_user")
+				// return deleteRecord("username", params, "user", "full_user")
+				return deleteRecord("username", params, "user", "user")
 			},
 		},
 
 		"create_app": &gq.Field{
 			Description: "Создать приложение",
-			Type:        fullAppObject,
+			// Type:        fullAppObject,
+			Type: appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -108,13 +115,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
-				return createRecord("appname", params, "app", "full_app")
+				// return createRecord("appname", params, "app", "full_app")
+				return createRecord("appname", params, "app", "app")
 			},
 		},
 
 		"update_app": &gq.Field{
 			Description: "Обновить пользователя",
-			Type:        fullAppObject,
+			// Type:        fullAppObject,
+			Type: appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -131,13 +140,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				return updateRecord("appname", params, "app", "full_app")
+				// return updateRecord("appname", params, "app", "full_app")
+				return updateRecord("appname", params, "app", "app")
 			},
 		},
 
 		"delete_app": &gq.Field{
 			Description: "Удалить пользователя",
-			Type:        fullAppObject,
+			// Type:        fullAppObject,
+			Type: appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -146,7 +157,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				return deleteRecord("appname", params, "app", "full_app")
+				// return deleteRecord("appname", params, "app", "full_app")
+				return deleteRecord("appname", params, "app", "app")
 			},
 		},
 
