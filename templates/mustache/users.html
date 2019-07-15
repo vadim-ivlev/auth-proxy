@@ -5,12 +5,17 @@
                 <th>email</th>
                 <th>fullname</th>
                 <th>description</th>
+                <th>disabled</th>
                 <th>actions</th>
             <tr>
         </thead>
         <tbody>
             {{#users}}
-            <tr>
+            <tr
+            {{#disabled}}
+            style="text-decoration: line-through; " 
+            {{/disabled}}            
+            >
                 <td>
                     <a href="" onclick="getUser('{{username}}'); return showPage('user',true);">
                         {{username}}
@@ -20,8 +25,12 @@
                     <a href="mailto:{{email}}" target="_blank" >{{email}}</a>
                 </td>
                 <td>
-                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);" >
+                    <a href=""  onclick="getUser('{{username}}'); return showPage('user',true);" >
                         {{fullname}}
+                        {{#disabled}}
+                        (отключен)
+                        {{/disabled}}
+            
                     </a>
                 </td>
                 <td>
@@ -30,8 +39,13 @@
                     </a>
                 </td>
                 <td>
+                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);">
+                        {{disabled}}
+                    </a>
+                </td>
+                <td>
                     <button class="button button-clear" onclick="getUser('{{username}}'); showPage('user',true);" >редактировать</button>
-                    <button class="button button-clear" onclick="deleteUser('{{username}}'); showPage('users');" >✕</button>
+                    <button class="button button-clear delete" onclick="deleteUser('{{username}}'); showPage('users');" >✕</button>
                 </td>
             <tr>
             {{/users}}

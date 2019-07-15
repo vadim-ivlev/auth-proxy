@@ -12,8 +12,10 @@ CREATE VIEW app_user_role_extended AS
         u.email        AS user_email,
         u.fullname     AS user_fullname,
         u.description  AS user_description,
+        u.disabled     AS user_disabled,
         a.description  AS app_description,
         a.url          AS app_url
+        
     
     FROM app_user_role   AS aur
     INNER JOIN "user"    AS u   ON aur.username = u.username

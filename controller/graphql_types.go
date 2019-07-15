@@ -45,10 +45,6 @@ var userFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Уникальный идентификатор пользователя",
 	},
-	// "password": &gq.Field{
-	// 	Type:        gq.String,
-	// 	Description: "Пароль",
-	// },
 	"email": &gq.Field{
 		Type:        gq.String,
 		Description: "Емайл",
@@ -60,6 +56,10 @@ var userFields = gq.Fields{
 	"description": &gq.Field{
 		Type:        gq.String,
 		Description: "Дополнительная информация",
+	},
+	"disabled": &gq.Field{
+		Type:        gq.Int,
+		Description: "Если не равно 0, пользователь отключен",
 	},
 }
 
@@ -174,6 +174,7 @@ var listUserFields = gq.Fields{
 		Description: "Список пользователей",
 	},
 }
+
 var listAppFields = gq.Fields{
 	"length": &gq.Field{
 		Type:        gq.Int,

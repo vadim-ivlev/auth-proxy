@@ -31,6 +31,10 @@
             <label >description </label>
             <input name="description"  placeholder="дополнительная информация" value="{{user.description}}">
         </div>
+        <div>
+            <label >disabled</label>
+            <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{user.disabled}}">
+        </div>
         <div style="text-align: right;">
             <label></label>
             {{^user}}

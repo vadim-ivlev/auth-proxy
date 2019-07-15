@@ -352,6 +352,7 @@ function getLoginedUser() {
             email
             fullname
             username
+            disabled
           }
         }
     `
@@ -388,6 +389,7 @@ function formListUserSubmit(event) {
               email
               fullname
               username
+              disabled
             }
           }
         }        
@@ -415,6 +417,7 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     let email = $("#formUser input[name='email']").val()
     let fullname = $("#formUser input[name='fullname']").val()
     let description = $("#formUser input[name='description']").val()
+    let disabled = $("#formUser input[name='disabled']").val()
     var query =`
     mutation {
         ${userOperationName}(
@@ -422,12 +425,14 @@ function formUserSubmit(event, userOperationName = 'create_user') {
         password: "${password}",
         email: "${email}",
         fullname: "${fullname}",
-        description: "${description}"
+        description: "${description}",
+        disabled: ${disabled}
         ) {
             description
             email
             fullname
             username
+            disabled
           }
 
         }
@@ -461,6 +466,7 @@ function getUser(username) {
             email
             fullname
             username
+            disabled
           }
         
         list_app_user_role(
@@ -633,6 +639,7 @@ function getApp(appname) {
             appname
             rolename
             user_fullname
+            user_disabled
             username
           }
         
@@ -718,6 +725,7 @@ function getAllApps(event) {
             list {
               appname
               description
+              url
             }
           }
         }    `
@@ -748,6 +756,7 @@ function getAllUsers(event) {
               fullname
               email
               description
+              disabled
             }
           }
         }    `

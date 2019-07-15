@@ -35,6 +35,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Описание",
 				},
+				"disabled": &gq.ArgumentConfig{
+					Type:        gq.Int,
+					Description: "Если не равно 0, пользователь отключен",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
@@ -67,6 +71,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
 					Description: "Описание",
+				},
+				"disabled": &gq.ArgumentConfig{
+					Type:        gq.Int,
+					Description: "Если не равно 0, пользователь отключен",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {

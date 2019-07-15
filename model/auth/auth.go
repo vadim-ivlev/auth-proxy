@@ -58,9 +58,9 @@ func DeleteSession(c *gin.Context) {
 // CheckUserPassword проверяет пароль пользователя. Возвращает true если проверка прошла успешно.
 func CheckUserPassword(username, password string) bool {
 	_, err := db.QueryRowMap(`
-		SELECT * FROM "user" WHERE username=$1 AND "password"=$2
+		SELECT * FROM "user" WHERE username=$1 AND "password"=$2 AND disabled = 0
 		UNION
-		SELECT * FROM "user" WHERE email=$1    AND "password"=$2 
+		SELECT * FROM "user" WHERE email=$1    AND "password"=$2 AND disabled = 0
 		`, username, password)
 
 	if err != nil {

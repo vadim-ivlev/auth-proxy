@@ -236,3 +236,8 @@ input.role-input {
     border-radius: 20;
     z-index: 1;
 }
+
+.delete {
+    width: 40px;
+    padding:0;
+}

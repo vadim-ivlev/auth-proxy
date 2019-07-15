@@ -1,7 +1,7 @@
 ## SERVER
 
 - change Like ||
-- add field active to user, app
+- remove roles for not active users
 - build containers (add onlinebc to dev env)
 - encrypt passwords in db
 

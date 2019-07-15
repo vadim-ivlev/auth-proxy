@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     email text,
     fullname text,
     description text,
+    disabled integer NOT NULL DEFAULT 0,
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );
