@@ -221,7 +221,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				panicIfNotOwnerOrAdmin(params)
 				fields := getSelectedFields([]string{"list_app_user_role"}, params)
 				wherePart := list_app_user_roleWherePart(params)
-				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s`, fields, wherePart)
+				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s `, fields, wherePart)
 				// println(query)
 				return db.QuerySliceMap(query)
 			},
