@@ -42,21 +42,22 @@
     <div id="page-container">
         <div id="content">
 
-            <button id="loginButton" class="button button-clear right"  onclick="showPage('login',true)">Login</button>
+            <!-- <button id="loginButton" class="button button-clear right"  onclick="showPage('login',true)">Вход</button> -->
             <div id="loginedArea" class="right">
                 <span id="loginedUser"></span>
                 <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser.username); showPage('user',true);">профиль</button>
-                <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Logout</button>
+                <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Выход</button>
             </div>
 
 
             <h4><img src="templates/images/rgru-logo.png" class="logo">
-                <b>Auth-Proxy</b> Сервис Авторизации
+                <!-- <b>Auth-Proxy</b>  -->
+                Сервис Авторизации
             </h4>
 
             <div id="menu" class="menu">
-                <a href="" id="appsTab"  class="button button-clear tab"  onclick="formListAppSubmit();  return showPage('apps') ;">Приложения</a>
-                <a href="" id="usersTab" class="button button-clear tab"  onclick="formListUserSubmit(); return showPage('users');">Пользователи</a>
+                <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
+                <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
                 <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
             </div>
 
@@ -66,20 +67,20 @@
             <div id="loginPage" class="page">
             <div class="flexed max-width-400">
 
-                    <h2>Login</h2>
+                    <h2>Вход</h2>
                     <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                         <div>
                             <label class="param-name">username</label>
-                            <input name="username" type="text" value="vadim">
+                            <input name="username" type="text" placeholder="имя или емайл" >
                         </div>
                         <div>
                             <label class="param-name">password</label>
-                            <input name="password" type="password" value="1">
+                            <input name="password" type="password" placeholder="пароль" >
                         </div>
                         
                         <div style="text-align: right;">
                             <label class="param-name"></label>
-                            <input type="submit" class="button button-outline" value="Login">
+                            <input type="submit" class="button button-outline" value="Вход">
                         </div>
                     </form>
                     <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
@@ -91,10 +92,10 @@
                     <h2>
                         Приложения
                     </h2>
-                    <form id="formListApp" class="grided" onsubmit="return formListAppSubmit(event)">
+                    <form id="formListApp" class="grided" onsubmit="return searchApps()">
                             <div>
                                 <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListAppSubmit)"  value="test0">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchApps()"  value="">
                         </div>
                         <button type="submit" class="fa fa-search button button-outline" ></button>
                     </form>
@@ -108,10 +109,10 @@
             <div class="page" id="usersPage">
                 <div class="flexed max-width-600">
                     <h2>Пользователи</h2>
-                    <form id="formListUser" class="grided" onsubmit="return formListUserSubmit(event)">
+                    <form id="formListUser" class="grided" onsubmit="return searchUsers()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return delayFunc(formListUserSubmit)" value="test0">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()" value="">
                         </div>
                         <button type="submit" class="fa fa-search button button-outline" ></button>
                     </form>

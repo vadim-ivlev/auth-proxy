@@ -218,6 +218,45 @@ function delayFunc(f, delay=500) {
 }
 
 
+function searchApps() {
+    if (document.querySelector('#chkLocalSearch').checked) {
+        return delayFunc(searchAppsInModel, 100)
+    } else {
+        return delayFunc(formListAppSubmit)
+    }
+}
+
+function searchAppsInModel() {
+    if (!model.allApps) return
+    var text = $("#formListApp input[name='search']").val().trim().replace(' ','.*')
+    var r = new RegExp(text, 'i')
+    let found = model.allApps.filter((v)=>{
+        var s = Object.values(v).join(' ')
+        return r.test(s)
+    })
+    model.apps = found
+    return false   
+}
+
+
+function searchUsers() {
+    if (document.querySelector('#chkLocalSearch').checked) {
+        return delayFunc(searchUsersInModel, 100)
+    } else {
+        return delayFunc(formListUserSubmit)
+    }
+}
+
+function searchUsersInModel() {
+    if (!model.allUsers) return
+    var text = $("#formListUser input[name='search']").val().trim().replace(' ','.*')
+    var r = new RegExp(text, 'i')
+    let found = model.allUsers.filter( (v) => r.test (Object.values(v).join(' ')) )
+    model.users = found
+    return false   
+}
+
+
 
 
 /*
