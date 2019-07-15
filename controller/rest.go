@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"auth-proxy/model/auth"
+	// "auth-proxy/model/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,27 +17,8 @@ import (
 )
 
 func LandingPage(c *gin.Context) {
-	// c.HTML(200, "index.html", map[string]interface{}{})
-
 	htmlFile, _ := ioutil.ReadFile("./templates/index.html")
 	c.Data(http.StatusOK, "text/html; charset=utf-8", htmlFile)
-}
-
-func Login(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-	err := auth.Login(c, username, password)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": err.Error()}) // http.StatusUnauthorized
-	} else {
-		c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated " + username})
-	}
-}
-
-func Logout(c *gin.Context) {
-	username := auth.GetUserName(c)
-	auth.Logout(c)
-	c.JSON(http.StatusOK, gin.H{"message": username + " successfully logged out"})
 }
 
 // ReverseProxy перенаправляет запросы к другому серверу

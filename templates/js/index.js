@@ -807,12 +807,15 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
         rolename: "${rolename}"
         ) {
             rolename
+            appname
+            username
           }
         }
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
     success: (res) => {
         if (res.errors){
+            showResponse(res)
             blinkStatus( res.errors[0].message)
             return
         }

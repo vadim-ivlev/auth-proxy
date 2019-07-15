@@ -42,7 +42,6 @@
     <div id="page-container">
         <div id="content">
 
-            <!-- <button id="loginButton" class="button button-clear right"  onclick="showPage('login',true)">Вход</button> -->
             <div id="loginedArea" class="right">
                 <span id="loginedUser"></span>
                 <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser.username); showPage('user',true);">профиль</button>
@@ -145,10 +144,12 @@
 
         </div>  
         <div id="footer">
-            <span >local search</span>
             <input id="chkLocalSearch" type="checkbox" checked>
-            <span >show responses</span>
+            <span >local search</span>
+            &nbsp;&nbsp;
             <input id="chkShowResponses" type="checkbox" onclick="$('#jsonViewer').toggle()">
+            <span >show responses</span>
+            &nbsp;&nbsp;
             <a href="" onclick="return showModel()">show model</a>
             <a target="_blank" href="https://graphql-test.now.sh/">&nbsp;&nbsp;&nbsp;GraphQL API &#x25B6;</a>
         </div>

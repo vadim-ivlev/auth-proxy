@@ -68,12 +68,12 @@ func createRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate st
 		return fieldValues, err
 	}
 	// извлекаем id вставленной записи
-	id := fieldValues[keyFieldName]
+	// id := fieldValues[keyFieldName]	// возвращаем ответ
+	id := params.Args[keyFieldName] // возвращаем ответ
 
-	// возвращаем ответ
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
+	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE "+keyFieldName+" = $1 ;", id)
 }
 
 // updateRecord обновляет запись в таблице tableToUpdate,
@@ -89,7 +89,8 @@ func updateRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate st
 	}
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
+	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE "+keyFieldName+" = $1 ;", id)
+
 }
 
 // deleteRecord удаляет запись из таблицы tableToUpdate,
@@ -102,7 +103,8 @@ func deleteRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate st
 	id := params.Args[keyFieldName]
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	fieldValues, err := db.QueryRowMap("SELECT "+fields+" FROM "+tableToSelectFrom+" WHERE "+keyFieldName+" = $1 ;", id)
+	fieldValues, err := db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE "+keyFieldName+" = $1 ;", id)
+
 	if err != nil {
 		return nil, err
 	}

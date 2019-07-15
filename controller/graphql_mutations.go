@@ -2,7 +2,6 @@ package controller
 
 import (
 	"auth-proxy/model/db"
-	"fmt"
 
 	gq "github.com/graphql-go/graphql"
 )
@@ -204,13 +203,21 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				sqlText := fmt.Sprintf(
-					`DELETE FROM app_user_role WHERE appname = '%v' AND username = '%v' AND rolename = '%v' RETURNING * ;`,
-					params.Args["appname"],
-					params.Args["username"],
-					params.Args["rolename"],
-				)
-				return db.QueryRowMap(sqlText)
+				// sqlText := fmt.Sprintf(
+				// 	`DELETE FROM app_user_role WHERE appname = '%v' AND username = '%v' AND rolename = '%v' RETURNING * ;`,
+				// 	params.Args["appname"],
+				// 	params.Args["username"],
+				// 	params.Args["rolename"],
+				// )
+				// return db.QueryRowMap(sqlText)
+				a, u, r := params.Args["appname"], params.Args["username"], params.Args["rolename"]
+
+				_, err := db.QueryExec(
+					`DELETE FROM app_user_role WHERE appname = $1 AND username = $2 AND rolename = $3 ;`, a, u, r)
+				if err != nil {
+					return nil, err
+				}
+				return map[string]interface{}{"appname": a, "username": u, "rolename": r}, nil
 			},
 		},
 	},

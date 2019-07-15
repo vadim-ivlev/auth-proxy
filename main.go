@@ -27,10 +27,12 @@ func main() {
 
 	// если servePort > 0, печатаем приветствие и запускаем сервер
 	if servePort > 0 {
-		greetings, _ := ioutil.ReadFile("./greetings.txt")
+		greetings, _ := ioutil.ReadFile("./templates/greetings.txt")
 		fmt.Printf(string(greetings), servePort)
 		router.Serve(":" + strconv.Itoa(servePort))
 	}
+
+	fmt.Println("Bye")
 }
 
 // Вспомогательные функции =========================================

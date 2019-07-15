@@ -31,9 +31,8 @@ func Setup() *gin.Engine {
 	r.Use(sessions.Sessions("auth-proxy", store))
 
 	r.GET("/", controller.LandingPage)
-	r.POST("/login", controller.Login)
-	r.GET("/logout", controller.Logout)
-	// r.GET("/graphql", controller.GraphQL)
+	// r.POST("/login", controller.Login)
+	// r.GET("/logout", controller.Logout)
 	r.POST("/graphql", controller.GraphQL)
 
 	apps := r.Group("/apps")

@@ -45,11 +45,11 @@ func dbAvailable() bool {
 }
 
 // QueryExec исполняет запросы заданные в sqlText.
-func QueryExec(sqlText string) (sql.Result, error) {
+func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 	conn, err := getDB()
 	panicIf(err)
 	defer conn.Close()
-	return conn.Exec(sqlText)
+	return conn.Exec(sqlText, args...)
 }
 
 // WaitForDbOrExit ожидает доступности базы данных
@@ -134,9 +134,18 @@ func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, e
 // Возвращает map[string]interface{}, error новой записи таблицы.
 func CreateRow(tableName string, fieldValues map[string]interface{}) (map[string]interface{}, error) {
 	keys, values, dollars := getKeysAndValues(fieldValues)
-	sqlText := fmt.Sprintf(`INSERT INTO "%s" ( %s ) VALUES ( %s ) RETURNING * ;`,
+	// 	sqlText := fmt.Sprintf(`INSERT INTO "%s" ( %s ) VALUES ( %s ) RETURNING * ;`,
+	// 	tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "))
+	// 	return QueryRowMap(sqlText, values...)
+
+	sqlText := fmt.Sprintf(`INSERT INTO "%s" ( %s ) VALUES ( %s ) ;`,
 		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "))
-	return QueryRowMap(sqlText, values...)
+	res, err := QueryExec(sqlText, values...)
+	if err != nil {
+		return nil, err
+	}
+	n, _ := res.RowsAffected()
+	return map[string]interface{}{"RowsAffected": n}, nil
 }
 
 // // GetRowByID возвращает запись в таблице tableName по ее id.
@@ -151,16 +160,35 @@ func CreateRow(tableName string, fieldValues map[string]interface{}) (map[string
 // Возвращает map[string]interface{}, error обновленной записи таблицы.
 func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldValues map[string]interface{}) (map[string]interface{}, error) {
 	keys, values, dollars := getKeysAndValues(fieldValues)
-	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v' RETURNING * ;`,
+	// sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v' RETURNING * ;`,
+	// 	tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "), id)
+	// return QueryRowMap(sqlText, values...)
+
+	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`,
 		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "), id)
-	return QueryRowMap(sqlText, values...)
+
+	res, err := QueryExec(sqlText, values...)
+	if err != nil {
+		return nil, err
+	}
+	n, _ := res.RowsAffected()
+	return map[string]interface{}{"RowsAffected": n}, nil
 }
 
 // DeleteRowByID удаляет запись в таблице tableName по ее id.
 // Возвращает map[string]interface{}, error удаленной записи таблицы.
 func DeleteRowByID(keyFieldName string, tableName string, id interface{}) (map[string]interface{}, error) {
-	sqlText := fmt.Sprintf(`DELETE FROM "%s" WHERE `+keyFieldName+` = '%v' RETURNING * ;`, tableName, id)
-	return QueryRowMap(sqlText)
+	// sqlText := fmt.Sprintf(`DELETE FROM "%s" WHERE `+keyFieldName+` = '%v' RETURNING * ;`, tableName, id)
+	// return QueryRowMap(sqlText)
+
+	sqlText := fmt.Sprintf(`DELETE FROM "%s" WHERE `+keyFieldName+` = '%v' ;`, tableName, id)
+	res, err := QueryExec(sqlText)
+	if err != nil {
+		return nil, err
+	}
+	n, _ := res.RowsAffected()
+	return map[string]interface{}{"RowsAffected": n}, nil
+
 }
 
 // SerializeIfArray - возвращает JSON строку, если входной параметр массив.
