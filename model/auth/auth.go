@@ -69,6 +69,34 @@ func CheckUserPassword(username, password string) bool {
 	return true
 }
 
+// // GetAppURL Возвращает url приложения.
+// func GetAppURL(appname string) (string, error) {
+// 	rec, err := db.QueryRowMap(`SELECT url FROM app WHERE appname=$1;`, appname)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	url, _ := rec["url"].(string)
+// 	return url, nil
+// }
+
+// GetAppURLs Возвращает url-ы приложений.
+func GetAppURLs() (map[string]string, error) {
+	records, err := db.QuerySliceMap(`SELECT appname,url FROM app WHERE url IS NOT NULL;`)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[string]string)
+	for _, rec := range records {
+		app, _ := rec["appname"].(string)
+		url, _ := rec["url"].(string)
+		if url == "" || app == "" {
+			continue
+		}
+		m[app] = url
+	}
+	return m, nil
+}
+
 // GetUserRoles возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
 func GetUserRoles(user, app string) string {
 	cacheKey := user + "-" + app + "-roles"

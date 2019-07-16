@@ -20,6 +20,8 @@ func Setup() *gin.Engine {
 	r := gin.Default()
 	// r := gin.New()
 
+	controller.CreateProxies()
+
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 	r.Static("/templates", "./templates")
 	r.LoadHTMLGlob("templates/*.html")
@@ -38,10 +40,12 @@ func Setup() *gin.Engine {
 	apps := r.Group("/apps")
 	apps.Use(middleware.CheckUser())
 	{
-		apps.Any("/app1/*proxypath", controller.ReverseProxy("http://localhost:3001", "/apps/app1"))
-		apps.Any("/app2/*proxypath", controller.ReverseProxy("http://localhost:3002", "/apps/app2"))
-		apps.Any("/onlinebc/*proxypath", controller.ReverseProxy("http://localhost:7700", "/apps/onlinebc"))
-		apps.Any("/rg/*proxypath", controller.ReverseProxy("https://rg.ru", "/apps/rg"))
+		// apps.Any("/app1/*proxypath", controller.ReverseProxy("http://localhost:3001/abc/", "/apps/app1"))
+		// apps.Any("/app2/*proxypath", controller.ReverseProxy("http://localhost:3002", "/apps/app2"))
+		// apps.Any("/onlinebc/*proxypath", controller.ReverseProxy("http://localhost:7700", "/apps/onlinebc"))
+		// apps.Any("/rg/*proxypath", controller.ReverseProxy("https://rg.ru", "/apps/rg"))
+
+		apps.Any("/:appname/*proxypath", controller.Proxy)
 	}
 
 	return r

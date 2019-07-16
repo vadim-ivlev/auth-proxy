@@ -8,6 +8,8 @@ moon.py
 node_modules
 docs/doc
 auth.db
+auth-proxy
+
 
 
 

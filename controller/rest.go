@@ -1,7 +1,8 @@
 package controller
 
 import (
-	// "auth-proxy/model/auth"
+	"auth-proxy/model/auth"
+
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,6 +22,52 @@ func LandingPage(c *gin.Context) {
 	c.Data(http.StatusOK, "text/html; charset=utf-8", htmlFile)
 }
 
+func Proxy(c *gin.Context) {
+	appname := c.Param("appname")
+	proxypath := c.Param("proxypath")
+	proxy, ok := proxies[appname]
+	if ok {
+		c.Request.URL.Path = proxypath
+		proxy.ServeHTTP(c.Writer, c.Request)
+	} else {
+		log.Println("No proxy for appname:", appname)
+		c.JSON(200, gin.H{"error": "No proxy for " + appname})
+	}
+}
+
+var proxies map[string]*httputil.ReverseProxy
+
+func createProxy(target string) *httputil.ReverseProxy {
+	targetURL, err := url.Parse(target)
+	if err != nil {
+		log.Println("ERR", err)
+	}
+	return httputil.NewSingleHostReverseProxy(targetURL)
+}
+
+// CreateProxies создает глобальный массив proxies в соответствии с таблицей app
+func CreateProxies() {
+	proxies = make(map[string]*httputil.ReverseProxy)
+	appUrls, err := auth.GetAppURLs()
+	if err != nil {
+		return
+	}
+	for app, url := range appUrls {
+		proxies[app] = createProxy(url)
+	}
+	// log.Println("proxies:", proxies)
+}
+
+// func getProxy(appname string) *httputil.ReverseProxy {
+// 	proxy, ok := proxies[appname]
+// 	if !ok {
+// 		target, _ := auth.GetAppURL(appname)
+// 		proxies[appname] = createProxy(target)
+// 		proxy = proxies[appname]
+// 	}
+// 	return proxy
+// }
+
 // ReverseProxy перенаправляет запросы к другому серверу
 func ReverseProxy(target string, pathPrefix string) gin.HandlerFunc {
 	url, err := url.Parse(target)
@@ -29,7 +76,13 @@ func ReverseProxy(target string, pathPrefix string) gin.HandlerFunc {
 	}
 	proxy := httputil.NewSingleHostReverseProxy(url)
 	return func(c *gin.Context) {
-		c.Request.URL.Path = strings.TrimPrefix(c.Request.URL.Path, pathPrefix)
+		// p := c.Request.URL.Path
+		// pp := strings.TrimPrefix(p, pathPrefix)
+		proxypath := c.Param("proxypath")
+		// if pp == proxypath {
+		// 	fmt.Println("equal:", proxypath)
+		// }
+		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
 	}
 }

@@ -4,7 +4,7 @@
   "scripts": {
     "start1": "node server.js 3001 Application 1",
     "start2": "node server.js 3002 Application 2",
-    "start12": "node server.js 3001 Application 1 & node server.js 3002 Application 2"
+    "start12": "node server.js 3001 Application 1 & node server.js 3002 Application 2 & node server.js 3003 Application 3 & node server.js 3004 Application 4 & node server.js 3005 Application 5"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
