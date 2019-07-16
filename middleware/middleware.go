@@ -49,6 +49,9 @@ func CheckUser() gin.HandlerFunc {
 		if userName == "" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 		} else {
+			if auth.IsEnabled(userName) == false {
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " is disabled."})
+			}
 			roles := auth.GetUserRoles(userName, strings.TrimSuffix(strings.TrimPrefix(c.Request.URL.Path, "/apps/"), "/"))
 			info := auth.GetUserInfo(userName)
 

@@ -78,17 +78,17 @@ func GetUserRoles(user, app string) string {
 		return cachedValue.(string)
 	}
 
-	// record, err := db.QueryRowMap(`SELECT get_app_user_roles($1,$2) AS roles;`, app, user)
-	// SELECT DISTINCT roles FROM user_roles WHERE username='vadim' AND appname = 'app1';
-	record, err := db.QueryRowMap(`SELECT json_agg(rolename) AS roles FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
+	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
 	if err != nil {
 		return ""
 	}
-	bytes, _ := record["roles"].([]byte)
+
+	bytes, _ := json.Marshal(records)
 	roles := string(bytes)
 
 	Cache.Set(cacheKey, roles, cache.DefaultExpiration)
 	return roles
+
 }
 
 // GetUserInfo возвращает сериализованную информацию о пользователе
@@ -143,4 +143,13 @@ func Login(c *gin.Context, username, password string) error {
 	} else {
 		return errors.New("Authentication failed")
 	}
+}
+
+// IsEnabled  Если false, пользователь отключен
+func IsEnabled(user string) bool {
+	_, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username = $1 AND disabled = 0 ;`, user)
+	if err == nil {
+		return true
+	}
+	return false
 }

@@ -8,7 +8,7 @@
 ██   ██  ██████     ██    ██   ██
                                                                                   
 
-Auth-Proxy стартован.   
+Auth-Proxy стартован.  SQLite:%v 
 http://localhost:%v/
 		
 CTRL-C для прерывания.

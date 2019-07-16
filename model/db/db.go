@@ -238,14 +238,6 @@ func getKeysAndValues(vars map[string]interface{}) ([]string, []interface{}, []s
 // CreateDatabaseIfNotExists порождает объекты базы данных и наполняет базу тестовыми данными
 func CreateDatabaseIfNotExists() {
 	fmt.Println("Миграция ...")
-	// if SQLite {
-	// 	// url = "sqlite3://.auth.db"
-	// 	return
-	// }
-	// // mig, err := migrate.New("file://migrations/", connectURL)
-	// // panicIf(err)
-	// printIf("CreateDatabaseIfNotExists()", mig.Up())
-
 	MigrateUp("./migrations/")
 }
 
@@ -258,12 +250,17 @@ func MigrateUp(dirname string) {
 
 		if strings.HasSuffix(fileName, "up.sql") {
 			sqlBytes, err := ioutil.ReadFile(dirname + fileName)
-			panicIf(err)
+			if err != nil {
+				log.Println("Cannot read file: ", fileName)
+				continue
+			}
 			sqlText := string(sqlBytes)
-			// result, err := QueryExec(sqlText)
-			_, _ = QueryExec(sqlText)
-			// n, _ := result.RowsAffected()
-			fmt.Printf("Executed: %s \n", fileName)
+			_, err = QueryExec(sqlText)
+			if err != nil {
+				log.Printf("Query Execution error: %s.\t Error:  %v ", fileName, err)
+				continue
+			}
+			log.Printf("Executed: %s \n", fileName)
 		}
 	}
 }
