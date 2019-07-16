@@ -175,13 +175,18 @@ function showJSON(model) {
 
 
 // blinkStatus shows fading message
-function blinkStatus(message) {
+function blinkStatus(message, className="alert") {
     console.log("blink:", message)
-    let st = $("#blinkMessage")
-    st.text(message)
+    let e = $("#blinkMessage")
+
+    e.removeClass('alert')
+    e.removeClass('info')
+    e.addClass(className)
+
+    e.text(message)
     // st.show()
-    st.fadeTo(0,1)
-    st.fadeTo(2000, 0.0)
+    e.fadeTo(0,1)
+    e.fadeTo(2000, 0.0)
     // st.hide(2000)
 }
 
@@ -444,7 +449,7 @@ function formUserSubmit(event, userOperationName = 'create_user') {
                 blinkStatus( res.errors[0].message)
                 return
             }
-            blinkStatus( userOperationName+" success" )
+            blinkStatus( userOperationName+" success", 'info' )
             refreshData()
             model.user = res.data[userOperationName]
             getUser(username)
@@ -610,7 +615,7 @@ function formAppSubmit(event, appOperationName = 'create_app') {
                 blinkStatus( res.errors[0].message)
                 return
             }
-            blinkStatus( appOperationName+" success" )
+            blinkStatus( appOperationName+" success", 'info' )
             model.app = res.data[appOperationName]
             refreshData()
             getApp(appname)

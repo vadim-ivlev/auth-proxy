@@ -21,6 +21,11 @@ services:
   runner:
     image: rgru/auth-proxy:bare
     container_name: auth-runner
+    volumes:
+      - test_apps:/app/test_apps
+
+    # раскомментируйте для SQLite вместо Postgres
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=docker -sqlite" 
     restart: always
     ports:
       - 4400:4400
@@ -28,6 +33,7 @@ services:
       - db
     links:
       - db
+
 
   # server with test applications
   node:
@@ -37,7 +43,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./test_apps:/home/node/app
+      - test_apps:/home/node/app
     expose:
       - "3001"
       - "3002"
@@ -47,3 +53,5 @@ services:
     command: "npm run start12"
 
 
+volumes: 
+  test_apps:

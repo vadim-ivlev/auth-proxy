@@ -241,3 +241,11 @@ input.role-input {
     width: 40px;
     padding:0;
 }
+
+.alert {
+    background-color: red;
+}
+
+.info {
+    background-color: green;
+}

@@ -17,5 +17,5 @@ docker push rgru/auth-proxy:latest
 
 
 # копируем docker-compose-frontend.yml и 
+mkdir ../auth
 cp docker-compose-frontend.yml ../auth/docker-compose.yml
-cp readme-frontend.md ../auth/readme.md

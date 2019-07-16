@@ -132,6 +132,10 @@ var app_user_role_extendedFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Описание пользователя",
 	},
+	"user_disabled": &gq.Field{
+		Type:        gq.Int,
+		Description: "Если не равно 0, пользователь отключен",
+	},
 	"app_description": &gq.Field{
 		Type:        gq.String,
 		Description: "Описание приложения",

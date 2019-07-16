@@ -17,11 +17,15 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
   
 
-
   # сервер, где запущено приложение
   runner:
     image: rgru/auth-proxy
     container_name: auth-runner
+    volumes:
+      - test_apps:/go/src/auth-proxy/test_apps
+
+    # раскомментируйте для SQLite вместо Postgres
+    # command: bash -c "cd /go/src/auth-proxy && ./auth-proxy -serve 4400 -env=docker -sqlite" 
     restart: always
     ports:
       - 4400:4400
@@ -39,7 +43,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./test_apps:/home/node/app
+      - test_apps:/home/node/app
     expose:
       - "3001"
       - "3002"
@@ -49,3 +53,5 @@ services:
     command: "npm run start12"
 
 
+volumes: 
+  test_apps:
