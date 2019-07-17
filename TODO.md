@@ -1,7 +1,5 @@
 ## SERVER
 
-- build containers (add onlinebc to dev env)
-- reload server
 - encrypt passwords in db
 - change Like ||
 

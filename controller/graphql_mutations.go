@@ -2,6 +2,7 @@ package controller
 
 import (
 	"auth-proxy/model/db"
+	"log"
 
 	gq "github.com/graphql-go/graphql"
 )
@@ -123,18 +124,27 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				panicIfNotAdmin(params)
 				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
 				// return createRecord("appname", params, "app", "full_app")
-				return createRecord("appname", params, "app", "app")
+				res, err := createRecord("appname", params, "app", "app")
+				if err == nil {
+					app, _ := params.Args["appname"].(string)
+					url, _ := params.Args["url"].(string)
+					if url != "" {
+						proxies[app] = createProxy(url)
+						log.Printf("Proxy created appname=%v target=%v", app, url)
+					}
+				}
+				return res, err
 			},
 		},
 
 		"update_app": &gq.Field{
-			Description: "Обновить пользователя",
+			Description: "Обновить приложение",
 			// Type:        fullAppObject,
 			Type: appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя пользователя (уникальное)",
+					Description: "Имя приложения (уникальное)",
 				},
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
@@ -142,13 +152,28 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 				"url": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "url",
+					Description: "url проксируемого приложения",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				// return updateRecord("appname", params, "app", "full_app")
-				return updateRecord("appname", params, "app", "app")
+				res, err := updateRecord("appname", params, "app", "app")
+				if err == nil {
+					app, _ := params.Args["appname"].(string)
+					u, ok := params.Args["url"]
+					if ok {
+						url, _ := u.(string)
+						if url == "" {
+							delete(proxies, app)
+							log.Printf("Proxy deleted appname=%s", app)
+						} else {
+							proxies[app] = createProxy(url)
+							log.Printf("Proxy created appname=%v target=%v", app, url)
+						}
+					}
+				}
+				return res, err
 			},
 		},
 
@@ -165,7 +190,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				// return deleteRecord("appname", params, "app", "full_app")
-				return deleteRecord("appname", params, "app", "app")
+				res, err := deleteRecord("appname", params, "app", "app")
+				if err == nil {
+					app, _ := params.Args["appname"].(string)
+					delete(proxies, app)
+					log.Printf("Proxy deleted appname=%s", app)
+				}
+				return res, err
 			},
 		},
 

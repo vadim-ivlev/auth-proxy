@@ -54,6 +54,15 @@
                 Сервис Авторизации
             </h4>
 
+            <div>
+                <a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL API сервиса авторизации (в новом окне). &#x25B6;</a>
+                <!-- <br> -->
+                Шелкните [+] чтобы создать новую вкладку и 
+                введите <b><script> document.write(document.location.origin)</script>/schema</b> в поле [GraphQL endpoint].
+
+            </div>
+
+
             <div id="menu" class="menu">
                 <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
                 <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
@@ -70,11 +79,11 @@
                     <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                         <div>
                             <label class="param-name">username</label>
-                            <input name="username" type="text" placeholder="имя или емайл" >
+                            <input name="username" type="text" placeholder="имя или емайл" value="vadim">
                         </div>
                         <div>
                             <label class="param-name">password</label>
-                            <input name="password" type="password" placeholder="пароль" >
+                            <input name="password" type="password" placeholder="пароль" value="1">
                         </div>
                         
                         <div style="text-align: right;">
@@ -94,7 +103,7 @@
                     <form id="formListApp" class="grided" onsubmit="return searchApps()">
                             <div>
                                 <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchApps()"  value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchApps()"  value="test0">
                         </div>
                         <button type="submit" class="fa fa-search button button-outline" ></button>
                     </form>

@@ -7,7 +7,12 @@ WORKDIR /go/src/auth-proxy
 COPY . .
 
 ENV GO111MODULE=on
-RUN env CGO_ENABLED=0 go build
+
+# RUN env CGO_ENABLED=0 go build
+# ключи нужны для компиляции sqlite3 при CGO_ENABLED=1
+RUN env CGO_ENABLED=1 go build -a -ldflags '-linkmode external -extldflags "-static"' 
+
+
 
 EXPOSE 4400
 

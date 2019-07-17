@@ -17,6 +17,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// proxies - Отображение appname -> proxy.
+// Перечень прокси серверов предзаготовленных для каждого приложения.
+var proxies map[string]*httputil.ReverseProxy
+
 func LandingPage(c *gin.Context) {
 	htmlFile, _ := ioutil.ReadFile("./templates/index.html")
 	c.Data(http.StatusOK, "text/html; charset=utf-8", htmlFile)
@@ -26,6 +30,7 @@ func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
 	proxypath := c.Param("proxypath")
 	proxy, ok := proxies[appname]
+	// log.Printf(` appname=%v proxypath=%v proxy=%v`, appname, proxypath, proxy)
 	if ok {
 		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
@@ -35,8 +40,7 @@ func Proxy(c *gin.Context) {
 	}
 }
 
-var proxies map[string]*httputil.ReverseProxy
-
+// createProxy создает прокси сервер для конкретного URL
 func createProxy(target string) *httputil.ReverseProxy {
 	targetURL, err := url.Parse(target)
 	if err != nil {
@@ -55,7 +59,6 @@ func CreateProxies() {
 	for app, url := range appUrls {
 		proxies[app] = createProxy(url)
 	}
-	// log.Println("proxies:", proxies)
 }
 
 // func getProxy(appname string) *httputil.ReverseProxy {

@@ -2,7 +2,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>путь</th>
+                        <th>appname</th>
                         <th>описание</th>
                         <th>реальный url</th>
                         <th>действия</th>
@@ -12,14 +12,15 @@
                     {{#apps}}
                     <tr>
                         <td>
-                            <a href="apps/{{appname}}" target="_blank" >{{appname}}</a>
+                            <a href="apps/{{appname}}/" target="_blank" ><b>{{appname}}</b> &#x25B6;</a>
                             <!-- &#x25B6; -->
                         </td>
                         <td>
                             <a href="" onclick="getApp('{{appname}}'); return showPage('app',true);">{{description}}</a>
                         </td>
                         <td>
-                            <a href="{{url}}" target="_blank" >{{url}}</a>
+                            <!-- <a href="{{url}}" target="_blank" >{{url}}</a> -->
+                            <a href="" onclick="getApp('{{appname}}'); return showPage('app',true);">{{url}}</a>
                         </td>
                         <td>
                             <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app',true);">редактировать</button>

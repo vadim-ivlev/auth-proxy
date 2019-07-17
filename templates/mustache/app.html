@@ -25,7 +25,7 @@
         <div>
             <label >url</label>
             <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
-            Доступно по: <a id="newAppUrl" href="/apps/{{app.appname}}">{{origin}}/apps/{{app.appname}}</a>
+            Доступно по: <a id="newAppUrl" href="/apps/{{app.appname}}/" target="_blank">{{origin}}/apps/{{app.appname}}</a>
         </div>
         <div style="text-align: right;">
             <label></label>
@@ -47,7 +47,7 @@
 {{#app}}
 <div class="flexed">
     <h2>
-        <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;"> 
+        <!-- <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;">  -->
         Пользователи приложения 
         <b>{{app.appname}}</b>
     </h2>
@@ -86,6 +86,8 @@
                 </td>
             </tr>
             {{/app.users}}
+
+            
         <tr>
             <td id="newAppUsername"></td>
             <td>

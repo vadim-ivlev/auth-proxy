@@ -69,16 +69,6 @@ func CheckUserPassword(username, password string) bool {
 	return true
 }
 
-// // GetAppURL Возвращает url приложения.
-// func GetAppURL(appname string) (string, error) {
-// 	rec, err := db.QueryRowMap(`SELECT url FROM app WHERE appname=$1;`, appname)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	url, _ := rec["url"].(string)
-// 	return url, nil
-// }
-
 // GetAppURLs Возвращает url-ы приложений.
 func GetAppURLs() (map[string]string, error) {
 	records, err := db.QuerySliceMap(`SELECT appname,url FROM app WHERE url IS NOT NULL;`)
@@ -173,8 +163,8 @@ func Login(c *gin.Context, username, password string) error {
 	}
 }
 
-// IsEnabled  Если false, пользователь отключен
-func IsEnabled(user string) bool {
+// IsUserEnabled  Если false, пользователь отключен
+func IsUserEnabled(user string) bool {
 	_, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username = $1 AND disabled = 0 ;`, user)
 	if err == nil {
 		return true

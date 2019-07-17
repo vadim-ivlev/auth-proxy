@@ -211,7 +211,7 @@ var userObject = gq.NewObject(gq.ObjectConfig{
 
 var appObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "App",
-	Description: "Приложение к которой требуется авторизация",
+	Description: "Приложение к которому требуется авторизация",
 	Fields:      appFields,
 })
 

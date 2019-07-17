@@ -10,8 +10,8 @@ BEGIN;
 -- данные
 
 INSERT INTO app (appname, url, description) VALUES ('auth'          ,'', 'Сервис авторизации');
-INSERT INTO app (appname, url, description) VALUES ('app1'          ,'http://localhost:3001', 'Тестовое express приложение 1 test0');
-INSERT INTO app (appname, url, description) VALUES ('app2'          ,'http://localhost:3002', 'Тестовое express приложение 2 test0');
+INSERT INTO app (appname, url, description) VALUES ('app1'          ,'http://node:3001', 'Express приложение 1. Работает в докере. test0');
+INSERT INTO app (appname, url, description) VALUES ('app2'          ,'http://localhost:3002', 'Тестовое express приложение 2. test0');
 INSERT INTO app (appname, url, description) VALUES ('onlinebc_admin','http://localhost:7700', 'Тестовые трансляции test0'          );
 INSERT INTO app (appname, url, description) VALUES ('rg'            ,'https://rg.ru'        , 'Сайт rg.ru test0'                   );
 

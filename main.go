@@ -15,9 +15,8 @@ func main() {
 	servePort, env, sqlite := readCommandLineParams()
 	db.SQLite = sqlite
 
-	// читаем конфиги Postgres, и роутера.
+	// читаем конфиги Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
-	router.ReadConfig("./configs/routes.yaml", env)
 
 	// Ждем готовности базы данных
 	db.WaitForDbOrExit(10)
