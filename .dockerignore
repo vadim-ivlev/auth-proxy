@@ -2,7 +2,6 @@
 /logs*
 uploads
 pgdata
-# auth-proxy
 auth.db
 
 

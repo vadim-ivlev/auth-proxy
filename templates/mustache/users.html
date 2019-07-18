@@ -18,11 +18,14 @@
             >
                 <td>
                     <a href="" title="Редактировать" onclick="getUser('{{username}}'); return showPage('user',true);">
-                        {{username}}
+                            {{username}}
                     </a>
                 </td>
                 <td>
-                    <a href="mailto:{{email}}" title="Написать письмо"  target="_blank" >{{email}}</a>
+                    <!-- <a href="mailto:{{email}}" title="Написать письмо"  target="_blank" > -->
+                    <a href="" title="Редактировать" onclick="getUser('{{username}}'); return showPage('user',true);">
+                        {{email}}
+                    </a>
                 </td>
                 <td>
                     <a href="" title="Редактировать"  onclick="getUser('{{username}}'); return showPage('user',true);" >

@@ -186,7 +186,7 @@ function blinkStatus(message, className="alert") {
     e.text(message)
     // st.show()
     e.fadeTo(0,1)
-    e.fadeTo(2000, 0.0)
+    e.fadeTo(4000, 0.0)
     // st.hide(2000)
 }
 
@@ -421,7 +421,7 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     let password = $("#formUser input[name='password']").val()
     let email = $("#formUser input[name='email']").val()
     let fullname = $("#formUser input[name='fullname']").val()
-    let description = $("#formUser input[name='description']").val()
+    let description = $("#formUser *[name='description']").val()
     let disabled = $("#formUser input[name='disabled']").val()
     var query =`
     mutation {

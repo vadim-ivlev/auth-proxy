@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"auth-proxy/model/auth"
+	"auth-proxy/model/session"
 	"net/http"
 	"strings"
 
@@ -29,7 +30,7 @@ func HeadersMiddleware() gin.HandlerFunc {
 // CheckUser проверяет залогинен ли пользователь
 func CheckUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userName := auth.GetUserName(c)
+		userName := session.GetUserName(c)
 		if userName == "" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 		} else {

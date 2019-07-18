@@ -2,6 +2,7 @@ package controller
 
 import (
 	"auth-proxy/model/auth"
+	"auth-proxy/model/session"
 	"context"
 	"encoding/json"
 	"errors"
@@ -179,7 +180,7 @@ func getLoginedUserName(params gq.ResolveParams) string {
 		log.Println("Not OK: getLoginedUserName")
 		return ""
 	}
-	return auth.GetUserName(c)
+	return session.GetUserName(c)
 }
 
 func getOwnerUserName(params gq.ResolveParams) string {
@@ -188,7 +189,7 @@ func getOwnerUserName(params gq.ResolveParams) string {
 		log.Println("Not OK: getLoginedUserName")
 		return ""
 	}
-	return auth.GetUserName(c)
+	return session.GetUserName(c)
 }
 
 func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
@@ -222,6 +223,25 @@ func panicIfEmpty(v interface{}, message string) {
 	if len(username) == 0 {
 		panic(errors.New("ERR: " + message))
 	}
+}
+
+func processPassword(params gq.ResolveParams) {
+	password, _ := params.Args["password"].(string)
+	password = strings.Trim(password, " ")
+
+	// remove empty field
+	if password == "" {
+		delete(params.Args, "password")
+		return
+	}
+
+	// check for length
+	if len(password) < 6 {
+		panic("Password must be 6 or more symbols long")
+	}
+
+	// encode
+	params.Args["password"] = auth.GetHash(password)
 }
 
 // G R A P H Q L ********************************************************************************

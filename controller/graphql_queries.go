@@ -2,6 +2,7 @@ package controller
 
 import (
 	"auth-proxy/model/auth"
+	"auth-proxy/model/session"
 	"auth-proxy/model/db"
 	"fmt"
 	"strings"
@@ -49,7 +50,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				c, _ := params.Context.Value("ginContext").(*gin.Context)
-				username := auth.GetUserName(c)
+				username := session.GetUserName(c)
 				auth.Logout(c)
 				return gin.H{"username": username, "message": "Successfully logged out"}, nil
 			},

@@ -12,7 +12,7 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	username := auth.GetUserName(c)
+	username := session.GetUserName(c)
 	auth.Logout(c)
 	c.JSON(http.StatusOK, gin.H{"message": username + " successfully logged out"})
 }

@@ -1,6 +1,6 @@
 ## SERVER
 
-- encrypt passwords in db
+- restore forgotten passwords
 - change Like ||
 
 

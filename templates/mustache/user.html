@@ -15,8 +15,13 @@
             value="{{user.username}}">
         </div>
         <div>
-            <label >password *</label>
+            <label >password (больше 5 символов) {{^user}}*{{/user}} </label>
             <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
+            {{#user}}
+            <div>
+                Если поле пусто пароль не меняется.<br><br>
+            </div>
+            {{/user}}
         </div>
         <div>
             <label >email</label>
@@ -29,11 +34,11 @@
         </div>
         <div>
             <label >description </label>
-            <input name="description"  placeholder="дополнительная информация" value="{{user.description}}">
+            <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
         </div>
         <div>
             <label >disabled</label>
-            <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{user.disabled}}">
+            <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">
             <span>Если не равно 0, пользователь отключен</span>
         </div>
         <div style="text-align: right;">
