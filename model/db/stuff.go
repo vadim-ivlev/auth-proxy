@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 
-
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -21,6 +20,7 @@ type connectionParams struct {
 	Password string
 	Dbname   string
 	Sslmode  string
+	Sqlite   string
 }
 
 var params connectionParams
@@ -63,4 +63,3 @@ func printIf(msg string, err error) {
 		log.Println(msg, err.Error())
 	}
 }
-

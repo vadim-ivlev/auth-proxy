@@ -9,6 +9,7 @@ dev:
   password: root 
   dbname: auth 
   sslmode: disable
+  sqlite: ./auth.db
 
 
 docker:
@@ -18,6 +19,7 @@ docker:
   password: root 
   dbname: auth 
   sslmode: disable
+  sqlite: ./auth.db
 
 
 prod:
@@ -27,3 +29,4 @@ prod:
   password: root 
   dbname: auth 
   sslmode: disable
+  sqlite: ./auth.db

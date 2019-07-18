@@ -22,7 +22,7 @@ import (
 
 func getDB() (*sqlx.DB, error) {
 	if SQLite {
-		return sqlx.Open("sqlite3", "./auth.db")
+		return sqlx.Open("sqlite3", params.Sqlite)
 	}
 	return sqlx.Open("postgres", connectStr)
 }

@@ -1,7 +1,9 @@
 ## SERVER
 
+- add parameter: sqlite db file
 - restore forgotten passwords
 - change Like ||
+
 
 
 #### development
