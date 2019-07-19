@@ -1,0 +1,58 @@
+version: '2.0'
+
+services:
+
+
+  # база данных
+  db:
+    image: postgres
+    container_name: auth-db
+    restart: always
+    # ports:
+    #   - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: auth 
+      PGDATA: /var/lib/postgresql/data/pgdata
+  
+
+  # сервер, где запущено приложение
+  auth-proxy-prod:
+    image: auth-proxy-prod
+    container_name: auth-proxy-prod
+    volumes:
+      - test_apps:/app/test_apps
+
+    # раскомментируйте для SQLite вместо Postgres
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=prod -sqlite" 
+    restart: always
+    ports:
+      - 4400:4400
+    depends_on:
+      - db
+    links:
+      - db
+
+
+  # server with test applications
+  node:
+    image: "node:alpine"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - test_apps:/home/node/app
+    expose:
+      - "3001"
+      - "3002"
+      - "3003"
+      - "3004"
+      - "3005"
+    command: "npm run start12"
+
+
+volumes: 
+  test_apps:
+    

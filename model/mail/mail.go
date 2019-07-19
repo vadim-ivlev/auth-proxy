@@ -1,3 +1,4 @@
+// https://github.com/golang/go/wiki/SendingMail
 package mail
 
 import (

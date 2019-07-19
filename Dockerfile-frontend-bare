@@ -4,17 +4,15 @@ LABEL maintainer="RGRU <ivlev@rg.ru>"
 
 RUN apt-get -y update && apt-get -y install sqlite3 
 
-COPY configs  /app/configs
+COPY auth-proxy  /app/auth-proxy
+COPY configs     /app/configs
 COPY migrations  /app/migrations
-COPY templates  /app/templates
-COPY test_apps  /app/test_apps
-
-
-COPY auth-proxy  /app/auth
+COPY templates   /app/templates
+COPY test_apps   /app/test_apps
 
 EXPOSE 4400
 
-CMD bash -c "cd /app && ./auth -serve 4400 -env=docker"
+CMD bash -c "cd /app && ./auth-proxy -serve 4400 -env=docker"
 
 
 

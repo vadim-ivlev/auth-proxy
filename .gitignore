@@ -10,6 +10,11 @@ docs/doc
 auth.db
 auth-proxy
 
+deploy/auth-proxy
+deploy/configs
+deploy/migrations
+deploy/templates
+deploy/test_apps
 
 
 

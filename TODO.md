@@ -1,8 +1,7 @@
 ## SERVER
 
-- add parameter: sqlite db file
 - restore forgotten passwords
-- change Like ||
+- change search Like statement from logical OR to concatination of fields ||
 
 
 
