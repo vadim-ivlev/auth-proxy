@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strconv"
 )
 
@@ -42,7 +43,10 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool) {
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, docker - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.Parse()
-	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev")
+	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n")
 	flag.Usage()
+	if serverPort == 0 {
+		os.Exit(0)
+	}
 	return
 }
