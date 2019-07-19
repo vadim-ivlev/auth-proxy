@@ -1,0 +1,16 @@
+FROM alpine
+
+RUN apk update
+RUN apk add jpegoptim
+RUN apk add --update bash && rm -rf /var/cache/apk/*
+RUN apk add libc6-compat
+
+# Go App
+WORKDIR /src/photoreports-admin
+COPY . .
+RUN ls
+
+# Start app.
+CMD bash -c "./photoreports-admin -env=prod -port=8091 -app=admin"
+
+EXPOSE 8091
