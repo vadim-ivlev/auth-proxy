@@ -3,20 +3,6 @@ version: '2.0'
 services:
 
 
-  # база данных
-  db:
-    image: postgres
-    container_name: auth-db
-    restart: always
-    # ports:
-    #   - 5432:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auth 
-      PGDATA: /var/lib/postgresql/data/pgdata
-  
-
   # сервер, где запущено приложение
   auth-proxy-prod:
     image: auth-proxy-prod
@@ -33,6 +19,8 @@ services:
       - db
     links:
       - db
+
+
 
 
   # server with test applications

@@ -32,8 +32,8 @@ build:
     script:
         - echo 'We are here ----------------------------------------------------------'
         - pwd
-        - go version
-        - go env 
+        # - go version
+        # - go env 
 
         - echo 'Copying to files to /go/src and go there------------------------------'
         - mkdir -p /go/src/$REPO_NAME
@@ -41,13 +41,14 @@ build:
         - cd       /go/src/$REPO_NAME
 
         # build app
-        - echo 'Building the app -----------------------------------------------------'
         - ./build.sh
+        - ls -lF auth-proxy
 
         # collect files to deploy on prod
-        - rm -rf $BUILD_PATH/deploy
-        - cp -r  deploy $BUILD_PATH
-        - ls $BUILD_PATH/deploy
+        - rm -rf   $BUILD_PATH/deploy
+        - cp -r    deploy $BUILD_PATH
+        - mkdir -p $BUILD_PATH/deploy/configs
+        - ls -lF   $BUILD_PATH/deploy
     artifacts:
         paths:
             - $BUILD_PATH/deploy
@@ -64,7 +65,7 @@ deploy:
         - build
     script:
         # deploy on server
-        - ls
+        - ls -lF
         # remove old dir
         - ssh gitupdater@212.69.111.246 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server

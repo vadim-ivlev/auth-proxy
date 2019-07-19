@@ -15,7 +15,7 @@ echo "copying stuff ..."
 
 # clean deploy/ directory
 rm -rf deploy/auth-proxy
-rm -rf deploy/configs
+#rm -rf deploy/configs
 rm -rf deploy/migrations
 rm -rf deploy/templates
 rm -rf deploy/test_apps
@@ -23,7 +23,7 @@ rm -rf deploy/test_apps
 
 # copy files to deploy/
 cp    auth-proxy    deploy/auth-proxy
-cp -r configs       deploy/configs
+#cp -r configs       deploy/configs
 cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
 cp -r test_apps     deploy/test_apps
