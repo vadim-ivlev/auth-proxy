@@ -15,10 +15,6 @@ services:
     restart: always
     ports:
       - 4400:4400
-    depends_on:
-      - db
-    links:
-      - db
 
 
 
