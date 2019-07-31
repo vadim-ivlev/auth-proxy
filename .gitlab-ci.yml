@@ -23,6 +23,12 @@ before_script:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
     - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
+    # key for deployment
+    # use key name: 
+    - ssh-add <(echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode)
+    - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa_deploy
+    - chmod 600 /root/.ssh/id_rsa_deploy
+
 
 build:
     stage: build
@@ -71,7 +77,7 @@ deploy:
         # copy new dir on server
         - scp -pr $BUILD_PATH/deploy gitupdater@212.69.111.246:/home/gitupdater/$IMAGE_NAME
         # !!! start real deploy and docker-compose
-        - ssh gitupdater@notify.rg.ru auth-proxy-prod
+        - ssh -i /root/.ssh/id_rsa_deploy gitupdater@notify.rg.ru auth-proxy-prod
     only:
         - production
 
