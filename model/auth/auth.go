@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
+	"strconv"
 	"time"
 
 	// "net/http"
@@ -31,6 +33,13 @@ func CheckUserPassword(username, password string) bool {
 		return false
 	}
 	return true
+}
+
+// UlidNum - возвращает случайную строку числа в диапазоне [min,max)
+func UlidNum(min, max int) string {
+	t := time.Now().UnixNano()
+	rand.Seed(t)
+	return strconv.Itoa(rand.Intn(max-min) + min)
 }
 
 // GenerateNewPassword Генерирует новый пароль для пользователя,
