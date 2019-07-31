@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-
+	fmt.Println("████████████████████████ revision 1 ████████████████████████")
 	// считать параметры командной строки
 	servePort, env, sqlite := readCommandLineParams()
 	db.SQLite = sqlite

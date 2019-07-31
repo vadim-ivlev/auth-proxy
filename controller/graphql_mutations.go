@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"auth-proxy/model/auth"
 	"auth-proxy/model/db"
+	"auth-proxy/model/mail"
 	"log"
 
 	gq "github.com/graphql-go/graphql"
@@ -89,22 +91,30 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
-		// "generate_password": &gq.Field{
-		// 	Description: "Сгенерировать новый пароль пользователю и выслать его ему по электронной почте",
-		// 	Type:        userObject,
-		// 	Args: gq.FieldConfigArgument{
-		// 		"username": &gq.ArgumentConfig{
-		// 			Type:        gq.NewNonNull(gq.String),
-		// 			Description: "Имя пользователя (уникальное)",
-		// 		},
-		// 	},
-		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
-		// 		panicIfNotOwnerOrAdmin(params)
-		// 		processPassword(params)
-		// 		// return updateRecord("username", params, "user", "full_user")
-		// 		return updateRecord("username", params, "user", "user")
-		// 	},
-		// },
+		"generate_password": &gq.Field{
+			Description: "Сгенерировать новый пароль пользователю и выслать по электронной почте",
+			Type:        userObject,
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Имя пользователя (уникальное)",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				username := params.Args["username"].(string)
+				email, password, err := auth.GenerateNewPassword(username)
+				if err != nil {
+					return "Could not generate new password", err
+				}
+				err = mail.SendPassword(email, password)
+				if err != nil {
+					return "Could not send email to:" + email, err
+				}
+
+				return "New password has been sent to:" + email, nil
+
+			},
+		},
 
 		"delete_user": &gq.Field{
 			Description: "Удалить пользователя",

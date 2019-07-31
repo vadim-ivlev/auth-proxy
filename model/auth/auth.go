@@ -35,20 +35,20 @@ func CheckUserPassword(username, password string) bool {
 
 // GenerateNewPassword Генерирует новый пароль для пользователя,
 // Сохраняет его в базе данных.
-func GenerateNewPassword(username string) (string, error) {
+func GenerateNewPassword(usernameOrEmail string) (string, string, error) {
 	rec, err := db.QueryRowMap(`
 		SELECT * FROM "user" WHERE username=$1 AND disabled = 0
 		UNION
 		SELECT * FROM "user" WHERE email=$1    AND disabled = 0
-		`, username)
+		`, usernameOrEmail)
 
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	foundUsername := rec["username"].(string)
 	foundEmail := rec["email"].(string)
 	if foundEmail == "" {
-		return "", errors.New("No email address for user " + foundUsername)
+		return "", "", errors.New("No email address for user " + foundUsername)
 	}
 	// generate new password
 	newPassword := "123456"
@@ -56,9 +56,9 @@ func GenerateNewPassword(username string) (string, error) {
 	sqlText := `UPDATE "user" SET password = $1 WHERE username = $2;`
 	_, err = db.QueryExec(sqlText, newHash, foundUsername)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return newPassword, nil
+	return foundEmail, newPassword, nil
 }
 
 // GetAppURLs Возвращает url-ы приложений.

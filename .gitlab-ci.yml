@@ -70,6 +70,8 @@ deploy:
         - ssh gitupdater@212.69.111.246 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server
         - scp -pr $BUILD_PATH/deploy gitupdater@212.69.111.246:/home/gitupdater/$IMAGE_NAME
+        # !!! start real deploy and docker-compose
+        - ssh gitupdater@notify.rg.ru auth-proxy-prod
     only:
         - production
 
