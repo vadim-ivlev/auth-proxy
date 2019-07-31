@@ -58,11 +58,12 @@ func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 // когда запуск базы данных может быть произойти позже.
 func WaitForDbOrExit(attempts int) {
 	for i := 0; i < attempts; i++ {
+		fmt.Println("\nОжидание готовности базы данных...")
+		fmt.Println(connectStr)
+		fmt.Printf("Попытка %d/%d. CTRL-C для прерывания.\n", i+1, attempts)
 		if dbAvailable() {
 			return
 		}
-		fmt.Println("\nОжидание готовности базы данных...")
-		fmt.Printf("Попытка %d/%d. CTRL-C для прерывания.\n", i+1, attempts)
 		time.Sleep(5 * time.Second)
 	}
 	fmt.Println("Не удалось подключиться к базе данных.")

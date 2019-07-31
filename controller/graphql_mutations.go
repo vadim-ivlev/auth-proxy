@@ -89,6 +89,23 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
+		// "generate_password": &gq.Field{
+		// 	Description: "Сгенерировать новый пароль пользователю и выслать его ему по электронной почте",
+		// 	Type:        userObject,
+		// 	Args: gq.FieldConfigArgument{
+		// 		"username": &gq.ArgumentConfig{
+		// 			Type:        gq.NewNonNull(gq.String),
+		// 			Description: "Имя пользователя (уникальное)",
+		// 		},
+		// 	},
+		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
+		// 		panicIfNotOwnerOrAdmin(params)
+		// 		processPassword(params)
+		// 		// return updateRecord("username", params, "user", "full_user")
+		// 		return updateRecord("username", params, "user", "user")
+		// 	},
+		// },
+
 		"delete_user": &gq.Field{
 			Description: "Удалить пользователя",
 			// Type:        fullUserObject,

@@ -20,6 +20,7 @@ func main() {
 	db.ReadConfig("./configs/db.yaml", env)
 
 	// Ждем готовности базы данных
+	db.PrintConfig()
 	db.WaitForDbOrExit(10)
 
 	// порождаем базу данных если ее нет

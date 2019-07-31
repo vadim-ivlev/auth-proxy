@@ -19,7 +19,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 		"login": &gq.Field{
 			Type:        gq.String,
-			Description: "Войти по имени и паролю",
+			Description: "Войти по имени или email и паролю",
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
