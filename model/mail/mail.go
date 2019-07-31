@@ -2,7 +2,7 @@
 package mail
 
 import (
-	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/smtp"
@@ -11,13 +11,9 @@ import (
 )
 
 type connectionParams struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Dbname   string
-	Sslmode  string
-	Sqlite   string
+	Addr     string
+	From     string
+	Body     string
 }
 
 var params connectionParams
@@ -40,48 +36,45 @@ func ReadConfig(fileName string, env string) {
 
 }
 
-// SendMail Streaming the body
-func SendMail() {
+func SendPassword(toMail, password string) error {
 	// Connect to the remote SMTP server.
-	c, err := smtp.Dial("mail.example.com:25")
+	c, err := smtp.Dial(params.Addr)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer c.Close()
-	// Set the sender and recipient.
-	c.Mail("sender@example.org")
-	c.Rcpt("recipient@example.net")
+
+	// Set the sender and recipient first
+	if err := c.Mail(params.From); err != nil {
+		return err
+	}
+	if err := c.Rcpt(toMail); err != nil {
+		return err
+	}
+
 	// Send the email body.
 	wc, err := c.Data()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer wc.Close()
-	buf := bytes.NewBufferString("This is the email body.")
-	if _, err = buf.WriteTo(wc); err != nil {
-		log.Fatal(err)
-	}
-}
 
-// SendAuthMail Authenticated SMTP
-func SendAuthMail() {
-	// Set up authentication information.
-	auth := smtp.PlainAuth(
-		"",
-		"user@example.com",
-		"password",
-		"mail.example.com",
-	)
-	// Connect to the server, authenticate, set the sender and recipient,
-	// and send the email all in one step.
-	err := smtp.SendMail(
-		"mail.example.com:25",
-		auth,
-		"sender@example.org",
-		[]string{"recipient@example.net"},
-		[]byte("This is the email body."),
-	)
+	msg := fmt.Sprintf(params.Body, params.From, toMail, password)
+	_, err = fmt.Fprintf(wc, msg)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	err = wc.Close()
+	if err != nil {
+		return err
+	}
+
+	// Send the QUIT command and close the connection.
+	err = c.Quit()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

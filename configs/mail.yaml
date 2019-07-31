@@ -1,0 +1,51 @@
+# Параметры подключения к почтовому серверу
+# для окружений dev, docker, prod
+
+
+dev:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+  # Тело сообщения можно менять.
+  # Символы шаблонов %s не трогать.  
+  # Их должно быть 3, один в теле письма.
+  body: |
+    From: %s
+    To: %s
+    Subject: New password
+
+    Ваш новый пароль %s.
+
+    С уважением,
+    RG.RU
+    
+
+docker:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+  body: |
+    From: %s
+    To: %s
+    Subject: New password
+
+    Ваш новый пароль %s.
+
+    С уважением,
+    RG.RU
+        
+
+prod:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+  body: |
+    From: %s
+    To: %s
+    Subject: New password
+
+    Ваш новый пароль %s.
+
+    С уважением,
+    RG.RU
+    
+
+   
+
