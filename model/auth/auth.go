@@ -60,6 +60,7 @@ func GenerateNewPassword(usernameOrEmail string) (string, string, error) {
 		return "", "", errors.New("No email address for user " + foundUsername)
 	}
 	// generate new password
+	// newPassword := UlidNum(100000, 999999)
 	newPassword := "123456"
 	newHash := GetHash(newPassword)
 	sqlText := `UPDATE "user" SET password = $1 WHERE username = $2;`
