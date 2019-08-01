@@ -25,7 +25,7 @@ services:
       - test_apps:/go/src/auth-proxy/test_apps
 
     # раскомментируйте для SQLite вместо Postgres
-    # command: bash -c "cd /go/src/auth-proxy && ./auth-proxy -serve 4400 -env=docker -sqlite" 
+    # command: bash -c "cd /go/src/auth-proxy && ./auth-proxy -serve 4400 -env=front -sqlite" 
     restart: always
     ports:
       - 4400:4400
@@ -35,7 +35,7 @@ services:
       - db
 
 
-  # server with test applications
+  # Сервер с тестовыми приложениями
   node:
     image: "node:alpine"
     user: "node"

@@ -16,8 +16,10 @@ func main() {
 	servePort, env, sqlite := readCommandLineParams()
 	db.SQLite = sqlite
 
-	// читаем конфиги Postgres.
+	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
+	// читаем конфиг SQLite.
+	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
 
 	// Ждем готовности базы данных
 	db.PrintConfig()
@@ -41,7 +43,7 @@ func main() {
 // readCommandLineParams читает параметры командной строки
 func readCommandLineParams() (serverPort int, env string, sqlite bool) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
-	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, docker - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
+	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.Parse()
 	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n")

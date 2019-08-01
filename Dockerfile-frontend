@@ -16,5 +16,5 @@ RUN env CGO_ENABLED=1 go build -a -ldflags '-linkmode external -extldflags "-sta
 
 EXPOSE 4400
 
-CMD ["./auth-proxy", "-serve", "4400", "-env=docker"]
+CMD ["./auth-proxy", "-serve", "4400", "-env=front"]
 

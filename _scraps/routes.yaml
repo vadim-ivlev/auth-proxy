@@ -1,4 +1,4 @@
-# Для окружений dev, docker, prod
+# Для окружений dev, front, prod
 # устанавливает соответствие
 # идентификатор приложения : URL приложения
 
@@ -9,7 +9,7 @@ dev:
   rg:       https://rg.ru 
 
 
-docker:
+front:
   app1:     http://node:3001
   app2:     http://node:3002
   onlinebc: http://onlinebc:7700

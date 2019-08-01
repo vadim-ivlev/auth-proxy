@@ -22,9 +22,9 @@ import (
 
 func getDB() (*sqlx.DB, error) {
 	if SQLite {
-		return sqlx.Open("sqlite3", params.Sqlite)
+		return sqlx.Open("sqlite3", sqliteParams.Sqlitefile)
 	}
-	return sqlx.Open("postgres", connectStr)
+	return sqlx.Open("postgres", params.connectStr)
 }
 
 // dbAvailable проверяет, доступна ли база данных
@@ -59,7 +59,6 @@ func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 func WaitForDbOrExit(attempts int) {
 	for i := 0; i < attempts; i++ {
 		fmt.Println("\nОжидание готовности базы данных...")
-		fmt.Println(connectStr)
 		fmt.Printf("Попытка %d/%d. CTRL-C для прерывания.\n", i+1, attempts)
 		if dbAvailable() {
 			return

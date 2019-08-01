@@ -1,0 +1,14 @@
+# Параметры подключения к SQLite
+# для окружений dev, front, prod
+
+
+dev:
+  sqlitefile: ./auth.db
+
+
+front:
+  sqlitefile: ./auth.db
+
+
+prod:
+  sqlitefile: ./auth.db

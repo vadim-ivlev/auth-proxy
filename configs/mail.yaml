@@ -1,5 +1,5 @@
 # Параметры подключения к почтовому серверу
-# для окружений dev, docker, prod
+# для окружений dev, front, prod
 
 
 dev:
@@ -19,7 +19,7 @@ dev:
     RG.RU
     
 
-docker:
+front:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
   body: |

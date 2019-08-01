@@ -11,6 +11,7 @@ import (
 func TestMain(m *testing.M) {
 	fmt.Println("Тесты DB ******************************************************")
 	ReadConfig("../../configs/db.yaml", "dev")
+	db.ReadSQLiteConfig("../../configs/sqlite.yaml", "dev")
 
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())

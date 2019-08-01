@@ -1,32 +1,29 @@
-# Параметры подключения к базе данных
-# для окружений dev, docker, prod
+# Параметры подключения к Postgres
+# для окружений dev, front, prod
 
 
 dev:
   host: localhost
-  port: 5432
   user: root 
   password: root 
-  dbname: auth 
+  database: auth 
+  port: 5432
   sslmode: disable
-  sqlite: ./auth.db
 
 
-docker:
+front:
   host: db
-  port: 5432
   user: root 
   password: root 
-  dbname: auth 
+  database: auth 
+  port: 5432
   sslmode: disable
-  sqlite: ./auth.db
 
 
 prod:
   host: localhost
-  port: 5432
   user: root 
   password: root 
-  dbname: auth 
+  database: auth 
+  port: 5432
   sslmode: disable
-  sqlite: ./auth.db
