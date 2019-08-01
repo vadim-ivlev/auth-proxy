@@ -38,6 +38,7 @@ services:
   # Сервер с тестовыми приложениями
   node:
     image: "node:alpine"
+    container_name: auth-node
     user: "node"
     working_dir: /home/node/app
     environment:

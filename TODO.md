@@ -3,6 +3,11 @@
 - restore forgotten passwords
 - change search Like statement from logical OR to concatination of fields ||
 
+## deploy
+- start node apps
+- add ping and curl
+
+
 
 
 #### development

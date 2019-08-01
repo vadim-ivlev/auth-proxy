@@ -5,7 +5,7 @@ pgdata
 uploads
 uploads*
 moon.py
-node_modules
+# node_modules
 docs/doc
 auth.db
 auth-proxy
