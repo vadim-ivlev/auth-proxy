@@ -32,6 +32,8 @@ func Proxy(c *gin.Context) {
 	proxy, ok := proxies[appname]
 	log.Printf(` appname=%v proxypath=%v proxy=%v`, appname, proxypath, proxy)
 	if ok {
+		proxypath := strings.TrimPrefix(proxypath, "/")
+		log.Printf(` appname=%v proxypath=%v proxy=%v`, appname, proxypath, proxy)
 		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
 	} else {
