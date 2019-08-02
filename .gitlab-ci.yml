@@ -37,10 +37,6 @@ build:
         REPO_NAME: auth-proxy
         BUILD_PATH: /builds/masterback/auth-proxy
     script:
-        - echo 'We are here ----------------------------------------------------------'
-        - pwd
-        # - go version
-        # - go env 
 
         - echo 'Copying to files to /go/src and go there------------------------------'
         - mkdir -p /go/src/$REPO_NAME
@@ -49,13 +45,15 @@ build:
 
         # build app
         - ./build.sh
-        - ls -lF auth-proxy
 
         # collect files to deploy on prod
         - rm -rf   $BUILD_PATH/deploy
+        - ls -lF   deploy
+        - ls -lF   deploy/test_apps
         - cp -r    deploy $BUILD_PATH
-        - mkdir -p $BUILD_PATH/deploy/configs
         - ls -lF   $BUILD_PATH/deploy
+        - ls -lF   $BUILD_PATH/deploy/test_apps
+        - mkdir -p $BUILD_PATH/deploy/configs
     artifacts:
         paths:
             - $BUILD_PATH/deploy

@@ -272,8 +272,9 @@ Postgres доступен на localhost:5432.
     ssh -i ~/.ssh/deploy_gitupdater_works_open_ssh gitupdater@212.69.111.246
 
     sudo docker network ls
-    sudo docker exec -it  auth-proxy-prod bash
-    sudo docker  logs -f auth-proxy-prod
+    sudo docker exec -it auth-proxy-prod bash
+    sudo docker logs -f auth-proxy-prod
+    sudo docker logs -f auth-node
 
 
 
