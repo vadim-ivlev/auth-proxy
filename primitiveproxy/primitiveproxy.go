@@ -19,7 +19,12 @@ func NewPrimitiveProxy(url string) *PrimitiveProxy { return &PrimitiveProxy{url}
 func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 
-	url := p.url
+	// url := p.url
+	// url := p.url + r.RequestURI
+	url := p.url + r.URL.Path //+ "?" +r.URL.RawQuery
+	if r.URL.RawQuery != "" {
+		url += "?" + r.URL.RawQuery
+	}
 	if p.url == "" {
 		url = strings.TrimPrefix(r.RequestURI, "/")
 	}

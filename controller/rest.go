@@ -19,7 +19,8 @@ import (
 
 // proxies - Отображение appname -> proxy.
 // Перечень прокси серверов предзаготовленных для каждого приложения.
-var proxies map[string]*httputil.ReverseProxy
+// var proxies map[string]*httputil.ReverseProxy
+var proxies map[string]*primitiveproxy.PrimitiveProxy
 
 func LandingPage(c *gin.Context) {
 	htmlFile, _ := ioutil.ReadFile("./templates/index.html")
@@ -30,10 +31,10 @@ func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
 	proxypath := c.Param("proxypath")
 	proxy, ok := proxies[appname]
-	log.Printf(` appname=%v proxypath=%v proxy=%v`, appname, proxypath, proxy)
+	log.Printf(` appname=%v proxypath=%v `, appname, proxypath)
 	if ok {
-		proxypath := strings.TrimPrefix(proxypath, "/")
-		log.Printf(` appname=%v proxypath=%v proxy=%v`, appname, proxypath, proxy)
+		// proxypath := strings.TrimPrefix(proxypath, "/")
+		// log.Printf(` appname=%v proxypath=%v`, appname, proxypath)
 		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
 	} else {
@@ -43,17 +44,20 @@ func Proxy(c *gin.Context) {
 }
 
 // createProxy создает прокси сервер для конкретного URL
-func createProxy(target string) *httputil.ReverseProxy {
-	targetURL, err := url.Parse(target)
-	if err != nil {
-		log.Println("ERR", err)
-	}
-	return httputil.NewSingleHostReverseProxy(targetURL)
+func createProxy(target string) *primitiveproxy.PrimitiveProxy {
+	// func createProxy(target string) *httputil.ReverseProxy {
+	// targetURL, err := url.Parse(target)
+	// if err != nil {
+	// 	log.Println("ERR", err)
+	// }
+	// return httputil.NewSingleHostReverseProxy(targetURL)
+	return primitiveproxy.NewPrimitiveProxy(target)
 }
 
 // CreateProxies создает глобальный массив proxies в соответствии с таблицей app
 func CreateProxies() {
-	proxies = make(map[string]*httputil.ReverseProxy)
+	// proxies = make(map[string]*httputil.ReverseProxy)
+	proxies = make(map[string]*primitiveproxy.PrimitiveProxy)
 	appUrls, err := auth.GetAppURLs()
 	if err != nil {
 		return
