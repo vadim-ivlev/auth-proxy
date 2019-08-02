@@ -8,6 +8,7 @@ COPY configs  /app/configs
 COPY migrations  /app/migrations
 COPY templates  /app/templates
 COPY test_apps/.  /app/test_apps/
+COPY test_apps/node_modules/.  /app/test_apps/node_modules/
 
 
 COPY auth-proxy  /app/auth-proxy
