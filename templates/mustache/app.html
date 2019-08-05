@@ -27,6 +27,10 @@
             <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
             Доступно по: <a id="newAppUrl" href="/apps/{{app.appname}}/" target="_blank">{{origin}}/apps/{{app.appname}}</a>
         </div>
+        <div>
+            <label >rebase</label>
+            <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные."  value="{{app.rebase}}">
+        </div>
         <div style="text-align: right;">
             <label></label>
             {{^app}}

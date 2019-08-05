@@ -72,19 +72,20 @@ func GenerateNewPassword(usernameOrEmail string) (string, string, error) {
 }
 
 // GetAppURLs Возвращает url-ы приложений.
-func GetAppURLs() (map[string]string, error) {
-	records, err := db.QuerySliceMap(`SELECT appname,url FROM app WHERE url IS NOT NULL;`)
+func GetAppURLs() (map[string][]string, error) {
+	records, err := db.QuerySliceMap(`SELECT appname,url,rebase FROM app WHERE url IS NOT NULL;`)
 	if err != nil {
 		return nil, err
 	}
-	m := make(map[string]string)
+	m := make(map[string][]string)
 	for _, rec := range records {
 		app, _ := rec["appname"].(string)
 		url, _ := rec["url"].(string)
+		rebase, _ := rec["rebase"].(string)
 		if url == "" || app == "" {
 			continue
 		}
-		m[app] = url
+		m[app] = []string{url, rebase}
 	}
 	return m, nil
 }

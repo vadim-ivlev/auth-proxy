@@ -569,6 +569,7 @@ function formListAppSubmit(event) {
               appname
               description
               url
+              rebase
             }
           }
         }    `
@@ -594,16 +595,19 @@ function formAppSubmit(event, appOperationName = 'create_app') {
     let appname = $("#formApp input[name='appname']").val()
     let url = $("#formApp input[name='url']").val()
     let description = $("#formApp input[name='description']").val()
+    let rebase = $("#formApp input[name='rebase']").val()
     var query =`
     mutation {
         ${appOperationName}(
         appname: "${appname}",
         url: "${url}",
-        description: "${description}"
+        description: "${description}",
+        rebase: "${rebase}"
         ) {
             description
             appname
             url
+            rebase
           }
 
         }
@@ -636,6 +640,7 @@ function getApp(appname) {
             description
             appname
             url
+            rebase
           }
         
         list_app_user_role(

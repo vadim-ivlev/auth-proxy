@@ -73,26 +73,26 @@
             <div id="appPage"   class="page"></div>
             
             <div id="loginPage" class="page">
-            <div class="flexed max-width-400">
+                <div class="flexed max-width-400">
 
-                    <h2>Вход</h2>
-                    <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
-                        <div>
-                            <label class="param-name">username</label>
-                            <input name="username" type="text" placeholder="имя или емайл" value="vadim">
-                        </div>
-                        <div>
-                            <label class="param-name">password</label>
-                            <input name="password" type="password" placeholder="пароль" value="1">
-                        </div>
-                        
-                        <div style="text-align: right;">
-                            <label class="param-name"></label>
-                            <input type="submit" class="button button-outline" value="Вход">
-                        </div>
-                    </form>
-                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">выслать новый пароль</button>
-                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
+                        <h2>Вход</h2>
+                        <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
+                            <div>
+                                <label class="param-name">username</label>
+                                <input name="username" type="text" placeholder="имя или емайл" value="vadim">
+                            </div>
+                            <div>
+                                <label class="param-name">password</label>
+                                <input name="password" type="password" placeholder="пароль" value="1">
+                            </div>
+                            
+                            <div style="text-align: right;">
+                                <label class="param-name"></label>
+                                <input type="submit" class="button button-outline" value="Вход">
+                            </div>
+                        </form>
+                        <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">выслать новый пароль</button>
+                        <button class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
                 </div>
             </div>
                 
@@ -112,7 +112,7 @@
                     <br>
                 </div>
                 <div class="app-search-results"></div>
-        </div>
+            </div>
 
 
             <div class="page" id="usersPage">

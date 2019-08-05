@@ -76,6 +76,10 @@ var appFields = gq.Fields{
 		Type:        gq.String,
 		Description: "URL приложения относительно сервера авторизации",
 	},
+	"rebase": &gq.Field{
+		Type:        gq.String,
+		Description: "Y - чтобы поменять ссылки на HTML страницах на относительные",
+	},
 }
 
 var app_roleFields = gq.Fields{

@@ -150,6 +150,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "url",
 				},
+				"rebase": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
@@ -159,9 +163,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
 					url, _ := params.Args["url"].(string)
+					rebase, _ := params.Args["rebase"].(string)
 					if url != "" {
-						proxies[app] = createProxy(url)
-						log.Printf("Proxy created appname=%v target=%v", app, url)
+						proxies[app] = createProxy(url, app, rebase)
+						log.Printf("Proxy created appname=%v target=%v rebase=%v", app, url, rebase)
 					}
 				}
 				return res, err
@@ -185,6 +190,11 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "url проксируемого приложения",
 				},
+				"rebase": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
+				},
+
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
@@ -192,6 +202,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				res, err := updateRecord("appname", params, "app", "app")
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
+					rebase, _ := params.Args["rebase"].(string)
 					u, ok := params.Args["url"]
 					if ok {
 						url, _ := u.(string)
@@ -199,7 +210,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 							delete(proxies, app)
 							log.Printf("Proxy deleted appname=%s", app)
 						} else {
-							proxies[app] = createProxy(url)
+							proxies[app] = createProxy(url, app, rebase)
 							log.Printf("Proxy created appname=%v target=%v", app, url)
 						}
 					}

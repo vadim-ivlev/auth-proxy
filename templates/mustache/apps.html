@@ -5,6 +5,7 @@
                         <th>appname</th>
                         <th>описание</th>
                         <th>реальный url</th>
+                        <th>rebase</th>
                         <th>действия</th>
                     <tr>
                 </thead>
@@ -21,6 +22,9 @@
                         <td>
                             <!-- <a href="{{url}}" target="_blank" >{{url}}</a> -->
                             <a href="" onclick="getApp('{{appname}}'); return showPage('app',true);">{{url}}</a>
+                        </td>
+                        <td>
+                            <a href="" onclick="getApp('{{appname}}'); return showPage('app',true);">{{rebase}}</a>
                         </td>
                         <td>
                             <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app',true);">редактировать</button>

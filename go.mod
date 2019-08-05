@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/Microsoft/go-winio v0.4.12 // indirect
+	github.com/amitbet/gorename v0.0.0-20190107054843-300b577db37e // indirect
 	github.com/aws/aws-sdk-go v1.20.19 // indirect
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
@@ -39,6 +40,7 @@ require (
 	github.com/mongodb/mongo-go-driver v1.0.4 // indirect
 	github.com/nakagami/firebirdsql v0.0.0-20190609025626-90ca2b3395f5 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/prateek/gorename v0.0.0-20180424020013-52c7307cddd2 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/tidwall/pretty v1.0.0 // indirect
