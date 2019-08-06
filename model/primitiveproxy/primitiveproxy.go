@@ -67,44 +67,63 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 
 }
 
-// replaceAbsoluteLinks - Попытка изменить абсолютные ссылки HTML документа на относительные и <base>.
-// Делается для правильного отображения страниц. Правильный способ -  не использовать HTML ссылок наxинающихся с /
+// replaceAbsoluteLinks - Попытка изменить абсолютные ссылки в HTML, CSS, JS  на относительные и <base>.
+// Делается для корректного отображения страниц на некоторых сайтах.
+// Правильный способ -  не использовать ссылок наxинающихся с /
 // и не использовать эту функцию.
 func replaceAbsoluteLinks(wr http.ResponseWriter, r *http.Request, resp *http.Response, p *PrimitiveProxy) {
 	contentType := resp.Header.Get("Content-Type")
-	if strings.Contains(contentType, "text/html") {
-		// устанавливаем base
-		// wr.Header().Set("Content-Base", "http://localhost:4000/apps/_pravo/")
-		// wr.Header().Set("Content-Location", "http://localhost:4000/apps/_pravo/")
+	isHTML := strings.Contains(contentType, "text/html")
+	isCSS := strings.Contains(contentType, "text/css")
+	isJS := strings.Contains(contentType, "application/javascript")
 
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
+	if isHTML || isCSS || isJS {
 
-		}
-
-		base := r.Host + "/apps/" + p.appname
+		// вычисляем path & base
+		path := "/apps/" + p.appname + "/"
+		base := r.Host + path
 		if strings.HasPrefix(r.Proto, "HTTP/") {
 			base = "http://" + base
 		} else {
 			base = "https://" + base
 		}
+
+		// устанавливаем HTTP base. Похожене оказывает влияния в chrome.
+		wr.Header().Set("Content-Base", base)
+		wr.Header().Set("Content-Location", base)
+
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		bodyString := string(bodyBytes)
-		bodyString = strings.Replace(bodyString, "<head>", `<head><base href="`+base+`/">`, 1)
-		bodyString = strings.Replace(bodyString, `href="//`, `href="||`, -1)
-		bodyString = strings.Replace(bodyString, `href='//`, `href='||`, -1)
-		bodyString = strings.Replace(bodyString, `src="//`, `src="||`, -1)
-		bodyString = strings.Replace(bodyString, `src='//`, `src='||`, -1)
 
-		bodyString = strings.Replace(bodyString, `href="/`, `href="`, -1)
-		bodyString = strings.Replace(bodyString, `href='/`, `href='`, -1)
-		bodyString = strings.Replace(bodyString, `src="/`, `src="`, -1)
-		bodyString = strings.Replace(bodyString, `src='/`, `src='`, -1)
+		if isHTML {
+			// bodyString = strings.Replace(bodyString, "<head>", `<head><base href="`+base+`">`, 1)
+			bodyString = strings.Replace(bodyString, `href="//`, `href="||`, -1)
+			bodyString = strings.Replace(bodyString, `href='//`, `href='||`, -1)
+			bodyString = strings.Replace(bodyString, `src="//`, `src="||`, -1)
+			bodyString = strings.Replace(bodyString, `src='//`, `src='||`, -1)
 
-		bodyString = strings.Replace(bodyString, `href="||`, `href="//`, -1)
-		bodyString = strings.Replace(bodyString, `href='||`, `href='//`, -1)
-		bodyString = strings.Replace(bodyString, `src="||`, `src="//`, -1)
-		bodyString = strings.Replace(bodyString, `src='||`, `src='//`, -1)
+			bodyString = strings.Replace(bodyString, `href="/`, `href="`+path, -1)
+			bodyString = strings.Replace(bodyString, `href='/`, `href='`+path, -1)
+			bodyString = strings.Replace(bodyString, `src="/`, `src="`+path, -1)
+			bodyString = strings.Replace(bodyString, `src='/`, `src='`+path, -1)
+
+			bodyString = strings.Replace(bodyString, `href="||`, `href="//`, -1)
+			bodyString = strings.Replace(bodyString, `href='||`, `href='//`, -1)
+			bodyString = strings.Replace(bodyString, `src="||`, `src="//`, -1)
+			bodyString = strings.Replace(bodyString, `src='||`, `src='//`, -1)
+		}
+		if isCSS {
+			bodyString = strings.Replace(bodyString, `url(/`, `url(`+path, -1)
+			bodyString = strings.Replace(bodyString, `url("/`, `url("`+path, -1)
+			bodyString = strings.Replace(bodyString, `url('/`, `url('`+path, -1)
+		}
+		if isJS {
+			bodyString = strings.Replace(bodyString, `sourceMappingURL=`, `sourceMappingURL=`+path, -1)
+		}
 		fmt.Fprint(wr, bodyString)
 	}
 }
