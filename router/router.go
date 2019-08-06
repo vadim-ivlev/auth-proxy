@@ -32,7 +32,7 @@ func Setup() *gin.Engine {
 	store.Options(sessions.Options{MaxAge: 86400 * 365 * 5}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", store))
 
-	r.GET("/", controller.LandingPage)
+	r.GET("/testapp", controller.LandingPage)
 	r.POST("/graphql", controller.GraphQL)
 	r.POST("/schema", controller.GraphQL)
 
