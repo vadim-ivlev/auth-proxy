@@ -65,9 +65,8 @@ var model = {
     _allApps: null,
     set allApps(v) {
         this._allApps = v
-        this.all_app_options = createOptions(v, "appname", "description")
-        $("#allApps").html(this.all_app_options)
-        $("#allApps").val("app1")
+        this.all_app_options = createOptions(v, "appname", "description", "url")
+        $("#allAppsDataList").html(this.all_app_options)
     },
     get allApps() {
         return this._allApps
@@ -77,9 +76,8 @@ var model = {
     _allUsers: null,
     set allUsers(v) {
         this._allUsers = v
-        this.all_user_options = createOptions(v, "username", "fullname")
-        $("#allUsers").html(this.all_user_options)
-        $("#allUsers").val("vadim")
+        this.all_user_options = createOptions(v, "username", "fullname", "email")
+        $("#allUsersDataList").html(this.all_user_options)
     },
     get allUsers() {
         return this._allUsers
@@ -102,11 +100,11 @@ var model = {
 
 // F U N C T I O N S  *********************************************************************************
 
-function createOptions(selectValues, keyProp, textProp) {
+function createOptions(selectValues, keyProp, textProp1, textProp2) {
     var output = []
     $.each(selectValues, function(key, value)
     {
-      output.push('<option value="'+ value[keyProp] +'">'+ value[textProp] +'</option>');
+      output.push(`<option value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
     })
     let optionText = output.join('')
     return optionText
@@ -834,9 +832,10 @@ function getAllUsers(event) {
 function formListRoleSubmit(event) {
     if (event && event.preventDefault ) event.preventDefault()
     model.app_user_roles = null
-    let appname = $("#formListRole select[name='appname']").val()
-    let username = $("#formListRole select[name='username']").val()
-    if (!appname || !username) return
+    let appname = $("#allApps").val()
+    let username = $("#allUsers").val()
+    if (!appname || !username) 
+        return
 
     var query =`
     query {

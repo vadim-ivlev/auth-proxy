@@ -96,7 +96,7 @@
                 <input id="newAppUsername" 
                     list="usersDataList" 
                     placeholder="Добавить пользователя. Поиск." 
-                    onchange="$('#newAppUserFullName').text($(`#usersDataList>option[value=${this.value}`).text());"
+                    onchange="$('#newAppUserFullName').text($(`#usersDataList>option[value='${this.value}'`).text());"
                 >
                 <datalist id="usersDataList">
                     {{{all_user_options}}}

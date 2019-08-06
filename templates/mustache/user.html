@@ -97,7 +97,7 @@
                 <input id="newUserAppname" 
                     list="appsDataList" 
                     placeholder="Добавить приложение. Поиск." 
-                    onchange="$('#newUserAppDescription').text($(`#appsDataList>option[value=${this.value}`).text());"
+                    onchange="$('#newUserAppDescription').text($(`#appsDataList>option[value='${this.value}'`).text());"
                 >
                 <datalist id="appsDataList">
                     {{{all_app_options}}}

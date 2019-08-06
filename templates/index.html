@@ -135,14 +135,21 @@
             <div class="page" id="rolesPage">
                 <div class="flexed">
                     <h2>Роли пользователя в приложении</h2>
-                    <form id="formListRole" class="grided threeColumns" onsubmit="return formListRoleSubmit(event)">
+                    <form id="formListRole" class="grided threeColumns"  style="align-items: start;" onsubmit="return formListRoleSubmit(event)">
                         <div>
                             <label >пользователь</label>
-                            <select id="allUsers" name="username"  onchange="return formListRoleSubmit(event)"></select>
+                            <input id="allUsers" list="allUsersDataList" placeholder="Выберите пользователя" name="username"  
+                                onchange="$('#userInfo').text($(`#allUsersDataList>option[value='${this.value}'`).text()); return formListRoleSubmit(event)">
+                            <datalist id="allUsersDataList"></datalist>
+                            <div id="userInfo"></div>
+                            
                         </div>
-                        <div>
+                        <div> 
                             <label>приложение</label>
-                            <select id="allApps" name="appname" onchange="return formListRoleSubmit(event)"></select>
+                            <input id="allApps" list="allAppsDataList" placeholder="Выберите приложение" name="appname" 
+                                onchange="$('#appInfo').text($(`#allAppsDataList>option[value='${this.value}'`).text()); return formListRoleSubmit(event)">
+                            <datalist id="allAppsDataList"></datalist>
+                            <div id="appInfo"></div>
                         </div>
                     </form>
                     <div class="app-user-roles-results"></div>
