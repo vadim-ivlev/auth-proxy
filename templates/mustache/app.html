@@ -91,20 +91,24 @@
             </tr>
             {{/app.users}}
 
-            
         <tr>
-            <td id="newAppUsername"></td>
-            <td>
-                <select class="nomargin" onchange="$('#newAppUsername').text(this.value)">
-                    <option value=""> добавить пользователя</option>
+            <td>                
+                <input id="newAppUsername" 
+                    list="usersDataList" 
+                    placeholder="Добавить пользователя. Поиск." 
+                    onchange="$('#newAppUserFullName').text($(`#usersDataList>option[value=${this.value}`).text());"
+                >
+                <datalist id="usersDataList">
                     {{{all_user_options}}}
-                </select>
+                </datalist>
+            </td>
+            <td id="newAppUserFullName">
             </td>
             <td>
                 <span class="button button-outline role-nocross">
-                        <input id="newAppRolename" class="role-input">
+                        <input id="newAppRolename" class="role-input"  placeholder="новая роль">
                         <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', '{{app.appname}}', $('#newAppUsername').text(), $('#newAppRolename').val(), ()=>{ getApp('{{app.appname}}') }  )"
+                            onclick="modifyRole('create', '{{app.appname}}', $('#newAppUsername').val(), $('#newAppRolename').val(), ()=>{ getApp('{{app.appname}}') }  )"
                             >
                         +
                         </button>
@@ -112,6 +116,7 @@
             </td>
         </tr>
 
+        
 
     </table>
 </div>

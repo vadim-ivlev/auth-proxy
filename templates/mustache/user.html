@@ -92,28 +92,32 @@
             </td>
         </tr>
         {{/user.apps}}
-
         <tr>
-            <td id="newUserAppname"></td>
             <td>
-                <select class="nomargin" onchange="$('#newUserAppname').text(this.value)">
-                    <option value=""> добавить приложение</option>
+                <input id="newUserAppname" 
+                    list="appsDataList" 
+                    placeholder="Добавить приложение. Поиск." 
+                    onchange="$('#newUserAppDescription').text($(`#appsDataList>option[value=${this.value}`).text());"
+                >
+                <datalist id="appsDataList">
                     {{{all_app_options}}}
-                </select>
+                </datalist>
+
             </td>
+            <td id="newUserAppDescription">
+           </td>
             <td>
                 <span class="button button-outline role-nocross">
-                        <input id="newUserRolename" class="role-input">
+                        <input id="newUserRolename" class="role-input" placeholder="новая роль">
                         <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', $('#newUserAppname').text(), '{{user.username}}',  $('#newUserRolename').val(), ()=>{ getUser('{{user.username}}') }  )"
+                            onclick="modifyRole('create', $('#newUserAppname').val(), '{{user.username}}',  $('#newUserRolename').val(), ()=>{ getUser('{{user.username}}') }  )"
                             >
                         +
                         </button>
                 </span>
             </td>
         </tr>
-        
-
+     
 
 
 
