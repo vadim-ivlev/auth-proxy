@@ -2,6 +2,7 @@ package main
 
 import (
 	"auth-proxy/model/db"
+	"auth-proxy/model/mail"
 	"auth-proxy/router"
 	"flag"
 	"fmt"
@@ -20,6 +21,8 @@ func main() {
 	db.ReadConfig("./configs/db.yaml", env)
 	// читаем конфиг SQLite.
 	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
+	// читаем конфиг mail.
+	mail.ReadConfig("./configs/mail.yaml", env)
 
 	// Ждем готовности базы данных
 	db.PrintConfig()

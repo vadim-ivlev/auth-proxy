@@ -11,9 +11,9 @@ import (
 )
 
 type connectionParams struct {
-	Addr     string
-	From     string
-	Body     string
+	Addr string
+	From string
+	Body string
 }
 
 var params connectionParams
@@ -36,7 +36,7 @@ func ReadConfig(fileName string, env string) {
 
 }
 
-func SendPassword(toMail, password string) error {
+func SendPassword(username, toMail, password string) error {
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial(params.Addr)
 	if err != nil {
@@ -59,7 +59,7 @@ func SendPassword(toMail, password string) error {
 	}
 	defer wc.Close()
 
-	msg := fmt.Sprintf(params.Body, params.From, toMail, password)
+	msg := fmt.Sprintf(params.Body, params.From, toMail, username, password)
 	_, err = fmt.Fprintf(wc, msg)
 	if err != nil {
 		return err

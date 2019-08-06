@@ -249,3 +249,7 @@ input.role-input {
 .info {
     background-color: green;
 }
+
+.sortable {
+    /* text-decoration: underline; */
+}

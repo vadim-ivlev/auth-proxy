@@ -244,6 +244,17 @@ function searchAppsInModel() {
 }
 
 
+function sortAppsBy(prop) {
+    if (!model._allApps) return false
+    model._allApps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1)
+    model._apps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 )
+    model.apps = model._apps
+    return false
+}
+
+
+
+
 function searchUsers() {
     if (document.querySelector('#chkLocalSearch').checked) {
         return delayFunc(searchUsersInModel, 100)
@@ -261,6 +272,13 @@ function searchUsersInModel() {
     return false   
 }
 
+function sortUsersBy(prop) {
+    if (!model._allUsers) return false
+    model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
+    model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
+    model.users = model._users
+    return false
+}
 
 
 
@@ -344,6 +362,35 @@ function logoutGraphQLFormSubmit(event) {
     })
     return false       
 }
+
+function generateNewPassword(event) {
+    if (event) event.preventDefault()
+
+    let username = $("#formLoginGraphQL input[name='username']").val()
+
+    var query =`
+    mutation {
+        generate_password(
+        username: "${username}"
+        ) 
+        }
+    `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showResponse(res)
+            if (res.errors){
+                blinkStatus( res.errors[0].message)
+                return
+            } else {
+                alert(res.data.generate_password)
+            }
+            refreshApp()
+        }   
+    })
+    return false       
+}
+
+
 
 // U S E R S  *******************************************************************
 
@@ -729,13 +776,14 @@ function getAllApps(event) {
     var query =`
     query {
         list_app(
-        order: "description ASC"
+        order: "appname ASC"
         ) {
             length
             list {
               appname
               description
               url
+              rebase  
             }
           }
         }    `

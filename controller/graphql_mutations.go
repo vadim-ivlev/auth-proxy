@@ -4,6 +4,7 @@ import (
 	"auth-proxy/model/auth"
 	"auth-proxy/model/db"
 	"auth-proxy/model/mail"
+	"errors"
 	"log"
 
 	gq "github.com/graphql-go/graphql"
@@ -93,7 +94,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"generate_password": &gq.Field{
 			Description: "Сгенерировать новый пароль пользователю и выслать по электронной почте",
-			Type:        userObject,
+			// Type:        userObject,
+			Type: gq.String,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -102,16 +104,19 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				username := params.Args["username"].(string)
-				email, password, err := auth.GenerateNewPassword(username)
+				if username == "" {
+					return "Поле username должно быть заполнено", errors.New("Не указаны имя или емайл пользователя")
+				}
+				foundUsername, email, password, err := auth.GenerateNewPassword(username)
 				if err != nil {
 					return "Could not generate new password", err
 				}
-				err = mail.SendPassword(email, password)
+				err = mail.SendPassword(foundUsername, email, password)
 				if err != nil {
 					return "Could not send email to:" + email, err
 				}
 
-				return "New password has been sent to:" + email, nil
+				return "Новый пароль для "+foundUsername+" выслан по адресу: " + email, nil
 
 			},
 		},
@@ -194,7 +199,6 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
 				},
-
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
