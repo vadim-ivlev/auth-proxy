@@ -20,6 +20,11 @@ rm -rf deploy/migrations
 rm -rf deploy/templates
 rm -rf deploy/test_apps
 
+# careful with configs/
+rm -f deploy/configs/mail.yaml
+rm -f deploy/configs/sqlite.yaml
+
+
 
 # copy files to deploy/
 cp    auth-proxy    deploy/auth-proxy
@@ -27,3 +32,8 @@ cp -r configs       deploy/configs_example
 cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
 cp -r test_apps     deploy/test_apps
+
+# careful with configs/
+mkdir -p deploy/configs
+cp -f configs/mail.yaml  deploy/configs/mail.yaml
+cp -f configs/sqlite.yaml  deploy/configs/sqlite.yaml
