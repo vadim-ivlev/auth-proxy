@@ -9,7 +9,7 @@
                                                                                   
 
 Auth-Proxy стартован.  SQLite:%v 
-http://localhost:%v/
+http://localhost:%v/testapp
 		
 CTRL-C для прерывания.
 
