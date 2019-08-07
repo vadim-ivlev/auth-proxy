@@ -26,7 +26,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./test_apps:/home/node/app
+      - ./testapps:/home/node/app
     expose:
       - "3001"
       - "3002"

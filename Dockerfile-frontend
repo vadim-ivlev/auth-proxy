@@ -2,7 +2,7 @@ FROM golang:1.12.5-stretch
 LABEL maintainer="RGRU <ivlev@rg.ru>"
 
 # RUN apt-get -y update && apt-get -y install sshpass 
-RUN apt-get -y update && apt-get -y install iputils-ping && apt-get -y install curl && apt-get -y install mc
+# RUN apt-get -y update && apt-get -y install iputils-ping && apt-get -y install curl && apt-get -y install mc
 
 
 WORKDIR /go/src/auth-proxy

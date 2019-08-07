@@ -18,7 +18,7 @@ rm -rf deploy/auth-proxy
 rm -rf deploy/configs_example
 rm -rf deploy/migrations
 rm -rf deploy/templates
-rm -rf deploy/test_apps
+rm -rf deploy/testapps
 
 # careful with configs/
 rm -f deploy/configs/mail.yaml
@@ -31,10 +31,8 @@ cp    auth-proxy    deploy/auth-proxy
 cp -r configs       deploy/configs_example
 cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
-cp -r test_apps     deploy/test_apps
+cp -r testapps     deploy/testapps
 
-cp -r test_apps/node_modules     deploy/test_apps/modules
-cp -r deploy/test_apps     deploy/testapps
 
 # careful with configs/
 mkdir -p deploy/configs

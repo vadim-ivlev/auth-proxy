@@ -49,10 +49,10 @@ build:
         # collect files to deploy on prod
         - rm -rf   $BUILD_PATH/deploy
         - ls -lF   deploy
-        - ls -lF   deploy/test_apps
+        - ls -lF   deploy/testapps
         - cp -r    deploy $BUILD_PATH
         - ls -lF   $BUILD_PATH/deploy
-        - ls -lF   $BUILD_PATH/deploy/test_apps
+        - ls -lF   $BUILD_PATH/deploy/testapps
         - mkdir -p $BUILD_PATH/deploy/configs
     artifacts:
         paths:
