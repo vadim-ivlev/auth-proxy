@@ -31,7 +31,9 @@ cp    auth-proxy    deploy/auth-proxy
 cp -r configs       deploy/configs_example
 cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
-cp -r testapps     deploy/testapps
+cp -r testapps      deploy/testapps
+
+mv deploy/node_modules      deploy/nodemodules
 
 
 # careful with configs/
