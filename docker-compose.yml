@@ -39,6 +39,6 @@ services:
       - 3003:3003
       - 3004:3004
       - 3005:3005
-    command: "npm run start12"
+    command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
 
 
