@@ -1,25 +1,24 @@
-## SERVER
-
-- restore forgotten passwords
-- change search Like statement from logical OR to concatination of fields ||
-
 ## deploy
 - start node apps
-- add ping and curl
 
-
-
-
-#### development
-- switch to primitive proxy
+## development
 - get rid of gin using <https://github.com/abbot/go-http-auth>
 - get rid of sessions
     https://github.com/Depado/gin-auth-example/blob/master/main.go
 
-## CLIENT
+## client
 - get rid of json viewer , jquery-ui
-
 - english version
+- sort apps on User page and users on AppPage
+
+
+## optimize
+- getKeysAndValues
+- db pool
+- change search Like statement from logical OR to concatination of fields ||
+- add DBStats function to GraphQL
+
+-------------------------------------------------------------
 
 
 https://photoreports-api.rg.ru/ping

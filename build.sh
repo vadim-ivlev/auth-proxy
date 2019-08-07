@@ -32,6 +32,7 @@ cp -r configs       deploy/configs_example
 cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
 cp -r test_apps     deploy/test_apps
+cp -r test_apps/node_modules     deploy/test_apps/modules
 
 # careful with configs/
 mkdir -p deploy/configs

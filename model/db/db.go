@@ -10,15 +10,23 @@ import (
 	"strings"
 	"time"
 
-	// _ "github.com/golang-migrate/migrate/v4/database/postgres"
-	// _ "github.com/golang-migrate/migrate/v4/source/file"
-
 	"github.com/jmoiron/sqlx"
 	//blank import
 	_ "github.com/lib/pq"
 	//blank import
 	_ "github.com/mattn/go-sqlite3"
 )
+
+/*
+	var DB *sqlx.DB
+
+	DB = sqlx.Connect(driverName, dataSourceName)
+
+	DB.SetMaxOpenConns(1000) // The default is 0 (unlimited)
+	DB.SetMaxIdleConns(10) // defaultMaxIdleConns = 2
+	DB.SetConnMaxLifetime(0) // 0, connections are reused forever.
+	stats := DB.Stats()
+*/
 
 func getDB() (*sqlx.DB, error) {
 	if SQLite {
