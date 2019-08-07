@@ -33,7 +33,7 @@ cp -r migrations    deploy/migrations
 cp -r templates     deploy/templates
 cp -r testapps      deploy/testapps
 
-mv deploy/testapps/node_modules      deploy/testapps/nodemodules
+#mv deploy/testapps/node_modules      deploy/testapps/nodemodules
 
 
 # careful with configs/
