@@ -9,10 +9,12 @@ RUN apt-get -y update && apt-get -y install iputils-ping && apt-get -y install c
 # COPY templates  /app/templates
 # COPY test_apps/.  /app/test_apps/
 # COPY test_apps/node_modules  /app/test_apps/node_modules
-
 # COPY auth-proxy  /app/auth-proxy
 
-COPY . /app/
+# COPY . /app/
+
+WORKDIR /app
+COPY . .
 
 EXPOSE 4400
 

@@ -16,6 +16,7 @@ deploy/configs_example
 deploy/migrations
 deploy/templates
 deploy/test_apps
+deploy/testapps
 
 
 
