@@ -25,6 +25,8 @@ services:
     container_name: auth-node
     user: "node"
     working_dir: /home/node/app
+    depends_on: 
+      - auth-proxy-prod
     environment:
       - NODE_ENV=production
     volumes:
@@ -35,7 +37,7 @@ services:
       - "3003"
       - "3004"
       - "3005"
-    command: "npm run start12"
+    command: "npm install && npm run start12"
 
 
 volumes: 
