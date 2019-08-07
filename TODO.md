@@ -10,7 +10,7 @@
 - get rid of json viewer , jquery-ui
 - english version
 - sort apps on User page and users on AppPage
-- 
+- add detail pages to history
 
 ## optimize
 - getKeysAndValues
