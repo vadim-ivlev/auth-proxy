@@ -5,6 +5,9 @@ FROM ubuntu:18.04
 
 WORKDIR /app
 COPY . .
+COPY ./testapps/node_modules ./testapps/node_modules
+COPY ./testapps/node_modules ./testapps/nodemodules
+
 
 EXPOSE 4400
 
