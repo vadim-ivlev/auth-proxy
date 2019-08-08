@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,11 +11,14 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	jsoniter "github.com/json-iterator/go"
 	//blank import
 	_ "github.com/lib/pq"
 	//blank import
 	_ "github.com/mattn/go-sqlite3"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func getDB() (*sqlx.DB, error) {
 	if UsePool {

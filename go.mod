@@ -31,6 +31,7 @@ require (
 	github.com/graphql-go/graphql v0.7.8
 	github.com/jackc/pgx v3.5.0+incompatible // indirect
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/json-iterator/go v1.1.7
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/kshvakov/clickhouse v1.3.9 // indirect

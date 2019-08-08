@@ -4,7 +4,6 @@ import (
 	"auth-proxy/model/auth"
 	"auth-proxy/model/session"
 	"context"
-	"encoding/json"
 	"errors"
 	"log"
 
@@ -17,7 +16,10 @@ import (
 	"github.com/gin-gonic/gin"
 	gq "github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
+	jsoniter "github.com/json-iterator/go"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // FUNCTIONS *******************************************************
 
