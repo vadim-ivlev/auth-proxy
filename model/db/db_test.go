@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -9,9 +8,9 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	fmt.Println("Тесты DB ******************************************************")
 	ReadConfig("../../configs/db.yaml", "dev")
 	ReadSQLiteConfig("../../configs/sqlite.yaml", "dev")
+	SQLite = false
 
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())
@@ -23,12 +22,82 @@ func Test_dbAvailable(t *testing.T) {
 	}
 }
 
-func Benchmark_DB_connection(b *testing.B) {
-	// var res map[string]interface{}
-	// var err error
-	for index := 0; index < 1000; index++ {
-		// res, err = QueryRowMap("select * from app where appname = 'auth'")
-		QueryRowMap("select * from app where appname = 'auth'")
+// Локальная БД
+func Benchmark_local_DB(b *testing.B) {
+	ReadConfig("../../configs/db.yaml", "dev")
+	UsePool = false
+	SQLite = false
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
 	}
-	// println(res["appname"].(string), err)
+}
+
+// Локальная БД с пулом
+func Benchmark_local_DB_pool(b *testing.B) {
+	ReadConfig("../../configs/db.yaml", "dev")
+	UsePool = true
+	SQLite = false
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
+	}
+}
+
+// Удаленная БД
+func Benchmark_remote_DB(b *testing.B) {
+	ReadConfig("../../configs/db.yaml", "prod")
+	UsePool = false
+	SQLite = false
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
+	}
+}
+
+// Удаленная БД с пулом
+func Benchmark_remote_DB_pool(b *testing.B) {
+	ReadConfig("../../configs/db.yaml", "prod")
+	UsePool = true
+	SQLite = false
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
+	}
+}
+
+// SQLite
+func Benchmark_SQLite(b *testing.B) {
+	UsePool = false
+	SQLite = true
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
+	}
+}
+
+// SQLite с пулом
+func Benchmark_SQLite_pool(b *testing.B) {
+	UsePool = true
+	SQLite = true
+	for i := 0; i < b.N; i++ {
+		QueryRowMap("select $1", i)
+	}
+}
+
+var args = map[string]interface{}{
+	"a": 1,
+	"b": 2,
+	"c": 3,
+	"d": 4,
+	"e": 5,
+	"f": 6,
+	"g": 7,
+	"h": 8,
+}
+
+var fields []string
+var values []interface{}
+var placeholders []string
+
+func Benchmark_getKeysAndValues(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		fields, values, placeholders = getKeysAndValues(args)
+	}
+
 }

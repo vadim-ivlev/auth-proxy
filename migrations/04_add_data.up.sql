@@ -1,7 +1,7 @@
 
 -- DO 
 -- $$
-BEGIN;
+-- BEGIN;
 -- -- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
 
 -- SET CONSTRAINTS app_user_role_fk_u DEFERRED;
@@ -312,4 +312,4 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('onlinebc_admin'
 --     RAISE EXCEPTION 'Тестовые данные уже существуют.';
 -- END;
 -- $$;
-COMMIT;
+-- COMMIT;

@@ -5,10 +5,17 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/jmoiron/sqlx"
 	yaml "gopkg.in/yaml.v2"
 )
 
-// SQLite Использовать SQLite
+// Использовать ли пул соединений для подключения к БД.
+var UsePool bool = true
+
+// Пул соединений
+var DBPool *sqlx.DB = nil
+
+// SQLite Использовать ли SQLite
 var SQLite bool = false
 
 // параметры подсоединения к Postgres

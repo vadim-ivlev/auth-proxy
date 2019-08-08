@@ -12,8 +12,6 @@
 - add detail pages to history
 
 ## optimize
-- getKeysAndValues
-- db pool
-- change search Like statement from logical OR to concatination of fields ||
+- change search Like statement from logical OR to concatenation of fields ||
 - add DBStats function to GraphQL
 

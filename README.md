@@ -66,6 +66,24 @@
 Функциональные тесты (End to End) проводятся с помощью <https://graphql-test.now.sh/>
 
 
+Бенчмарки соединений с БД с пулом и без
+--------------------------------------
+
+    go test -run=Bench -benchmem -benchtime=1s -bench=. ./model/db
+
+результаты
+
+    Benchmark_local_DB-4           500     3210246 ns/op    18911 B/op     303 allocs/op
+    Benchmark_local_DB_pool-4    10000      221768 ns/op     1181 B/op      28 allocs/op
+    Benchmark_remote_DB-4          200     7894973 ns/op    22676 B/op     312 allocs/op
+    Benchmark_remote_DB_pool-4   10000      210710 ns/op     1181 B/op      28 allocs/op
+    Benchmark_SQLite-4           10000      114440 ns/op     4328 B/op      89 allocs/op
+    Benchmark_SQLite_pool-4      10000      209662 ns/op     1511 B/op      29 allocs/op
+
+оптимизация `getKeysAndValues()`
+
+    Benchmark_getKeysAndValues-4              500000              2947 ns/op             848 B/op         28 allocs/op
+    Benchmark_getKeysAndValues1-4            1000000               853 ns/op             400 B/op         11 allocs/op
 
 
 

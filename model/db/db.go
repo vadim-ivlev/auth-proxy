@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -17,36 +18,54 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-/*
-	var DB *sqlx.DB
-
-	DB = sqlx.Connect(driverName, dataSourceName)
-
-	DB.SetMaxOpenConns(1000) // The default is 0 (unlimited)
-	DB.SetMaxIdleConns(10) // defaultMaxIdleConns = 2
-	DB.SetConnMaxLifetime(0) // 0, connections are reused forever.
-	stats := DB.Stats()
-*/
-
 func getDB() (*sqlx.DB, error) {
+	if UsePool {
+		return getDBFromPool()
+	}
+
+	// Если пул не используется каждый раз коннектимся к БД заново
 	if SQLite {
 		return sqlx.Open("sqlite3", sqliteParams.Sqlitefile)
+	} else {
+		return sqlx.Open("postgres", params.connectStr)
 	}
-	return sqlx.Open("postgres", params.connectStr)
+
+}
+
+func getDBFromPool() (*sqlx.DB, error) {
+	if DBPool != nil {
+		return DBPool, nil
+	}
+
+	var err error
+	if SQLite {
+		DBPool, err = sqlx.Connect("sqlite3", sqliteParams.Sqlitefile)
+		printIf("getDBFromPool(): sqlite3", err)
+	} else {
+		DBPool, err = sqlx.Connect("postgres", params.connectStr)
+		printIf("getDBFromPool(): postgres", err)
+	}
+
+	DBPool.SetMaxOpenConns(1000) // The default is 0 (unlimited)
+	DBPool.SetMaxIdleConns(4)    // defaultMaxIdleConns = 2
+	DBPool.SetConnMaxLifetime(0) // 0, connections are reused forever.
+	return DBPool, err
+
 }
 
 // dbAvailable проверяет, доступна ли база данных
 func dbAvailable() bool {
 	conn, err := getDB()
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println(err)
 		return false
 	}
-	defer conn.Close()
-	err1 := conn.Ping()
-	// _, err1 := conn.Exec("select 1;")
-	if err1 != nil {
-		fmt.Println(err1.Error())
+	if !UsePool {
+		defer conn.Close()
+	}
+	err = conn.Ping()
+	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 	return true
@@ -56,7 +75,9 @@ func dbAvailable() bool {
 func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 	conn, err := getDB()
 	panicIf(err)
-	defer conn.Close()
+	if !UsePool {
+		defer conn.Close()
+	}
 	return conn.Exec(sqlText, args...)
 }
 
@@ -96,7 +117,9 @@ func mapValuesToStrings(m map[string]interface{}) map[string]interface{} {
 func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{}, error) {
 	conn, err := getDB()
 	panicIf(err)
-	defer conn.Close()
+	if !UsePool {
+		defer conn.Close()
+	}
 
 	rows, err := conn.Queryx(sqlText, args...) //.MapScan(result)
 	if err != nil {
@@ -127,7 +150,9 @@ func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{
 func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, error) {
 	conn, err := getDB()
 	panicIf(err)
-	defer conn.Close()
+	if !UsePool {
+		defer conn.Close()
+	}
 	result := make(map[string]interface{})
 	err = conn.QueryRowx(sqlText, args...).MapScan(result)
 	printIf("QueryRowMap() sqlText="+sqlText, err)
@@ -229,15 +254,15 @@ func ToPostgresArrayLiteral(arr interface{}) string {
 
 // getKeysAndValues возвращает срезы ключей, значений и символов доллара $n.
 func getKeysAndValues(vars map[string]interface{}) ([]string, []interface{}, []string) {
-	keys := []string{}
-	values := make([]interface{}, 0)
-	dollars := []string{}
-	n := 1
+	ln := len(vars)
+	keys := make([]string, ln)
+	values := make([]interface{}, ln)
+	dollars := make([]string, ln)
+	var n int64 = 0
 	for key, val := range vars {
-		vv := SerializeIfArray(val)
-		values = append(values, vv)
-		keys = append(keys, key)
-		dollars = append(dollars, fmt.Sprintf("$%v", n))
+		values[n] = SerializeIfArray(val)
+		keys[n] = key
+		dollars[n] = "$" + strconv.FormatInt(n+1, 10)
 		n++
 	}
 	return keys, values, dollars

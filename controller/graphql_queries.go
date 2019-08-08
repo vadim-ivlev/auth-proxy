@@ -2,8 +2,8 @@ package controller
 
 import (
 	"auth-proxy/model/auth"
-	"auth-proxy/model/session"
 	"auth-proxy/model/db"
+	"auth-proxy/model/session"
 	"fmt"
 	"strings"
 
@@ -268,5 +268,7 @@ func Like(fieldsString, search string) string {
 	for _, field := range fields {
 		chunks = append(chunks, ` LOWER(`+field+`) LIKE LOWER('%`+search+`%') `)
 	}
-	return strings.Join(chunks, " OR ")
+	s := strings.Join(chunks, " OR ")
+	fmt.Println(fieldsString, s)
+	return s
 }

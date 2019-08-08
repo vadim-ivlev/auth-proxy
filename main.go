@@ -38,6 +38,7 @@ func main() {
 		router.Serve(":" + strconv.Itoa(servePort))
 	}
 
+	db.DBPool.Close()
 	fmt.Println("Bye")
 }
 
@@ -49,7 +50,7 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool) {
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.Parse()
-	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n")
+	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n ")
 	flag.Usage()
 	if serverPort == 0 {
 		os.Exit(0)
