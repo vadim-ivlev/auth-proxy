@@ -1,17 +1,27 @@
-# Пользовательская авторизация
+# auth-proxy -  Пользовательская авторизация
 
-Приложение для авторизации пользователей.
+__Приложение__
+
+http://auth-proxy.rg.ru/
+
+__Схема__
+
+http://auth-proxy.rg.ru/testapp
+
+__Тестовое GUI приложение__
+
+http://auth-proxy.rg.ru/testapp
+
+
+------------------------------
+
+
+Локальные адреса
 
 
 - Тестовая страница API: <http://localhost:4000/> `GET`.
 
 - Конечная точка GraphQL <http://localhost:4000/schema> `POST`.
-
-
-Требования к ПО разработчика
---------------
-
-На компьютере разработчика должны быть установлены Docker, Docker-compose, Go.
 
 
 
@@ -91,11 +101,11 @@
 ----------------------------------------------
 
 
-    ./build-frontend-container.sh
+    sh/build-frontend-container.sh
 
 или 
 
-    ./build-frontend-container.sh
+    sh/build-frontend-container.sh
 
 
 # REWRITE
