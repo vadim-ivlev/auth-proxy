@@ -11,7 +11,7 @@ var model = {
     _loginedUser: null,
     set loginedUser(v) {
         this._loginedUser = v
-        $("#loginedUser").text( v? v.username: '')
+        $("#editProfileButton").text( v? v.username: '')
     },
     get loginedUser() {
         return this._loginedUser

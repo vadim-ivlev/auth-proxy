@@ -25,11 +25,24 @@
         <div>
             <label >url</label>
             <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
-            Доступно по: <a id="newAppUrl" href="/apps/{{app.appname}}/" target="_blank">{{origin}}/apps/{{app.appname}}</a>
+            Проксированное приложение: <a id="newAppUrl" href="/apps/{{app.appname}}/" target="_blank">{{origin}}/apps/{{app.appname}}</a>
         </div>
         <div>
             <label >rebase</label>
             <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные."  value="{{app.rebase}}">
+            <p>
+                Поле имеет смысл только для проксирования HTML web приложений.
+                <br><br>
+                Если значение поля равно "Y" приложение пытается "подправить" ссылки, изображения, фреймы в HTML и CSS так, 
+                чтобы URI начинающиеся с /, начинались с /apps/appname/. 
+                
+                Это делается для того, чтобы браузер не запрашивал ресурсы там, где их нет, то есть в корне auth-proxy.
+                <br><br>
+                Эта операция влечет за собой увеличение потребления памяти и загрузки процессора сервера. 
+                
+                Поэтому в приложениях предназначенных для проксирования рекомендуется использовать относительные ссылки и оставлять это поле пустым.
+                
+            </p>
         </div>
         <div style="text-align: right;">
             <label></label>
@@ -51,7 +64,6 @@
 {{#app}}
 <div class="flexed">
     <h2>
-        <!-- <img src="templates/images/teamwork.png" style="width:25px; vertical-align:middle; margin-right: 10px; opacity: 0.5;">  -->
         Пользователи приложения 
         <b>{{app.appname}}</b>
     </h2>

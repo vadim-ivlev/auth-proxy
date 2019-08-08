@@ -40,19 +40,20 @@
 
 
     <div id="page-container">
-        <div id="content">
-
-            <div id="loginedArea" class="right">
-                <span id="loginedUser"></span>
-                <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser.username); showPage('user',true);">профиль</button>
-                <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Выход</button>
-            </div>
+        <div id="header" class="header">
 
 
-            <h4><img src="templates/images/rgru-logo.png" class="logo">
+            <h2>
+                <div id="loginedArea" class="right" style="vertical-align: top;">
+                    <button id="editProfileButton" class="button button-clear"  onclick="getUser(model.loginedUser.username); showPage('user',true);">профиль</button>
+                    <button id="logoutButton" class="button button-clear"  onclick="logoutGraphQLFormSubmit(); showPage('login',true)">Выход</button>
+                </div>
+                <!-- <img src="templates/images/rgru-logo.png" class="logo"> -->
                 <!-- <b>Auth-Proxy</b>  -->
                 Сервис Авторизации
-            </h4>
+            </h2>
+        </div>
+        <div id="content">
 
             <div>
                 <a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL (в новом окне). &#x25B6;</a>
@@ -98,7 +99,7 @@
                 
             <div class="page" id="appsPage">
                 <div class="flexed max-width-600">           
-                    <h2>
+                    <h2 class="centered">
                         Приложения
                     </h2>
                     <form id="formListApp" class="grided" onsubmit="return searchApps()">
@@ -117,7 +118,7 @@
 
             <div class="page" id="usersPage">
                 <div class="flexed max-width-600">
-                    <h2>Пользователи</h2>
+                    <h2 class="centered">Пользователи</h2>
                     <form id="formListUser" class="grided" onsubmit="return searchUsers()">
                         <div>
                             <label  for="search"></label>
@@ -134,7 +135,7 @@
 
             <div class="page" id="rolesPage">
                 <div class="flexed">
-                    <h2>Роли пользователя в приложении</h2>
+                    <h2 class="centered">Роли пользователя в приложении</h2>
                     <form id="formListRole" class="grided threeColumns"  style="align-items: start;" onsubmit="return formListRoleSubmit(event)">
                         <div>
                             <label >пользователь</label>
