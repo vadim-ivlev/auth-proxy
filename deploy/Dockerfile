@@ -1,7 +1,9 @@
 FROM ubuntu:18.04
 
-# RUN apt-get -y update 
-# RUN apt-get -y install iputils-ping && apt-get -y install curl && apt-get -y install mc
+RUN apt-get -y update 
+RUN apt-get -y install curl
+# RUN apt-get -y install iputils-ping
+# RUN apt-get -y install mc
 # RUN apt-get -y install nodejs
 # RUN apt-get -y install sqlite3 
 
