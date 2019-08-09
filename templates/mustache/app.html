@@ -62,19 +62,24 @@
 
 
 {{#app}}
-<div class="flexed">
-    <h2>
-        Пользователи приложения 
-        <b>{{app.appname}}</b>
-    </h2>
-    <table>
+    <div class="flexed">
+
+    <div class="max-max-auto">
+        <h2>Пользователи приложения</h2> 
+        <h2><b>{{app.appname}}</b></h2>
+        <span></span>
+        <input placeholder="Фильтр" oninput="filterRows('#AppUsers .filtered-row', this.value )">
+    </div>
+
+
+    <table id="AppUsers">
         <tr>
             <th>пользователь</th>
             <th>полное имя</th>
             <th>роли</th>
         </tr>
             {{#app.users}}
-            <tr>
+            <tr class="filtered-row">
                 <td>{{username}}</td>
                 <td>{{user_fullname}}</td>
                 <td>

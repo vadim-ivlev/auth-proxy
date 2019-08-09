@@ -893,6 +893,22 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
 }
 
 
+
+function filterRows(selector, value ){
+    var v = value.toLowerCase()
+    var rows = document.querySelectorAll(selector)
+    rows.forEach(e => {
+        var txt = e.innerText.toLowerCase()
+        if (txt.indexOf(v) == -1) {
+            e.classList.add("hidden")
+        } else {
+            e.classList.remove("hidden")
+        }
+    });
+}
+
+
+
 // O N   P A G E   L O A D  ****************************************************************************************
 
 function refreshData() {

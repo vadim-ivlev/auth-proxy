@@ -8,10 +8,9 @@
 ## client
 - get rid of json viewer , jquery-ui
 - english version
-- sort apps on User page and users on AppPage
 - add detail pages to history
 
 ## optimize
-- change search Like statement from logical OR to concatenation of fields ||
+- (postponed) change search Like statement from logical OR to concatenation of fields ||
 - add DBStats function to GraphQL
 

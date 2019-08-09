@@ -273,3 +273,16 @@ input.role-input {
 .centered {
     text-align: center;
 }
+
+.max-max-auto {
+    display: grid;
+    grid-template-columns: max-content max-content auto auto;
+    grid-gap: 10px;    
+}
+.max-max-auto > input {
+    margin-top: 4px;
+}
+
+.hidden {
+    display: none;
+}

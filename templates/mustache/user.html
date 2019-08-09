@@ -59,15 +59,22 @@
 
 {{#user}}
 <div class="flexed">
-    <h2>Приложения пользователя <b>{{user.username}}</b></h2>
-    <table>
+
+    <div class="max-max-auto">
+        <h2>Приложения пользователя</h2> 
+        <h2><b>{{user.username}}</b></h2>
+        <span></span>
+        <input placeholder="Фильтр" oninput="filterRows('#UserApps .filtered-row', this.value )">
+    </div>
+        
+    <table id="UserApps">
         <tr>
             <th>приложение</th>
             <th>описание</th>
             <th>роли</th>
         </tr>
         {{#user.apps}}
-        <tr>
+        <tr class="filtered-row">
             <td>{{appname}}</td>
             <td>{{app_description}}</td>
             <td>
