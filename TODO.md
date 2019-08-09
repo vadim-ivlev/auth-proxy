@@ -8,7 +8,10 @@
 ## client
 - get rid of json viewer , jquery-ui
 - english version
-- add detail pages to history
+- add links to tables in detailed pages
+- change GUI in accord with user roles
+
+
 
 ## optimize
 - (postponed) change search Like statement from logical OR to concatenation of fields ||

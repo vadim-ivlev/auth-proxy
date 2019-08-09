@@ -82,7 +82,9 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				panicIfNotUser(params)
 				username := getLoginedUserName(params)
 				fields := getSelectedFields([]string{"get_logined_user"}, params)
-				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, username)
+				res, err := db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, username)
+				res["roles"] = auth.GetUserRoles(username, "auth")
+				return res, err
 			},
 		},
 
