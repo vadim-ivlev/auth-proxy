@@ -113,21 +113,28 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 
 function highlightTab(tabid) {
     $('.tab').css("border-bottom-color","transparent")
-    $('#'+tabid+'Tab').css("border-bottom-color","#9b4dca")   
+    var tabid0 = tabid.split("/")[0]
+    $('#'+tabid0+'Tab').css("border-bottom-color","#9b4dca")   
 }
 
 
 
 function showPage(pageid, dontpush){
+    //распарсить pageidExtended
+    var a = pageid.split("/")
+    var pageid0 = a[0]
+    var id = a[1]
+
     highlightTab(pageid)
     
     $('.page').hide()
-    $('#'+pageid+'Page').show()
+    $('#'+pageid0+'Page').show()
 
     // setting focus
     // var text = $('#'+pageid+'Page input[type="text"]')[0]
     // if(text) 
     //     text.focus()
+
 
     if (!dontpush){
         if (!history.state || history.state.pageid != pageid ){
@@ -135,6 +142,17 @@ function showPage(pageid, dontpush){
             console.log("push", pageid)   
         }
     }
+
+    if (id) {
+        if (pageid0 == "app"){
+            getApp(id)
+        } 
+        if (pageid0 == "user"){
+            getUser(id)
+        }
+    }
+
+
     return false
 }
 
@@ -676,6 +694,7 @@ function formAppSubmit(event, appOperationName = 'create_app') {
 
 
 function getApp(appname) {
+    console.log("getApp:", appname)
     model.app = null
     var query =`
     query {
@@ -953,21 +972,28 @@ function refreshApp(params) {
 }
 
 
+window.onhashchange = function(event) {
+    console.log("onhashchange", event)
+    var newpage = event.newURL.split('#')[1]
+    if (newpage) 
+        showPage(newpage)
+}
+
 window.onpopstate = function(event) {
 
-    // console.log( "event.state: " + JSON.stringify(event.state));
-    if (event.state) {
-        let nextPageid = event.state.pageid
-        if ($('#userPage').is(':visible')){
-            showPage('users', true)
-            return
-        }
-        if ($('#appPage').is(':visible')){
-            showPage('apps', true)
-            return
-        }
-        showPage(event.state.pageid, true)
-    }
+    console.log( "event.state: " + JSON.stringify(event.state));
+    // if (event.state) {
+    //     // let nextPageid = event.state.pageid
+    //     // if ($('#userPage').is(':visible')){
+    //     //     showPage('users', true)
+    //     //     return
+    //     // }
+    //     // if ($('#appPage').is(':visible')){
+    //     //     showPage('apps', true)
+    //     //     return
+    //     // }
+    //     showPage(event.state.pageid, true)
+    // }
 }
 
 refreshApp()

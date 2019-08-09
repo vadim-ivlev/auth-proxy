@@ -22,13 +22,12 @@
                     </a>
                 </td>
                 <td>
-                    <!-- <a href="mailto:{{email}}" title="Написать письмо"  target="_blank" > -->
-                    <a href="" title="Редактировать" onclick="getUser('{{username}}'); return showPage('user',true);">
+                    <a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">
                         {{email}}
                     </a>
                 </td>
                 <td>
-                    <a href="" title="Редактировать"  onclick="getUser('{{username}}'); return showPage('user',true);" >
+                    <a href="" title="Редактировать"  onclick="return showPage('user/{{username}}');" >
                         {{fullname}}
                         {{#disabled}}
                         (отключен)
@@ -37,19 +36,12 @@
                     </a>
                 </td>
                 <td>
-                    <a href="" title="Редактировать"  onclick="getUser('{{username}}'); return showPage('user',true);">
+                    <a href="" title="Редактировать"  onclick="return showPage('user/{{username}}');">
                         {{description}}
                     </a>
                 </td>
-                <!--
                 <td>
-                    <a href="" onclick="getUser('{{username}}'); return showPage('user',true);">
-                        {{disabled}}
-                    </a>
-                </td>
-                -->
-                <td>
-                    <button class="button button-clear" onclick="getUser('{{username}}'); showPage('user',true);" >редактировать</button>
+                    <button class="button button-clear" onclick="return showPage('user/{{username}}');" >редактировать</button>
                     <button class="button button-clear delete" title="Удалить"  onclick="deleteUser('{{username}}'); showPage('users');" >✕</button>
                 </td>
             <tr>

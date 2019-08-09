@@ -277,7 +277,10 @@ input.role-input {
 .max-max-auto {
     display: grid;
     grid-template-columns: max-content max-content auto auto;
-    grid-gap: 10px;    
+    grid-gap: 10px;   
+    border-top: 1px dashed silver; 
+    padding-top:20px;
+    margin-top:20px;
 }
 .max-max-auto > input {
     margin-top: 4px;
@@ -286,3 +289,4 @@ input.role-input {
 .hidden {
     display: none;
 }
+

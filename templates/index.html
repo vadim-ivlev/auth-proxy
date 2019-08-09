@@ -50,7 +50,7 @@
                 </div>
                 <!-- <img src="templates/images/rgru-logo.png" class="logo"> -->
                 <!-- <b>Auth-Proxy</b>  -->
-                Сервис Авторизации
+                <a href="/testapp">Сервис Авторизации</a>
             </h2>
         </div>
         <div id="content">
@@ -102,12 +102,12 @@
                     <h2 class="centered">
                         Приложения
                     </h2>
-                    <form id="formListApp" class="grided" onsubmit="return searchApps()">
-                            <div>
-                                <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchApps()"  value="">
+                    <form id="formListApp" class="grided0" onsubmit="return searchApps()">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()"  value="">
                         </div>
-                        <button type="submit" class="fa fa-search button button-outline" ></button>
+                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
                     </form>
                     <button class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
                     <br>
@@ -119,12 +119,12 @@
             <div class="page" id="usersPage">
                 <div class="flexed max-width-600">
                     <h2 class="centered">Пользователи</h2>
-                    <form id="formListUser" class="grided" onsubmit="return searchUsers()">
+                    <form id="formListUser" class="grided0" onsubmit="return searchUsers()">
                         <div>
                             <label  for="search"></label>
                             <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()" value="">
                         </div>
-                        <button type="submit" class="fa fa-search button button-outline" ></button>
+                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
                     </form>
                     <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
                     <br>

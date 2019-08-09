@@ -30,8 +30,8 @@ func Proxy(c *gin.Context) {
 		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
 	} else {
-		log.Println("No proxy for appname:", appname)
-		c.JSON(200, gin.H{"error": "No proxy for " + appname})
+		// log.Println("No proxy url for appname:", appname)
+		c.JSON(200, gin.H{"error": "No proxy url for " + appname})
 	}
 }
 
