@@ -47,7 +47,9 @@
             <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'create_user')" >создать</button>
             {{/user}}
             {{#user}}
+            {{#isAdmin}}
             <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
+            {{/isAdmin}}
             <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'update_user')">сохранить</button>
             {{/user}}
         </div>
@@ -75,8 +77,8 @@
         </tr>
         {{#user.apps}}
         <tr class="filtered-row">
-            <td>{{appname}}</td>
-            <td>{{app_description}}</td>
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{appname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{app_description}}</a></td>
             <td>
 
 
@@ -87,6 +89,8 @@
                     {{rolename}}
                 </button>
                 {{/items}} 
+
+                {{#isAdmin}}
                 <span class="button button-outline role-nocross">
                     <input id="newRoleName-{{appname}}" class="role-input">
                     <button class="button button-outline role-add" 
@@ -95,10 +99,12 @@
                     +
                     </button>
                 </span>
-
+                {{/isAdmin}}
             </td>
         </tr>
         {{/user.apps}}
+
+        {{#isAdmin}}
         <tr>
             <td>
                 <input id="newUserAppname" 
@@ -124,7 +130,7 @@
                 </span>
             </td>
         </tr>
-     
+        {{/isAdmin}}
 
 
 

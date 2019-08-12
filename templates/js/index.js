@@ -11,12 +11,41 @@ var model = {
     _loginedUser: null,
     set loginedUser(v) {
         this._loginedUser = v
-        $("#editProfileButton").text( v? v.username: '')
+        $("#userTab").text( v? v.username: '')
     },
     get loginedUser() {
         return this._loginedUser
     },
+
     
+    //---------------------------
+    _authRoles: null,
+    set authRoles(v) {
+        this._authRoles = v
+        // $("#editProfileButton").text( v? v.username: '')
+        if (this.isAdmin){
+            showElements('#usersTab')
+            showElements('#rolesTab')
+            showElements('#graphqlTest')
+            showElements('#btnNewApp')
+        } else {
+            hideElements('#usersTab')
+            hideElements('#rolesTab')
+            hideElements('#graphqlTest')
+            hideElements('#btnNewApp')
+
+            showPage('apps')
+        }
+        renderPage('apps','.app-search-results')
+        
+    },
+    get authRoles() {
+        return this._authRoles
+    },
+    get isAdmin() {
+        if (!model.authRoles) return false
+        return model.authRoles.some(e => e.rolename == "authadmin")
+    },
     
     //---------------------------
     _user: null,
@@ -114,7 +143,7 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 function highlightTab(tabid) {
     $('.tab').css("border-bottom-color","transparent")
     var tabid0 = tabid.split("/")[0]
-    $('#'+tabid0+'Tab').css("border-bottom-color","#9b4dca")   
+    $('#'+tabid0+'Tab').css("border-bottom-color","white")   
 }
 
 
@@ -408,7 +437,7 @@ function generateNewPassword(event) {
 
 
 
-// U S E R S  *******************************************************************
+// L O G I N E D   U S E R   **********************************************************************************************************************
 
 
 function getLoginedUser() {
@@ -421,24 +450,52 @@ function getLoginedUser() {
             fullname
             username
             disabled
-          }
         }
+    }
     `
-
+    
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+    success: (res) => {
+        showResponse(res)
+        if (res.errors){
+            blinkStatus( res.errors[0].message)
+            return
+        }
+        model.loginedUser = res.data.get_logined_user
+        getAuthRoles(model.loginedUser.username)
+    } 
+})
+return false       
+}
+
+function getAuthRoles(username) {
+    model.authRoles = null
+    var query =`
+    query {
+        list_app_user_role(
+            appname: "auth",
+            username: "${username}"
+            ) {
+                rolename
+            }
+        }
+        `
+
+        $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
             showResponse(res)
             if (res.errors){
                 blinkStatus( res.errors[0].message)
                 return
             }
-            model.loginedUser = res.data.get_logined_user
+            model.authRoles = res.data.list_app_user_role
         } 
     })
     return false       
 }
 
 
+// U S E R S  ***********************************************************************************************************************
 
 
 function formListUserSubmit(event) {
@@ -819,6 +876,7 @@ function getAllApps(event) {
 
 function getAllUsers(event) {
     if (event) event.preventDefault()
+    if (!model.isAdmin) return
     model.allUsers = null
     var query =`
     query {
@@ -926,7 +984,12 @@ function filterRows(selector, value ){
     });
 }
 
-
+function hideElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.add("hidden"));
+}
+function showElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.remove("hidden"));
+}
 
 // O N   P A G E   L O A D  ****************************************************************************************
 
@@ -937,7 +1000,7 @@ function refreshData() {
         getAllUsers()
         formListAppSubmit()
         formListUserSubmit()  
-        delayFunc(formListRoleSubmit)  
+        // delayFunc(formListRoleSubmit)  
     } else {
         // nullify model's inner props
         for (const k of Object.keys(model)) {
@@ -960,13 +1023,9 @@ function refreshApp(params) {
 
     if (model.logined) {
         showPage(getLandingPageid()) 
-        $('#loginButton').hide()
-        $('#loginedArea').show()
         $('#menu').show()       
     } else {
         showPage('login',true)
-        $('#loginButton').show()
-        $('#loginedArea').hide()
         $('#menu').hide()
     }  
 }
@@ -979,21 +1038,8 @@ window.onhashchange = function(event) {
         showPage(newpage)
 }
 
-window.onpopstate = function(event) {
-
-    console.log( "event.state: " + JSON.stringify(event.state));
-    // if (event.state) {
-    //     // let nextPageid = event.state.pageid
-    //     // if ($('#userPage').is(':visible')){
-    //     //     showPage('users', true)
-    //     //     return
-    //     // }
-    //     // if ($('#appPage').is(':visible')){
-    //     //     showPage('apps', true)
-    //     //     return
-    //     // }
-    //     showPage(event.state.pageid, true)
-    // }
-}
+// window.onpopstate = function(event) {
+//     console.log( "event.state: " + JSON.stringify(event.state));
+// }
 
 refreshApp()

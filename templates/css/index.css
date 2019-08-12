@@ -22,9 +22,7 @@ body {
     bottom: 0;
     width: 100%;
     height: 50px;            /* Footer height */
-    background-color: whitesmoke;
     padding-top:15px;
-    /* color: silver; */
 }
 
 
@@ -77,19 +75,14 @@ pre {
     font-family: "Roboto", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
-.menu {
-    margin-bottom: 50px;
+.page {
     margin-top:50px;
-    /* border-top: 1px dashed silver ; */
-    /* background-color: whitesmoke; */
-    text-align: center;
 }
-
-
 
 .tab {
     border-radius: 0;
-    border-width: 1px;
+    border-width: 0px;
+    border-bottom-width: 1px;
 }
 
 /* fix skeleton */
@@ -261,13 +254,31 @@ input.role-input {
 }
 
 .header {
-    background-color: whitesmoke;
+    /* background-color: whitesmoke; */
+    background-color:DarkTurquoise;
+    background-color:darkorange;
     padding: 10px 0 10px 20px;
-    /* color: silver; */
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
-.header > *{
+.header  *{
     margin:0;
+    color: white !important;
+}
+
+.footer {
+    background-color:DarkTurquoise; 
+    /* background-color:green; */
+    /* background-color:blueviolet; */
+    /* background-color:DarkTurquoise; */
+
+
+}
+
+.footer  *{
+    color: white !important;
+    /* font-weight: bold; */
 }
 
 .centered {
