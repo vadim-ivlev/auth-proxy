@@ -143,7 +143,7 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 function highlightTab(tabid) {
     $('.tab').css("border-bottom-color","transparent")
     var tabid0 = tabid.split("/")[0]
-    $('#'+tabid0+'Tab').css("border-bottom-color","white")   
+    $('#'+tabid0+'Tab').css("border-bottom-color","darkviolet")   
 }
 
 

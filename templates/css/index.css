@@ -255,16 +255,17 @@ input.role-input {
 
 .header {
     /* background-color: whitesmoke; */
-    background-color:DarkTurquoise;
+    /* background-color:DarkTurquoise; */
     /* background-color:darkorange; */
     padding: 10px 0 10px 20px;
     display: grid;
     grid-template-columns: 1fr auto;
+    border-bottom: 1px dashed silver;
 }
 
 .header  *{
     margin:0;
-    color: white !important;
+    /* color: black !important; */
 }
 
 .footer {
