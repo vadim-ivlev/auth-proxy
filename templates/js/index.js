@@ -22,7 +22,6 @@ var model = {
     _authRoles: null,
     set authRoles(v) {
         this._authRoles = v
-        // $("#editProfileButton").text( v? v.username: '')
         if (this.isAdmin){
             showElements('#usersTab')
             showElements('#rolesTab')
@@ -141,9 +140,9 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 
 
 function highlightTab(tabid) {
-    $('.tab').css("border-bottom-color","transparent")
+    $('.tab').removeClass("underlined")
     var tabid0 = tabid.split("/")[0]
-    $('#'+tabid0+'Tab').css("border-bottom-color","darkviolet")   
+    $('#'+tabid0+'Tab').addClass("underlined")   
 }
 
 
@@ -160,15 +159,15 @@ function showPage(pageid, dontpush){
     $('#'+pageid0+'Page').show()
 
     // setting focus
-    // var text = $('#'+pageid+'Page input[type="text"]')[0]
-    // if(text) 
-    //     text.focus()
+    var text = $('#'+pageid0+'Page input[type="text"]')[0]
+    if(text) 
+        text.focus()
 
 
     if (!dontpush){
         if (!history.state || history.state.pageid != pageid ){
             history.pushState({pageid:pageid},pageid, "#"+pageid) 
-            console.log("push", pageid)   
+            // console.log("push", pageid)   
         }
     }
 
@@ -751,7 +750,6 @@ function formAppSubmit(event, appOperationName = 'create_app') {
 
 
 function getApp(appname) {
-    console.log("getApp:", appname)
     model.app = null
     var query =`
     query {
@@ -876,7 +874,6 @@ function getAllApps(event) {
 
 function getAllUsers(event) {
     if (event) event.preventDefault()
-    if (!model.isAdmin) return
     model.allUsers = null
     var query =`
     query {
@@ -1000,13 +997,12 @@ function refreshData() {
         getAllUsers()
         formListAppSubmit()
         formListUserSubmit()  
-        // delayFunc(formListRoleSubmit)  
     } else {
         // nullify model's inner props
         for (const k of Object.keys(model)) {
             if (k.startsWith('_')) {
                 model[k] = null
-                console.log(`model.${k} = null`)
+                // console.log(`model.${k} = null`)
             }
 
         }

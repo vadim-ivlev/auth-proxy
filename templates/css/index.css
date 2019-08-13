@@ -85,6 +85,10 @@ pre {
     border-bottom-width: 1px;
 }
 
+.underlined {
+    border-color: silver /*#9b4dca*/ !important; 
+}
+
 /* fix skeleton */
 li {
     margin-bottom: 0;
@@ -127,13 +131,13 @@ ol ol, ol ul, ul ol, ul ul {
 }
 
 .role {
-    border: 1px solid #9b4dca;
+    border: 1px solid /*#9b4dca*/;
     border-radius: 20px;
     padding: 1px;
     padding-left:9px;
     padding-right:7px;
     position:relative;
-    color:#9b4dca;
+    color:/*#9b4dca*/;
     height:26px;
     line-height:24px;
 }
@@ -141,7 +145,7 @@ ol ol, ol ul, ul ol, ul ul {
 .role::after {
     content: "✕";
     padding-left: 10px;
-    color: #9b4dca;
+    color: /*#9b4dca*/;
 }
 
 .plus {
@@ -150,7 +154,7 @@ ol ol, ol ul, ul ol, ul ul {
     padding: 1px;
     padding-left:7px;
     padding-right:7px;
-    color:#9b4dca;
+    color:/*#9b4dca*/;
     /* font-weight: bold; */
 }
 
@@ -178,13 +182,13 @@ input.role-input {
 }
 
 .role-nocross {
-    border: 1px solid #9b4dca;
+    border: 1px solid /*#9b4dca*/;
     border-radius: 20px;
     padding: 1px;
     padding-left:9px;
     padding-right:3px;
     position:relative;
-    color:#9b4dca;
+    color:/*#9b4dca*/;
     height:26px;
     line-height:24px;
     font-weight: bold;
@@ -260,7 +264,7 @@ input.role-input {
     padding: 10px 0 10px 20px;
     display: grid;
     grid-template-columns: 1fr auto;
-    border-bottom: 1px dashed silver;
+    border-bottom: 1px dashed;
 }
 
 .header  *{
@@ -269,16 +273,16 @@ input.role-input {
 }
 
 .footer {
-    background-color:DarkTurquoise; 
+    /* background-color:DarkTurquoise;  */
     /* background-color:green; */
     /* background-color:blueviolet; */
     /* background-color:DarkTurquoise; */
-
+    border-top: 1px dasheD;
 
 }
 
 .footer  *{
-    color: white !important;
+    /* color: white !important; */
     /* font-weight: bold; */
 }
 
