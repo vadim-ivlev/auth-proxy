@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
-    <!-- <link rel="stylesheet" type="text/css" href="templates/css/theme.css" /> -->
+    <link rel="stylesheet" type="text/css" href="templates/css/themes/graphql.css" />
     <link rel="stylesheet" type="text/css" href="templates/css/index.css" />
     <link rel="stylesheet" type="text/css" href="templates/css/jquery.json-viewer.css" />
     
@@ -43,7 +43,7 @@
     <div id="page-container">
         <div id="header" class="header">
             <!-- <img src="templates/images/rgru-logo.png" class="logo"> -->
-            <h4><a href="/testapp"></a>Сервис авторизации</h4>
+            <h4><img src="templates/images/graphql-logo.svg" class="graphql-logo">&nbsp;&nbsp;Сервис авторизации</h4>
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
                     <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
@@ -126,7 +126,7 @@
                         <div>
                             <label >пользователь</label>
                             <input id="allUsers" list="allUsersDataList" placeholder="Выберите пользователя" name="username"  
-                                onchange="$('#userInfo').text($(`#allUsersDataList>option[value='${this.value}'`).text()); return formListRoleSubmit(event)">
+                                onchange="$('#userInfo').text($(`#allUsersDataList>option[value='${this.value}']`).text()); return formListRoleSubmit(event)">
                             <datalist id="allUsersDataList"></datalist>
                             <div id="userInfo"></div>
                             
@@ -134,7 +134,7 @@
                         <div> 
                             <label>приложение</label>
                             <input id="allApps" list="allAppsDataList" placeholder="Выберите приложение" name="appname" 
-                                onchange="$('#appInfo').text($(`#allAppsDataList>option[value='${this.value}'`).text()); return formListRoleSubmit(event)">
+                                onchange="$('#appInfo').text($(`#allAppsDataList>option[value='${this.value}']`).text()); return formListRoleSubmit(event)">
                             <datalist id="allAppsDataList"></datalist>
                             <div id="appInfo"></div>
                         </div>

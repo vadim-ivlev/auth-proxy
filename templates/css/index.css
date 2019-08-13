@@ -33,6 +33,12 @@ body {
     margin-right: 30px;
 }
 
+.graphql-logo {
+    width:40px; 
+    height:40px; 
+    vertical-align: middle;
+}
+
 
 pre {
     margin: 0;
@@ -258,6 +264,7 @@ input.role-input {
 }
 
 .header {
+    background-color: #222;
     /* background-color: whitesmoke; */
     /* background-color:DarkTurquoise; */
     /* background-color:darkorange; */
@@ -269,10 +276,11 @@ input.role-input {
 
 .header  *{
     margin:0;
-    /* color: black !important; */
+    color: white !important;
 }
 
 .footer {
+    /* background-color:#444;  */
     /* background-color:DarkTurquoise;  */
     /* background-color:green; */
     /* background-color:blueviolet; */
