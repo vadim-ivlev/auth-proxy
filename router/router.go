@@ -9,9 +9,13 @@ import (
 )
 
 // Serve запускает сервер на заданном порту. ============================================================
-func Serve(port string) {
+func Serve(port string, tls bool) {
 	r := Setup()
-	r.Run(port)
+	if tls {
+		r.RunTLS(port, "./cert/cert.pem", "./cert/key.pem")
+	} else {
+		r.Run(port)
+	}
 }
 
 // Setup определяет пути и присоединяет функции middleware.
