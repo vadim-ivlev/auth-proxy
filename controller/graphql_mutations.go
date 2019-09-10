@@ -16,8 +16,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"create_user": &gq.Field{
 			Description: "Создать пользователя",
-			// Type:        fullUserObject,
-			Type: userObject,
+			Type:        userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -49,15 +48,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
 				processPassword(params)
 
-				// return createRecord("username", params, "user", "full_user")
 				return createRecord("username", params, "user", "user")
 			},
 		},
 
 		"update_user": &gq.Field{
 			Description: "Обновить пользователя",
-			// Type:        fullUserObject,
-			Type: userObject,
+			Type:        userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -87,15 +84,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
 				processPassword(params)
-				// return updateRecord("username", params, "user", "full_user")
 				return updateRecord("username", params, "user", "user")
 			},
 		},
 
 		"generate_password": &gq.Field{
 			Description: "Сгенерировать новый пароль пользователю и выслать по электронной почте",
-			// Type:        userObject,
-			Type: gq.String,
+			Type:        gq.String,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -116,15 +111,14 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					return "Could not send email to:" + email, err
 				}
 
-				return "Новый пароль для "+foundUsername+" выслан по адресу: " + email, nil
+				return "Новый пароль для " + foundUsername + " выслан по адресу: " + email, nil
 
 			},
 		},
 
 		"delete_user": &gq.Field{
 			Description: "Удалить пользователя",
-			// Type:        fullUserObject,
-			Type: userObject,
+			Type:        userObject,
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -133,15 +127,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
-				// return deleteRecord("username", params, "user", "full_user")
 				return deleteRecord("username", params, "user", "user")
 			},
 		},
 
 		"create_app": &gq.Field{
 			Description: "Создать приложение",
-			// Type:        fullAppObject,
-			Type: appObject,
+			Type:        appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -163,7 +155,6 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
-				// return createRecord("appname", params, "app", "full_app")
 				res, err := createRecord("appname", params, "app", "app")
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
@@ -180,8 +171,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"update_app": &gq.Field{
 			Description: "Обновить приложение",
-			// Type:        fullAppObject,
-			Type: appObject,
+			Type:        appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -202,7 +192,6 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				// return updateRecord("appname", params, "app", "full_app")
 				res, err := updateRecord("appname", params, "app", "app")
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
@@ -225,8 +214,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"delete_app": &gq.Field{
 			Description: "Удалить пользователя",
-			// Type:        fullAppObject,
-			Type: appObject,
+			Type:        appObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -235,7 +223,6 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				// return deleteRecord("appname", params, "app", "full_app")
 				res, err := deleteRecord("appname", params, "app", "app")
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
@@ -288,13 +275,6 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				// sqlText := fmt.Sprintf(
-				// 	`DELETE FROM app_user_role WHERE appname = '%v' AND username = '%v' AND rolename = '%v' RETURNING * ;`,
-				// 	params.Args["appname"],
-				// 	params.Args["username"],
-				// 	params.Args["rolename"],
-				// )
-				// return db.QueryRowMap(sqlText)
 				a, u, r := params.Args["appname"], params.Args["username"], params.Args["rolename"]
 
 				_, err := db.QueryExec(

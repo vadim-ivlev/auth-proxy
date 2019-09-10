@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# гасим бд
+echo 'гасим бд'
 docker-compose down
 
-# удаляем файлы бд
+echo 'удаляем файлы бд'
 sudo rm -rf pgdata 
 
-# поднимаем бд
+echo 'поднимаем бд'
 docker-compose up -d
 sleep 2
 
-# запускаем приложение
+echo 'запускаем приложение'
 go run main.go -serve 4000 -env=dev
 
-# ./migup.sh
+
 
 

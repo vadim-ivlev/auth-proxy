@@ -9,22 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func DeleteSessionR(w http.ResponseWriter, r *http.Request) {
-// 	session, err := auth.Store.Get(c.Request, "auth-proxy")
-// 	delete(session.Values, "user")
-// 	session.Options = &gsessions.Options{MaxAge: -1}
-// 	session.Save(r, w)
-// }
-
-// func GetUserNameR(r *http.Request) (userName string) {
-// 	session, err := Store.Get(r, "auth-proxy")
-// 	if err != nil {
-// 		return
-// 	} else {
-// 		userName, _ := session.Values["user"].(string)
-// 	}
-// }
-
+// SetVariable устанавливает значение переменной сессии
 func SetVariable(c *gin.Context, name, value string) error {
 	session := sessions.Default(c)
 	session.Set(name, value)

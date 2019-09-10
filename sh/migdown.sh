@@ -1,3 +1,3 @@
 #!/bin/bash
-# Удаляет объекты базы данных
+echo 'Удаляет объекты базы данных'
 migrate -source=file://migrations/ -database postgres://root:root@localhost:5432/auth?sslmode=disable down

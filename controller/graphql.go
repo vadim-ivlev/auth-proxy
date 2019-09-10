@@ -185,15 +185,6 @@ func getLoginedUserName(params gq.ResolveParams) string {
 	return session.GetUserName(c)
 }
 
-func getOwnerUserName(params gq.ResolveParams) string {
-	c, ok := params.Context.Value("ginContext").(*gin.Context)
-	if !ok {
-		log.Println("Not OK: getLoginedUserName")
-		return ""
-	}
-	return session.GetUserName(c)
-}
-
 func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
 	uname := getLoginedUserName(params)
 	pname, ok := params.Args["username"].(string)

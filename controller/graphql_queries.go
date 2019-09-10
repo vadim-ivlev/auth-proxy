@@ -57,7 +57,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 		},
 
 		"get_user": &gq.Field{
-			// Type:        fullUserObject,
 			Type:        userObject,
 			Description: "Показать пользователя",
 			Args: gq.FieldConfigArgument{
@@ -69,7 +68,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
 				fields := getSelectedFields([]string{"get_user"}, params)
-				// return db.QueryRowMap("SELECT "+fields+" FROM full_user WHERE username = $1 ;", params.Args["username"])
 				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
 			},
 		},
@@ -89,7 +87,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 		},
 
 		"get_app": &gq.Field{
-			// Type:        fullAppObject,
 			Type:        appObject,
 			Description: "Показать приложение",
 			Args: gq.FieldConfigArgument{
@@ -101,7 +98,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				fields := getSelectedFields([]string{"get_app"}, params)
-				// return db.QueryRowMap("SELECT "+fields+" FROM full_app WHERE appname = $1 ;", params.Args["appname"])
 				return db.QueryRowMap("SELECT "+fields+" FROM app WHERE appname = $1 ;", params.Args["appname"])
 			},
 		},
@@ -256,7 +252,6 @@ func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orde
 		search = strings.ReplaceAll(search, " ", "%")
 		searchConditions = append(searchConditions, Like(fieldList, search))
 	}
-	// addIntSearchConditionForField(&searchConditions, params, "is_ended")
 	if len(searchConditions) > 0 {
 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
 	}

@@ -30,7 +30,6 @@ func Proxy(c *gin.Context) {
 		c.Request.URL.Path = proxypath
 		proxy.ServeHTTP(c.Writer, c.Request)
 	} else {
-		// log.Println("No proxy url for appname:", appname)
 		c.JSON(200, gin.H{"error": "No proxy url for " + appname})
 	}
 }
@@ -42,7 +41,6 @@ func createProxy(target, appname, rebase string) *primitiveproxy.PrimitiveProxy 
 
 // CreateProxies создает глобальный массив proxies в соответствии с таблицей app
 func CreateProxies() {
-	// proxies = make(map[string]*httputil.ReverseProxy)
 	proxies = make(map[string]*primitiveproxy.PrimitiveProxy)
 	appUrls, err := auth.GetAppURLs()
 	if err != nil {
@@ -52,12 +50,3 @@ func CreateProxies() {
 		proxies[app] = createProxy(url_rebase[0], app, url_rebase[1])
 	}
 }
-
-// // createProxy создает прокси сервер для конкретного URL
-// func createProxy(target string) *httputil.ReverseProxy {
-// 	targetURL, err := url.Parse(target)
-// 	if err != nil {
-// 		log.Println("ERR", err)
-// 	}
-// 	return httputil.NewSingleHostReverseProxy(targetURL)
-// }
