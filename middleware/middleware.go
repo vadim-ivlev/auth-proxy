@@ -18,10 +18,11 @@ func HeadersMiddleware() gin.HandlerFunc {
 			c.Header("Access-Control-Allow-Origin", origin)
 		}
 
-		// Пока что кроссдоменность действует только для /graphql этого приложения.
-		// if c.Request.URL.Path == "/graphql" {
-		// 	c.Header("Access-Control-Allow-Origin", "*")
-		// }
+		// Кроссдоменность действует только для /graphql и /schema этого приложения.
+		path := c.Request.URL.Path
+		if path == "/graphql" || path == "/schema" {
+			c.Header("Access-Control-Allow-Origin", "*")
+		}
 
 		c.Next()
 	}
