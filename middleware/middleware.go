@@ -38,6 +38,7 @@ func CheckUser() gin.HandlerFunc {
 		if c.Request.Method == "OPTIONS" {
 			fmt.Println("c.Request.Method=OPTIONS")
 			c.Next()
+			return
 		}
 
 		userName := session.GetUserName(c)
