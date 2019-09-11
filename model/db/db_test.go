@@ -28,7 +28,7 @@ func Benchmark_local_DB(b *testing.B) {
 	UsePool = false
 	SQLite = false
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 
@@ -38,7 +38,7 @@ func Benchmark_local_DB_pool(b *testing.B) {
 	UsePool = true
 	SQLite = false
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 
@@ -48,7 +48,7 @@ func Benchmark_remote_DB(b *testing.B) {
 	UsePool = false
 	SQLite = false
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 
@@ -58,7 +58,7 @@ func Benchmark_remote_DB_pool(b *testing.B) {
 	UsePool = true
 	SQLite = false
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 
@@ -67,7 +67,7 @@ func Benchmark_SQLite(b *testing.B) {
 	UsePool = false
 	SQLite = true
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 
@@ -76,7 +76,7 @@ func Benchmark_SQLite_pool(b *testing.B) {
 	UsePool = true
 	SQLite = true
 	for i := 0; i < b.N; i++ {
-		QueryRowMap("select $1", i)
+		_, _ = QueryRowMap("select $1", i)
 	}
 }
 

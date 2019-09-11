@@ -3,6 +3,7 @@ package middleware
 import (
 	"auth-proxy/model/auth"
 	"auth-proxy/model/session"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -30,6 +31,15 @@ func HeadersMiddleware() gin.HandlerFunc {
 // CheckUser проверяет залогинен ли пользователь
 func CheckUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		// Если это префлайт запрос, браузеры могут не посылать куки.
+		// и пользователь  не определится.
+		// Пропускаем этот запрос без изменений
+		if c.Request.Method == "OPTIONS" {
+			fmt.Println("c.Request.Method=OPTIONS")
+			c.Next()
+		}
+
 		userName := session.GetUserName(c)
 		if userName == "" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})

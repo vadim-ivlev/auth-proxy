@@ -76,10 +76,11 @@ func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
 Auth-Proxy started. 
 Environment: %v
 Database:%v 
+TLS:%v
 
 %v://localhost:%v/testapp
 		
 CTRL-C to interrupt.
 `
-	fmt.Printf(msg, env, database, protocol, serverPort)
+	fmt.Printf(msg, env, database, tls, protocol, serverPort)
 }
