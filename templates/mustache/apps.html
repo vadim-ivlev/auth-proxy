@@ -16,7 +16,6 @@
                     <tr>
                         <td>
                             <a href="apps/{{appname}}/" target="_blank" ><b>{{appname}}</b></a>
-                            <!-- &#x25B6; -->
                         </td>
                         <td>
                             <a href="apps/{{appname}}/" target="_blank">{{description}}</a>
@@ -29,10 +28,8 @@
                             <a href="apps/{{appname}}/" title="rebased" target="_blank">{{rebase}}</a>
                         </td>
                         <td>
-                            <!-- <button class="button button-clear" onclick="getApp('{{appname}}'); showPage('app',false);">редактировать</button> -->
                             <button class="button button-clear" onclick="showPage('app/{{appname}}');">редактировать</button>
-                            <!-- <a class="button button-clear" href="#app/{{appname}}">редактировать</button> -->
-                            <button class="button button-clear delete" onclick="deleteApp('{{appname}}'); showPage('apps');">✕</button>
+                            <button class="button button-clear delete" onclick="deleteApp('{{appname}}');">✕</button>
                         </td>
                         {{/isAdmin}}
                     <tr>

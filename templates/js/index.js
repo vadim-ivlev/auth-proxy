@@ -33,7 +33,7 @@ var model = {
             hideElements('#graphqlTest')
             hideElements('#btnNewApp')
 
-            showPage('apps')
+            // showPage('apps')
         }
         renderPage('apps','.app-search-results')
         

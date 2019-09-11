@@ -5,7 +5,6 @@
                 <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('email')">email</a></th>
                 <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('fullname')">fullname</a></th>
                 <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('description')">description</a></th>
-                <!-- <th>disabled</th> -->
                 <th>actions</th>
             <tr>
         </thead>
@@ -42,7 +41,7 @@
                 </td>
                 <td>
                     <button class="button button-clear" onclick="return showPage('user/{{username}}');" >редактировать</button>
-                    <button class="button button-clear delete" title="Удалить"  onclick="deleteUser('{{username}}'); showPage('users');" >✕</button>
+                    <button class="button button-clear delete" title="Удалить"  onclick="deleteUser('{{username}}');" >✕</button>
                 </td>
             <tr>
             {{/users}}

@@ -14,7 +14,6 @@ import (
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.GetHeader("Origin")
-		// fmt.Println("origin=", origin)
 		if origin != "" {
 			c.Header("Access-Control-Allow-Origin", origin)
 		}

@@ -14,6 +14,6 @@ func TestMain(m *testing.M) {
 }
 
 func Test_SendPassword(t *testing.T) {
-	err := SendPassword("ivlev@rg.ru", "123456")
+	err := SendPassword("vadim", "ivlev@rg.ru", "123456")
 	assert.NilError(t, err)
 }
