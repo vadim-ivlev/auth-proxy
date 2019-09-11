@@ -32,7 +32,7 @@ func HeadersMiddleware() gin.HandlerFunc {
 func CheckUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		// Если это префлайт запрос, браузеры могут не посылать куки.
+		// Если это префлайт запрос, браузеры могут не посылать куки,
 		// и пользователь  не определится.
 		// Пропускаем этот запрос без изменений
 		if c.Request.Method == "OPTIONS" {
