@@ -27,6 +27,18 @@
             <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
             Проксированное приложение: <a id="newAppUrl" href="/apps/{{app.appname}}/" target="_blank">{{origin}}/apps/{{app.appname}}</a>
         </div>
+
+
+        <div>
+            <label >public</label>
+            <input name="public" placeholder="Y чтобы сделать приложение доступным для пользователей без роли."  value="{{app.public}}">
+            <p>
+                "Y" чтобы сделать приложение доступным для пользователей без роли.
+            </p>
+         </div>
+    
+    
+
         <div>
             <label >rebase</label>
             <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные."  value="{{app.rebase}}">
@@ -42,14 +54,6 @@
                 
                 Поэтому в приложениях предназначенных для проксирования рекомендуется использовать относительные ссылки и оставлять это поле пустым.
                 
-            </p>
-        </div>
-
-        <div>
-            <label >public</label>
-            <input name="public" placeholder="Y чтобы сделать приложение доступным для пользователей без роли."  value="{{app.public}}">
-            <p>
-                "Y" чтобы сделать приложение доступным для пользователей без роли.
             </p>
         </div>
 

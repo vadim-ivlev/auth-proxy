@@ -67,6 +67,10 @@ var appFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Y - чтобы поменять ссылки на HTML страницах на относительные",
 	},
+	"public": &gq.Field{
+		Type:        gq.String,
+		Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
+	},
 }
 
 var app_user_roleFields = gq.Fields{

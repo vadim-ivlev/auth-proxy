@@ -151,6 +151,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
 				},
+				"public": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
@@ -188,6 +192,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				"rebase": &gq.ArgumentConfig{
 					Type:        gq.String,
 					Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
+				},
+				"public": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
