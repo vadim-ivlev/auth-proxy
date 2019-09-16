@@ -538,7 +538,7 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     if (event) event.preventDefault()
     let username = $("#formUser input[name='username']").val()
     let password = $("#formUser input[name='password']").val()
-    let email = $("#formUser input[name='email']").val()
+    let email    = $("#formUser input[name='email']").val()
     let fullname = $("#formUser input[name='fullname']").val()
     let description = $("#formUser *[name='description']").val()
     let disabled = $("#formUser input[name='disabled']").val()
@@ -571,6 +571,10 @@ function formUserSubmit(event, userOperationName = 'create_user') {
             blinkStatus( userOperationName+" success", 'info' )
             refreshData()
             model.user = res.data[userOperationName]
+            if (userOperationName == 'create_user' && !model.logined) {
+                alert(`"${username}" is created.` )
+                showPage('login',true)
+            }
             getUser(username)
         } 
     })

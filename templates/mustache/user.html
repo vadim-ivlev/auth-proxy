@@ -36,11 +36,13 @@
             <label >description </label>
             <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
         </div>
-        <div>
+        
+        <div class="{{^isAdmin}}hidden{{/isAdmin}}">
             <label >disabled</label>
             <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">
             <span>Если не равно 0, пользователь отключен</span>
         </div>
+        
         <div style="text-align: right;">
             <label></label>
             {{^user}}
