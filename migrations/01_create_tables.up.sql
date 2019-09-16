@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS app (
     url text,
     description text,
     rebase text,
+    public text,
 
     CONSTRAINT app_pkey PRIMARY KEY (appname)
 );

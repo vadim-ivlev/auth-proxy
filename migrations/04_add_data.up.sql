@@ -13,9 +13,9 @@
 INSERT INTO app (appname, url, description)         VALUES ('auth'       ,'', 'Сервис авторизации');
 INSERT INTO app (appname, url, description)         VALUES ('node1'      ,'http://node:3001', 'Работает на продакшн env=prod. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение. test0');
 INSERT INTO app (appname, url, description)         VALUES ('node2'      ,'http://localhost:3002', 'Работает на компьютере разработчика env=dev. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение. test0');
-INSERT INTO app (appname, url, description, rebase) VALUES ('pravo_rg_ru','https://pravo.rg.ru', 'Прокси к https://pravo.rg.ru . test0' ,'Y' );
-INSERT INTO app (appname, url, description)         VALUES ('rg'         ,'https://rg.ru'      , 'Прокси к https://rg.ru . test0' );
-INSERT INTO app (appname, url, description)         VALUES ('wikipedia'  ,'https://www.wikipedia.org', 'Прокси к Википедии. test0');
+INSERT INTO app (appname, url, description, rebase, public) VALUES ('pravo_rg_ru','https://pravo.rg.ru', 'Прокси к https://pravo.rg.ru . test0' ,'Y', 'Y' );
+INSERT INTO app (appname, url, description, public)         VALUES ('rg'         ,'https://rg.ru'      , 'Прокси к https://rg.ru . test0', 'Y' );
+INSERT INTO app (appname, url, description, public)         VALUES ('wikipedia'  ,'https://www.wikipedia.org', 'Прокси к Википедии. test0', 'Y');
 
 
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('vadim', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', 'ivlev@rg.ru' , 'Ивлев Вадим'  , 'разработчик test0');
