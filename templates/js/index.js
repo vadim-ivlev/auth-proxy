@@ -17,7 +17,20 @@ var model = {
         return this._loginedUser
     },
 
-    
+    //---------------------------
+    _selfRegAllowed: false,
+    set selfRegAllowed(v) {
+        this._selfRegAllowed = v
+        if (v) {
+            showElements("#selfRegButton")
+        } else {
+            hideElements("#selfRegButton")
+        }
+    },
+    get selfRegAllowed() {
+        return this._selfRegAllowed
+    },
+
     //---------------------------
     _authRoles: null,
     set authRoles(v) {
@@ -406,6 +419,26 @@ function logoutGraphQLFormSubmit(event) {
     })
     return false       
 }
+
+
+
+function isSelfRegAllowed(event) {
+    if (event) event.preventDefault()
+    var query =` query { is_selfreg_allowed }`
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showResponse(res)
+            if (res.errors){
+                blinkStatus(res.errors[0].message)
+                return
+            }
+            model.selfRegAllowed = res.data.is_selfreg_allowed
+        }
+       
+    })
+    return false       
+}
+
 
 function generateNewPassword(event) {
     if (event) event.preventDefault()
@@ -1014,6 +1047,7 @@ function refreshData() {
                 model[k] = null
                 // console.log(`model.${k} = null`)
             }
+            isSelfRegAllowed()
 
         }
    }    

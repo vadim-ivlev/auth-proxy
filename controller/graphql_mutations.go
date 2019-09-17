@@ -44,11 +44,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
-				panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
-				processPassword(params)
+				if SelfRegistrationAllowed || isAuthAdmin(params) {
+					panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
+					panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
+					processPassword(params)
+					return createRecord("username", params, "user", "user")
+				} else {
+					return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators.")
+				}
 
-				return createRecord("username", params, "user", "user")
 			},
 		},
 

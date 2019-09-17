@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth-proxy/controller"
 	"auth-proxy/model/db"
 	"auth-proxy/model/mail"
 	"auth-proxy/router"
@@ -12,10 +13,11 @@ import (
 )
 
 func main() {
-	fmt.Println("████████████████████████ revision 2 ████████████████████████")
+	fmt.Println("████████████████████████ revision 4 ████████████████████████")
 	// считать параметры командной строки
-	servePort, env, sqlite, tls := readCommandLineParams()
+	servePort, env, sqlite, tls, selfreg := readCommandLineParams()
 	db.SQLite = sqlite
+	controller.SelfRegistrationAllowed = selfreg
 
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
@@ -44,11 +46,12 @@ func main() {
 // Вспомогательные функции =========================================
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool) {
+func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.BoolVar(&tls, "tls", false, "Использовать https вместо http")
+	flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")
 	flag.Parse()
 	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n ")
 	flag.Usage()

@@ -56,6 +56,15 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
+		"is_selfreg_allowed": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Возможна ли саморегистрация пользователей",
+			Args:        gq.FieldConfigArgument{},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return SelfRegistrationAllowed, nil
+			},
+		},
+
 		"get_user": &gq.Field{
 			Type:        userObject,
 			Description: "Показать пользователя",
