@@ -194,10 +194,13 @@ func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
 	panicIfNotAdmin(params)
 }
 
-func panicIfNotAdmin(params gq.ResolveParams) {
+func isAuthAdmin(params gq.ResolveParams) bool {
 	username := getLoginedUserName(params)
-	isAdmin := auth.AppUserRoleExist("auth", username, "authadmin")
-	if isAdmin {
+	return auth.AppUserRoleExist("auth", username, "authadmin")
+}
+
+func panicIfNotAdmin(params gq.ResolveParams) {
+	if isAuthAdmin(params) {
 		return
 	}
 	panic("Sorry. No admin rights.")

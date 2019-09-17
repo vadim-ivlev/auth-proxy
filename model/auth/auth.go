@@ -95,7 +95,7 @@ func GetUserRoles(user, app string) string {
 	cacheKey := user + "-" + app + "-roles"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
-		fmt.Println("cached roles=", cachedValue)
+		fmt.Println("cached ", cacheKey, "=", cachedValue)
 		return cachedValue.(string)
 	}
 
@@ -117,7 +117,7 @@ func GetUserInfo(user string) string {
 	cacheKey := user + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
-		fmt.Println("cached info=", cachedValue)
+		fmt.Println("cached ", cacheKey, "=", cachedValue)
 		return cachedValue.(string)
 	}
 
@@ -161,10 +161,37 @@ func Login(c *gin.Context, username, password string) error {
 
 // IsUserEnabled  Если false, пользователь отключен
 func IsUserEnabled(user string) bool {
+	cacheKey := user + "-enabled"
+	cachedValue, found := Cache.Get(cacheKey)
+	if found {
+		fmt.Println("cached ", cacheKey, "=", cachedValue)
+		return cachedValue.(bool)
+	}
+
 	_, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username = $1 AND disabled = 0 ;`, user)
 	if err == nil {
+		Cache.Set(cacheKey, true, cache.DefaultExpiration)
 		return true
 	}
+	Cache.Set(cacheKey, false, cache.DefaultExpiration)
+	return false
+}
+
+// IsAppPublic  true если приложение доступно для пользователей без роли
+func IsAppPublic(appName string) bool {
+	cacheKey := "is-" + appName + "-public"
+	cachedValue, found := Cache.Get(cacheKey)
+	if found {
+		fmt.Println("cached ", cacheKey, "=", cachedValue)
+		return cachedValue.(bool)
+	}
+
+	_, err := db.QueryRowMap(`SELECT * FROM "app" WHERE appname = $1 AND public = 'Y' ;`, appName)
+	if err == nil {
+		Cache.Set(cacheKey, true, cache.DefaultExpiration)
+		return true
+	}
+	Cache.Set(cacheKey, false, cache.DefaultExpiration)
 	return false
 }
 

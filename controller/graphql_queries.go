@@ -184,6 +184,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				if err != nil {
 					return nil, err
 				}
+
 				count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "app"` + wherePart)
 				if err != nil {
 					return nil, err
@@ -221,7 +222,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				fields := getSelectedFields([]string{"list_app_user_role"}, params)
 				wherePart := list_app_user_roleWherePart(params)
 				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s `, fields, wherePart)
-				// println(query)
 				return db.QuerySliceMap(query)
 			},
 		},
@@ -246,17 +246,50 @@ func list_app_user_roleWherePart(params gq.ResolveParams) (wherePart string) {
 
 func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orderAndLimits string) {
 	var searchConditions []string
+
+	// Если запрос к таблице app и это не админский запрос
+	// ограничиваем выборку
+	isAdm := isAuthAdmin(params)
+	isAppQuery := strings.Contains(fieldList, "appname")
+	if isAppQuery && !isAdm {
+		userName := getLoginedUserName(params)
+		inClause := getListOfAllowedAppNames(userName)
+		fmt.Println("inClause=", inClause)
+		searchConditions = append(searchConditions, inClause)
+	}
+
 	search, ok := params.Args["search"].(string)
 	search = strings.Trim(search, " ")
 	if ok && len(search) > 0 {
 		search = strings.ReplaceAll(search, " ", "%")
 		searchConditions = append(searchConditions, Like(fieldList, search))
 	}
+
 	if len(searchConditions) > 0 {
 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
 	}
 	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
 	return wherePart, orderAndLimits
+}
+
+func getListOfAllowedAppNames(userName string) string {
+	slice, err := db.QuerySliceMap(`
+		SELECT DISTINCT appname
+		FROM app_user_role
+		WHERE username = $1
+		UNION
+		SELECT appname FROM app WHERE public = 'Y';	
+	`, userName)
+	if err != nil {
+		return " TRUE "
+	}
+	appList := make([]string, 0)
+	for _, element := range slice {
+		appName, _ := element["appname"].(string)
+		appList = append(appList, appName)
+	}
+	s := "('" + strings.Join(appList, "', '") + "')"
+	return " appname IN " + s + " "
 }
 
 func Like(fieldsString, search string) string {
