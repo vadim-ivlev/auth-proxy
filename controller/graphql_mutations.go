@@ -48,6 +48,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
 					panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
 					processPassword(params)
+					clearUserCache(params)
 					return createRecord("username", params, "user", "user")
 				} else {
 					return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators.")
@@ -88,6 +89,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
 				processPassword(params)
+				clearUserCache(params)
 				return updateRecord("username", params, "user", "user")
 			},
 		},
@@ -131,6 +133,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
+				clearUserCache(params)
 				return deleteRecord("username", params, "user", "user")
 			},
 		},
@@ -172,6 +175,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 						proxies[app] = createProxy(url, app, rebase)
 						log.Printf("Proxy created appname=%v target=%v rebase=%v", app, url, rebase)
 					}
+					clearAppCache(params)
 				}
 				return res, err
 			},
@@ -219,6 +223,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 							log.Printf("Proxy created appname=%v target=%v", app, url)
 						}
 					}
+					clearAppCache(params)
 				}
 				return res, err
 			},
@@ -240,6 +245,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					app, _ := params.Args["appname"].(string)
 					delete(proxies, app)
 					log.Printf("Proxy deleted appname=%s", app)
+					clearAppCache(params)
 				}
 				return res, err
 			},
@@ -264,6 +270,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
+				clearAppUserRolesCache(params)
 				return db.CreateRow("app_user_role", params.Args)
 			},
 		},
@@ -294,8 +301,26 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				if err != nil {
 					return nil, err
 				}
+				clearAppUserRolesCache(params)
 				return map[string]interface{}{"appname": a, "username": u, "rolename": r}, nil
 			},
 		},
 	},
 })
+
+// clearAppUserRolesCache чистим кэш
+func clearAppUserRolesCache(params gq.ResolveParams) {
+	cacheKey := params.Args["username"].(string) + "-" + params.Args["appname"].(string) + "-roles"
+	auth.Cache.Delete(cacheKey)
+}
+
+func clearUserCache(params gq.ResolveParams) {
+	username, _ := params.Args["username"].(string)
+	auth.Cache.Delete(username + "-info")
+	auth.Cache.Delete(username + "-enabled")
+}
+
+func clearAppCache(params gq.ResolveParams) {
+	app, _ := params.Args["appname"].(string)
+	auth.Cache.Delete("is-" + app + "-public")
+}

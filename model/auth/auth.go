@@ -19,7 +19,7 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // var Store = gsessions.NewCookieStore([]byte("secret"))
 
-var Cache = cache.New(2*time.Minute, 4*time.Minute)
+var Cache = cache.New(5*time.Minute, 10*time.Minute)
 
 // CheckUserPassword проверяет пароль пользователя. Возвращает true если проверка прошла успешно.
 func CheckUserPassword(username, password string) bool {
