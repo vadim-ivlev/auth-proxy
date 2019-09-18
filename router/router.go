@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SecureCookie флаг secure на куки браузера
+var SecureCookie = false
+
 // Serve запускает сервер на заданном порту. ============================================================
 func Serve(port string, tls bool) {
 	r := Setup()
@@ -33,7 +36,7 @@ func Setup() *gin.Engine {
 	r.Use(middleware.HeadersMiddleware())
 
 	store := sessions.NewCookieStore([]byte("secret"))
-	store.Options(sessions.Options{MaxAge: 86400 * 365 * 5}) //0 - for session life
+	store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", store))
 
 	// r.GET("/", controller.LandingPage)

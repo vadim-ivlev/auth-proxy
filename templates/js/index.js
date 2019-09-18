@@ -1047,9 +1047,8 @@ function refreshData() {
                 model[k] = null
                 // console.log(`model.${k} = null`)
             }
-            isSelfRegAllowed()
-
         }
+        isSelfRegAllowed()
    }    
 }
 
