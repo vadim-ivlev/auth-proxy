@@ -13,11 +13,6 @@ import (
 // HeadersMiddleware добавляет HTTP заголовки к ответу сервера
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// origin := c.GetHeader("Origin")
-		// if origin != "" {
-		// 	c.Header("Access-Control-Allow-Origin", origin)
-		// }
-
 		// Кроссдоменность действует только для /graphql и /schema этого приложения.
 		path := c.Request.URL.Path
 		if path == "/graphql" || path == "/schema" {
@@ -56,9 +51,12 @@ func CheckUser() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 			return
 		} else {
-			origin := c.GetHeader("Origin")
-			if origin != "" {
-				c.Header("Access-Control-Allow-Origin", origin)
+			// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
+			if c.GetHeader("Access-Control-Allow-Origin") == "" {
+				origin := c.GetHeader("Origin")
+				if origin != "" {
+					c.Header("Access-Control-Allow-Origin", origin)
+				}
 			}
 		}
 
