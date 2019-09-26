@@ -55,6 +55,11 @@ func CheckUser() gin.HandlerFunc {
 			c.Header("Connection", "keep-alive")
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 			return
+		} else {
+			origin := c.GetHeader("Origin")
+			if origin != "" {
+				c.Header("Access-Control-Allow-Origin", origin)
+			}
 		}
 
 		// !!! Если пользователь заблокирован ПРЕРЫВАЕМ ЗАПРОС
