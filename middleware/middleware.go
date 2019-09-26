@@ -38,11 +38,19 @@ func CheckUser() gin.HandlerFunc {
 		// Кто делает запрос
 		userName := session.GetUserName(c)
 
+		// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
+		if c.GetHeader("Access-Control-Allow-Origin") == "" {
+			origin := c.GetHeader("Origin")
+			if origin != "" {
+				c.Header("Access-Control-Allow-Origin", origin)
+			}
+		}
+
 		// !!! Если пользователь не залогинен ПРЕРЫВАЕМ ЗАПРОС
 		if userName == "" {
 			// Заголовки добавлены, чтобы пользователь получал внятный ответ
 			// если он разлогинен и пытается достучаться до какого то приложения
-			c.Header("Access-Control-Allow-Origin", "*")
+			// c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "true")
 			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 			c.Header("Access-Control-Max-Age", "600")
@@ -50,14 +58,6 @@ func CheckUser() gin.HandlerFunc {
 			c.Header("Connection", "keep-alive")
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Please login: /login "})
 			return
-		} else {
-			// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
-			if c.GetHeader("Access-Control-Allow-Origin") == "" {
-				origin := c.GetHeader("Origin")
-				if origin != "" {
-					c.Header("Access-Control-Allow-Origin", origin)
-				}
-			}
 		}
 
 		// !!! Если пользователь заблокирован ПРЕРЫВАЕМ ЗАПРОС
