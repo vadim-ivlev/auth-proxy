@@ -12,7 +12,7 @@ export GO111MODULE=on
 env CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .  || exit 1
 
 
-echo "copying stuff ..."
+echo "cleaning  deploy/ directory "
 
 # clean deploy/ directory
 rm -rf deploy/auth-proxy
@@ -26,7 +26,7 @@ rm -f deploy/configs/mail.yaml
 rm -f deploy/configs/sqlite.yaml
 
 
-
+echo "copying stuff ..."
 # copy files to deploy/
 cp    auth-proxy    deploy/auth-proxy
 cp -r configs       deploy/configs_example
