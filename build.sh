@@ -8,7 +8,7 @@ export GO111MODULE=on
 
 # env CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' . 
 
-env CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .
+env CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .  || exit 1
 
 
 echo "copying stuff ..."
