@@ -14,9 +14,17 @@ import (
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Кроссдоменность действует только для /graphql и /schema этого приложения.
-		path := c.Request.URL.Path
-		if path == "/graphql" || path == "/schema" {
-			c.Header("Access-Control-Allow-Origin", "*")
+		// path := c.Request.URL.Path
+		// if path == "/graphql" || path == "/schema" {
+		// 	c.Header("Access-Control-Allow-Origin", "*")
+		// }
+
+		// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
+		if c.GetHeader("Access-Control-Allow-Origin") == "" {
+			origin := c.GetHeader("Origin")
+			if origin != "" {
+				c.Header("Access-Control-Allow-Origin", origin)
+			}
 		}
 
 		c.Next()
@@ -35,16 +43,16 @@ func CheckUser() gin.HandlerFunc {
 			return
 		}
 
+		// // Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
+		// if c.GetHeader("Access-Control-Allow-Origin") == "" {
+		// 	origin := c.GetHeader("Origin")
+		// 	if origin != "" {
+		// 		c.Header("Access-Control-Allow-Origin", origin)
+		// 	}
+		// }
+
 		// Кто делает запрос
 		userName := session.GetUserName(c)
-
-		// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
-		if c.GetHeader("Access-Control-Allow-Origin") == "" {
-			origin := c.GetHeader("Origin")
-			if origin != "" {
-				c.Header("Access-Control-Allow-Origin", origin)
-			}
-		}
 
 		// !!! Если пользователь не залогинен ПРЕРЫВАЕМ ЗАПРОС
 		if userName == "" {
