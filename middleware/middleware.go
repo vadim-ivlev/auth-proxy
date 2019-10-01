@@ -20,7 +20,8 @@ func HeadersMiddleware() gin.HandlerFunc {
 		// }
 
 		// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
-		if c.GetHeader("Access-Control-Allow-Origin") == "" {
+		aoHeader := c.GetHeader("Access-Control-Allow-Origin")
+		if aoHeader == "" || aoHeader == "*" {
 			origin := c.GetHeader("Origin")
 			if origin != "" {
 				c.Header("Access-Control-Allow-Origin", origin)
