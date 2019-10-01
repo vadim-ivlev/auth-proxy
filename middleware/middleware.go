@@ -27,6 +27,10 @@ func HeadersMiddleware() gin.HandlerFunc {
 			}
 		}
 
+		if c.GetHeader("Access-Control-Allow-Credentials") == "" {
+			c.Header("Access-Control-Allow-Credentials", "true")
+		}
+
 		c.Next()
 	}
 }
@@ -59,7 +63,7 @@ func CheckUser() gin.HandlerFunc {
 			// Заголовки добавлены, чтобы пользователь получал внятный ответ
 			// если он разлогинен и пытается достучаться до какого то приложения
 			// c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Credentials", "true")
+			// c.Header("Access-Control-Allow-Credentials", "true")
 			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 			c.Header("Access-Control-Max-Age", "600")
 			c.Header("Access-Control-Allow-Headers", "origin, content-type")
