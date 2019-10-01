@@ -13,11 +13,6 @@ import (
 // HeadersMiddleware добавляет HTTP заголовки к ответу сервера
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Кроссдоменность действует только для /graphql и /schema этого приложения.
-		// path := c.Request.URL.Path
-		// if path == "/graphql" || path == "/schema" {
-		// 	c.Header("Access-Control-Allow-Origin", "*")
-		// }
 
 		// Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
 		aoHeader := c.GetHeader("Access-Control-Allow-Origin")
@@ -28,6 +23,7 @@ func HeadersMiddleware() gin.HandlerFunc {
 			}
 		}
 
+		// Если конечное приложение  не установило Access-Control-Allow-Credentials добавляем его
 		if c.GetHeader("Access-Control-Allow-Credentials") == "" {
 			c.Header("Access-Control-Allow-Credentials", "true")
 		}
@@ -48,14 +44,6 @@ func CheckUser() gin.HandlerFunc {
 			return
 		}
 
-		// // Если конечное приложение  не установило Access-Control-Allow-Origin добавляем его
-		// if c.GetHeader("Access-Control-Allow-Origin") == "" {
-		// 	origin := c.GetHeader("Origin")
-		// 	if origin != "" {
-		// 		c.Header("Access-Control-Allow-Origin", origin)
-		// 	}
-		// }
-
 		// Кто делает запрос
 		userName := session.GetUserName(c)
 
@@ -63,8 +51,7 @@ func CheckUser() gin.HandlerFunc {
 		if userName == "" {
 			// Заголовки добавлены, чтобы пользователь получал внятный ответ
 			// если он разлогинен и пытается достучаться до какого то приложения
-			// c.Header("Access-Control-Allow-Origin", "*")
-			// c.Header("Access-Control-Allow-Credentials", "true")
+
 			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 			c.Header("Access-Control-Max-Age", "600")
 			c.Header("Access-Control-Allow-Headers", "origin, content-type")
