@@ -1,8 +1,8 @@
-package middleware
+package server
 
 import (
-	"auth-proxy/model/auth"
-	"auth-proxy/model/session"
+	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/session"
 	"fmt"
 	"net/http"
 	"strings"
@@ -32,8 +32,8 @@ func HeadersMiddleware() gin.HandlerFunc {
 	}
 }
 
-// CheckUser проверяет залогинен ли пользователь
-func CheckUser() gin.HandlerFunc {
+// CheckUserMiddleware проверяет залогинен ли пользователь
+func CheckUserMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// Если это префлайт запрос пропускаем запрос без изменений,

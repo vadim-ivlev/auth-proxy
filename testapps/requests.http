@@ -38,13 +38,13 @@ curl 'http://localhost:3000/data?param1=value1&param2=value2'
 #  P R O X I E D  ===============================================================
 
 # ping
-GET http://localhost:4000/ping
+GET http://localhost:4400/ping
 
 
 ### direct GET
 GET http://localhost:3000/apps/api/books/234?aaa=bbb
 ### proxied GET
-GET http://localhost:4000/node1/api/books/234?aaa=bbb
+GET http://localhost:4400/node1/api/books/234?aaa=bbb
 
 
 ### direct POST
@@ -57,7 +57,7 @@ param1=value1
 
 ### proxied POST
 
-POST http://localhost:4000/node1/data/aaa/bbb HTTP/1.1
+POST http://localhost:4400/node1/data/aaa/bbb HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 username=hello
@@ -67,7 +67,7 @@ username=hello
 
 ### login POST
 
-POST http://localhost:4000/login HTTP/1.1
+POST http://localhost:4400/login HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 username=hello
@@ -76,12 +76,12 @@ username=hello
 
 ### Get App1
 
-http://localhost:4000/apps/node1/
+http://localhost:4400/apps/node1/
 
 
 ### logout
 
-http://localhost:4000/logout
+http://localhost:4400/logout
 
 
 ### options direct
@@ -120,7 +120,7 @@ OPTIONS https://auth-proxy.rg.ru/apps/photoreports-admin/schema HTTP/1.1
 
 ### login to auth-proxy
 
-POST http://localhost:4000/graphql HTTP/1.1
+POST http://localhost:4400/graphql HTTP/1.1
 Content-Type: application/json
 
 {
@@ -130,7 +130,7 @@ Content-Type: application/json
 
 ### logout from auth-proxy
 
-POST http://localhost:4000/graphql HTTP/1.1
+POST http://localhost:4400/graphql HTTP/1.1
 Content-Type: application/json
 
 {
@@ -141,8 +141,8 @@ Content-Type: application/json
 
 
 ### options
-OPTIONS http://localhost:4000/apps/photoreports-admin/schema HTTP/1.1
+OPTIONS http://localhost:4400/apps/photoreports-admin/schema HTTP/1.1
 
 
 ### options
-OPTIONS http://localhost:4000/apps/node2/schema HTTP/1.1
+OPTIONS http://localhost:4400/apps/node2/schema HTTP/1.1

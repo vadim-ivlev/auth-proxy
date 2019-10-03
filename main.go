@@ -1,13 +1,11 @@
 package main
 
 import (
-	"auth-proxy/controller"
-	"auth-proxy/model/db"
-	"auth-proxy/model/mail"
-	"auth-proxy/router"
+	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/mail"
+	"auth-proxy/server"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 )
@@ -17,8 +15,8 @@ func main() {
 	// считать параметры командной строки
 	servePort, env, sqlite, tls, selfreg, secure := readCommandLineParams()
 	db.SQLite = sqlite
-	controller.SelfRegistrationAllowed = selfreg
-	router.SecureCookie = secure
+	server.SelfRegistrationAllowed = selfreg
+	server.SecureCookie = secure
 
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
@@ -26,6 +24,8 @@ func main() {
 	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
 	// читаем конфиг mail.
 	mail.ReadConfig("./configs/mail.yaml", env)
+	// читаем шаблоны писем
+	mail.ReadMailTemplate("./configs/mail-templates.yaml")
 
 	// Ждем готовности базы данных
 	db.PrintConfig()
@@ -37,7 +37,7 @@ func main() {
 	// если servePort > 0, печатаем приветствие и запускаем сервер
 	if servePort > 0 {
 		printGreetings(servePort, env, sqlite, tls)
-		router.Serve(":"+strconv.Itoa(servePort), tls)
+		server.Serve(":"+strconv.Itoa(servePort), tls)
 	}
 
 	db.DBPool.Close()
@@ -55,7 +55,7 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool,
 	flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")
 	flag.BoolVar(&secure, "secure", false, "Установить флаг secure на куки браузера. Работает для https протокола.")
 	flag.Parse()
-	fmt.Println("\nПример запуска: ./auth-proxy -serve 4000 -env=dev\n ")
+	fmt.Println("\nПример запуска: ./auth-proxy -serve 4400 -env=dev\n ")
 	flag.Usage()
 	if serverPort == 0 {
 		os.Exit(0)
@@ -65,8 +65,8 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool,
 
 // printGreetings печатаем приветственное сообщение
 func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
-	greetings, _ := ioutil.ReadFile("./templates/greetings.txt")
-	fmt.Printf(string(greetings))
+	// greetings, _ := ioutil.ReadFile("./templates/greetings.txt")
+	// fmt.Printf(string(greetings))
 	protocol := "http"
 	if tls {
 		protocol = "https"
@@ -78,6 +78,14 @@ func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
 	}
 
 	msg := `
+	
+ █████  ██    ██ ████████ ██   ██
+██   ██ ██    ██    ██    ██   ██
+███████ ██    ██    ██    ███████
+██   ██ ██    ██    ██    ██   ██
+██   ██  ██████     ██    ██   ██
+
+	
 Auth-Proxy started. 
 Environment: %v
 Database:%v 

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"auth-proxy/model/db"
-	"auth-proxy/model/session"
+	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/session"
 	"crypto/sha256"
 	"errors"
 	"fmt"

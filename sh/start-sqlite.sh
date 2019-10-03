@@ -8,5 +8,5 @@ echo 'спим 2 секунды'
 sleep 2
 
 echo 'запускаем приложение с SQLite'
-go run main.go -serve 4000 -env=dev -sqlite
+go run main.go -serve 4400 -env=dev -sqlite
 

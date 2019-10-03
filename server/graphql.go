@@ -1,8 +1,8 @@
-package controller
+package server
 
 import (
-	"auth-proxy/model/auth"
-	"auth-proxy/model/session"
+	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/session"
 	"context"
 	"errors"
 	"log"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strings"
 
-	"auth-proxy/model/db"
+	"auth-proxy/pkg/db"
 
 	"github.com/gin-gonic/gin"
 	gq "github.com/graphql-go/graphql"
@@ -19,7 +19,11 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+// Для ускорения работы с json. (Drop in) вместо стандартного import "encoding/json"
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
+// SelfRegistrationAllowed может ли пользователь зарегистрироваться самостоятельно
+var SelfRegistrationAllowed = false
 
 // FUNCTIONS *******************************************************
 
@@ -221,14 +225,13 @@ func panicIfEmpty(v interface{}, message string) {
 	}
 }
 
-func processPassword(params gq.ResolveParams) {
+func processPassword(params gq.ResolveParams) string {
 	password, _ := params.Args["password"].(string)
 	password = strings.Trim(password, " ")
 
 	// remove empty field
 	if password == "" {
 		delete(params.Args, "password")
-		return
 	}
 
 	// check for length
@@ -238,6 +241,7 @@ func processPassword(params gq.ResolveParams) {
 
 	// encode
 	params.Args["password"] = auth.GetHash(password)
+	return password
 }
 
 // G R A P H Q L ********************************************************************************

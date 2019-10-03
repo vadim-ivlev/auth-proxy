@@ -1,4 +1,4 @@
-fetch('https://localhost:4000/apps/photoreports-admin/schema', {
+fetch('https://localhost:4400/apps/photoreports-admin/schema', {
         method: 'POST',
         credential: 'include',
         body: JSON.stringify({

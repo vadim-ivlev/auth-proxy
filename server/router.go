@@ -1,9 +1,6 @@
-package router
+package server
 
 import (
-	"auth-proxy/controller"
-	"auth-proxy/middleware"
-
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -13,39 +10,38 @@ var SecureCookie = false
 
 // Serve запускает сервер на заданном порту. ============================================================
 func Serve(port string, tls bool) {
-	r := Setup()
+	r := setup()
 	if tls {
-		r.RunTLS(port, "./cert/cert.pem", "./cert/key.pem")
+		_ = r.RunTLS(port, "./certificates/cert.pem", "./certificates/key.pem")
 	} else {
-		r.Run(port)
+		_ = r.Run(port)
 	}
 }
 
 // Setup определяет пути и присоединяет функции middleware.
-func Setup() *gin.Engine {
+func setup() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// r := gin.New()
 
-	controller.CreateProxies()
+	CreateProxies()
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 	r.Static("/templates", "./templates")
 	r.LoadHTMLGlob("templates/*.html")
 
-	r.Use(middleware.HeadersMiddleware())
+	r.Use(HeadersMiddleware())
 
 	store := sessions.NewCookieStore([]byte("secret"))
 	store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", store))
 
-	// r.GET("/", controller.LandingPage)
-	r.GET("/testapp", controller.LandingPage)
-	r.POST("/graphql", controller.GraphQL)
-	r.POST("/schema", controller.GraphQL)
+	r.GET("/testapp", LandingPage)
+	r.POST("/graphql", GraphQL)
+	r.POST("/schema", GraphQL)
 
 	apps := r.Group("/apps")
-	apps.Use(middleware.CheckUser())
-	apps.Any("/:appname/*proxypath", controller.Proxy)
+	apps.Use(CheckUserMiddleware())
+	apps.Any("/:appname/*proxypath", Proxy)
 	return r
 }

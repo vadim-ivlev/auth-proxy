@@ -1,9 +1,9 @@
-package controller
+package server
 
 import (
-	"auth-proxy/model/auth"
-	"auth-proxy/model/db"
-	"auth-proxy/model/mail"
+	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/mail"
 	"errors"
 	"log"
 
@@ -47,9 +47,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				if SelfRegistrationAllowed || isAuthAdmin(params) {
 					panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
 					panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
-					processPassword(params)
+					password := processPassword(params)
 					clearUserCache(params)
-					return createRecord("username", params, "user", "user")
+					res, err := createRecord("username", params, "user", "user")
+					if err == nil {
+						sendMessageToNewUser(params, password)
+					}
+					return res, err
 				} else {
 					return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators.")
 				}
@@ -112,7 +116,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				if err != nil {
 					return "Could not generate new password", err
 				}
-				err = mail.SendPassword(foundUsername, email, password)
+				err = mail.SendMessage("new_password", foundUsername, email, password)
 				if err != nil {
 					return "Could not send email to:" + email, err
 				}
@@ -323,4 +327,15 @@ func clearUserCache(params gq.ResolveParams) {
 func clearAppCache(params gq.ResolveParams) {
 	app, _ := params.Args["appname"].(string)
 	auth.Cache.Delete("is-" + app + "-public")
+}
+
+func sendMessageToNewUser(params gq.ResolveParams, password string) {
+	email := params.Args["email"].(string)
+	if email == "" {
+		return
+	}
+	err := mail.SendMessage("new_user", params.Args["username"].(string), email, password)
+	if err != nil {
+		log.Println("create_user SendMessage error:", err)
+	}
 }

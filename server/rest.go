@@ -1,18 +1,15 @@
-package controller
+package server
 
 import (
-	"auth-proxy/model/auth"
+	"auth-proxy/pkg/auth"
 
-	"auth-proxy/model/primitiveproxy"
+	"auth-proxy/pkg/primitiveproxy"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
-// SelfRegistrationAllowed может ли пользователь зарегистрироваться самостоятельно
-var SelfRegistrationAllowed = false
 
 // proxies - Отображение appname -> proxy.
 // Перечень прокси серверов предзаготовленных для каждого приложения.

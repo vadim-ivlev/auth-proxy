@@ -1,9 +1,9 @@
-package controller
+package server
 
 import (
-	"auth-proxy/model/auth"
-	"auth-proxy/model/db"
-	"auth-proxy/model/session"
+	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/session"
 	"fmt"
 	"strings"
 

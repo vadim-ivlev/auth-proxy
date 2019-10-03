@@ -13,10 +13,10 @@ import (
 type connectionParams struct {
 	Addr string
 	From string
-	Body string
 }
 
 var params connectionParams
+var mailTemplates map[string]string
 
 // **********************************************************************************
 // ReadConfig reads YAML file
@@ -33,10 +33,24 @@ func ReadConfig(fileName string, env string) {
 		log.Println("Mail ReadConfig() error:", err)
 	}
 	params = envParams[env]
-
 }
 
-func SendPassword(username, toMail, password string) error {
+// ReadConfig reads YAML file with mail templates
+func ReadMailTemplate(fileName string) {
+	yamlFile, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		log.Println("mail.ReadMailTemplate() ReadFile error:", err)
+		return
+	}
+
+	mailTemplates = make(map[string]string)
+	err = yaml.Unmarshal(yamlFile, &mailTemplates)
+	if err != nil {
+		log.Println("mail.ReadMailTemplate() Unmarshal error:", err)
+	}
+}
+
+func SendMessage(templateName string, username, toMail, password string) error {
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial(params.Addr)
 	if err != nil {
@@ -59,7 +73,7 @@ func SendPassword(username, toMail, password string) error {
 	}
 	defer wc.Close()
 
-	msg := fmt.Sprintf(params.Body, params.From, toMail, username, password)
+	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
 	_, err = fmt.Fprintf(wc, msg)
 	if err != nil {
 		return err

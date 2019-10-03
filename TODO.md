@@ -1,3 +1,7 @@
+# Отдебажить primitiveproxy
+на предмет выдачи неправильного списка методов при проксировании к file-uploader
+
+
 
 ## development
 - get rid of gin using <https://github.com/abbot/go-http-auth>
