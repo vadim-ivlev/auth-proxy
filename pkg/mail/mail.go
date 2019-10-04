@@ -50,6 +50,7 @@ func ReadMailTemplate(fileName string) {
 	}
 }
 
+// TODO: https://stackoverflow.com/questions/46805579/send-smtp-email-to-multiple-receivers
 func SendMessage(templateName string, username, toMail, password string) error {
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial(params.Addr)
