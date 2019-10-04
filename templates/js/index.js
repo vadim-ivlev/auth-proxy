@@ -1053,7 +1053,7 @@ function generatePassword() {
         return password
     }
 
-    document.querySelector("#formUser input[name='password']").value = newPassword(7)
+    document.querySelector("#formUser input[name='password']").value = newPassword(9)
 }
 
 // O N   P A G E   L O A D  ****************************************************************************************
