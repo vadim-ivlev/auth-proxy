@@ -232,6 +232,7 @@ func processPassword(params gq.ResolveParams) string {
 	// remove empty field
 	if password == "" {
 		delete(params.Args, "password")
+		return password
 	}
 
 	// check for length
