@@ -264,10 +264,6 @@ http://auth-proxy.rg.ru/testapp
 ----------------------------------------------
 
 
-    sh/build-frontend-container-bare.sh
-
-или 
-
     sh/build-frontend-container.sh
 
 
@@ -352,12 +348,8 @@ SQL скрипты для порождения объектов базы дан�
     docker-compose.yml     
     main.go
     README.md                           # Этот файл
-    build-frontend-container.sh*        # Скрипт сборки докер контейнера для фронтэнд разработчиков
-    build-frontend-container-bare.sh*   # Скрипт сборки докер контейнера для фронтэнд разработчиков
     Dockerfile-frontend                 # Используется в build-frontend-container.sh
-    Dockerfile-frontend-bare            # Используется в build-frontend-container.sh
     docker-compose-frontend.yml         # Файл запуска для фронтэнд разработчиков. 
-    docker-compose-frontend-bare.yml    # Файл запуска для фронтэнд разработчиков. 
     TODO.md                             # Недоделки
 
 

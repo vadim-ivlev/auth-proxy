@@ -19,13 +19,13 @@ services:
 
   # сервер, где запущено приложение
   runner:
-    image: rgru/auth-proxy:bare
+    image: rgru/auth-proxy
     container_name: auth-runner
     volumes:
-      - test_apps:/app/node-apps
+      - test_apps:/go/src/auth-proxy/node-apps
 
     # раскомментируйте для SQLite вместо Postgres
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -sqlite" 
+    # command: bash -c "cd /go/src/auth-proxy && ./auth-proxy -serve 4400 -env=front -sqlite" 
     restart: always
     ports:
       - 4400:4400
@@ -35,7 +35,7 @@ services:
       - db
 
 
-  # server with test applications
+  # Сервер с тестовыми приложениями
   node:
     image: "node:alpine"
     container_name: auth-node
@@ -62,4 +62,3 @@ services:
 
 volumes: 
   test_apps:
-    

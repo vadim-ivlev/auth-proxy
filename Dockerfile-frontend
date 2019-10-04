@@ -1,4 +1,4 @@
-FROM golang:1.12.5-stretch 
+FROM ubuntu:18.04
 LABEL maintainer="RGRU <ivlev@rg.ru>"
 
 RUN apt-get -y update 
@@ -8,19 +8,19 @@ RUN apt-get -y install curl
 # RUN apt-get -y install nodejs
 # RUN apt-get -y install sqlite3 
 
-
-WORKDIR /go/src/auth-proxy
-COPY . .
-
-ENV GO111MODULE=on
-
-# RUN env CGO_ENABLED=0 go build
-# ключи нужны для компиляции sqlite3 при CGO_ENABLED=1
-RUN env CGO_ENABLED=1 go build -a -ldflags '-linkmode external -extldflags "-static"' 
-
+COPY auth-proxy     /app/auth-proxy
+COPY configs        /app/configs
+COPY migrations     /app/migrations
+COPY templates      /app/templates
+COPY node-apps      /app/node-apps
+COPY etc            /app/etc
+COPY certificates   /app/certificates
 
 
 EXPOSE 4400
 
-CMD ["./auth-proxy", "-serve", "4400", "-env=front"]
+CMD bash -c "cd /app && ./auth-proxy -serve 4400 -env=front"
+
+
+
 
