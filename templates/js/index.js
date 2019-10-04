@@ -1027,8 +1027,33 @@ function filterRows(selector, value ){
 function hideElements(selector) {
     document.querySelectorAll(selector).forEach(e => e.classList.add("hidden"));
 }
+
+
 function showElements(selector) {
     document.querySelectorAll(selector).forEach(e => e.classList.remove("hidden"));
+}
+
+
+function hidePassword() {
+    document.querySelector("#formUser input[name='password']").setAttribute('type','password')
+}
+
+function showPassword() {
+    document.querySelector("#formUser input[name='password']").setAttribute('type','text')
+}
+
+function generatePassword() {
+    function newPassword (n) {
+        let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)]
+        var symbolSets =["bcdfghjklmnpqrstvwxz","aeiou"] 
+        var password = ''
+        for (let i=0; i<n; i++){
+            password += pickSymbol(symbolSets[i%symbolSets.length])
+        }
+        return password
+    }
+
+    document.querySelector("#formUser input[name='password']").value = newPassword(7)
 }
 
 // O N   P A G E   L O A D  ****************************************************************************************

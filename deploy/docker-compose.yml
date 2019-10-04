@@ -8,7 +8,7 @@ services:
     image: auth-proxy-prod
     container_name: auth-proxy-prod
     volumes:
-      - test_apps:/app/testapps
+      - test_apps:/app/node-apps
 
     # раскомментируйте для SQLite вместо Postgres
     # command: bash -c "cd /app && ./auth -serve 4400 -env=prod -sqlite" 

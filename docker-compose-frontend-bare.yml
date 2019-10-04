@@ -22,7 +22,7 @@ services:
     image: rgru/auth-proxy:bare
     container_name: auth-runner
     volumes:
-      - test_apps:/app/testapps
+      - test_apps:/app/node-apps
 
     # раскомментируйте для SQLite вместо Postgres
     # command: bash -c "cd /app && ./auth -serve 4400 -env=front -sqlite" 

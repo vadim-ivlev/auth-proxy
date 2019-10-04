@@ -16,7 +16,10 @@
         </div>
         <div>
             <label >password (больше 5 символов) {{^user}}*{{/user}} </label>
-            <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
+            <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
+                <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
+            </span>
             {{#user}}
             <div>
                 Если поле пусто пароль не меняется.<br><br>
@@ -46,13 +49,13 @@
         <div style="text-align: right;">
             <label></label>
             {{^user}}
-            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'create_user')" >создать</button>
+            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'create_user')" >создать пользователя</button>
             {{/user}}
             {{#user}}
             {{#isAdmin}}
             <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
             {{/isAdmin}}
-            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'update_user')">сохранить</button>
+            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'update_user')">сохранить изменения</button>
             {{/user}}
         </div>
         

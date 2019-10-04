@@ -15,7 +15,9 @@ deploy/configs
 deploy/configs_example
 deploy/migrations
 deploy/templates
-deploy/testapps
+deploy/node-apps
+deploy/etc
+deploy/certificates
 
 
 

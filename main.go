@@ -65,8 +65,6 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool,
 
 // printGreetings печатаем приветственное сообщение
 func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
-	// greetings, _ := ioutil.ReadFile("./templates/greetings.txt")
-	// fmt.Printf(string(greetings))
 	protocol := "http"
 	if tls {
 		protocol = "https"

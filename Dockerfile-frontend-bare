@@ -12,7 +12,7 @@ COPY auth-proxy  /app/auth-proxy
 COPY configs     /app/configs
 COPY migrations  /app/migrations
 COPY templates   /app/templates
-COPY testapps   /app/testapps
+COPY node-apps   /app/node-apps
 
 EXPOSE 4400
 
