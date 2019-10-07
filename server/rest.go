@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/steambap/captcha"
 )
 
 // proxies - Отображение appname -> proxy.
@@ -32,6 +33,24 @@ func Proxy(c *gin.Context) {
 	} else {
 		c.JSON(200, gin.H{"error": "No proxy url for " + appname})
 	}
+}
+
+// Captcha
+// source https://github.com/steambap/captcha
+func Captcha(c *gin.Context) {
+	// create a captcha of 150x50px
+	data, _ := captcha.New(120, 38, func(options *captcha.Options) {
+		options.CharPreset = "123456789"
+		options.FontScale = 1.2
+
+	})
+	// data, _ := captcha.NewMathExpr(100, 38, func(options *captcha.Options) {
+	// 	options.FontScale = 1.4
+	// })
+
+	// session.SetVariable(c, "captcha", data.Text)
+	// send image data to client
+	data.WriteImage(c.Writer)
 }
 
 // createProxy создает прокси сервер для конкретного URL

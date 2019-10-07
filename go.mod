@@ -6,7 +6,6 @@ require (
 	github.com/Microsoft/go-winio v0.4.12 // indirect
 	github.com/amitbet/gorename v0.0.0-20190107054843-300b577db37e // indirect
 	github.com/aws/aws-sdk-go v1.20.19 // indirect
-	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
 	github.com/cznic/fileutil v0.0.0-20181122101858-4d67cfea8c87 // indirect
 	github.com/cznic/golex v0.0.0-20181122101858-9c343928389c // indirect
@@ -20,12 +19,14 @@ require (
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
 	github.com/fsouza/fake-gcs-server v1.9.0 // indirect
+	github.com/gin-contrib/sessions v0.0.1
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/contrib v0.0.0-20190526021735-7fb7810ed2a0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/gocql/gocql v0.0.0-20190708145057-55a38e15c5db // indirect
 	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/golang-migrate/migrate/v4 v4.5.0
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/gorilla/sessions v1.2.0 // indirect
 	github.com/graphql-go/graphql v0.7.8
@@ -43,6 +44,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prateek/gorename v0.0.0-20180424020013-52c7307cddd2 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
+	github.com/steambap/captcha v1.3.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/ugorji/go v1.1.7 // indirect

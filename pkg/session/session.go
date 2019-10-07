@@ -3,8 +3,9 @@ package session
 import (
 	"log"
 
-	"github.com/gin-gonic/contrib/sessions"
+	// "github.com/gin-gonic/contrib/sessions"
 	// gsessions "github.com/gorilla/sessions"
+	"github.com/gin-contrib/sessions"
 
 	"github.com/gin-gonic/gin"
 )

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/smtp"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -92,4 +93,14 @@ func SendMessage(templateName string, username, toMail, password string) error {
 	}
 
 	return nil
+}
+
+func SendMessage2(templateName string, username, toMail, password string) error {
+	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
+
+	auth := smtp.PlainAuth("", "noreply@rg.ru", "", "mail3.rg.ru")
+	to := strings.Split(toMail, ",")
+	err := smtp.SendMail(params.Addr, auth, params.From, to, []byte(msg))
+
+	return err
 }
