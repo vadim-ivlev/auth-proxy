@@ -14,9 +14,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
     <script src="templates/js/jquery.json-viewer.js"></script>
     
+ 
+    <!-- <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"> -->
+    <!-- <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css"> -->
+    <!-- <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">  -->
+
+
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
-    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"> 
+    <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.min.css">     -->
     
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
     
@@ -34,8 +41,12 @@
 
 <body>
     <div id="jsonViewer" class="json-viewer">
-        <div class="json-viewer-close" onclick="$('#jsonViewer').hide()">x</div>
+        <div class="viewer-close" onclick="$('#jsonViewer').hide()">x</div>
         <pre id="jsonViewerView"></pre>
+    </div>
+    <div id="blinksViewer" class="blinks-viewer">
+        <div class="viewer-close" onclick="$('#blinksViewer').hide()">x</div>
+        <pre id="blinksViewerView"></pre>
     </div>
     <div id="blinkMessage" class="blink-message info">a</div>
 
@@ -50,7 +61,7 @@
                     <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
                     <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
                     <a href="" id="userTab" class="button button-clear tab"   onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
-                    <a href="" id="logoutButton" class="button button-clear tab"  onclick="logoutGraphQLFormSubmit(); return showPage('login',true)">Выход</a>
+                    <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
                 </span>
             </span>
         </div>
@@ -66,18 +77,18 @@
                         <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                             <div>
                                 <label class="param-name">username</label>
-                                <input name="username" type="text" placeholder="имя">
+                                <input name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
                             </div>
                             <div>
                                 <label class="param-name">password</label>
                                 <input name="password" type="password" placeholder="пароль">
                             </div>
 
-                            <div>
-                                <!-- <label class="param-name">captcha</label> -->
+                            <div id="captcha">
+                                <label class="param-name">captcha</label>
                                 <div style="display: grid; grid-template-columns: auto 1fr; grid-column-gap: 10px;">
-                                    <img src="captcha">
-                                    <input name="password" type="text" placeholder="введите изображение">
+                                    <img src="captcha" class="captcha-image">
+                                    <input name="captcha" type="text" placeholder="введите изображение">
                                 </div>
                             </div>
                              
@@ -172,9 +183,10 @@
             <span >local search</span>
             &nbsp;&nbsp;
             <input id="chkShowResponses" type="checkbox" onclick="$('#jsonViewer').toggle()">
-            <span >show responses</span>
+            <span >responses</span>
             &nbsp;&nbsp;
-            <a href="" onclick="return showModel()">show model</a>
+            <a href="" onclick="return showModel()">model</a>
+            <a href="" onclick="return showBlinks()">blinks</a>
             <a target="_blank" href="https://graphql-test.now.sh/">&nbsp;&nbsp;&nbsp;GraphQL API &#x25B6;</a>
         </div>
     </div>

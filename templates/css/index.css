@@ -220,7 +220,7 @@ input.role-input {
     margin-top:100px;
 }
 
-.json-viewer {
+.json-viewer, .blinks-viewer {
     position: fixed;
     width: 100%;
     min-height: 100px;
@@ -234,7 +234,9 @@ input.role-input {
     display:none;
 }
 
-.json-viewer-close {
+
+
+.viewer-close {
     position: fixed;
     right:20px;
     top:20px;
@@ -314,3 +316,7 @@ input.role-input {
     display: none;
 }
 
+.captcha-image {
+    border:1px solid silver; 
+    height: 38px; border-radius: 4px;
+}

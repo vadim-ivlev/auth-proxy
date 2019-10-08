@@ -11,12 +11,13 @@ import (
 )
 
 func main() {
-	fmt.Println("████████████████████████ revision 5 ████████████████████████")
+	fmt.Println("████████████████████████ revision 6 ████████████████████████")
 	// считать параметры командной строки
-	servePort, env, sqlite, tls, selfreg, secure := readCommandLineParams()
+	servePort, env, sqlite, tls, selfreg, secure, captcha := readCommandLineParams()
 	db.SQLite = sqlite
 	server.SelfRegistrationAllowed = selfreg
 	server.SecureCookie = secure
+	server.IsCaptchaRequired = captcha
 
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
@@ -47,13 +48,14 @@ func main() {
 // Вспомогательные функции =========================================
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool) {
+func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.BoolVar(&tls, "tls", false, "Использовать https вместо http")
 	flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")
 	flag.BoolVar(&secure, "secure", false, "Установить флаг secure на куки браузера. Работает для https протокола.")
+	flag.BoolVar(&captcha, "captcha", false, "Нужно ли вводить капчу при входе в систему")
 	flag.Parse()
 	fmt.Println("\nПример запуска: ./auth-proxy -serve 4400 -env=dev\n ")
 	flag.Usage()

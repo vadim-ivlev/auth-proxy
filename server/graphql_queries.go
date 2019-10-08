@@ -4,6 +4,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/session"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -29,17 +30,31 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.NewNonNull(gq.String),
 					Description: "Пароль",
 				},
+				"captcha": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Captcha",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				c, _ := params.Context.Value("ginContext").(*gin.Context)
 				username, _ := params.Args["username"].(string)
 				password, _ := params.Args["password"].(string)
+				captcha, _ := params.Args["captcha"].(string)
+
+				// проверить капчу если это authadmin
+				if auth.AppUserRoleExist("auth", username, "authadmin") {
+					sessionCaptcha := session.GetVariable(c, "captcha")
+					if sessionCaptcha != captcha {
+						return "", errors.New("Captcha doesn't match.")
+					}
+				}
 
 				err := auth.Login(c, username, password)
 				if err != nil {
-					return "Authentication failed", err
+					return "", err
 				} else {
-					return gin.H{"username": username, "message": "Successfully authenticated"}, nil
+					// return gin.H{"username": username, "message": "Successfully authenticated"}, nil
+					return "Success. " + username + " is authenticated.", nil
 				}
 			},
 		},
@@ -62,6 +77,24 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				return SelfRegistrationAllowed, nil
+			},
+		},
+
+		"is_captcha_required": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Нужно ли пользователю вводить каптчу",
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Идентификатор пользователя",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				username := params.Args["username"].(string)
+				if auth.AppUserRoleExist("auth", username, "authadmin") {
+					return true, nil
+				}
+				return IsCaptchaRequired, nil
 			},
 		},
 

@@ -3,15 +3,37 @@
 var model = {
     origin: document.location.origin,
 
+    // ---------------------------
+    // _logined: false,
+    // set logined(v) {
+    //     refreshApp()
+    // },
+
+
     get logined(){
-        return (getCookie('auth-proxy') != "")
+        // return (getCookie('auth-proxy') != "")
+        // return this._logined
+        return (this._loginedUser != null)
     },
  
     //---------------------------
     _loginedUser: null,
     set loginedUser(v) {
         this._loginedUser = v
-        $("#userTab").text( v? v.username: '')
+        if (v) {
+            document.getElementById("userTab").innerText = v.username
+            getAuthRoles(model.loginedUser.username)
+
+        } else {
+            document.getElementById("userTab").innerText = ""
+            try {
+                document.querySelector("#formLoginGraphQL input[name='username']").value = ""
+                document.querySelector("#formLoginGraphQL input[name='password']").value = ""
+            } catch (e) {}
+
+        }
+        refreshApp()
+        
     },
     get loginedUser() {
         return this._loginedUser
@@ -29,6 +51,20 @@ var model = {
     },
     get selfRegAllowed() {
         return this._selfRegAllowed
+    },
+    
+    //---------------------------
+    _captchaRequired: false,
+    set captchaRequired(v) {
+        this._captchaRequired = v
+        if (v) {
+            showElements("#captcha")
+        } else {
+            hideElements("#captcha")
+        }
+    },
+    get captchaRequired() {
+        return this._captchaRequired
     },
 
     //---------------------------
@@ -234,6 +270,10 @@ function showJSON(model) {
 // blinkStatus shows fading message
 function blinkStatus(message, className="alert") {
     console.log("blink:", message)
+    let b = document.getElementById("blinksViewerView")
+    b.innerText +="\n" + message 
+
+
     let e = $("#blinkMessage")
 
     e.removeClass('alert')
@@ -243,7 +283,7 @@ function blinkStatus(message, className="alert") {
     e.text(message)
     // st.show()
     e.fadeTo(0,1)
-    e.fadeTo(4000, 0.0)
+    e.fadeTo(400, 0.0)
     // st.hide(2000)
 }
 
@@ -253,6 +293,13 @@ function showModel() {
     $('#jsonViewer').show()
    return false
 }
+
+function showBlinks() {
+    $('#blinksViewer').show()
+   return false
+}
+
+
 
 
 function getCookie(cname) {
@@ -308,7 +355,6 @@ function sortAppsBy(prop) {
     model.apps = model._apps
     return false
 }
-
 
 
 
@@ -372,12 +418,14 @@ function loginGraphQLFormSubmit(event) {
 
     let username = $("#formLoginGraphQL input[name='username']").val()
     let password = $("#formLoginGraphQL input[name='password']").val()
+    let captcha = $("#formLoginGraphQL input[name='captcha']").val()
 
     var query =`
     query {
         login(
         username: "${username}",
-        password: "${password}"
+        password: "${password}",
+        captcha: "${captcha}"
         )
         }    
     `
@@ -385,10 +433,11 @@ function loginGraphQLFormSubmit(event) {
         success: (res) => {
             showResponse(res)
             if (res.errors){
-                blinkStatus("Пароль или имя или емайл не подходят")
+                blinkStatus(res.errors[0].message)
                 return
             }
-            refreshApp()
+            // refreshApp()
+            getLoginedUser()
         }   
     })
     return false       
@@ -410,9 +459,10 @@ function logoutGraphQLFormSubmit(event) {
         success: (res) => {
             showResponse(res)
             if (res.errors){
-                blinkStatus("Пароль или имя или емайл не подходят")
+                blinkStatus("Logout error:" + res.errors)
                 return
             }
+            model.loginedUser = null
             refreshApp()
         }
        
@@ -438,6 +488,25 @@ function isSelfRegAllowed(event) {
     })
     return false       
 }
+
+function isCaptchaRequired(event) {
+    if (event) event.preventDefault()
+    let username = document.querySelector("#formLoginGraphQL input[name='username']").value   
+    var query =`  query { is_captcha_required(  username: "${username}" ) } `
+    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
+        success: (res) => {
+            showResponse(res)
+            if (res.errors){
+                blinkStatus(res.errors[0].message)
+                return
+            }
+            model.captchaRequired = res.data.is_captcha_required
+        }
+       
+    })
+    return false       
+}
+
 
 
 function generateNewPassword(event) {
@@ -494,7 +563,8 @@ function getLoginedUser() {
             return
         }
         model.loginedUser = res.data.get_logined_user
-        getAuthRoles(model.loginedUser.username)
+        // model.logined = true
+        // getAuthRoles(model.loginedUser.username)
     } 
 })
 return false       
@@ -1056,11 +1126,23 @@ function generatePassword() {
     document.querySelector("#formUser input[name='password']").value = newPassword(9)
 }
 
+
+function logout() {
+
+    logoutGraphQLFormSubmit()
+    showPage('login',true)
+    isSelfRegAllowed()
+    model.captchaRequired = false
+    isCaptchaRequired()
+    return false
+}
+
+
 // O N   P A G E   L O A D  ****************************************************************************************
 
 function refreshData() {
     if (model.logined) {
-        getLoginedUser()
+        // getLoginedUser()
         getAllApps()
         getAllUsers()
         formListAppSubmit()
@@ -1106,4 +1188,7 @@ window.onhashchange = function(event) {
 //     console.log( "event.state: " + JSON.stringify(event.state));
 // }
 
+
+model.captchaRequired = false
+getLoginedUser()
 refreshApp()

@@ -22,15 +22,25 @@ func SetVariable(c *gin.Context, name, value string) error {
 	return err
 }
 
-// GetUserName возвращает имя текущего пользователя или пустую строку
-func GetUserName(c *gin.Context) string {
+// GetVariable возвращает значение переменной сессии пользователя или пустую строку
+func GetVariable(c *gin.Context, varname string) string {
 	session := sessions.Default(c)
-	user := session.Get("user")
-	if user == nil {
+	varvalue := session.Get(varname)
+	if varvalue == nil {
 		return ""
 	} else {
-		return user.(string)
+		return varvalue.(string)
 	}
+}
+
+// GetUserName возвращает имя текущего пользователя или пустую строку
+func GetUserName(c *gin.Context) string {
+	return GetVariable(c, "user")
+}
+
+// GetCaptcha возвращает капчу пользователя или пустую строку
+func GetCaptcha(c *gin.Context) string {
+	return GetVariable(c, "captcha")
 }
 
 // DeleteSession удаляет текущую сессию (стирает куки на стороне клиента)
