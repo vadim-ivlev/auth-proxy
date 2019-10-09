@@ -2,7 +2,6 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
-	"auth-proxy/pkg/session"
 	"context"
 	"errors"
 	"log"
@@ -189,7 +188,7 @@ func getLoginedUserName(params gq.ResolveParams) string {
 		log.Println("Not OK: getLoginedUserName")
 		return ""
 	}
-	return session.GetUserName(c)
+	return GetSessionVariable(c, "user")
 }
 
 func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {

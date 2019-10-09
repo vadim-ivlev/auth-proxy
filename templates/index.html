@@ -6,33 +6,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>auth-proxy API RG.RU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
-    <script src="templates/js/jquery.json-viewer.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script> -->
+    <!-- <script src="templates/js/jquery.json-viewer.js"></script> -->
     
- 
-    <!-- <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"> -->
-    <!-- <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css"> -->
-    <!-- <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">  -->
-
 
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"> 
-    <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.min.css">     -->
+    <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"> -->
+    <!-- <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">  -->
+    <link rel="stylesheet" type="text/css" href="templates/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="templates/css/milligram.min.css"> 
     
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 
 
     <link rel="stylesheet" type="text/css" href="templates/css/themes/graphql.css" />
     <link rel="stylesheet" type="text/css" href="templates/css/index.css" />
-    <link rel="stylesheet" type="text/css" href="templates/css/jquery.json-viewer.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="templates/css/jquery.json-viewer.css" /> -->
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
@@ -40,16 +34,6 @@
 </head>
 
 <body>
-    <div id="jsonViewer" class="json-viewer">
-        <div class="viewer-close" onclick="$('#jsonViewer').hide()">x</div>
-        <pre id="jsonViewerView"></pre>
-    </div>
-    <div id="blinksViewer" class="blinks-viewer">
-        <div class="viewer-close" onclick="$('#blinksViewer').hide()">x</div>
-        <pre id="blinksViewerView"></pre>
-    </div>
-    <div id="blinkMessage" class="blink-message info">a</div>
-
 
     <div id="page-container">
         <div id="header" class="header">
@@ -76,26 +60,28 @@
                         <h2>Вход</h2>
                         <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                             <div>
-                                <label class="param-name">username</label>
+                                <!-- <label class="param-name">username</label> -->
                                 <input name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
                             </div>
                             <div>
-                                <label class="param-name">password</label>
+                                <!-- <label class="param-name">password</label> -->
                                 <input name="password" type="password" placeholder="пароль">
                             </div>
 
                             <div id="captcha">
-                                <label class="param-name">captcha</label>
-                                <div style="display: grid; grid-template-columns: auto 1fr; grid-column-gap: 10px;">
-                                    <img src="captcha" class="captcha-image">
+                                <!-- <label class="param-name">captcha</label> -->
+                                <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
+                                    <img id="captchaImg" src="captcha" class="captcha-image">
+                                    <button class="button button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
                                     <input name="captcha" type="text" placeholder="введите изображение">
                                 </div>
                             </div>
                              
                             
                             <div style="text-align: right;">
-                                <label class="param-name"></label>
+                                <!-- <label class="param-name">&nbsp</label> -->
                                 <input type="submit" class="button button-outline" value="Вход">
+                                <div id="loginError"></div>
                             </div>
                         </form>
                         <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
@@ -113,7 +99,6 @@
                             <label  for="search"></label>
                             <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()"  value="">
                         </div>
-                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
                     </form>
                     <button id="btnNewApp" class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
                     <br>
@@ -130,7 +115,6 @@
                             <label  for="search"></label>
                             <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()" value="">
                         </div>
-                        <!-- <button type="submit" class="fa fa-search button button-outline" ></button> -->
                     </form>
                     <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
                     <br>
@@ -171,22 +155,12 @@
                 </div>
             </div>
 
-            <!-- <div id="graphqlTest">
-                    <a target="_blank" href="https://graphql-test.now.sh/">Тесты GraphQL (в новом окне). &#x25B6;</a>
-                    Щелкните [+] чтобы создать новую вкладку и 
-                    введите <b><script> document.write(document.location.origin)</script>/schema</b> в поле [GraphQL endpoint].
-            </div> -->
 
         </div>  
         <div id="footer" class="footer">
             <input id="chkLocalSearch" type="checkbox" checked>
             <span >local search</span>
             &nbsp;&nbsp;
-            <input id="chkShowResponses" type="checkbox" onclick="$('#jsonViewer').toggle()">
-            <span >responses</span>
-            &nbsp;&nbsp;
-            <a href="" onclick="return showModel()">model</a>
-            <a href="" onclick="return showBlinks()">blinks</a>
             <a target="_blank" href="https://graphql-test.now.sh/">&nbsp;&nbsp;&nbsp;GraphQL API &#x25B6;</a>
         </div>
     </div>

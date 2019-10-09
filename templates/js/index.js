@@ -1,19 +1,13 @@
 // M O D E L  ******************************************************************************************
 
 var model = {
+    // if debug == true logs go to console.
+    debug: true,
     origin: document.location.origin,
-
-    // ---------------------------
-    // _logined: false,
-    // set logined(v) {
-    //     refreshApp()
-    // },
 
 
     get logined(){
-        // return (getCookie('auth-proxy') != "")
-        // return this._logined
-        return (this._loginedUser != null)
+         return (this._loginedUser != null)
     },
  
     //---------------------------
@@ -22,15 +16,9 @@ var model = {
         this._loginedUser = v
         if (v) {
             document.getElementById("userTab").innerText = v.username
-            getAuthRoles(model.loginedUser.username)
-
+            // getAuthRoles(model.loginedUser.username)
         } else {
             document.getElementById("userTab").innerText = ""
-            try {
-                document.querySelector("#formLoginGraphQL input[name='username']").value = ""
-                document.querySelector("#formLoginGraphQL input[name='password']").value = ""
-            } catch (e) {}
-
         }
         refreshApp()
         
@@ -253,52 +241,9 @@ function alertOnError(e, msg){
 }
 
 
-function showResponse(response) {
-    if (! document.querySelector('#chkShowResponses').checked) return false;
-    return showJSON(response)
+function mLog() {
+    model.debug && console.log(...arguments)
 }
-
-
-function showJSON(model) {
-    $('#jsonViewerView').html("")
-    $('#jsonViewerView').jsonViewer(model, {collapsed: true, rootCollapsable: false}) 
-    $('#jsonViewer').show()
-    return false
-}
-
-
-// blinkStatus shows fading message
-function blinkStatus(message, className="alert") {
-    console.log("blink:", message)
-    let b = document.getElementById("blinksViewerView")
-    b.innerText +="\n" + message 
-
-
-    let e = $("#blinkMessage")
-
-    e.removeClass('alert')
-    e.removeClass('info')
-    e.addClass(className)
-
-    e.text(message)
-    // st.show()
-    e.fadeTo(0,1)
-    e.fadeTo(400, 0.0)
-    // st.hide(2000)
-}
-
-function showModel() {
-    $('#jsonViewerView').html("")
-    $('#jsonViewerView').jsonViewer(model, {collapsed: true, rootCollapsable: false}) 
-    $('#jsonViewer').show()
-   return false
-}
-
-function showBlinks() {
-    $('#blinksViewer').show()
-   return false
-}
-
 
 
 
@@ -385,31 +330,7 @@ function sortUsersBy(prop) {
 
 
 
-/*
 // R E Q U E S T S  *******************************************************
-
-// function loginRestFormSubmit(event) {
-//     if (event) event.preventDefault()
-//     $("#formLoginRest").ajaxSubmit({
-//         url: "/login",
-//         type: "POST",
-//         success: showResponseIn('#resultLoginRest',true),
-//         error: alertOnError
-//     })
-//     return false       
-// }
-
-// function logoutRestFormSubmit(event) {
-//     if (event) event.preventDefault()
-//     $("#formLogoutRest").ajaxSubmit({
-//         url: "/logout",
-//         type: "GET",
-//         success: showResponseIn('#resultLogoutRest',true),
-//         error: alertOnError
-//     })
-//     return false
-// }
-*/
 
 // L O G I N  *****************************************************************************
 
@@ -431,9 +352,11 @@ function loginGraphQLFormSubmit(event) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog("loginGraphQLFormSubmit:",res)
+            clearLoginForm()
             if (res.errors){
-                blinkStatus(res.errors[0].message)
+                mLog(res.errors[0].message)
+                document.getElementById("loginError").innerText = res.errors[0].message
                 return
             }
             // refreshApp()
@@ -457,9 +380,9 @@ function logoutGraphQLFormSubmit(event) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus("Logout error:" + res.errors)
+                mLog("Logout error:" + res.errors)
                 return
             }
             model.loginedUser = null
@@ -477,9 +400,9 @@ function isSelfRegAllowed(event) {
     var query =` query { is_selfreg_allowed }`
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus(res.errors[0].message)
+                mLog(res.errors[0].message)
                 return
             }
             model.selfRegAllowed = res.data.is_selfreg_allowed
@@ -495,9 +418,9 @@ function isCaptchaRequired(event) {
     var query =`  query { is_captcha_required(  username: "${username}" ) } `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus(res.errors[0].message)
+                mLog(res.errors[0].message)
                 return
             }
             model.captchaRequired = res.data.is_captcha_required
@@ -523,9 +446,9 @@ function generateNewPassword(event) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             } else {
                 alert(res.data.generate_password)
@@ -557,14 +480,14 @@ function getLoginedUser() {
     
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
     success: (res) => {
-        showResponse(res)
+        mLog(res)
         if (res.errors){
-            blinkStatus( res.errors[0].message)
+            mLog( res.errors[0].message)
             return
         }
         model.loginedUser = res.data.get_logined_user
-        // model.logined = true
-        // getAuthRoles(model.loginedUser.username)
+        getAuthRoles(model.loginedUser.username)
+        getUser(model.loginedUser.username)
     } 
 })
 return false       
@@ -585,9 +508,9 @@ function getAuthRoles(username) {
 
         $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.authRoles = res.data.list_app_user_role
@@ -623,9 +546,9 @@ function formListUserSubmit(event) {
         `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.users = res.data.list_user.list
@@ -666,12 +589,13 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
-            blinkStatus( userOperationName+" success", 'info' )
+            // mLog( userOperationName+" success", 'info' )
+            alert(userOperationName+" success")
             refreshData()
             model.user = res.data[userOperationName]
             if (userOperationName == 'create_user' && !model.logined) {
@@ -715,9 +639,9 @@ function getUser(username) {
 
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (!res.data.get_user){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.user = res.data.get_user
@@ -740,7 +664,6 @@ function groupApps(list_app_user_role) {
     let arr = []
 
     for (let [key, value] of Object.entries(gr)) {
-        // console.log(`${key}: ${value}`);
         let rec = {}
         rec.appname =key
         rec.app_description = value[0].app_description
@@ -764,9 +687,9 @@ function deleteUser(username) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.user = null
@@ -802,9 +725,9 @@ function formListAppSubmit(event) {
         }    `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus(res.errors[0].message)
+                mLog(res.errors[0].message)
                 return
             }
             model.apps = res.data.list_app.list
@@ -844,12 +767,13 @@ function formAppSubmit(event, appOperationName = 'create_app') {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
-            blinkStatus( appOperationName+" success", 'info' )
+            // mLog( appOperationName+" success", 'info' )
+            alert(appOperationName+" success")
             model.app = res.data[appOperationName]
             refreshData()
             getApp(appname)
@@ -890,9 +814,9 @@ function getApp(appname) {
 
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.app = res.data.get_app
@@ -936,9 +860,9 @@ function deleteApp(appname) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.app = null
@@ -974,8 +898,9 @@ function getAllApps(event) {
         }    `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.allApps = res.data.list_app.list
@@ -1005,8 +930,9 @@ function getAllUsers(event) {
         }    `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.allUsers = res.data.list_user.list
@@ -1036,9 +962,9 @@ function formListRoleSubmit(event) {
         `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
         success: (res) => {
-            showResponse(res)
+            mLog(res)
             if (res.errors){
-                blinkStatus( res.errors[0].message)
+                mLog( res.errors[0].message)
                 return
             }
             model.app_user_roles = res.data.list_app_user_role
@@ -1067,9 +993,9 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
     `
     $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
     success: (res) => {
+        mLog(res)
         if (res.errors){
-            showResponse(res)
-            blinkStatus( res.errors[0].message)
+            mLog( res.errors[0].message)
             return
         }
         if (onsuccess) 
@@ -1127,9 +1053,25 @@ function generatePassword() {
 }
 
 
-function logout() {
+function getNewCaptcha(event) {
+    let uri = "captcha?"+ new Date().getTime()
+    document.getElementById("captchaImg").src = uri
+    return false
+}
 
+
+function clearLoginForm() {
+    document.querySelector("#formLoginGraphQL input[name='username']").value = ""
+    document.querySelector("#formLoginGraphQL input[name='password']").value = ""
+    document.querySelector("#formLoginGraphQL input[name='captcha']").value = ""
+    document.getElementById("loginError").innerText = ""
+    getNewCaptcha()
+}
+
+
+function logout() {
     logoutGraphQLFormSubmit()
+    clearLoginForm()
     showPage('login',true)
     isSelfRegAllowed()
     model.captchaRequired = false
@@ -1168,7 +1110,8 @@ function refreshApp(params) {
     refreshData()
 
     if (model.logined) {
-        showPage(getLandingPageid()) 
+        let page = getLandingPageid()
+        showPage(page) 
         $('#menu').show()       
     } else {
         showPage('login',true)

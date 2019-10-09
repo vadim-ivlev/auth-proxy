@@ -2,7 +2,6 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
-	"auth-proxy/pkg/session"
 	"fmt"
 	"net/http"
 	"strings"
@@ -45,7 +44,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		}
 
 		// Кто делает запрос
-		userName := session.GetUserName(c)
+		userName := GetSessionVariable(c, "user")
 
 		// !!! Если пользователь не залогинен ПРЕРЫВАЕМ ЗАПРОС
 		if userName == "" {

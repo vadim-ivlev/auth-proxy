@@ -2,8 +2,8 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/counter"
 	"auth-proxy/pkg/db"
-	"auth-proxy/pkg/session"
 	"errors"
 	"fmt"
 	"strings"
@@ -41,21 +41,27 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				password, _ := params.Args["password"].(string)
 				captcha, _ := params.Args["captcha"].(string)
 
-				// проверить капчу если это authadmin
-				if auth.AppUserRoleExist("auth", username, "authadmin") {
-					sessionCaptcha := session.GetVariable(c, "captcha")
+				// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
+				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
+					sessionCaptcha := GetSessionVariable(c, "captcha")
 					if sessionCaptcha != captcha {
-						return "", errors.New("Captcha doesn't match.")
+						return "", errors.New("Картинка введена с ошибкой")
 					}
 				}
 
-				err := auth.Login(c, username, password)
-				if err != nil {
-					return "", err
-				} else {
-					// return gin.H{"username": username, "message": "Successfully authenticated"}, nil
-					return "Success. " + username + " is authenticated.", nil
+				r := auth.CheckUserPassword2(username, password)
+				if r == auth.NO_USER {
+					return nil, errors.New(username + " не зарегистрирован")
+				} else if r == auth.WRONG_PASSWORD {
+					counter.IncrementCounter(username)
+					return nil, errors.New("Неверный пароль")
+				} else if r == auth.USER_DISABLED {
+					return nil, errors.New(username + " деактивирован.")
 				}
+				// if r == auth.OK {
+				counter.ResetCounter(username)
+				SetSessionVariable(c, "user", username)
+				return "Success. " + username + " is authenticated.", nil
 			},
 		},
 
@@ -65,8 +71,8 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				c, _ := params.Context.Value("ginContext").(*gin.Context)
-				username := session.GetUserName(c)
-				auth.Logout(c)
+				username := GetSessionVariable(c, "user")
+				DeleteSession(c)
 				return gin.H{"username": username, "message": "Successfully logged out"}, nil
 			},
 		},
@@ -91,9 +97,10 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				username := params.Args["username"].(string)
-				if auth.AppUserRoleExist("auth", username, "authadmin") {
+				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
 					return true, nil
 				}
+
 				return IsCaptchaRequired, nil
 			},
 		},

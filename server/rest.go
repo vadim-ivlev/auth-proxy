@@ -3,8 +3,6 @@ package server
 import (
 	"auth-proxy/pkg/auth"
 
-	"auth-proxy/pkg/session"
-
 	"auth-proxy/pkg/primitiveproxy"
 	"io/ioutil"
 	"log"
@@ -43,14 +41,15 @@ func Captcha(c *gin.Context) {
 	// create a captcha of 150x50px
 	data, _ := captcha.New(120, 38, func(options *captcha.Options) {
 		options.CharPreset = "123456789"
-		options.FontScale = 1.2
+		options.FontScale = 1.3
+		// options.TextLength = 5
 
 	})
 	// data, _ := captcha.NewMathExpr(100, 38, func(options *captcha.Options) {
 	// 	options.FontScale = 1.4
 	// })
 
-	session.SetVariable(c, "captcha", data.Text)
+	SetSessionVariable(c, "captcha", data.Text)
 	log.Println("Captcha text=", data.Text)
 	// send image data to client
 	data.WriteImage(c.Writer)

@@ -2,7 +2,6 @@ package auth
 
 import (
 	"auth-proxy/pkg/db"
-	"auth-proxy/pkg/session"
 	"crypto/sha256"
 	"errors"
 	"fmt"
@@ -10,29 +9,41 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/patrickmn/go-cache"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-// var Store = gsessions.NewCookieStore([]byte("secret"))
-
 var Cache = cache.New(5*time.Minute, 10*time.Minute)
 
-// CheckUserPassword проверяет пароль пользователя. Возвращает true если проверка прошла успешно.
-func CheckUserPassword(username, password string) bool {
-	_, err := db.QueryRowMap(`
-		SELECT * FROM "user" WHERE username=$1 AND "password"=$2 AND disabled = 0
-		UNION
-		SELECT * FROM "user" WHERE email=$1    AND "password"=$2 AND disabled = 0
-		`, username, GetHash(password))
+const (
+	OK             = 0
+	NO_USER        = 1
+	USER_DISABLED  = 2
+	WRONG_PASSWORD = 3
+)
 
+// CheckUserPassword2 проверяет пароль пользователя.
+// Возвращает:
+// OK 			 - проверка прошла успешно.
+// NO_USER 		 - пользователя нет.
+// USER_DISABLED - пользователь заблокирован.
+// WRONG_PASSWORD - пароль не подходит.
+func CheckUserPassword2(username, password string) int {
+	rec, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1`, username)
 	if err != nil {
-		return false
+		return NO_USER
 	}
-	return true
+	disabled := rec["disabled"].(int64)
+	if disabled > 0 {
+		return USER_DISABLED
+	}
+	hashedPassword := rec["password"].(string)
+	if hashedPassword != GetHash(password) {
+		return WRONG_PASSWORD
+	}
+	return OK
 }
 
 // UlidNum - возвращает случайную строку числа в диапазоне [min,max)
@@ -143,20 +154,6 @@ func AppUserRoleExist(appname, username, rolename string) bool {
 		return true
 	}
 	return false
-}
-
-// Logout разлогинить текущего пользователя
-func Logout(c *gin.Context) {
-	session.DeleteSession(c)
-}
-
-// Login залогинить пользователя
-func Login(c *gin.Context, username, password string) error {
-	if CheckUserPassword(username, password) {
-		return session.SetVariable(c, "user", username)
-	} else {
-		return errors.New("Authentication failed")
-	}
 }
 
 // IsUserEnabled  Если false, пользователь отключен
