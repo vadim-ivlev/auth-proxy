@@ -11,7 +11,7 @@
             <label >username *</label>
             <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
             {{#user}} disabled class="grayed" {{/user}}
-            oninput=" $('#newUserName').text(event.target.value) "
+            oninput="document.getElementById('newUserName').innerText = event.target.value; "
             value="{{user.username}}">
         </div>
         <div>
@@ -99,7 +99,7 @@
                 <span class="button button-outline role-nocross">
                     <input id="newRoleName-{{appname}}" class="role-input">
                     <button class="button button-outline role-add" 
-                        onclick="modifyRole('create', '{{appname}}', '{{user.username}}', $('#newRoleName-{{appname}}').val(), ()=>{ getUser('{{user.username}}') }  )"
+                        onclick="modifyRole('create', '{{appname}}', '{{user.username}}', document.getElementById('newRoleName-{{appname}}').value, ()=>{ getUser('{{user.username}}') }  )"
                         >
                     +
                     </button>
@@ -115,7 +115,7 @@
                 <input id="newUserAppname" 
                     list="appsDataList" 
                     placeholder="Добавить приложение. Поиск." 
-                    onchange="$('#newUserAppDescription').text($(`#appsDataList>option[value='${this.value}'`).text());"
+                    onchange="document.getElementById('newUserAppDescription').innerText = document.querySelector(`#appsDataList>option[value='${this.value}'`).innerText;"
                 >
                 <datalist id="appsDataList">
                     {{{all_app_options}}}
@@ -128,7 +128,7 @@
                 <span class="button button-outline role-nocross">
                         <input id="newUserRolename" class="role-input" placeholder="новая роль">
                         <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', $('#newUserAppname').val(), '{{user.username}}',  $('#newUserRolename').val(), ()=>{ getUser('{{user.username}}') }  )"
+                            onclick="modifyRole('create', document.getElementById('newUserAppname').value, '{{user.username}}',  document.getElementById('newUserRolename').value, ()=>{ getUser('{{user.username}}') }  )"
                             >
                         +
                         </button>

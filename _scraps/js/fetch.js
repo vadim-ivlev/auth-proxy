@@ -1,6 +1,6 @@
 fetch('https://localhost:4400/apps/photoreports-admin/schema', {
         method: 'POST',
-        credential: 'include',
+        credentials: 'include',
         body: JSON.stringify({
           query: '',
           variables: {}

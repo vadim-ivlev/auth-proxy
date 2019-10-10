@@ -131,7 +131,7 @@ var model = {
     set allApps(v) {
         this._allApps = v
         this.all_app_options = createOptions(v, "appname", "description", "url")
-        $("#allAppsDataList").html(this.all_app_options)
+        document.querySelector("#allAppsDataList").innerHTML = this.all_app_options
     },
     get allApps() {
         return this._allApps
@@ -142,7 +142,7 @@ var model = {
     set allUsers(v) {
         this._allUsers = v
         this.all_user_options = createOptions(v, "username", "fullname", "email")
-        $("#allUsersDataList").html(this.all_user_options)
+        document.querySelector("#allUsersDataList").innerHTML = this.all_user_options
     },
     get allUsers() {
         return this._allUsers
@@ -167,7 +167,7 @@ var model = {
 
 function createOptions(selectValues, keyProp, textProp1, textProp2) {
     var output = []
-    $.each(selectValues, function(key, value)
+    selectValues && selectValues.forEach(function(value)
     {
       output.push(`<option value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
     })
@@ -177,9 +177,9 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 
 
 function highlightTab(tabid) {
-    $('.tab').removeClass("underlined")
+    removeClass('.tab', "underlined")
     var tabid0 = tabid.split("/")[0]
-    $('#'+tabid0+'Tab').addClass("underlined")   
+    addClass('#'+tabid0+'Tab', "underlined")   
 }
 
 
@@ -192,11 +192,12 @@ function showPage(pageid, dontpush){
 
     highlightTab(pageid)
     
-    $('.page').hide()
-    $('#'+pageid0+'Page').show()
+    hideElements('.page')
+    showElements('#'+pageid0+'Page')
+
 
     // setting focus
-    var text = $('#'+pageid0+'Page input[type="text"]')[0]
+    var text = document.querySelector('#'+pageid0+'Page input[type="text"]')
     if(text) 
         text.focus()
 
@@ -204,7 +205,6 @@ function showPage(pageid, dontpush){
     if (!dontpush){
         if (!history.state || history.state.pageid != pageid ){
             history.pushState({pageid:pageid},pageid, "#"+pageid) 
-            // console.log("push", pageid)   
         }
     }
 
@@ -224,10 +224,14 @@ function showPage(pageid, dontpush){
 
 
 function renderTemplateFile(templateFile, data, targetSelector) {
-    $.get(templateFile, function(template) {
-        var rendered = Mustache.render(template, data);
-        $(targetSelector).html(rendered);
-    });
+
+    function onSuccess(template) {
+        var rendered = Mustache.render(template, data)
+        document.querySelector(targetSelector).innerHTML = rendered
+    }    
+
+    // $.get(templateFile, onSuccess);
+    fetch(templateFile).then(x => x.text()).then(onSuccess)
 }
 
 
@@ -238,11 +242,6 @@ function renderPage(pageid, elemSelector) {
 
 function alertOnError(e, msg){
     alert(msg, e)
-}
-
-
-function mLog() {
-    model.debug && console.log(...arguments)
 }
 
 
@@ -282,7 +281,7 @@ function searchApps() {
 
 function searchAppsInModel() {
     if (!model.allApps) return
-    var text = $("#formListApp input[name='search']").val().trim().replace(' ','.*')
+    var text = document.querySelector("#formListApp input[name='search']").value.trim().replace(' ','.*')
     var r = new RegExp(text, 'i')
     let found = model.allApps.filter((v)=>{
         var s = Object.values(v).join(' ')
@@ -313,7 +312,7 @@ function searchUsers() {
 
 function searchUsersInModel() {
     if (!model.allUsers) return
-    var text = $("#formListUser input[name='search']").val().trim().replace(' ','.*')
+    var text = document.querySelector("#formListUser input[name='search']").value.trim().replace(' ','.*')
     var r = new RegExp(text, 'i')
     let found = model.allUsers.filter( (v) => r.test (Object.values(v).join(' ')) )
     model.users = found
@@ -332,16 +331,57 @@ function sortUsersBy(prop) {
 
 // R E Q U E S T S  *******************************************************
 
+function doGraphQLRequest(query, responseHandler, errorElementID) {
+    // $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
+    //     success: (res) => {
+    //         model.debug && console.log(res)
+    //         if (res.errors){
+    //             model.debug && console.log(res.errors[0].message)
+    //             if (errorElementID) {
+    //                 document.getElementById(errorElementID).innerText = res.errors[0].message
+    //             }
+    //             return
+    //         }
+    //         responseHandler(res)
+    //     } 
+    // })
+
+    fetch('/graphql', { 
+        method: 'POST', 
+        credentials: 'include', 
+        body: JSON.stringify({ query: query, variables: {} }) 
+    })
+        .then(res => { 
+          if (res.ok) return res.json();
+          new Error(res)
+        })
+        .then((res) => {
+            model.debug && console.log(res)
+            if (res.errors){
+                model.debug && console.log(res.errors[0].message)
+                if (errorElementID) {
+                    document.getElementById(errorElementID).innerText = res.errors[0].message
+                }
+                return
+            }
+            responseHandler(res)
+        })
+        .catch(console.error)    
+    
+}
+
+
 // L O G I N  *****************************************************************************
 
 function loginGraphQLFormSubmit(event) {
     if (event) event.preventDefault()
+    
+    let username = document.querySelector("#formLoginGraphQL input[name='username']").value
+    let password = document.querySelector("#formLoginGraphQL input[name='password']").value
+    let captcha =  document.querySelector("#formLoginGraphQL input[name='captcha']").value
+    
 
-    let username = $("#formLoginGraphQL input[name='username']").val()
-    let password = $("#formLoginGraphQL input[name='password']").val()
-    let captcha = $("#formLoginGraphQL input[name='captcha']").val()
-
-    var query =`
+    let query =`
     query {
         login(
         username: "${username}",
@@ -350,19 +390,12 @@ function loginGraphQLFormSubmit(event) {
         )
         }    
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog("loginGraphQLFormSubmit:",res)
-            clearLoginForm()
-            if (res.errors){
-                mLog(res.errors[0].message)
-                document.getElementById("loginError").innerText = res.errors[0].message
-                return
-            }
-            // refreshApp()
-            getLoginedUser()
-        }   
-    })
+    function onSuccess(res){
+        getLoginedUser()
+    }   
+
+    doGraphQLRequest(query, onSuccess, "loginError")
+    clearLoginForm()
     return false       
 }
 
@@ -378,18 +411,13 @@ function logoutGraphQLFormSubmit(event) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog("Logout error:" + res.errors)
-                return
-            }
-            model.loginedUser = null
-            refreshApp()
-        }
-       
-    })
+
+    function onSuccess(res){
+        model.loginedUser = null
+        refreshApp()
+    }
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -398,17 +426,12 @@ function logoutGraphQLFormSubmit(event) {
 function isSelfRegAllowed(event) {
     if (event) event.preventDefault()
     var query =` query { is_selfreg_allowed }`
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog(res.errors[0].message)
-                return
-            }
-            model.selfRegAllowed = res.data.is_selfreg_allowed
-        }
+
+    function onSuccess(res){
+        model.selfRegAllowed = res.data.is_selfreg_allowed
+    }
        
-    })
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -416,17 +439,12 @@ function isCaptchaRequired(event) {
     if (event) event.preventDefault()
     let username = document.querySelector("#formLoginGraphQL input[name='username']").value   
     var query =`  query { is_captcha_required(  username: "${username}" ) } `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog(res.errors[0].message)
-                return
-            }
-            model.captchaRequired = res.data.is_captcha_required
-        }
+
+    function onSuccess(res){
+        model.captchaRequired = res.data.is_captcha_required
+    }
        
-    })
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -435,7 +453,7 @@ function isCaptchaRequired(event) {
 function generateNewPassword(event) {
     if (event) event.preventDefault()
 
-    let username = $("#formLoginGraphQL input[name='username']").val()
+    let username = document.querySelector("#formLoginGraphQL input[name='username']").value
 
     var query =`
     mutation {
@@ -444,18 +462,12 @@ function generateNewPassword(event) {
         ) 
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            } else {
-                alert(res.data.generate_password)
-            }
-            refreshApp()
-        }   
-    })
+    function onSuccess(res){
+        alert(res.data.generate_password)
+        refreshApp()
+    }   
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -466,6 +478,7 @@ function generateNewPassword(event) {
 
 function getLoginedUser() {
     model.loginedUser = null
+    
     var query =`
     query {
         get_logined_user {
@@ -478,23 +491,19 @@ function getLoginedUser() {
     }
     `
     
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-    success: (res) => {
-        mLog(res)
-        if (res.errors){
-            mLog( res.errors[0].message)
-            return
-        }
+    function onSuccess(res){
         model.loginedUser = res.data.get_logined_user
         getAuthRoles(model.loginedUser.username)
         getUser(model.loginedUser.username)
     } 
-})
-return false       
+    
+    doGraphQLRequest(query, onSuccess)
+    return false       
 }
 
 function getAuthRoles(username) {
     model.authRoles = null
+
     var query =`
     query {
         list_app_user_role(
@@ -506,16 +515,11 @@ function getAuthRoles(username) {
         }
         `
 
-        $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.authRoles = res.data.list_app_user_role
-        } 
-    })
+    function onSuccess(res){
+        model.authRoles = res.data.list_app_user_role
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -526,7 +530,8 @@ function getAuthRoles(username) {
 function formListUserSubmit(event) {
     if (event) event.preventDefault()
     model.users = null
-    let search = $("#formListUser input[name='search']").val()
+    let search = document.querySelector("#formListUser input[name='search']").value
+    
     var query =`
     query {
         list_user(
@@ -543,18 +548,13 @@ function formListUserSubmit(event) {
             }
           }
         }        
-        `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.users = res.data.list_user.list
-        } 
+    `
     
-    })
+    function onSuccess(res){
+        model.users = res.data.list_user.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -562,12 +562,13 @@ function formListUserSubmit(event) {
 
 function formUserSubmit(event, userOperationName = 'create_user') {
     if (event) event.preventDefault()
-    let username = $("#formUser input[name='username']").val()
-    let password = $("#formUser input[name='password']").val()
-    let email    = $("#formUser input[name='email']").val()
-    let fullname = $("#formUser input[name='fullname']").val()
-    let description = $("#formUser *[name='description']").val()
-    let disabled = $("#formUser input[name='disabled']").val()
+    let username =      document.querySelector("#formUser input[name='username']").value
+    let password =      document.querySelector("#formUser input[name='password']").value
+    let email    =      document.querySelector("#formUser input[name='email']").value
+    let fullname =      document.querySelector("#formUser input[name='fullname']").value
+    let description =   document.querySelector("#formUser *[name='description']").value
+    let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    
     var query =`
     mutation {
         ${userOperationName}(
@@ -587,24 +588,19 @@ function formUserSubmit(event, userOperationName = 'create_user') {
 
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            // mLog( userOperationName+" success", 'info' )
-            alert(userOperationName+" success")
-            refreshData()
-            model.user = res.data[userOperationName]
-            if (userOperationName == 'create_user' && !model.logined) {
-                alert(`"${username}" is created.` )
-                showPage('login',true)
-            }
-            getUser(username)
-        } 
-    })
+
+    function onSuccess(res){
+        alert(userOperationName+" success")
+        refreshData()
+        model.user = res.data[userOperationName]
+        if (userOperationName == 'create_user' && !model.logined) {
+            alert(`"${username}" is created.` )
+            showPage('login',true)
+        }
+        getUser(username)
+    }
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -637,17 +633,12 @@ function getUser(username) {
 
     `
 
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (!res.data.get_user){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.user = res.data.get_user
-            model.user.apps = groupApps(res.data.list_app_user_role)
-        } 
-    })
+    function onSuccess(res){
+        model.user = res.data.get_user
+        model.user.apps = groupApps(res.data.list_app_user_role)
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -685,18 +676,13 @@ function deleteUser(username) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.user = null
-            refreshData()
-            showPage('users') ;
-         } 
-    })
+    function onSuccess(res){
+        model.user = null
+        refreshData()
+        showPage('users')
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -706,7 +692,7 @@ function deleteUser(username) {
 function formListAppSubmit(event) {
     if (event) event.preventDefault()
     model.apps = null
-    let search = $("#formListApp input[name='search']").val()
+    let search = document.querySelector("#formListApp input[name='search']").value
     var query =`
     query {
         list_app(
@@ -723,17 +709,12 @@ function formListAppSubmit(event) {
             }
           }
         }    `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog(res.errors[0].message)
-                return
-            }
-            model.apps = res.data.list_app.list
-        } 
-    
-    })
+
+    function onSuccess(res){
+        model.apps = res.data.list_app.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -742,11 +723,12 @@ function formListAppSubmit(event) {
 function formAppSubmit(event, appOperationName = 'create_app') {
     if (event) event.preventDefault()
     model.app = null
-    let appname = $("#formApp input[name='appname']").val()
-    let url = $("#formApp input[name='url']").val()
-    let description = $("#formApp input[name='description']").val()
-    let rebase = $("#formApp input[name='rebase']").val()
-    let public = $("#formApp input[name='public']").val()
+    let appname =     document.querySelector("#formApp input[name='appname']"    ).value
+    let url =         document.querySelector("#formApp input[name='url']"        ).value
+    let description = document.querySelector("#formApp input[name='description']").value
+    let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
+    let public =      document.querySelector("#formApp input[name='public']"     ).value
+    
     var query =`
     mutation {
         ${appOperationName}(
@@ -765,20 +747,14 @@ function formAppSubmit(event, appOperationName = 'create_app') {
 
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            // mLog( appOperationName+" success", 'info' )
-            alert(appOperationName+" success")
-            model.app = res.data[appOperationName]
-            refreshData()
-            getApp(appname)
-        } 
-    })
+    function onSuccess(res){
+        alert(appOperationName+" success")
+        model.app = res.data[appOperationName]
+        refreshData()
+        getApp(appname)
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -786,6 +762,7 @@ function formAppSubmit(event, appOperationName = 'create_app') {
 
 function getApp(appname) {
     model.app = null
+
     var query =`
     query {
         get_app(
@@ -812,17 +789,12 @@ function getApp(appname) {
 
     `
 
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.app = res.data.get_app
-            model.app.users = groupUsers(res.data.list_app_user_role)
-        } 
-    })
+    function onSuccess(res){
+        model.app = res.data.get_app
+        model.app.users = groupUsers(res.data.list_app_user_role)
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -858,18 +830,13 @@ function deleteApp(appname) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.app = null
-            refreshData()
-            showPage('apps') ;
-         } 
-    })
+    function onSuccess(res){
+        model.app = null
+        refreshData()
+        showPage('apps') ;
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -896,19 +863,15 @@ function getAllApps(event) {
             }
           }
         }    `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.allApps = res.data.list_app.list
-        } 
-    
-    })
+
+    function onSuccess(res){
+        model.allApps = res.data.list_app.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
+
 
 function getAllUsers(event) {
     if (event) event.preventDefault()
@@ -928,25 +891,20 @@ function getAllUsers(event) {
             }
           }
         }    `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.allUsers = res.data.list_user.list
-        } 
-    
-    })
+
+    function onSuccess(res){
+        model.allUsers = res.data.list_user.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
 function formListRoleSubmit(event) {
     if (event && event.preventDefault ) event.preventDefault()
     model.app_user_roles = null
-    let appname = $("#allApps").val()
-    let username = $("#allUsers").val()
+    let appname =  document.querySelector("#allApps").value
+    let username = document.querySelector("#allUsers").value
     if (!appname || !username) 
         return
 
@@ -960,17 +918,12 @@ function formListRoleSubmit(event) {
           }
         }        
         `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError,
-        success: (res) => {
-            mLog(res)
-            if (res.errors){
-                mLog( res.errors[0].message)
-                return
-            }
-            model.app_user_roles = res.data.list_app_user_role
-        } 
-    
-    })
+
+    function onSuccess(res){
+        model.app_user_roles = res.data.list_app_user_role
+    } 
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
@@ -991,20 +944,31 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
           }
         }
     `
-    $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
-    success: (res) => {
-        mLog(res)
-        if (res.errors){
-            mLog( res.errors[0].message)
-            return
-        }
-        if (onsuccess) 
-            onsuccess()
+    function onSuccess(res){
+        if (onsuccess) onsuccess()
     }
-    })
+
+    doGraphQLRequest(query, onSuccess)
     return false       
 }
 
+// works when input values on roles page change
+function refreshRoles() {
+    let allUsersValue = document.getElementById("allUsers").value
+    if (allUsersValue) {
+        let ui = document.querySelector(`#allUsersDataList>option[value='${allUsersValue}']`).innerText
+        document.getElementById('userInfo').innerText = ui   
+    }
+
+    let allAppsValue = document.getElementById("allApps").value
+    if (allAppsValue) {
+        let ai = document.querySelector(`#allAppsDataList>option[value='${allAppsValue}']`).innerText
+        document.getElementById('appInfo').innerText = ai
+    }
+
+    if (allUsersValue && allAppsValue) 
+        formListRoleSubmit() 
+}
 
 
 function filterRows(selector, value ){
@@ -1027,6 +991,14 @@ function hideElements(selector) {
 
 function showElements(selector) {
     document.querySelectorAll(selector).forEach(e => e.classList.remove("hidden"));
+}
+
+function addClass(selector, classname) {
+    document.querySelectorAll(selector).forEach(e => e.classList.add(classname));
+}
+
+function removeClass(selector, classname) {
+    document.querySelectorAll(selector).forEach(e => e.classList.remove(classname));
 }
 
 
@@ -1065,7 +1037,6 @@ function clearLoginForm() {
     document.querySelector("#formLoginGraphQL input[name='password']").value = ""
     document.querySelector("#formLoginGraphQL input[name='captcha']").value = ""
     document.getElementById("loginError").innerText = ""
-    getNewCaptcha()
 }
 
 
@@ -1112,10 +1083,10 @@ function refreshApp(params) {
     if (model.logined) {
         let page = getLandingPageid()
         showPage(page) 
-        $('#menu').show()       
+        showElements('#menu')     
     } else {
         showPage('login',true)
-        $('#menu').hide()
+        hideElements('#menu')
     }  
 }
 

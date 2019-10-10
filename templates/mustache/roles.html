@@ -6,7 +6,7 @@
     <br>
     {{#app_user_roles}}
     <button class="button button-outline role" 
-        onclick="modifyRole('delete', $('#allApps').val(), $('#allUsers').val(),'{{rolename}}', formListRoleSubmit )"
+        onclick="modifyRole('delete', document.getElementById('allApps').value, document.getElementById('allUsers').value,'{{rolename}}', formListRoleSubmit )"
         >
         {{rolename}}
     </button>
@@ -14,7 +14,7 @@
     <span class="button button-outline role-nocross">
         <input id="newRoleName" class="role-input">
         <button class="button button-outline role-add" 
-            onclick="modifyRole('create', $('#allApps').val(), $('#allUsers').val(), $('#newRoleName').val() , formListRoleSubmit )"
+            onclick="modifyRole('create', document.getElementById('allApps').value, document.getElementById('allUsers').value, document.getElementById('newRoleName').value , formListRoleSubmit )"
             >
         +
         </button>

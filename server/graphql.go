@@ -215,7 +215,7 @@ func panicIfNotAdmin(params gq.ResolveParams) {
 func panicIfNotUser(params gq.ResolveParams) {
 	username := getLoginedUserName(params)
 	if username == "" {
-		panic("Sorry. You have to log in.")
+		panic("Sorry. You have to login.")
 	}
 }
 
