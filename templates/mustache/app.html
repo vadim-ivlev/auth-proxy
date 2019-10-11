@@ -13,8 +13,8 @@
             {{#app}} disabled class="grayed" {{/app}}
             oninput="
             document.getElementById('newAppName').innerText = event.target.value;
-            document.getElementById('newAppUrl').innerText = (location.origin+'/apps/'+event.target.value);
-            document.getElementById('newAppUrl').href = ('href',location.origin+'/apps/'+event.target.value);
+            document.getElementById('newAppUrl').innerText = (model.origin+'/apps/'+event.target.value);
+            document.getElementById('newAppUrl').href = ('href',model.origin+'/apps/'+event.target.value);
             "
             value="{{app.appname}}">
         </div>

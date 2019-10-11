@@ -2,11 +2,11 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"io/ioutil"
+	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
-	"io/ioutil"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/steambap/captcha"

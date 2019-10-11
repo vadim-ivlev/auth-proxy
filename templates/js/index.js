@@ -3,7 +3,10 @@
 var model = {
     // if debug == true logs go to console.
     debug: true,
-    origin: document.location.origin,
+    origin: document.location.origin, //'http://127.0.0.1:4400',//
+
+    // templatesCache keeps loaded templates, not to load them repeatedly
+    templatesCache =[],
 
 
     get logined(){
@@ -183,7 +186,6 @@ function highlightTab(tabid) {
 }
 
 
-
 function showPage(pageid, dontpush){
     //распарсить pageidExtended
     var a = pageid.split("/")
@@ -221,8 +223,7 @@ function showPage(pageid, dontpush){
     return false
 }
 
-// templatesCache keeps loaded templates, not to load them repeatedly
-var templatesCache =[]
+
 function renderTemplateFile(templateFile, data, targetSelector) {
 
     function renderTemplate(template) {
@@ -230,7 +231,7 @@ function renderTemplateFile(templateFile, data, targetSelector) {
         document.querySelector(targetSelector).innerHTML = rendered
     }    
 
-    var cachedTemlpate = templatesCache[templateFile]
+    var cachedTemlpate = model.templatesCache[templateFile]
     
     if (cachedTemlpate) {
         renderTemplate(cachedTemlpate) 
@@ -240,7 +241,7 @@ function renderTemplateFile(templateFile, data, targetSelector) {
     
     // $.get(templateFile, onSuccess);
     fetch(templateFile).then(x => x.text()).then( t => {
-        templatesCache[templateFile]=t 
+        model.templatesCache[templateFile]=t 
         renderTemplate(t)
     })
 }
@@ -254,7 +255,6 @@ function renderPage(pageid, elemSelector) {
 function alertOnError(e, msg){
     alert(msg, e)
 }
-
 
 
 function getCookie(cname) {
@@ -312,7 +312,6 @@ function sortAppsBy(prop) {
 }
 
 
-
 function searchUsers() {
     if (document.querySelector('#chkLocalSearch').checked) {
         return delayFunc(searchUsersInModel, 100)
@@ -320,6 +319,7 @@ function searchUsers() {
         return delayFunc(formListUserSubmit)
     }
 }
+
 
 function searchUsersInModel() {
     if (!model.allUsers) return
@@ -329,6 +329,7 @@ function searchUsersInModel() {
     model.users = found
     return false   
 }
+
 
 function sortUsersBy(prop) {
     if (!model._allUsers) return false
@@ -357,7 +358,7 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
     //     } 
     // })
 
-    fetch('/graphql', { 
+    fetch(model.origin+'/graphql', { 
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
@@ -1042,7 +1043,7 @@ function generatePassword() {
 
 
 function getNewCaptcha(event) {
-    let uri = "captcha?"+ new Date().getTime()
+    let uri = model.origin+"/captcha?"+ new Date().getTime()
     document.getElementById("captchaImg").src = uri
     return false
 }
