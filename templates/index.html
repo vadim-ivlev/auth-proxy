@@ -61,19 +61,19 @@
                         <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                             <div>
                                 <!-- <label class="param-name">username</label> -->
-                                <input name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
+                                <input id="loginUsername" name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
                             </div>
                             <div>
                                 <!-- <label class="param-name">password</label> -->
-                                <input name="password" type="password" placeholder="пароль">
+                                <input id="loginPassword" name="password" type="password" placeholder="пароль">
                             </div>
 
                             <div id="captcha">
                                 <!-- <label class="param-name">captcha</label> -->
                                 <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
                                     <img id="captchaImg" src="captcha" class="captcha-image">
-                                    <button class="button button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
-                                    <input name="captcha" type="text" placeholder="введите изображение">
+                                    <button class="button-outline" tabindex="-1" onclick="getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                    <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
                                 </div>
                             </div>
                              
@@ -157,7 +157,8 @@
         </div>
     </div>
 
-    <script src="templates/js/index.js"></script>
+    <!-- minified version -->
+    <script src="templates/jsmin/index.min.js"></script>
 </body>
 
 </html>

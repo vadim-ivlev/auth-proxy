@@ -221,17 +221,28 @@ function showPage(pageid, dontpush){
     return false
 }
 
-
-
+// templatesCache keeps loaded templates, not to load them repeatedly
+var templatesCache =[]
 function renderTemplateFile(templateFile, data, targetSelector) {
 
-    function onSuccess(template) {
+    function renderTemplate(template) {
         var rendered = Mustache.render(template, data)
         document.querySelector(targetSelector).innerHTML = rendered
     }    
 
+    var cachedTemlpate = templatesCache[templateFile]
+    
+    if (cachedTemlpate) {
+        renderTemplate(cachedTemlpate) 
+        console.info("from cache:",templateFile)
+        return
+    }
+    
     // $.get(templateFile, onSuccess);
-    fetch(templateFile).then(x => x.text()).then(onSuccess)
+    fetch(templateFile).then(x => x.text()).then( t => {
+        templatesCache[templateFile]=t 
+        renderTemplate(t)
+    })
 }
 
 
@@ -376,9 +387,10 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
 function loginGraphQLFormSubmit(event) {
     if (event) event.preventDefault()
     
-    let username = document.querySelector("#formLoginGraphQL input[name='username']").value
-    let password = document.querySelector("#formLoginGraphQL input[name='password']").value
-    let captcha =  document.querySelector("#formLoginGraphQL input[name='captcha']").value
+    let username = document.getElementById("loginUsername").value
+    let password = document.getElementById("loginPassword").value
+    let captcha =  document.getElementById("loginCaptcha").value
+    
     
 
     let query =`
@@ -437,11 +449,15 @@ function isSelfRegAllowed(event) {
 
 function isCaptchaRequired(event) {
     if (event) event.preventDefault()
-    let username = document.querySelector("#formLoginGraphQL input[name='username']").value   
+    let username = document.getElementById("loginUsername").value   
     var query =`  query { is_captcha_required(  username: "${username}" ) } `
 
     function onSuccess(res){
         model.captchaRequired = res.data.is_captcha_required
+        if (model.captchaRequired) {
+            getNewCaptcha()
+            model.debug && console.log("Captcha IS required")
+        }
     }
        
     doGraphQLRequest(query, onSuccess)
@@ -453,7 +469,7 @@ function isCaptchaRequired(event) {
 function generateNewPassword(event) {
     if (event) event.preventDefault()
 
-    let username = document.querySelector("#formLoginGraphQL input[name='username']").value
+    let username = document.getElementById("loginUsername").value
 
     var query =`
     mutation {
@@ -903,8 +919,8 @@ function getAllUsers(event) {
 function formListRoleSubmit(event) {
     if (event && event.preventDefault ) event.preventDefault()
     model.app_user_roles = null
-    let appname =  document.querySelector("#allApps").value
-    let username = document.querySelector("#allUsers").value
+    let appname =  document.getElementById("allApps").value
+    let username = document.getElementById("allUsers").value
     if (!appname || !username) 
         return
 
@@ -1033,9 +1049,9 @@ function getNewCaptcha(event) {
 
 
 function clearLoginForm() {
-    document.querySelector("#formLoginGraphQL input[name='username']").value = ""
-    document.querySelector("#formLoginGraphQL input[name='password']").value = ""
-    document.querySelector("#formLoginGraphQL input[name='captcha']").value = ""
+    document.getElementById("loginUsername").value = ""
+    document.getElementById("loginPassword").value = ""
+    document.getElementById("loginCaptcha").value = ""
     document.getElementById("loginError").innerText = ""
 }
 
@@ -1046,7 +1062,7 @@ function logout() {
     showPage('login',true)
     isSelfRegAllowed()
     model.captchaRequired = false
-    isCaptchaRequired()
+    // isCaptchaRequired()
     return false
 }
 
@@ -1089,6 +1105,7 @@ function refreshApp(params) {
         hideElements('#menu')
     }  
 }
+
 
 
 window.onhashchange = function(event) {

@@ -1,0 +1,16 @@
+{
+  "name": "auth-proxy-testapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -f jsmin/*.* ; uglifyjs  js/index.js --timings -c -m -o jsmin/index.min.js && echo 'done!'",
+    "dev": "watch 'uglifyjs  js/index.js --timings -c -m -o jsmin/index.min.js --source-map url=index.min.js.map,includeSources ' ./js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uglify-es": "^3.3.9",
+    "watch": "^1.0.2"
+  }
+}
