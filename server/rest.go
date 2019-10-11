@@ -2,8 +2,6 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
-	"io/ioutil"
-	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
 	"log"
@@ -16,11 +14,6 @@ import (
 // Перечень прокси серверов предзаготовленных для каждого приложения.
 // var proxies map[string]*httputil.ReverseProxy
 var proxies map[string]*primitiveproxy.PrimitiveProxy
-
-func LandingPage(c *gin.Context) {
-	htmlFile, _ := ioutil.ReadFile("./templates/index.html")
-	c.Data(http.StatusOK, "text/html; charset=utf-8", htmlFile)
-}
 
 func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
@@ -38,7 +31,6 @@ func Proxy(c *gin.Context) {
 // Captcha
 // source https://github.com/steambap/captcha
 func Captcha(c *gin.Context) {
-	// create a captcha of 150x50px
 	data, _ := captcha.New(120, 38, func(options *captcha.Options) {
 		options.CharPreset = "123456789"
 		options.FontScale = 1.3

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth-proxy/pkg/counter"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
 	"auth-proxy/server"
@@ -8,16 +9,19 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
 	fmt.Println("████████████████████████ revision 6 ████████████████████████")
 	// считать параметры командной строки
-	servePort, env, sqlite, tls, selfreg, secure, captcha := readCommandLineParams()
+	servePort, env, sqlite, tls, selfreg, secure, captcha, max_attempts, reset_time := readCommandLineParams()
 	db.SQLite = sqlite
 	server.SelfRegistrationAllowed = selfreg
 	server.SecureCookie = secure
 	server.IsCaptchaRequired = captcha
+	counter.MAX_ATTEMPTS = max_attempts
+	counter.RESET_TIME = time.Duration(reset_time)
 
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
@@ -48,7 +52,7 @@ func main() {
 // Вспомогательные функции =========================================
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool) {
+func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool, max_attempts int64, reset_time int64) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
@@ -56,6 +60,10 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool,
 	flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")
 	flag.BoolVar(&secure, "secure", false, "Установить флаг secure на куки браузера. Работает для https протокола.")
 	flag.BoolVar(&captcha, "captcha", false, "Нужно ли вводить капчу при входе в систему")
+
+	flag.Int64Var(&max_attempts, "max_attempts", 3, "Максимально допустимое число ошибок ввода пароля")
+	flag.Int64Var(&reset_time, "reset_time", 60, "Время сброса счетчика ошибок пароля в минутах")
+
 	flag.Parse()
 	fmt.Println("\nПример запуска: ./auth-proxy -serve 4400 -env=dev\n ")
 	flag.Usage()
@@ -92,8 +100,9 @@ Database:%v
 TLS:%v
 
 %v://localhost:%v/testapp
+%v://localhost:%v/admin
 		
 CTRL-C to interrupt.
 `
-	fmt.Printf(msg, env, database, tls, protocol, serverPort)
+	fmt.Printf(msg, env, database, tls, protocol, serverPort, protocol, serverPort)
 }

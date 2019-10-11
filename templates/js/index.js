@@ -248,7 +248,7 @@ function renderTemplateFile(templateFile, data, targetSelector) {
 
 
 function renderPage(pageid, elemSelector) {
-    renderTemplateFile('templates/mustache/'+pageid+'.html', model, elemSelector)
+    renderTemplateFile('mustache/'+pageid+'.html', model, elemSelector)
 }
 
 
