@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
 	"log"
@@ -26,6 +27,11 @@ func Proxy(c *gin.Context) {
 	} else {
 		c.JSON(200, gin.H{"error": "No proxy url for " + appname})
 	}
+}
+
+func ProxyAdmin(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "https://auth-admin.now.sh")
+	c.Abort()
 }
 
 // Captcha
