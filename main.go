@@ -61,7 +61,7 @@ func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool,
 	flag.BoolVar(&secure, "secure", false, "Установить флаг secure на куки браузера. Работает для https протокола.")
 	flag.BoolVar(&captcha, "captcha", false, "Нужно ли вводить капчу при входе в систему")
 
-	flag.Int64Var(&max_attempts, "max_attempts", 3, "Максимально допустимое число ошибок ввода пароля")
+	flag.Int64Var(&max_attempts, "max_attempts", 5, "Максимально допустимое число ошибок ввода пароля")
 	flag.Int64Var(&reset_time, "reset_time", 60, "Время сброса счетчика ошибок пароля в минутах")
 
 	flag.Parse()

@@ -16,7 +16,7 @@ import (
 )
 
 // MAX_ATTEMPTS - максимальное количество неудачных попыток входа
-var MAX_ATTEMPTS int64 = 3
+var MAX_ATTEMPTS int64 = 5
 
 // RESET_TIME - время по истечении которого счетчик сбрасывается
 var RESET_TIME time.Duration = 60

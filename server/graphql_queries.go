@@ -31,7 +31,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					Description: "Пароль",
 				},
 				"captcha": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
+					Type:        gq.String,
 					Description: "Captcha",
 				},
 			},
@@ -43,6 +43,10 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 				// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
 				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
+					if captcha == "" {
+						return "", errors.New("Вы должны ввести картинку. uri=/captcha ")
+					}
+
 					sessionCaptcha := GetSessionVariable(c, "captcha")
 					if sessionCaptcha != captcha {
 						return "", errors.New("Картинка введена с ошибкой")
@@ -87,7 +91,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 		},
 
 		"is_captcha_required": &gq.Field{
-			Type:        gq.Boolean,
+			Type:        isCaptchaRequiredObject,
 			Description: "Нужно ли пользователю вводить каптчу",
 			Args: gq.FieldConfigArgument{
 				"username": &gq.ArgumentConfig{
@@ -98,10 +102,9 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				username := params.Args["username"].(string)
 				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
-					return true, nil
+					return gin.H{"is_required": true, "path": "/captcha"}, nil
 				}
-
-				return IsCaptchaRequired, nil
+				return gin.H{"is_required": IsCaptchaRequired, "path": ""}, nil
 			},
 		},
 

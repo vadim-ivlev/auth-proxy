@@ -193,10 +193,9 @@ var listAppGQType = gq.NewObject(gq.ObjectConfig{
 })
 
 // AUTH messages
-
 var authMessageObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AuthMessage",
-	Description: "Сообщения аутентификации",
+	Description: "Сообщения AUTH",
 	Fields: gq.Fields{
 		"username": &gq.Field{
 			Type:        gq.String,
@@ -205,6 +204,22 @@ var authMessageObject = gq.NewObject(gq.ObjectConfig{
 		"message": &gq.Field{
 			Type:        gq.String,
 			Description: "Сообщение",
+		},
+	},
+})
+
+// is_captcha_required messages
+var isCaptchaRequiredObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "IsCaptchaRequired",
+	Description: "Сообщения метода is_captcha_required()",
+	Fields: gq.Fields{
+		"is_required": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Будет ли анализироваться капча при следующем вызове метода login()",
+		},
+		"path": &gq.Field{
+			Type:        gq.String,
+			Description: "URI каптчи",
 		},
 	},
 })
