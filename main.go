@@ -15,11 +15,12 @@ import (
 func main() {
 	fmt.Println("████████████████████████ revision 6 ████████████████████████")
 	// считать параметры командной строки
-	servePort, env, sqlite, tls, selfreg, secure, captcha, max_attempts, reset_time := readCommandLineParams()
+	servePort, env, sqlite, tls, selfreg, secure, captcha, max_attempts, reset_time, admin_url := readCommandLineParams()
 	db.SQLite = sqlite
 	server.SelfRegistrationAllowed = selfreg
 	server.SecureCookie = secure
 	server.IsCaptchaRequired = captcha
+	server.AdminUrl = admin_url
 	counter.MAX_ATTEMPTS = max_attempts
 	counter.RESET_TIME = time.Duration(reset_time)
 
@@ -52,9 +53,10 @@ func main() {
 // Вспомогательные функции =========================================
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool, max_attempts int64, reset_time int64) {
+func readCommandLineParams() (serverPort int, env string, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool, max_attempts int64, reset_time int64, admin_url string) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
+	flag.StringVar(&admin_url, "admin_url", "https://auth-admin.now.sh", "URL сайта где размещена админка сервиса. Туда перенаправляется браузер когда пользователь вводит путь /admin")
 	flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
 	flag.BoolVar(&tls, "tls", false, "Использовать https вместо http")
 	flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")

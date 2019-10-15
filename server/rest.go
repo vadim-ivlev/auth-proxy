@@ -15,6 +15,7 @@ import (
 // Перечень прокси серверов предзаготовленных для каждого приложения.
 // var proxies map[string]*httputil.ReverseProxy
 var proxies map[string]*primitiveproxy.PrimitiveProxy
+var AdminUrl = "https://auth-admin.now.sh"
 
 func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
@@ -30,7 +31,7 @@ func Proxy(c *gin.Context) {
 }
 
 func ProxyAdmin(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, "https://auth-admin.now.sh")
+	c.Redirect(http.StatusMovedPermanently, AdminUrl)
 	c.Abort()
 }
 
