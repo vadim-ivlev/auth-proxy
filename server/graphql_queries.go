@@ -53,7 +53,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					}
 				}
 
-				r := auth.CheckUserPassword2(username, password)
+				r, dbUsername := auth.CheckUserPassword2(username, password)
 				if r == auth.NO_USER {
 					return nil, errors.New(username + " не зарегистрирован")
 				} else if r == auth.WRONG_PASSWORD {
@@ -62,10 +62,9 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				} else if r == auth.USER_DISABLED {
 					return nil, errors.New(username + " деактивирован.")
 				}
-				// if r == auth.OK {
 				counter.ResetCounter(username)
-				SetSessionVariable(c, "user", username)
-				return "Success. " + username + " is authenticated.", nil
+				SetSessionVariable(c, "user", dbUsername)
+				return "Success. " + dbUsername + " is authenticated.", nil
 			},
 		},
 

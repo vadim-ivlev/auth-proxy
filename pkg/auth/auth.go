@@ -30,20 +30,21 @@ const (
 // NO_USER 		 - пользователя нет.
 // USER_DISABLED - пользователь заблокирован.
 // WRONG_PASSWORD - пароль не подходит.
-func CheckUserPassword2(username, password string) int {
-	rec, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1`, username)
+func CheckUserPassword2(username, password string) (int, string) {
+	rec, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
-		return NO_USER
+		return NO_USER, ""
 	}
+	dbUsername := rec["username"].(string)
 	disabled := rec["disabled"].(int64)
 	if disabled > 0 {
-		return USER_DISABLED
+		return USER_DISABLED, dbUsername
 	}
 	hashedPassword := rec["password"].(string)
 	if hashedPassword != GetHash(password) {
-		return WRONG_PASSWORD
+		return WRONG_PASSWORD, dbUsername
 	}
-	return OK
+	return OK, dbUsername
 }
 
 // UlidNum - возвращает случайную строку числа в диапазоне [min,max)
