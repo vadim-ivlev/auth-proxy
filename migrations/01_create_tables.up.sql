@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS "user" (
     username text NOT NULL,
     password text NOT NULL,
-    email text,
+    email text NOT NULL,
     fullname text,
     description text,
     disabled integer NOT NULL DEFAULT 0,
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS app_user_role (
 -- индексы для ускорения выборок
 CREATE INDEX IF NOT EXISTS aur_appname_idx ON app_user_role (appname);
 CREATE INDEX IF NOT EXISTS aur_username_idx ON app_user_role (username);
+CREATE UNIQUE INDEX IF NOT EXISTS user_email_unique_idx ON "user" (email);
 -- CREATE INDEX IF NOT EXISTS user_textsearch_idx ON "user" USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
 -- CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
 

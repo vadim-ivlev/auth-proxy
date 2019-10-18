@@ -45,8 +45,9 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				if SelfRegistrationAllowed || isAuthAdmin(params) {
-					panicIfEmpty(params.Args["username"], "Имя пользователя не должно быть пустым")
-					panicIfEmpty(params.Args["password"], "Пароль не должен быть пустым")
+					panicIfEmpty(params.Args["username"], "Имя пользователя должно быть заполнено")
+					panicIfEmpty(params.Args["password"], "Пароль должен быть не пустым")
+					panicIfEmpty(params.Args["email"], "Email должен быть не пустым")
 					password := processPassword(params)
 					clearUserCache(params)
 					res, err := createRecord("username", params, "user", "user")
