@@ -34,15 +34,17 @@ func ProxyAdmin(c *gin.Context) {
 	// строим строку запроса для того, чтобы
 	// auth-admin обращался с запросами к этому серверу.
 	host := c.Request.Host
+	proto := c.Request.Proto
 	tls := c.Request.TLS
 	prefix := "http://"
 	if tls != nil {
 		prefix = "https://"
 	}
 
-	log.Println(prefix, host)
+	log.Println("proto, prefix, host = ", proto, prefix, host)
 
-	c.Redirect(http.StatusMovedPermanently, AdminUrl+"?url="+prefix+host)
+	// c.Redirect(http.StatusMovedPermanently, AdminUrl+"?url="+prefix+host)
+	c.Redirect(http.StatusMovedPermanently, AdminUrl)
 	c.Abort()
 }
 
