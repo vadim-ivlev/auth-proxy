@@ -24,8 +24,7 @@ services:
     volumes:
       - test_apps:/app/node-apps
 
-    # раскомментируйте для SQLite вместо Postgres
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -sqlite" 
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=front" 
     restart: always
     ports:
       - 4400:4400

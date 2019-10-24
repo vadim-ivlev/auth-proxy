@@ -23,9 +23,11 @@ rm -rf deploy/node-apps
 rm -rf deploy/etc
 rm -rf deploy/certificates
 
-# careful with configs/
+# careful with configs, everything excluding db.yaml
 rm -f deploy/configs/mail.yaml
+rm -f deploy/configs/mail-templates.yaml.yaml
 rm -f deploy/configs/sqlite.yaml
+rm -f deploy/configs/app.yaml
 
 
 echo "copying stuff ..."
@@ -34,15 +36,16 @@ cp    auth-proxy        deploy/auth-proxy
 cp -r configs           deploy/configs_example
 cp -r migrations        deploy/migrations
 cp -r templates         deploy/templates
-cp -r node-apps     deploy/node-apps
+cp -r node-apps         deploy/node-apps
 cp -r etc               deploy/etc
 cp -r certificates      deploy/certificates
 
 #mv deploy/node-apps/node_modules      deploy/node-apps/nodemodules
 
 
-# careful with configs/
+# careful with configs, everything excluding db.yaml
 mkdir -p deploy/configs
 cp -f configs/mail.yaml  deploy/configs/mail.yaml
 cp -f configs/mail-templates.yaml  deploy/configs/mail-templates.yaml
 cp -f configs/sqlite.yaml  deploy/configs/sqlite.yaml
+cp -f configs/app.yaml  deploy/configs/app.yaml

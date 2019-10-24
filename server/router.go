@@ -44,8 +44,10 @@ func setup() *gin.Engine {
 	Store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
-	r.GET("/admin/", ProxyAdmin)
-	r.GET("/testapp/", ProxyAdmin)
+	r.GET("/x/*anything", ProxyAdmin)
+	r.GET("/admin", ProxyAdmin)
+	r.GET("/test", ProxyAdmin)
+	r.GET("/testapp", ProxyAdmin)
 	r.GET("/captcha", Captcha)
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)
@@ -53,5 +55,6 @@ func setup() *gin.Engine {
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
 	apps.Any("/:appname/*proxypath", Proxy)
+
 	return r
 }

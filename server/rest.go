@@ -17,6 +17,9 @@ import (
 var proxies map[string]*primitiveproxy.PrimitiveProxy
 var AdminUrl = "https://auth-admin.now.sh"
 
+// перенаправления браузера для предоставления различных GUI
+var Redirects map[string]string
+
 func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
 	proxypath := c.Param("proxypath")
@@ -31,20 +34,10 @@ func Proxy(c *gin.Context) {
 }
 
 func ProxyAdmin(c *gin.Context) {
-	// строим строку запроса для того, чтобы
-	// auth-admin обращался с запросами к этому серверу.
-	host := c.Request.Host
-	proto := c.Request.Proto
-	tls := c.Request.TLS
-	prefix := "http://"
-	if tls != nil {
-		prefix = "https://"
+	url, ok := Redirects[c.Request.URL.Path]
+	if ok {
+		c.Redirect(http.StatusMovedPermanently, url)
 	}
-
-	log.Println("proto, prefix, host = ", proto, prefix, host)
-
-	// c.Redirect(http.StatusMovedPermanently, AdminUrl+"?url="+prefix+host)
-	c.Redirect(http.StatusMovedPermanently, AdminUrl)
 	c.Abort()
 }
 

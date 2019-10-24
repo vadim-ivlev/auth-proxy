@@ -1,3 +1,13 @@
+## TODO:
+
+- app.yaml
+
+## FIXME: 
+ - remove IsCaptureRequired global
+ - remove AdminUrl 
+ - remove some starting parameters
+
+
 
 ## development
 - get rid of gin using <https://github.com/abbot/go-http-auth>
