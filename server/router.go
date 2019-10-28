@@ -34,20 +34,14 @@ func setup() *gin.Engine {
 	CreateProxies()
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
-	// r.Static("/testapp", "./templates")
-	// r.Static("/admin", "./templates")
-	// r.LoadHTMLGlob("./templates/*.html")
 
+	r.Use(RedirectsMiddleware())
 	r.Use(HeadersMiddleware())
 
 	Store = cookie.NewStore([]byte("secret"))
 	Store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
-	r.GET("/x/*anything", ProxyAdmin)
-	r.GET("/admin", ProxyAdmin)
-	r.GET("/test", ProxyAdmin)
-	r.GET("/testapp", ProxyAdmin)
 	r.GET("/captcha", Captcha)
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)

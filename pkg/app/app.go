@@ -21,7 +21,7 @@ type appParams struct {
 	// Пользователи могут регистрироваться самостоятельно
 	Selfreg bool
 	// Нужно ли вводить капчу при входе в систему
-	Captcha bool
+	UseCaptcha bool `yaml:"use_captcha"`
 	// Максимально допустимое число ошибок ввода пароля
 	MaxAttempts int64 `yaml:"max_attempts"`
 	// Время сброса счетчика ошибок пароля в минутах

@@ -9,6 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RedirectsMiddleware перенаправляет браузер на другие ресурсы
+func RedirectsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// если url есть в списке редиректов, перенаправляем браузер
+		url, ok := Redirects[c.Request.URL.Path]
+		if ok {
+			c.Redirect(http.StatusMovedPermanently, url)
+			c.Abort()
+		}
+		c.Next()
+	}
+}
+
 // HeadersMiddleware добавляет HTTP заголовки к ответу сервера
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

@@ -2,7 +2,6 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
-	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
 	"log"
@@ -15,7 +14,6 @@ import (
 // Перечень прокси серверов предзаготовленных для каждого приложения.
 // var proxies map[string]*httputil.ReverseProxy
 var proxies map[string]*primitiveproxy.PrimitiveProxy
-var AdminUrl = "https://auth-admin.now.sh"
 
 // перенаправления браузера для предоставления различных GUI
 var Redirects map[string]string
@@ -31,14 +29,6 @@ func Proxy(c *gin.Context) {
 	} else {
 		c.JSON(200, gin.H{"error": "No proxy url for " + appname})
 	}
-}
-
-func ProxyAdmin(c *gin.Context) {
-	url, ok := Redirects[c.Request.URL.Path]
-	if ok {
-		c.Redirect(http.StatusMovedPermanently, url)
-	}
-	c.Abort()
 }
 
 // Captcha

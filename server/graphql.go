@@ -24,8 +24,8 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 // SelfRegistrationAllowed может ли пользователь зарегистрироваться самостоятельно
 var SelfRegistrationAllowed = false
 
-// IsCaptchaRequired нужно ли вводить каптчу во время входа
-var IsCaptchaRequired = false
+// UseCaptcha нужно ли вводить каптчу во время входа
+var UseCaptcha = true
 
 // FUNCTIONS *******************************************************
 

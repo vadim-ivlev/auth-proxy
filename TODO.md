@@ -1,11 +1,6 @@
 ## TODO:
 
-- app.yaml
-
-## FIXME: 
- - remove IsCaptureRequired global
- - remove AdminUrl 
- - remove some starting parameters
+- Oauth2
 
 
 

@@ -14,16 +14,9 @@ import (
 )
 
 func main() {
-	fmt.Println("████████████████████████ revision 6 ████████████████████████")
+	fmt.Println("████████████████████████ revision 7 ████████████████████████")
 	// считать параметры командной строки
-	servePort, env /*, sqlite, tls, selfreg, secure, captcha, max_attempts, reset_time, admin_url*/ := readCommandLineParams()
-	// db.SQLite = sqlite
-	// server.SelfRegistrationAllowed = selfreg
-	// server.SecureCookie = secure
-	// server.IsCaptchaRequired = captcha
-	// server.AdminUrl = admin_url
-	// counter.MAX_ATTEMPTS = max_attempts
-	// counter.RESET_TIME = time.Duration(reset_time)
+	servePort, env := readCommandLineParams()
 
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
@@ -41,7 +34,7 @@ func main() {
 	db.SQLite = app.Params.Sqlite
 	server.SelfRegistrationAllowed = app.Params.Selfreg
 	server.SecureCookie = app.Params.Secure
-	server.IsCaptchaRequired = app.Params.Captcha
+	server.UseCaptcha = app.Params.UseCaptcha
 	server.Redirects = app.Params.Redirects
 	counter.MAX_ATTEMPTS = app.Params.MaxAttempts
 	counter.RESET_TIME = time.Duration(app.Params.ResetTime)
@@ -67,18 +60,9 @@ func main() {
 // Вспомогательные функции =========================================
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string /*, sqlite bool, tls bool, selfreg bool, secure bool, captcha bool, max_attempts int64, reset_time int64, admin_url string*/) {
+func readCommandLineParams() (serverPort int, env string) {
 	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
 	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
-	// flag.StringVar(&admin_url, "admin_url", "https://auth-admin.now.sh", "URL сайта где размещена админка сервиса. Туда перенаправляется браузер когда пользователь вводит путь /admin")
-	// flag.BoolVar(&sqlite, "sqlite", false, "Использовать SQLite")
-	// flag.BoolVar(&tls, "tls", false, "Использовать https вместо http")
-	// flag.BoolVar(&selfreg, "selfreg", false, "Пользователи могут регистрироваться самостоятельно")
-	// flag.BoolVar(&secure, "secure", false, "Установить флаг secure на куки браузера. Работает для https протокола.")
-	// flag.BoolVar(&captcha, "captcha", false, "Нужно ли вводить капчу при входе в систему")
-
-	// flag.Int64Var(&max_attempts, "max_attempts", 5, "Максимально допустимое число ошибок ввода пароля")
-	// flag.Int64Var(&reset_time, "reset_time", 60, "Время сброса счетчика ошибок пароля в минутах")
 
 	flag.Parse()
 	fmt.Println("\nПример запуска: ./auth-proxy -serve 4400 -env=dev\n ")
@@ -109,16 +93,32 @@ func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
 ██   ██ ██    ██    ██    ██   ██
 ██   ██  ██████     ██    ██   ██
 
-	
+
+━━━━━━━━━━ Some parameters ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Auth-Proxy started. 
 Environment: %v
 Database:%v 
 TLS:%v
 
-%v://localhost:%v/testapp
-%v://localhost:%v/admin
-		
-CTRL-C to interrupt.
+━━━━━━━━━━ GraphQL endpoints ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+%v://localhost:%v/schema
+%v://localhost:%v/graphql
+
+━━━━━━━━━━ Redirects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 `
 	fmt.Printf(msg, env, database, tls, protocol, serverPort, protocol, serverPort)
+
+	for path, url := range server.Redirects {
+		fmt.Printf("%v://localhost:%v%v\t-> %v\n", protocol, serverPort, path, url)
+	}
+
+	if env == "dev" || env == "front" {
+		fmt.Println("\n━━━━━━━━━━ Login credentials for 'dev' or 'front' evironments ━━━━━━━━")
+		fmt.Println("username = admin , password = rosgas2011")
+	}
+
+	fmt.Println("\n\nCTRL-C to interrupt.\n")
 }

@@ -42,7 +42,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				captcha, _ := params.Args["captcha"].(string)
 
 				// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
-				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
+				if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
 					if captcha == "" {
 						return "", errors.New("Вы должны ввести картинку. uri=/captcha ")
 					}
@@ -99,11 +99,14 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				if UseCaptcha == false {
+					return gin.H{"is_required": false, "path": ""}, nil
+				}
 				username := params.Args["username"].(string)
 				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
 					return gin.H{"is_required": true, "path": "/captcha"}, nil
 				}
-				return gin.H{"is_required": IsCaptchaRequired, "path": ""}, nil
+				return gin.H{"is_required": false, "path": ""}, nil
 			},
 		},
 
