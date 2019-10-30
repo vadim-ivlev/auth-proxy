@@ -1,0 +1,36 @@
+# Параметры аутентификации через публичные сервисы Oauth2
+# для окружений dev, front, prod
+
+dev:
+  google0:
+    client_id: 65487310708-t7aajuhmh3lcvrh42ghir6pbkuv5l69u.apps.googleusercontent.com
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    client_secret: DXOlge6_PoqFRoVWCXxe2Yc-
+    redirect_uri: http://localhost:4400/oauthcallback/google0
+    scopes: 
+      - https://www.googleapis.com/auth/userinfo.profile
+
+
+  google:
+    client_id: 65487310708-eue4880ipppue0mo671l4rr8t5qbd219.apps.googleusercontent.com
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    client_secret: ARn9kbP67by4BUdKJQL5KCbN
+    redirect_uri: http://localhost:4400/oauthcallback/google
+    scopes: 
+      - https://www.googleapis.com/auth/userinfo.profile
+
+  yandex:
+    client_id: 39cd5970ac5148ca901f7298d3f73246
+    auth_uri: https://oauth.yandex.ru/authorize
+    token_uri: https://oauth.yandex.ru/token
+    client_secret: d0061eaba5f244ecb1fd10e9069a418f
+    redirect_uri: http://localhost:4400/oauthcallback/yandex
+    # https://oauth.yandex.ru/client/39cd5970ac5148ca901f7298d3f73246/info
+    scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]
+
+
+front:
+
+prod:

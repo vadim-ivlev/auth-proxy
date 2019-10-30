@@ -46,6 +46,11 @@ func setup() *gin.Engine {
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)
 
+	r.GET("/oauthproviders", ListOauthProviders)
+	r.GET("/oauthlogin/:provider", OauthLogin)
+	r.GET("/oauthcallback/:provider", OauthCallback)
+	// r.POST("/oauthcallback/:provider", OauthCallback)
+
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
 	apps.Any("/:appname/*proxypath", Proxy)

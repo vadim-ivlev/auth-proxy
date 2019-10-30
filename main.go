@@ -18,26 +18,8 @@ func main() {
 	// считать параметры командной строки
 	servePort, env := readCommandLineParams()
 
-	// читаем конфиг Postgres.
-	db.ReadConfig("./configs/db.yaml", env)
-	// читаем конфиг SQLite.
-	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
-	// читаем конфиг mail.
-	mail.ReadConfig("./configs/mail.yaml", env)
-	// читаем шаблоны писем
-	mail.ReadMailTemplate("./configs/mail-templates.yaml")
+	tls := readConfigsAndSetParams(env)
 
-	// читаем конфиг общих параметров приложения.
-	app.ReadConfig("./configs/app.yaml", env)
-	// устанавливаем параметры пакетов
-	tls := app.Params.Tls
-	db.SQLite = app.Params.Sqlite
-	server.SelfRegistrationAllowed = app.Params.Selfreg
-	server.SecureCookie = app.Params.Secure
-	server.UseCaptcha = app.Params.UseCaptcha
-	server.Redirects = app.Params.Redirects
-	counter.MAX_ATTEMPTS = app.Params.MaxAttempts
-	counter.RESET_TIME = time.Duration(app.Params.ResetTime)
 	fmt.Println(app.Params)
 
 	// Ждем готовности базы данных
@@ -58,6 +40,35 @@ func main() {
 }
 
 // Вспомогательные функции =========================================
+
+// readConfigsAndSetParams читаем конфиги, устанавливаем параметры,
+// возвращаем true если требуется соединение по https.
+func readConfigsAndSetParams(env string) bool {
+	// читаем конфиг Postgres.
+	db.ReadConfig("./configs/db.yaml", env)
+	// читаем конфиг SQLite.
+	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
+	// читаем конфиг mail.
+	mail.ReadConfig("./configs/mail.yaml", env)
+	// читаем шаблоны писем
+	mail.ReadMailTemplate("./configs/mail-templates.yaml")
+	// читаем конфиг Oauth2
+	server.ReadOauth2Config("./configs/oauth2.yaml", env)
+
+	// читаем конфиг общих параметров приложения.
+	app.ReadConfig("./configs/app.yaml", env)
+	// устанавливаем параметры пакетов
+	tls := app.Params.Tls
+	db.SQLite = app.Params.Sqlite
+	server.SelfRegistrationAllowed = app.Params.Selfreg
+	server.SecureCookie = app.Params.Secure
+	server.UseCaptcha = app.Params.UseCaptcha
+	server.Redirects = app.Params.Redirects
+	counter.MAX_ATTEMPTS = app.Params.MaxAttempts
+	counter.RESET_TIME = time.Duration(app.Params.ResetTime)
+
+	return tls
+}
 
 // readCommandLineParams читает параметры командной строки
 func readCommandLineParams() (serverPort int, env string) {
