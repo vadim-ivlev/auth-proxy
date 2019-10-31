@@ -11,6 +11,7 @@ dev:
     # token_uri: https://connect.mail.ru/oauth/token
     auth_uri: https://oauth.mail.ru/login
     token_uri: https://oauth.mail.ru/token
+    user_info_uri: 
     redirect_uri: http://localhost:4400/oauthcallback/mailru
     scopes: 
       - userinfo
@@ -22,6 +23,7 @@ dev:
     client_secret: XZTesztdsFWJCbz7xjSM
     auth_uri: https://oauth.vk.com/authorize
     token_uri: https://oauth.vk.com/access_token
+    user_info_uri: 
     redirect_uri: http://localhost:4400/oauthcallback/vk
     scopes: 
       # - 4194304
@@ -32,6 +34,7 @@ dev:
     client_secret: 1e228cdc9ceb117af1bccd83279f5e7dd6b88eba
     auth_uri: https://github.com/login/oauth/authorize
     token_uri: https://github.com/login/oauth/access_token
+    user_info_uri: 
     redirect_uri: http://localhost:4400/oauthcallback/github
     scopes: 
       - user
@@ -43,6 +46,7 @@ dev:
     client_secret: 58fe1374807098bc673b162662dc1882
     auth_uri: https://www.facebook.com/v5.0/dialog/oauth
     token_uri: https://graph.facebook.com/oauth/access_token
+    user_info_uri: 
     redirect_uri: http://localhost:4400/oauthcallback/facebook
     scopes: 
       - email
@@ -54,6 +58,7 @@ dev:
     client_secret: ARn9kbP67by4BUdKJQL5KCbN
     auth_uri: https://accounts.google.com/o/oauth2/auth
     token_uri: https://oauth2.googleapis.com/token
+    user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
     redirect_uri: http://localhost:4400/oauthcallback/google
     scopes: 
       - https://www.googleapis.com/auth/userinfo.profile
@@ -68,6 +73,7 @@ dev:
     client_secret: d0061eaba5f244ecb1fd10e9069a418f
     auth_uri: https://oauth.yandex.ru/authorize
     token_uri: https://oauth.yandex.ru/token
+    user_info_uri: https://login.yandex.ru/info?oauth_token=
     redirect_uri: http://localhost:4400/oauthcallback/yandex
     # https://oauth.yandex.ru/client/39cd5970ac5148ca901f7298d3f73246/info
     scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"auth-proxy/pkg/app"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,9 +14,10 @@ import (
 
 type oauth2Provider struct {
 	ClientID     string   `yaml:"client_id"`
+	ClientSecret string   `yaml:"client_secret"`
 	AuthURI      string   `yaml:"auth_uri"`
 	TokenURI     string   `yaml:"token_uri"`
-	ClientSecret string   `yaml:"client_secret"`
+	UserInfoURI  string   `yaml:"user_info_uri"`
 	RedirectURI  string   `yaml:"redirect_uri"`
 	Scopes       []string `yaml:"scopes"`
 }
@@ -52,14 +54,20 @@ func ReadOauth2Config(fileName string, env string) {
 func getOauthConfig(provider string) *oauth2.Config {
 	params := Oauth2Params[provider]
 
-	endpoint := oauth2.Endpoint{AuthURL: params.AuthURI, TokenURL: params.TokenURI}
+	// endpoint := oauth2.Endpoint{
+	// 	AuthURL:  params.AuthURI,
+	// 	TokenURL: params.TokenURI,
+	// }
+
 	oauthConfig := &oauth2.Config{
-		RedirectURL:  params.RedirectURI,
 		ClientID:     params.ClientID,
 		ClientSecret: params.ClientSecret,
-		Scopes:       params.Scopes,
-		// Endpoint: google.Endpoint,
-		Endpoint: endpoint,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  params.AuthURI,
+			TokenURL: params.TokenURI,
+		},
+		Scopes:      params.Scopes,
+		RedirectURL: params.RedirectURI,
 	}
 	return oauthConfig
 }
@@ -86,14 +94,21 @@ func OauthCallback(c *gin.Context) {
 	r := c.Request
 	content, err := getUserInfo(provider, r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
-		log.Println(err.Error())
-		// http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		log.Println(err)
+		c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["admin"])
 		return
 	}
 
 	fmt.Fprintf(c.Writer, "Content: %s\n", content)
-
-	// c.JSON(200, Oauth2Params[provider])
+	// userInfo := make(map[string]string)
+	// err = json.Unmarshal(content, &userInfo)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["admin"])
+	// 	return
+	// }
+	// c.JSON(200, userInfo)
+	// c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["admin"])
 }
 
 func getUserInfo(provider string, state string, code string) ([]byte, error) {
@@ -107,7 +122,8 @@ func getUserInfo(provider string, state string, code string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
 	}
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	params := Oauth2Params[provider]
+	response, err := http.Get(params.UserInfoURI + token.AccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
