@@ -2,30 +2,72 @@
 # для окружений dev, front, prod
 
 dev:
-  google0:
-    client_id: 65487310708-t7aajuhmh3lcvrh42ghir6pbkuv5l69u.apps.googleusercontent.com
-    auth_uri: https://accounts.google.com/o/oauth2/auth
-    token_uri: https://oauth2.googleapis.com/token
-    client_secret: DXOlge6_PoqFRoVWCXxe2Yc-
-    redirect_uri: http://localhost:4400/oauthcallback/google0
+  # docs: https://oauth.mail.ru/docs  
+  # edit: https://o2.mail.ru/app/edit/f0a78b1b3cb84ce095caff0baccffb47/
+  mailru:
+    client_id: 	f0a78b1b3cb84ce095caff0baccffb47
+    client_secret: 67eedb5fceb34c01921664da0726d5ba
+    # auth_uri: https://connect.mail.ru/oauth/authorize
+    # token_uri: https://connect.mail.ru/oauth/token
+    auth_uri: https://oauth.mail.ru/login
+    token_uri: https://oauth.mail.ru/token
+    redirect_uri: http://localhost:4400/oauthcallback/mailru
     scopes: 
-      - https://www.googleapis.com/auth/userinfo.profile
+      - userinfo
+
+  # docs: https://vk.com/dev/authcode_flow_user
+  # edit: https://vk.com/apps?act=manage
+  vk:
+    client_id: 	7190973
+    client_secret: XZTesztdsFWJCbz7xjSM
+    auth_uri: https://oauth.vk.com/authorize
+    token_uri: https://oauth.vk.com/access_token
+    redirect_uri: http://localhost:4400/oauthcallback/vk
+    scopes: 
+      # - 4194304
+      - email
+
+  github:
+    client_id: ceb1697fc909b4ac75cc
+    client_secret: 1e228cdc9ceb117af1bccd83279f5e7dd6b88eba
+    auth_uri: https://github.com/login/oauth/authorize
+    token_uri: https://github.com/login/oauth/access_token
+    redirect_uri: http://localhost:4400/oauthcallback/github
+    scopes: 
+      - user
 
 
+  # edit: https://developers.facebook.com/apps/1438927229617640/settings/basic/
+  facebook:
+    client_id: 1438927229617640
+    client_secret: 58fe1374807098bc673b162662dc1882
+    auth_uri: https://www.facebook.com/v5.0/dialog/oauth
+    token_uri: https://graph.facebook.com/oauth/access_token
+    redirect_uri: http://localhost:4400/oauthcallback/facebook
+    scopes: 
+      - email
+
+
+  # edit:https://console.developers.google.com/apis/credentials?project=auth-proxy-1572423489738
   google:
     client_id: 65487310708-eue4880ipppue0mo671l4rr8t5qbd219.apps.googleusercontent.com
+    client_secret: ARn9kbP67by4BUdKJQL5KCbN
     auth_uri: https://accounts.google.com/o/oauth2/auth
     token_uri: https://oauth2.googleapis.com/token
-    client_secret: ARn9kbP67by4BUdKJQL5KCbN
     redirect_uri: http://localhost:4400/oauthcallback/google
     scopes: 
       - https://www.googleapis.com/auth/userinfo.profile
+      - https://www.googleapis.com/auth/userinfo.email
 
+
+  # docs: https://yandex.ru/dev/oauth/doc/dg/reference/auto-code-client-docpage/
+  # user: https://yandex.ru/dev/passport/doc/dg/reference/request-docpage/
+  # edit: https://oauth.yandex.ru/
   yandex:
     client_id: 39cd5970ac5148ca901f7298d3f73246
+    client_secret: d0061eaba5f244ecb1fd10e9069a418f
     auth_uri: https://oauth.yandex.ru/authorize
     token_uri: https://oauth.yandex.ru/token
-    client_secret: d0061eaba5f244ecb1fd10e9069a418f
     redirect_uri: http://localhost:4400/oauthcallback/yandex
     # https://oauth.yandex.ru/client/39cd5970ac5148ca901f7298d3f73246/info
     scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]

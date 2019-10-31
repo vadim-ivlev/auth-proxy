@@ -113,6 +113,9 @@ func getUserInfo(provider string, state string, code string) ([]byte, error) {
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
+	str := string(contents)
+	fmt.Println(str)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
 	}
