@@ -197,3 +197,11 @@ func GetHash(s string) string {
 	sum := sha256.Sum256([]byte(s))
 	return fmt.Sprintf("%x", sum)
 }
+
+func GetUserNameByEmail(email string) string {
+	rec, err := db.QueryRowMap(` SELECT username FROM "user" WHERE email=$1`, email)
+	if err != nil {
+		return ""
+	}
+	return rec["username"].(string)
+}

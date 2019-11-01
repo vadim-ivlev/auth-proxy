@@ -39,7 +39,7 @@ func setup() *gin.Engine {
 	r.Use(HeadersMiddleware())
 
 	Store = cookie.NewStore([]byte("secret"))
-	Store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie}) //0 - for session life
+	Store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie, Path: "/"}) //0 - for session life
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
 	r.GET("/captcha", Captcha)

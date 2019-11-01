@@ -105,9 +105,10 @@ func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
 ██   ██  ██████     ██    ██   ██
 
 
+Auth-Proxy started. 
+
 ━━━━━━━━━━ Some parameters ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Auth-Proxy started. 
 Environment: %v
 Database:%v 
 TLS:%v
