@@ -22,6 +22,7 @@ type oauth2Provider struct {
 	TokenURI       string   `yaml:"token_uri"`
 	UserInfoURI    string   `yaml:"user_info_uri"`
 	EmailFieldName string   `yaml:"email_field_name"`
+	NameFieldName  string   `yaml:"name_field_name"`
 	RedirectURI    string   `yaml:"redirect_uri"`
 	Scopes         []string `yaml:"scopes"`
 }
@@ -55,7 +56,7 @@ func ReadOauth2Config(fileName string, env string) {
 
 // *****************************************************
 
-func getOauthConfig(provider string) *oauth2.Config {
+func buildOauthConfig(provider string) *oauth2.Config {
 	params := Oauth2Params[provider]
 	oauthConfig := &oauth2.Config{
 		ClientID:     params.ClientID,
@@ -82,10 +83,9 @@ func ListOauthProviders(c *gin.Context) {
 // OauthLogin начинает процесс аутентификации для данного провайдера
 func OauthLogin(c *gin.Context) {
 	provider := c.Param("provider")
-	oauthConfig := getOauthConfig(provider)
+	oauthConfig := buildOauthConfig(provider)
 	url := oauthConfig.AuthCodeURL(oauthStateString)
 	c.Redirect(http.StatusTemporaryRedirect, url)
-	// c.Abort()
 }
 
 // OauthCallback заканчивает процесс аутентификации для данного провайдера.
@@ -93,104 +93,132 @@ func OauthLogin(c *gin.Context) {
 // аутентифицирует пользователя в auth-proxy,
 // при условии что пользователь с Oauth2 email,
 // зарегистрирован в auth-proxy.
+// Перенаправляет браузер на auth-admin.now.sh в параметрах запроса передавая информацию о пользователе,
+// или сообщение об ошибке.
 func OauthCallback(c *gin.Context) {
 	provider := c.Param("provider")
 
 	// FIXME: use gin to get field values
 	r := c.Request
-	oauth2Email, err := getOauth2UserEmail(provider, r.FormValue("state"), r.FormValue("code"))
+	oauth2Email, oauth2Name, err := getOauth2UserInfo(provider, r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
 		log.Println(err)
-		c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["/admin"]+"&oauth2error="+url.QueryEscape(err.Error()))
+		// c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["/admin"]+"&oauth2error="+url.QueryEscape(err.Error()))
+		redirectWithMessage(c, err.Error(), oauth2Email, oauth2Name)
 		return
 	}
 
-	fmt.Printf("EMAIL = %s \n", oauth2Email)
+	// fmt.Printf("EMAIL = %s \n", oauth2Email)
 
 	// ищем пользователя с таким email в базе данных
 	username := auth.GetUserNameByEmail(oauth2Email)
 
 	// если нет пользователя возвращаем ошибку
 	if username == "" {
-		redirectWithMessage(c, "Извините, <b>"+oauth2Email+"</b> не зарегистрирован.<br>Зарегистрируйтесь, или обратитесь к администратору.")
+		redirectWithMessage(c, "Извините, <b>"+oauth2Email+"</b> не зарегистрирован.", oauth2Email, oauth2Name)
 		return
 	}
 
 	// если пользователь отключен возвращаем ошибку
 	if !auth.IsUserEnabled(username) {
-		redirectWithMessage(c, "Извините, "+username+" / "+oauth2Email+" заблокирован.")
+		redirectWithMessage(c, "Извините, "+username+" / "+oauth2Email+" заблокирован.", oauth2Email, oauth2Name)
 		return
 	}
 
 	// сбрасываем счетчик неудачных попыток
 	counter.ResetCounter(username)
 
-	// Устанавливаем куки
+	// SUCCESS. Аутентифицируем пользователя.
 	err = SetSessionVariable(c, "user", username)
 	if err != nil {
-		redirectWithMessage(c, "Не удалось сохранить сессию")
+		redirectWithMessage(c, "Не удалось сохранить сессию "+username, oauth2Email, oauth2Name)
 		return
 	}
-	// Успешно завершаем
-	// c.JSON(200, "ok")
-	// redirectWithMessage(c, "Success. "+username+" is authenticated")
-	c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["/admin"])
+
+	redirectWithMessage(c, "", oauth2Email, oauth2Name)
 
 }
 
-// getOauth2UserEmail здесь выполняется вся грязная работа по извлечению email
-// из API конкретного провайдера.
-func getOauth2UserEmail(provider string, state string, code string) (string, error) {
+// getOauth2UserInfo здесь выполняется вся грязная работа по извлечению email
+// и имени пользователя из API конкретного провайдера.
+// Принимает имя провайдера, строку состояния и код аторизации.
+func getOauth2UserInfo(provider string, state string, code string) (email string, name string, err error) {
 	if state != oauthStateString {
-		return "", fmt.Errorf("invalid oauth state")
+		return email, name, fmt.Errorf("invalid oauth state")
 	}
 
-	oauthConfig := getOauthConfig(provider)
+	oauthConfig := buildOauthConfig(provider)
 
+	// обмениваем код авторизации на токен доступа
 	token, err := oauthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
-		return "", fmt.Errorf("code exchange failed: %s", err.Error())
+		return email, name, fmt.Errorf("code exchange failed: %s", err.Error())
 	}
+
 	params := Oauth2Params[provider]
+
+	// получаем информацию о пользователе из API провайдеоа
 	response, err := http.Get(params.UserInfoURI + token.AccessToken)
 	if err != nil {
-		return "", fmt.Errorf("failed getting user info: %s", err.Error())
+		return email, name, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
-		return "", fmt.Errorf("failed reading response body: %s", err.Error())
+		return email, name, fmt.Errorf("failed reading "+provider+" response body: %s", err.Error())
 	}
 
 	fmt.Printf("content=%s\n\n", contents)
 
 	var userInfo map[string]interface{}
 
-	// FIXME: a dirty fix fo github
+	// a fix for github
 	if provider == "github" {
 		userInfo = getGithubUserInfo(contents)
-		if userInfo == nil {
-			return "", fmt.Errorf("can not get GitHub user info")
-		}
 	} else {
 		userInfo = jsonStringToMap(string(contents))
 	}
 
-	email, ok := userInfo[params.EmailFieldName]
-	if !ok {
-		return "", fmt.Errorf("There is no '" + params.EmailFieldName + "' field in user info")
+	if userInfo == nil {
+		return email, name, fmt.Errorf("can not get user info")
 	}
 
-	return email.(string), nil
+	fmt.Println("****************************************************************")
+	fmt.Println(userInfo)
 
-	// return contents, nil
+	emailI, ok := userInfo[params.EmailFieldName]
+	if ok {
+		email, _ = emailI.(string)
+	}
+	nameI, ok := userInfo[params.NameFieldName]
+	if ok {
+		name, _ = nameI.(string)
+	}
+
+	if provider == "vk" {
+		email, name = getVkUserEmailAndName(token, params, userInfo)
+	}
+
+	println("email, name = ", email, name)
+
+	if email == "" {
+		return email, name, fmt.Errorf("ошибка. email отсутствует ")
+	}
+
+	return email, name, nil
 }
 
 // getGithubUserInfo a dirty patch for github
 func getGithubUserInfo(contents []byte) map[string]interface{} {
 	a := make([]interface{}, 0)
-	_ = json.Unmarshal(contents, &a)
+	err := json.Unmarshal(contents, &a)
+	if err != nil {
+		return nil
+	}
+	if len(a) == 0 {
+		return nil
+	}
 	ghUserInfo, ok := a[0].(map[string]interface{})
 	if !ok {
 		return nil
@@ -198,9 +226,42 @@ func getGithubUserInfo(contents []byte) map[string]interface{} {
 	return ghUserInfo
 }
 
-func redirectWithMessage(c *gin.Context, message string) {
-	u := app.Params.Redirects["/admin"] + "&oauth2error=" + url.QueryEscape(message)
-	fmt.Println("Redirect url=", u)
+// getVkUserEmailAndName  extacts email and user name from VK.com API
+func getVkUserEmailAndName(token *oauth2.Token, params oauth2Provider, userInfo map[string]interface{}) (email string, name string) {
+	tokenEmail := token.Extra("email")
+	if tokenEmail != nil {
+		email = tokenEmail.(string)
+	}
+
+	respI, ok := userInfo[params.NameFieldName]
+	if ok {
+		resp, ok := respI.([]interface{})
+		if ok && len(resp) > 0 {
+			resp0 := resp[0]
+			r, ok := resp0.(map[string]interface{})
+			if ok {
+				fname, _ := r["first_name"].(string)
+				lname, _ := r["last_name"].(string)
+				name = fname + " " + lname
+			}
+		}
+	}
+	return email, name
+}
+
+// redirectWithMessage направляет браузер пользователя добавляя сообщение
+// и информацию о пользователе если они не пустые.
+func redirectWithMessage(c *gin.Context, oauth2error string, oauth2email string, oauth2name string) {
+	u := app.Params.Redirects["/admin"]
+	if oauth2error != "" {
+		u += "&oauth2error=" + url.QueryEscape(oauth2error)
+	}
+	if oauth2email != "" {
+		u += "&oauth2email=" + url.QueryEscape(oauth2email)
+	}
+	if oauth2name != "" {
+		u += "&oauth2name=" + url.QueryEscape(oauth2name)
+	}
 	c.Redirect(http.StatusTemporaryRedirect, u)
 	c.Abort()
 }

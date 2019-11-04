@@ -13,6 +13,7 @@ dev:
     token_uri: https://oauth.mail.ru/token
     user_info_uri: https://oauth.mail.ru/userinfo?access_token=
     email_field_name: email
+    name_field_name: name
     redirect_uri: http://localhost:4400/oauthcallback/mailru
     scopes: 
       - userinfo
@@ -26,9 +27,9 @@ dev:
     token_uri: https://oauth.vk.com/access_token
     user_info_uri: https://api.vk.com/method/users.get?&v=5.103&access_token=
     email_field_name: email
+    name_field_name: response
     redirect_uri: http://localhost:4400/oauthcallback/vk
     scopes: 
-      # - 4194304
       - email
 
   # docs:https://developer.github.com/v3/users/emails/
@@ -39,6 +40,7 @@ dev:
     token_uri: https://github.com/login/oauth/access_token
     user_info_uri: https://api.github.com/user/emails?access_token=
     email_field_name: email
+    name_field_name: name
     redirect_uri: http://localhost:4400/oauthcallback/github
     scopes: 
       - user:email
@@ -52,6 +54,7 @@ dev:
     token_uri: https://graph.facebook.com/oauth/access_token
     user_info_uri: https://graph.facebook.com/me?fields=id,name,email&access_token=
     email_field_name: email
+    name_field_name: name
     redirect_uri: http://localhost:4400/oauthcallback/facebook
     scopes: 
       - email
@@ -65,6 +68,7 @@ dev:
     token_uri: https://oauth2.googleapis.com/token
     user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
     email_field_name: email
+    name_field_name: name
     redirect_uri: http://localhost:4400/oauthcallback/google
     scopes: 
       - https://www.googleapis.com/auth/userinfo.profile
@@ -81,8 +85,8 @@ dev:
     token_uri: https://oauth.yandex.ru/token
     user_info_uri: https://login.yandex.ru/info?oauth_token=
     email_field_name: default_email
+    name_field_name: display_name
     redirect_uri: http://localhost:4400/oauthcallback/yandex
-    # https://oauth.yandex.ru/client/39cd5970ac5148ca901f7298d3f73246/info
     scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]
 
 
