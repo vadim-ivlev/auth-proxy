@@ -1,6 +1,7 @@
 # Параметры аутентификации через публичные сервисы Oauth2
 # для окружений dev, front, prod
 
+# ####################################################################################
 dev:
   # docs: https://oauth.mail.ru/docs  
   # edit: https://o2.mail.ru/app/edit/f0a78b1b3cb84ce095caff0baccffb47/
@@ -11,6 +12,7 @@ dev:
     # token_uri: https://connect.mail.ru/oauth/token
     auth_uri: https://oauth.mail.ru/login
     token_uri: https://oauth.mail.ru/token
+    token_revoke_uri: 
     user_info_uri: https://oauth.mail.ru/userinfo?access_token=
     email_field_name: email
     name_field_name: name
@@ -25,6 +27,7 @@ dev:
     client_secret: XZTesztdsFWJCbz7xjSM
     auth_uri: https://oauth.vk.com/authorize
     token_uri: https://oauth.vk.com/access_token
+    token_revoke_uri: 
     user_info_uri: https://api.vk.com/method/users.get?&v=5.103&access_token=
     email_field_name: email
     name_field_name: response
@@ -38,6 +41,7 @@ dev:
     client_secret: 1e228cdc9ceb117af1bccd83279f5e7dd6b88eba
     auth_uri: https://github.com/login/oauth/authorize
     token_uri: https://github.com/login/oauth/access_token
+    token_revoke_uri: 
     user_info_uri: https://api.github.com/user/emails?access_token=
     email_field_name: email
     name_field_name: name
@@ -52,6 +56,7 @@ dev:
     client_secret: 58fe1374807098bc673b162662dc1882
     auth_uri: https://www.facebook.com/v5.0/dialog/oauth
     token_uri: https://graph.facebook.com/oauth/access_token
+    token_revoke_uri: https://graph.facebook.com/me/permissions?access_token=
     user_info_uri: https://graph.facebook.com/me?fields=id,name,email&access_token=
     email_field_name: email
     name_field_name: name
@@ -66,6 +71,7 @@ dev:
     client_secret: ARn9kbP67by4BUdKJQL5KCbN
     auth_uri: https://accounts.google.com/o/oauth2/auth
     token_uri: https://oauth2.googleapis.com/token
+    token_revoke_uri: https://accounts.google.com/o/oauth2/revoke?token=
     user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
     email_field_name: email
     name_field_name: name
@@ -83,6 +89,7 @@ dev:
     client_secret: d0061eaba5f244ecb1fd10e9069a418f
     auth_uri: https://oauth.yandex.ru/authorize
     token_uri: https://oauth.yandex.ru/token
+    token_revoke_uri: https://oauth.yandex.ru/revoke_token
     user_info_uri: https://login.yandex.ru/info?oauth_token=
     email_field_name: default_email
     name_field_name: display_name
@@ -90,6 +97,194 @@ dev:
     scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]
 
 
+# ####################################################################################
 front:
+  # docs: https://oauth.mail.ru/docs  
+  # edit: https://o2.mail.ru/app/edit/f0a78b1b3cb84ce095caff0baccffb47/
+  mailru:
+    client_id: 	f0a78b1b3cb84ce095caff0baccffb47
+    client_secret: 67eedb5fceb34c01921664da0726d5ba
+    # auth_uri: https://connect.mail.ru/oauth/authorize
+    # token_uri: https://connect.mail.ru/oauth/token
+    auth_uri: https://oauth.mail.ru/login
+    token_uri: https://oauth.mail.ru/token
+    token_revoke_uri: 
+    user_info_uri: https://oauth.mail.ru/userinfo?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/mailru
+    scopes: 
+      - userinfo
 
+  # docs: https://vk.com/dev/authcode_flow_user
+  # edit: https://vk.com/apps?act=manage
+  vk:
+    client_id: 	7190973
+    client_secret: XZTesztdsFWJCbz7xjSM
+    auth_uri: https://oauth.vk.com/authorize
+    token_uri: https://oauth.vk.com/access_token
+    token_revoke_uri: 
+    user_info_uri: https://api.vk.com/method/users.get?&v=5.103&access_token=
+    email_field_name: email
+    name_field_name: response
+    redirect_uri: http://localhost:4400/oauthcallback/vk
+    scopes: 
+      - email
+
+  # docs:https://developer.github.com/v3/users/emails/
+  github:
+    client_id: ceb1697fc909b4ac75cc
+    client_secret: 1e228cdc9ceb117af1bccd83279f5e7dd6b88eba
+    auth_uri: https://github.com/login/oauth/authorize
+    token_uri: https://github.com/login/oauth/access_token
+    token_revoke_uri: 
+    user_info_uri: https://api.github.com/user/emails?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/github
+    scopes: 
+      - user:email
+
+
+  # edit: https://developers.facebook.com/apps/1438927229617640/settings/basic/
+  facebook:
+    client_id: 1438927229617640
+    client_secret: 58fe1374807098bc673b162662dc1882
+    auth_uri: https://www.facebook.com/v5.0/dialog/oauth
+    token_uri: https://graph.facebook.com/oauth/access_token
+    token_revoke_uri: https://graph.facebook.com/me/permissions?access_token=
+    user_info_uri: https://graph.facebook.com/me?fields=id,name,email&access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/facebook
+    scopes: 
+      - email
+
+
+  # edit:https://console.developers.google.com/apis/credentials?project=auth-proxy-1572423489738
+  google:
+    client_id: 65487310708-eue4880ipppue0mo671l4rr8t5qbd219.apps.googleusercontent.com
+    client_secret: ARn9kbP67by4BUdKJQL5KCbN
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    token_revoke_uri: https://accounts.google.com/o/oauth2/revoke?token=
+    user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/google
+    scopes: 
+      - https://www.googleapis.com/auth/userinfo.profile
+      - https://www.googleapis.com/auth/userinfo.email
+
+
+  # docs: https://yandex.ru/dev/oauth/doc/dg/reference/auto-code-client-docpage/
+  # user: https://yandex.ru/dev/passport/doc/dg/reference/request-docpage/
+  # edit: https://oauth.yandex.ru/
+  yandex:
+    client_id: 39cd5970ac5148ca901f7298d3f73246
+    client_secret: d0061eaba5f244ecb1fd10e9069a418f
+    auth_uri: https://oauth.yandex.ru/authorize
+    token_uri: https://oauth.yandex.ru/token
+    token_revoke_uri: https://oauth.yandex.ru/revoke_token
+    user_info_uri: https://login.yandex.ru/info?oauth_token=
+    email_field_name: default_email
+    name_field_name: display_name
+    redirect_uri: http://localhost:4400/oauthcallback/yandex
+    scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]
+
+
+# ####################################################################################
 prod:
+
+  # docs: https://oauth.mail.ru/docs  
+  # edit: https://o2.mail.ru/app/edit/f0a78b1b3cb84ce095caff0baccffb47/
+  mailru:
+    client_id: 	f0a78b1b3cb84ce095caff0baccffb47
+    client_secret: 67eedb5fceb34c01921664da0726d5ba
+    # auth_uri: https://connect.mail.ru/oauth/authorize
+    # token_uri: https://connect.mail.ru/oauth/token
+    auth_uri: https://oauth.mail.ru/login
+    token_uri: https://oauth.mail.ru/token
+    token_revoke_uri: 
+    user_info_uri: https://oauth.mail.ru/userinfo?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/mailru
+    scopes: 
+      - userinfo
+
+  # docs: https://vk.com/dev/authcode_flow_user
+  # edit: https://vk.com/apps?act=manage
+  vk:
+    client_id: 	7190973
+    client_secret: XZTesztdsFWJCbz7xjSM
+    auth_uri: https://oauth.vk.com/authorize
+    token_uri: https://oauth.vk.com/access_token
+    token_revoke_uri: 
+    user_info_uri: https://api.vk.com/method/users.get?&v=5.103&access_token=
+    email_field_name: email
+    name_field_name: response
+    redirect_uri: http://localhost:4400/oauthcallback/vk
+    scopes: 
+      - email
+
+  # docs:https://developer.github.com/v3/users/emails/
+  github:
+    client_id: ceb1697fc909b4ac75cc
+    client_secret: 1e228cdc9ceb117af1bccd83279f5e7dd6b88eba
+    auth_uri: https://github.com/login/oauth/authorize
+    token_uri: https://github.com/login/oauth/access_token
+    token_revoke_uri: 
+    user_info_uri: https://api.github.com/user/emails?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/github
+    scopes: 
+      - user:email
+
+
+  # edit: https://developers.facebook.com/apps/1438927229617640/settings/basic/
+  facebook:
+    client_id: 1438927229617640
+    client_secret: 58fe1374807098bc673b162662dc1882
+    auth_uri: https://www.facebook.com/v5.0/dialog/oauth
+    token_uri: https://graph.facebook.com/oauth/access_token
+    token_revoke_uri: https://graph.facebook.com/me/permissions?access_token=
+    user_info_uri: https://graph.facebook.com/me?fields=id,name,email&access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/facebook
+    scopes: 
+      - email
+
+
+  # edit:https://console.developers.google.com/apis/credentials?project=auth-proxy-1572423489738
+  google:
+    client_id: 65487310708-eue4880ipppue0mo671l4rr8t5qbd219.apps.googleusercontent.com
+    client_secret: ARn9kbP67by4BUdKJQL5KCbN
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    token_revoke_uri: https://accounts.google.com/o/oauth2/revoke?token=
+    user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
+    email_field_name: email
+    name_field_name: name
+    redirect_uri: http://localhost:4400/oauthcallback/google
+    scopes: 
+      - https://www.googleapis.com/auth/userinfo.profile
+      - https://www.googleapis.com/auth/userinfo.email
+
+
+  # docs: https://yandex.ru/dev/oauth/doc/dg/reference/auto-code-client-docpage/
+  # user: https://yandex.ru/dev/passport/doc/dg/reference/request-docpage/
+  # edit: https://oauth.yandex.ru/
+  yandex:
+    client_id: 39cd5970ac5148ca901f7298d3f73246
+    client_secret: d0061eaba5f244ecb1fd10e9069a418f
+    auth_uri: https://oauth.yandex.ru/authorize
+    token_uri: https://oauth.yandex.ru/token
+    token_revoke_uri: https://oauth.yandex.ru/revoke_token
+    user_info_uri: https://login.yandex.ru/info?oauth_token=
+    email_field_name: default_email
+    name_field_name: display_name
+    redirect_uri: http://localhost:4400/oauthcallback/yandex
+    scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]

@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
@@ -20,6 +22,7 @@ type oauth2Provider struct {
 	ClientSecret   string   `yaml:"client_secret"`
 	AuthURI        string   `yaml:"auth_uri"`
 	TokenURI       string   `yaml:"token_uri"`
+	TokenRevokeURI string   `yaml:"token_revoke_uri"`
 	UserInfoURI    string   `yaml:"user_info_uri"`
 	EmailFieldName string   `yaml:"email_field_name"`
 	NameFieldName  string   `yaml:"name_field_name"`
@@ -34,8 +37,11 @@ var (
 	// [имя провайдера] -> { ... oauth2Provider ... }
 	Oauth2Params oauth2Params
 
-	// oauthStateString a random string
-	oauthStateString = "slon897098and89769087moska"
+	// oauthStateLogin a random string
+	oauthStateLogin = "login897098and89769087"
+
+	// oauthStateLogout a random string
+	oauthStateLogout = "logout543769807-981234"
 )
 
 // ReadOauth2Config reads YAML with Oauth2 params
@@ -73,9 +79,9 @@ func buildOauthConfig(provider string) *oauth2.Config {
 
 // ListOauthProviders перечисляет Oauth2 login URIs для каждого провайдера сервиса аутентификации
 func ListOauthProviders(c *gin.Context) {
-	providerURLs := make(map[string]string)
+	providerURLs := make(map[string][]string)
 	for provider, _ := range Oauth2Params {
-		providerURLs[provider] = "/oauthlogin/" + provider
+		providerURLs[provider] = []string{"/oauthlogin/" + provider, "/oauthlogout/" + provider}
 	}
 	c.JSON(200, providerURLs)
 }
@@ -84,68 +90,81 @@ func ListOauthProviders(c *gin.Context) {
 func OauthLogin(c *gin.Context) {
 	provider := c.Param("provider")
 	oauthConfig := buildOauthConfig(provider)
-	url := oauthConfig.AuthCodeURL(oauthStateString)
+	url := oauthConfig.AuthCodeURL(oauthStateLogin)
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
-// OauthCallback заканчивает процесс аутентификации для данного провайдера.
-// В случае успеха Oauth2 аутентификации
-// аутентифицирует пользователя в auth-proxy,
-// при условии что пользователь с Oauth2 email,
-// зарегистрирован в auth-proxy.
-// Перенаправляет браузер на auth-admin.now.sh в параметрах запроса передавая информацию о пользователе,
-// или сообщение об ошибке.
+// OauthLogout начинает  Loging Out для данного провайдера
+func OauthLogout(c *gin.Context) {
+	provider := c.Param("provider")
+	oauthConfig := buildOauthConfig(provider)
+	url := oauthConfig.AuthCodeURL(oauthStateLogout)
+	c.Redirect(http.StatusTemporaryRedirect, url)
+}
+
+// OauthCallback заканчивает процесс входа/выхода для данного провайдера.
+// Перенаправляет браузер на auth-admin.now.sh в параметрах запроса передавая информацию
+// о пользователе и ошибке
 func OauthCallback(c *gin.Context) {
 	provider := c.Param("provider")
+	state := c.Query("state")
+	code := c.Query("code")
 
-	// FIXME: use gin to get field values
-	r := c.Request
-	oauth2Email, oauth2Name, err := getOauth2UserInfo(provider, r.FormValue("state"), r.FormValue("code"))
-	if err != nil {
-		log.Println(err)
-		// c.Redirect(http.StatusTemporaryRedirect, app.Params.Redirects["/admin"]+"&oauth2error="+url.QueryEscape(err.Error()))
-		redirectWithMessage(c, err.Error(), oauth2Email, oauth2Name)
+	// если запрос был LogIn
+	if state == oauthStateLogin {
+		oauth2Email, oauth2Name, err := getOauth2UserInfo(provider, code)
+		if err != nil {
+			log.Println(err)
+			redirectWithMessage(c, err.Error(), oauth2Email, oauth2Name)
+			return
+		}
+		oauth2error := loginOauth2(c, oauth2Email)
+		redirectWithMessage(c, oauth2error, oauth2Email, oauth2Name)
 		return
 	}
 
-	// fmt.Printf("EMAIL = %s \n", oauth2Email)
+	// если запрос был LogOut
+	if state == oauthStateLogout {
+		_ = logoutOauth2(provider, code)
+		redirectWithMessage(c, "", "", "")
+		return
+	}
+
+	// Непонятно чего хотел клиент
+	redirectWithMessage(c, "OauthCallback: unknown state string", "", "")
+}
+
+// loginOauth2 пытается залогинить пользователя по паролю полученному из социальной сети
+func loginOauth2(c *gin.Context, oauth2Email string) (oauth2error string) {
 
 	// ищем пользователя с таким email в базе данных
 	username := auth.GetUserNameByEmail(oauth2Email)
 
 	// если нет пользователя возвращаем ошибку
 	if username == "" {
-		redirectWithMessage(c, "Извините, <b>"+oauth2Email+"</b> не зарегистрирован.", oauth2Email, oauth2Name)
-		return
+		return "Извините, <b>" + oauth2Email + "</b> не зарегистрирован."
 	}
 
 	// если пользователь отключен возвращаем ошибку
 	if !auth.IsUserEnabled(username) {
-		redirectWithMessage(c, "Извините, "+username+" / "+oauth2Email+" заблокирован.", oauth2Email, oauth2Name)
-		return
+		return "Извините, " + username + " / " + oauth2Email + " заблокирован."
 	}
-
 	// сбрасываем счетчик неудачных попыток
 	counter.ResetCounter(username)
 
 	// SUCCESS. Аутентифицируем пользователя.
-	err = SetSessionVariable(c, "user", username)
+	err := SetSessionVariable(c, "user", username)
 	if err != nil {
-		redirectWithMessage(c, "Не удалось сохранить сессию "+username, oauth2Email, oauth2Name)
-		return
+		return "Не удалось сохранить сессию " + username
 	}
 
-	redirectWithMessage(c, "", oauth2Email, oauth2Name)
-
+	return ""
 }
 
 // getOauth2UserInfo здесь выполняется вся грязная работа по извлечению email
 // и имени пользователя из API конкретного провайдера.
-// Принимает имя провайдера, строку состояния и код аторизации.
-func getOauth2UserInfo(provider string, state string, code string) (email string, name string, err error) {
-	if state != oauthStateString {
-		return email, name, fmt.Errorf("invalid oauth state")
-	}
+// Принимает имя провайдера и код аторизации.
+func getOauth2UserInfo(provider string, code string) (email string, name string, err error) {
 
 	oauthConfig := buildOauthConfig(provider)
 
@@ -184,8 +203,8 @@ func getOauth2UserInfo(provider string, state string, code string) (email string
 		return email, name, fmt.Errorf("can not get user info")
 	}
 
-	fmt.Println("****************************************************************")
-	fmt.Println(userInfo)
+	// fmt.Println("****************************************************************")
+	// fmt.Println(userInfo)
 
 	emailI, ok := userInfo[params.EmailFieldName]
 	if ok {
@@ -247,6 +266,72 @@ func getVkUserEmailAndName(token *oauth2.Token, params oauth2Provider, userInfo 
 		}
 	}
 	return email, name
+}
+
+// logoutOauth2 revokes access token
+func logoutOauth2(provider string, code string) error {
+
+	oauthConfig := buildOauthConfig(provider)
+
+	// обмениваем код авторизации на токен доступа
+	token, err := oauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return fmt.Errorf("logoutOauth2: code exchange failed: %s", err.Error())
+	}
+
+	params := Oauth2Params[provider]
+
+	if provider == "yandex" {
+		revokeYandexToken(params.TokenRevokeURI, params.ClientID, params.ClientSecret, token.AccessToken)
+		return nil
+	}
+
+	if provider == "facebook" {
+		revokeFacebookToken(params.TokenRevokeURI, params.ClientID, params.ClientSecret, token.AccessToken)
+		return nil
+	}
+
+	// revoke the token
+	response, err := http.Get(params.TokenRevokeURI + token.AccessToken)
+	if err != nil {
+		return fmt.Errorf("logoutOauth2: failed revoking token: %s", err.Error())
+	}
+	defer response.Body.Close()
+
+	contents, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		return fmt.Errorf("logoutOauth2: failed reading "+provider+" response body: %s", err.Error())
+	}
+
+	fmt.Printf("logoutOauth2: content=%s\n\n", contents)
+
+	return nil
+}
+
+// revokeYandexToken FIXME:
+func revokeYandexToken(urlStr string, clientID string, clientSecret string, accessToken string) {
+	data := url.Values{}
+	data.Set("client_id", clientID)
+	data.Set("client_secret", clientSecret)
+	data.Set("access_token", accessToken)
+
+	client := &http.Client{}
+	r, _ := http.NewRequest("POST", urlStr, strings.NewReader(data.Encode())) // URL-encoded payload
+	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	resp, err := client.Do(r)
+	fmt.Println(resp, err)
+}
+
+func revokeFacebookToken(urlStr string, clientID string, clientSecret string, accessToken string) {
+
+	client := &http.Client{}
+	r, _ := http.NewRequest("DELETE", urlStr+accessToken, nil) // URL-encoded payload
+
+	resp, err := client.Do(r)
+	fmt.Println(resp, err)
 }
 
 // redirectWithMessage направляет браузер пользователя добавляя сообщение

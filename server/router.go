@@ -48,8 +48,8 @@ func setup() *gin.Engine {
 
 	r.GET("/oauthproviders", ListOauthProviders)
 	r.GET("/oauthlogin/:provider", OauthLogin)
+	r.GET("/oauthlogout/:provider", OauthLogout)
 	r.GET("/oauthcallback/:provider", OauthCallback)
-	// r.POST("/oauthcallback/:provider", OauthCallback)
 
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
