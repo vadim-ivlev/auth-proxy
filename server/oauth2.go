@@ -89,6 +89,10 @@ func ListOauthProviders(c *gin.Context) {
 // OauthLogin начинает процесс аутентификации для данного провайдера
 func OauthLogin(c *gin.Context) {
 	provider := c.Param("provider")
+	OauthLoginProvider(c, provider)
+}
+
+func OauthLoginProvider(c *gin.Context, provider string) {
 	oauthConfig := buildOauthConfig(provider)
 	url := oauthConfig.AuthCodeURL(oauthStateLogin)
 	c.Redirect(http.StatusTemporaryRedirect, url)
@@ -97,6 +101,10 @@ func OauthLogin(c *gin.Context) {
 // OauthLogout начинает  Loging Out для данного провайдера
 func OauthLogout(c *gin.Context) {
 	provider := c.Param("provider")
+	OauthLoginProvider(c, provider)
+}
+
+func OauthLogoutProvider(c *gin.Context, provider string) {
 	oauthConfig := buildOauthConfig(provider)
 	url := oauthConfig.AuthCodeURL(oauthStateLogout)
 	c.Redirect(http.StatusTemporaryRedirect, url)
@@ -118,7 +126,7 @@ func OauthCallback(c *gin.Context) {
 			redirectWithMessage(c, err.Error(), oauth2Email, oauth2Name)
 			return
 		}
-		oauth2error := loginOauth2(c, oauth2Email)
+		oauth2error := loginOauth2(c, provider, oauth2Email)
 		redirectWithMessage(c, oauth2error, oauth2Email, oauth2Name)
 		return
 	}
@@ -135,19 +143,19 @@ func OauthCallback(c *gin.Context) {
 }
 
 // loginOauth2 пытается залогинить пользователя по паролю полученному из социальной сети
-func loginOauth2(c *gin.Context, oauth2Email string) (oauth2error string) {
+func loginOauth2(c *gin.Context, provider, oauth2Email string) (oauth2error string) {
 
 	// ищем пользователя с таким email в базе данных
 	username := auth.GetUserNameByEmail(oauth2Email)
 
 	// если нет пользователя возвращаем ошибку
 	if username == "" {
-		return "Извините, <b>" + oauth2Email + "</b> не зарегистрирован."
+		return "Вход в <b>" + provider + "</b> осуществлен, но <b>" + oauth2Email + "</b> не зарегистрирован в auth-proxy."
 	}
 
 	// если пользователь отключен возвращаем ошибку
 	if !auth.IsUserEnabled(username) {
-		return "Извините, " + username + " / " + oauth2Email + " заблокирован."
+		return "Вход в <b>" + provider + "</b> осуществлен, но пользователь <b>" + username + " / " + oauth2Email + "</b> заблокирован."
 	}
 	// сбрасываем счетчик неудачных попыток
 	counter.ResetCounter(username)

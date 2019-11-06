@@ -223,3 +223,65 @@ var isCaptchaRequiredObject = gq.NewObject(gq.ObjectConfig{
 		},
 	},
 })
+
+// is_captcha_required messages
+var memStatsObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "MemStats",
+	Description: "statistics about the memory allocator",
+	Fields: gq.Fields{
+		"alloc": &gq.Field{
+			Type:        gq.Float,
+			Description: "megabytes of allocated heap objects",
+		},
+		"total_alloc": &gq.Field{
+			Type:        gq.Float,
+			Description: "cumulative megabytes allocated for heap objects",
+		},
+		"sys": &gq.Field{
+			Type:        gq.Float,
+			Description: "the total megabytes of memory obtained from the OS",
+		},
+	},
+})
+
+var appParamsObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "AppParams",
+	Description: "Параметры приложения",
+	Fields: gq.Fields{
+		"selfreg": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Могут ли пользователи регистрироваться самостоятельно",
+		},
+		"use_captcha": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Нужно ли вводить капчу при входе в систему",
+		},
+		"max_attempts": &gq.Field{
+			Type:        gq.Int,
+			Description: "Максимально допустимое число ошибок ввода пароля",
+		},
+		"reset_time": &gq.Field{
+			Type:        gq.Int,
+			Description: "Время сброса счетчика ошибок пароля в минутах",
+		},
+	},
+})
+
+var oauthProviderObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "OauthProvider",
+	Description: "Сведения о провайдере сервиса аутентификации Oauth2",
+	Fields: gq.Fields{
+		"provider_name": &gq.Field{
+			Type:        gq.String,
+			Description: "Имя сервиса",
+		},
+		"login_endpoint": &gq.Field{
+			Type:        gq.String,
+			Description: "URI точки входа в систему аутентификации",
+		},
+		"logout_endpoint": &gq.Field{
+			Type:        gq.String,
+			Description: "URI точки выхода в систему аутентификации",
+		},
+	},
+})

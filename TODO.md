@@ -1,6 +1,11 @@
 ## TODO:
 
-- Oauth2
+- Oauth2 (finish logout for yandex, vk, mail.ru)
+
+- add: GraphQL 
+    -   list_oauth2_providers(), 
+    -   memstat(), <https://golangcode.com/print-the-current-memory-usage/>
+    -   set_parameters()
 
 
 

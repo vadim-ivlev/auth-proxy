@@ -1,12 +1,15 @@
 package server
 
 import (
+	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/counter"
 	"auth-proxy/pkg/db"
 	"errors"
 	"fmt"
+	"runtime"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	gq "github.com/graphql-go/graphql"
@@ -86,6 +89,140 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				return SelfRegistrationAllowed, nil
+			},
+		},
+
+		"memstat": &gq.Field{
+			Type:        memStatsObject,
+			Description: "records statistics about the memory allocator in megabytes",
+			Args:        gq.FieldConfigArgument{},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				var m runtime.MemStats
+				runtime.ReadMemStats(&m)
+				// For info on each, see: https://golang.org/pkg/runtime/#MemStats
+				alloc := m.Alloc / 1024 / 1024
+				totalAlloc := m.TotalAlloc / 1024 / 1024
+				sys := m.Sys / 1024 / 1024
+				return gin.H{"alloc": alloc, "total_alloc": totalAlloc, "sys": sys}, nil
+			},
+		},
+
+		"list_oauth_providers": &gq.Field{
+			Type:        gq.NewList(oauthProviderObject),
+			Description: "Показать список провайдеров Oauth2",
+			Args:        gq.FieldConfigArgument{},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+
+				results := []map[string]string{}
+
+				for provider, _ := range Oauth2Params {
+					rec := make(map[string]string)
+					rec["provider_name"] = provider
+					rec["login_endpoint"] = "/oauthlogin/" + provider
+					rec["logout_endpoint"] = "/oauthlogout/" + provider
+					results = append(results, rec)
+				}
+
+				return results, nil
+			},
+		},
+
+		// "oauth_login": &gq.Field{
+		// 	Type:        gq.String,
+		// 	Description: "Аутентифицироваться через Oauth2 сервис",
+		// 	Args: gq.FieldConfigArgument{
+		// 		"provider_name": &gq.ArgumentConfig{
+		// 			Type:         gq.NewNonNull(gq.String),
+		// 			Description:  "Имя провайдера Oauth2 сервиса ",
+		// 			DefaultValue: "google",
+		// 		},
+		// 	},
+		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
+		// 		providerName := params.Args["provider_name"].(string)
+		// 		c, _ := params.Context.Value("ginContext").(*gin.Context)
+		// 		OauthLoginProvider(c, providerName)
+		// 		return "Loging in to " + providerName, nil
+		// 	},
+		// },
+
+		// "oauth_logout": &gq.Field{
+		// 	Type:        gq.String,
+		// 	Description: "Отозвать токен Oauth2 сервиса",
+		// 	Args: gq.FieldConfigArgument{
+		// 		"provider_name": &gq.ArgumentConfig{
+		// 			Type:        gq.NewNonNull(gq.String),
+		// 			Description: "Имя провайдера Oauth2 сервиса ",
+		// 		},
+		// 	},
+		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
+		// 		providerName := params.Args["provider_name"].(string)
+		// 		c, _ := params.Context.Value("ginContext").(*gin.Context)
+		// 		OauthLoginProvider(c, providerName)
+		// 		return "Removing token of " + providerName, nil
+		// 	},
+		// },
+
+		"get_params": &gq.Field{
+			Type:        appParamsObject,
+			Description: "Показать параметры приложения",
+			Args:        gq.FieldConfigArgument{},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				return gin.H{
+					"selfreg":      app.Params.Selfreg,
+					"use_captcha":  app.Params.UseCaptcha,
+					"max_attempts": app.Params.MaxAttempts,
+					"reset_time":   app.Params.ResetTime,
+				}, nil
+			},
+		},
+
+		"set_params": &gq.Field{
+			Type:        appParamsObject,
+			Description: "Установить параметры приложения",
+			Args: gq.FieldConfigArgument{
+
+				"selfreg": &gq.ArgumentConfig{
+					Type:         gq.Boolean,
+					Description:  "Могут ли пользователи регистрироваться самостоятельно",
+					DefaultValue: false,
+				},
+				"use_captcha": &gq.ArgumentConfig{
+					Type:         gq.Boolean,
+					Description:  "Нужно ли вводить капчу при входе в систему",
+					DefaultValue: true,
+				},
+				"max_attempts": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "Максимально допустимое число ошибок ввода пароля",
+					DefaultValue: 5,
+				},
+				"reset_time": &gq.ArgumentConfig{
+					Type:         gq.Int,
+					Description:  "Время сброса счетчика ошибок пароля в минутах",
+					DefaultValue: 60,
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				if !isAuthAdmin(params) {
+					return nil, errors.New("Sorry. You have no admin rights")
+				}
+
+				app.Params.Selfreg = params.Args["selfreg"].(bool)
+				app.Params.UseCaptcha = params.Args["use_captcha"].(bool)
+				app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))
+				app.Params.ResetTime = int64(params.Args["reset_time"].(int))
+
+				SelfRegistrationAllowed = app.Params.Selfreg
+				UseCaptcha = app.Params.UseCaptcha
+				counter.MAX_ATTEMPTS = app.Params.MaxAttempts
+				counter.RESET_TIME = time.Duration(app.Params.ResetTime)
+
+				return gin.H{
+					"selfreg":      app.Params.Selfreg,
+					"use_captcha":  app.Params.UseCaptcha,
+					"max_attempts": app.Params.MaxAttempts,
+					"reset_time":   app.Params.ResetTime,
+				}, nil
 			},
 		},
 
