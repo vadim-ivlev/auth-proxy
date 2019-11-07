@@ -9,7 +9,6 @@ Package counter хранит счетчики неудачных попыток 
 package counter
 
 import (
-	"log"
 	"time"
 
 	"github.com/patrickmn/go-cache"
@@ -28,12 +27,11 @@ var theCache = cache.New(RESET_TIME*time.Minute, RESET_TIME*2*time.Minute)
 func IncrementCounter(username string) {
 	err := theCache.Add(username, int64(0), cache.DefaultExpiration)
 	if err != nil {
-		log.Println("counter.IncrementCounter.Add:", err)
+		// log.Println("counter.IncrementCounter.Add:", err)
 	}
 	err = theCache.Increment(username, 1)
 	if err != nil {
-		log.Println("counter.IncrementCounter.Increment:", err)
-		return
+		// log.Println("counter.IncrementCounter.Increment:", err)
 	}
 }
 

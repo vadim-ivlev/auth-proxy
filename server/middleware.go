@@ -2,12 +2,21 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/reqcounter"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+// CountersMiddleware считает запросы
+func CountersMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		reqcounter.IncrementCounters()
+		c.Next()
+	}
+}
 
 // RedirectsMiddleware перенаправляет браузер на другие ресурсы
 func RedirectsMiddleware() gin.HandlerFunc {

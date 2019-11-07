@@ -225,9 +225,9 @@ var isCaptchaRequiredObject = gq.NewObject(gq.ObjectConfig{
 })
 
 // is_captcha_required messages
-var memStatsObject = gq.NewObject(gq.ObjectConfig{
-	Name:        "MemStats",
-	Description: "statistics about the memory allocator",
+var statObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "Stat",
+	Description: "statistics about the memory allocator and requests",
 	Fields: gq.Fields{
 		"alloc": &gq.Field{
 			Type:        gq.Float,
@@ -240,6 +240,22 @@ var memStatsObject = gq.NewObject(gq.ObjectConfig{
 		"sys": &gq.Field{
 			Type:        gq.Float,
 			Description: "the total megabytes of memory obtained from the OS",
+		},
+		"requests_per_day": &gq.Field{
+			Type:        gq.Int,
+			Description: "requests per day",
+		},
+		"requests_per_hour": &gq.Field{
+			Type:        gq.Int,
+			Description: "requests per hour",
+		},
+		"requests_per_minute": &gq.Field{
+			Type:        gq.Int,
+			Description: "requests per minute",
+		},
+		"requests_per_second": &gq.Field{
+			Type:        gq.Int,
+			Description: "requests per second",
 		},
 	},
 })

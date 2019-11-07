@@ -35,6 +35,7 @@ func setup() *gin.Engine {
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 
+	r.Use(CountersMiddleware())
 	r.Use(RedirectsMiddleware())
 	r.Use(HeadersMiddleware())
 

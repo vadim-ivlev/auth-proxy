@@ -4,6 +4,8 @@ import (
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/counter"
+	"auth-proxy/pkg/reqcounter"
+
 	"auth-proxy/pkg/db"
 	"errors"
 	"fmt"
@@ -92,9 +94,9 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
-		"memstat": &gq.Field{
-			Type:        memStatsObject,
-			Description: "records statistics about the memory allocator in megabytes",
+		"get_stat": &gq.Field{
+			Type:        statObject,
+			Description: "records statistics about the memory allocator in megabytes and requests",
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				var m runtime.MemStats
@@ -103,7 +105,16 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				alloc := m.Alloc / 1024 / 1024
 				totalAlloc := m.TotalAlloc / 1024 / 1024
 				sys := m.Sys / 1024 / 1024
-				return gin.H{"alloc": alloc, "total_alloc": totalAlloc, "sys": sys}, nil
+				day, hour, min, sec := reqcounter.GetCounters()
+				return gin.H{
+					"alloc":               alloc,
+					"total_alloc":         totalAlloc,
+					"sys":                 sys,
+					"requests_per_day":    day,
+					"requests_per_hour":   hour,
+					"requests_per_minute": min,
+					"requests_per_second": sec,
+				}, nil
 			},
 		},
 
