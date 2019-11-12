@@ -13,7 +13,10 @@ import (
 // CountersMiddleware считает запросы
 func CountersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		reqcounter.IncrementCounters()
+		// считаем все кроме запросов на выдачу статистики
+		if c.Request.URL.Path != "/stat" {
+			reqcounter.IncrementCounters()
+		}
 		c.Next()
 	}
 }

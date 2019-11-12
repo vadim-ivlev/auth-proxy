@@ -4,12 +4,10 @@ import (
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/counter"
-	"auth-proxy/pkg/reqcounter"
 
 	"auth-proxy/pkg/db"
 	"errors"
 	"fmt"
-	"runtime"
 	"strings"
 	"time"
 
@@ -99,22 +97,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Description: "records statistics about the memory allocator in megabytes and requests",
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				var m runtime.MemStats
-				runtime.ReadMemStats(&m)
-				// For info on each, see: https://golang.org/pkg/runtime/#MemStats
-				alloc := m.Alloc / 1024 / 1024
-				totalAlloc := m.TotalAlloc / 1024 / 1024
-				sys := m.Sys / 1024 / 1024
-				day, hour, min, sec := reqcounter.GetCounters()
-				return gin.H{
-					"alloc":               alloc,
-					"total_alloc":         totalAlloc,
-					"sys":                 sys,
-					"requests_per_day":    day,
-					"requests_per_hour":   hour,
-					"requests_per_minute": min,
-					"requests_per_second": sec,
-				}, nil
+				return app.GetStat(), nil
 			},
 		},
 
@@ -178,12 +161,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Description: "Показать параметры приложения",
 			Args:        gq.FieldConfigArgument{},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				return gin.H{
-					"selfreg":      app.Params.Selfreg,
-					"use_captcha":  app.Params.UseCaptcha,
-					"max_attempts": app.Params.MaxAttempts,
-					"reset_time":   app.Params.ResetTime,
-				}, nil
+				return app.GetParams(), nil
 			},
 		},
 
@@ -228,12 +206,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				counter.MAX_ATTEMPTS = app.Params.MaxAttempts
 				counter.RESET_TIME = time.Duration(app.Params.ResetTime)
 
-				return gin.H{
-					"selfreg":      app.Params.Selfreg,
-					"use_captcha":  app.Params.UseCaptcha,
-					"max_attempts": app.Params.MaxAttempts,
-					"reset_time":   app.Params.ResetTime,
-				}, nil
+				return app.GetParams(), nil
 			},
 		},
 

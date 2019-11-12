@@ -3,6 +3,8 @@ package server
 import (
 	// "github.com/gin-gonic/contrib/sessions"
 	// "github.com/gin-contrib/sessions"
+	"auth-proxy/pkg/app"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 
@@ -47,6 +49,7 @@ func setup() *gin.Engine {
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)
 
+	r.GET("/stat", app.Stat)
 	r.GET("/oauthproviders", ListOauthProviders)
 	r.GET("/oauthlogin/:provider", OauthLogin)
 	r.GET("/oauthlogout/:provider", OauthLogout)
