@@ -247,6 +247,19 @@ func processPassword(params gq.ResolveParams) string {
 	return password
 }
 
+// ArgToLowerCase преобразует значение параметра с именем argName к нижнему регистру
+func ArgToLowerCase(params gq.ResolveParams, argName string) {
+	v, ok := params.Args[argName]
+	if !ok {
+		return
+	}
+	s, ok := v.(string)
+	if !ok {
+		return
+	}
+	params.Args[argName] = strings.ToLower(s)
+}
+
 // G R A P H Q L ********************************************************************************
 
 var schema, _ = gq.NewSchema(gq.SchemaConfig{

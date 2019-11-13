@@ -48,6 +48,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					panicIfEmpty(params.Args["username"], "Имя пользователя должно быть заполнено")
 					panicIfEmpty(params.Args["password"], "Пароль должен быть не пустым")
 					panicIfEmpty(params.Args["email"], "Email должен быть не пустым")
+
+					ArgToLowerCase(params, "username")
+					ArgToLowerCase(params, "email")
+
 					password := processPassword(params)
 					clearUserCache(params)
 					res, err := createRecord("username", params, "user", "user")
@@ -93,6 +97,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
+
+				ArgToLowerCase(params, "username")
+				ArgToLowerCase(params, "email")
+
 				processPassword(params)
 				clearUserCache(params)
 				return updateRecord("username", params, "user", "user")
@@ -109,6 +117,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				ArgToLowerCase(params, "username")
+
 				username := params.Args["username"].(string)
 				if username == "" {
 					return "Поле username должно быть заполнено", errors.New("Не указаны имя или емайл пользователя")
@@ -137,6 +147,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				ArgToLowerCase(params, "username")
+
 				panicIfNotOwnerOrAdmin(params)
 				clearUserCache(params)
 				return deleteRecord("username", params, "user", "user")
@@ -275,6 +287,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
+				ArgToLowerCase(params, "username")
 				clearAppUserRolesCache(params)
 				return db.CreateRow("app_user_role", params.Args)
 			},
@@ -299,6 +312,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
+				ArgToLowerCase(params, "username")
+
 				a, u, r := params.Args["appname"], params.Args["username"], params.Args["rolename"]
 
 				_, err := db.QueryExec(

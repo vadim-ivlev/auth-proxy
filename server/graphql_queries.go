@@ -39,6 +39,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				ArgToLowerCase(params, "username")
 				c, _ := params.Context.Value("ginContext").(*gin.Context)
 				username, _ := params.Args["username"].(string)
 				password, _ := params.Args["password"].(string)
@@ -121,41 +122,6 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 		},
 
-		// "oauth_login": &gq.Field{
-		// 	Type:        gq.String,
-		// 	Description: "Аутентифицироваться через Oauth2 сервис",
-		// 	Args: gq.FieldConfigArgument{
-		// 		"provider_name": &gq.ArgumentConfig{
-		// 			Type:         gq.NewNonNull(gq.String),
-		// 			Description:  "Имя провайдера Oauth2 сервиса ",
-		// 			DefaultValue: "google",
-		// 		},
-		// 	},
-		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
-		// 		providerName := params.Args["provider_name"].(string)
-		// 		c, _ := params.Context.Value("ginContext").(*gin.Context)
-		// 		OauthLoginProvider(c, providerName)
-		// 		return "Loging in to " + providerName, nil
-		// 	},
-		// },
-
-		// "oauth_logout": &gq.Field{
-		// 	Type:        gq.String,
-		// 	Description: "Отозвать токен Oauth2 сервиса",
-		// 	Args: gq.FieldConfigArgument{
-		// 		"provider_name": &gq.ArgumentConfig{
-		// 			Type:        gq.NewNonNull(gq.String),
-		// 			Description: "Имя провайдера Oauth2 сервиса ",
-		// 		},
-		// 	},
-		// 	Resolve: func(params gq.ResolveParams) (interface{}, error) {
-		// 		providerName := params.Args["provider_name"].(string)
-		// 		c, _ := params.Context.Value("ginContext").(*gin.Context)
-		// 		OauthLoginProvider(c, providerName)
-		// 		return "Removing token of " + providerName, nil
-		// 	},
-		// },
-
 		"get_params": &gq.Field{
 			Type:        appParamsObject,
 			Description: "Показать параметры приложения",
@@ -223,6 +189,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				if UseCaptcha == false {
 					return gin.H{"is_required": false, "path": ""}, nil
 				}
+				ArgToLowerCase(params, "username")
 				username := params.Args["username"].(string)
 				if counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
 					return gin.H{"is_required": true, "path": "/captcha"}, nil
@@ -241,6 +208,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				ArgToLowerCase(params, "username")
 				panicIfNotOwnerOrAdmin(params)
 				fields := getSelectedFields([]string{"get_user"}, params)
 				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
