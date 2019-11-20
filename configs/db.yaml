@@ -12,7 +12,7 @@ dev:
 
 
 front:
-  host: db
+  host: auth-db
   user: root 
   password: root 
   database: auth 

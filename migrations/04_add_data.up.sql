@@ -11,7 +11,7 @@
 
 
 INSERT INTO app (appname, url, description)                 VALUES ('auth'       ,'', 'Сервис авторизации');
-INSERT INTO app (appname, url, description)                 VALUES ('node1'      ,'http://node:3001', 'Работает на продакшн env=prod. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение. test0');
+INSERT INTO app (appname, url, description)                 VALUES ('node1'      ,'http://auth-node:3001', 'Работает на продакшн env=prod. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение. test0');
 INSERT INTO app (appname, url, description)                 VALUES ('node2'      ,'http://localhost:3002', 'Работает на компьютере разработчика env=dev. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение. test0');
 INSERT INTO app (appname, url, description, rebase, public) VALUES ('pravo_rg_ru','https://pravo.rg.ru', 'Прокси к https://pravo.rg.ru . test0' ,'Y', 'Y' );
 INSERT INTO app (appname, url, description, public)         VALUES ('rg'         ,'https://rg.ru'      , 'Прокси к https://rg.ru . test0', 'Y' );

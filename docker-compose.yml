@@ -2,25 +2,11 @@ version: '3.1'
 
 services:
 
-  db:
-    image: postgres:10.9-alpine
-    container_name: auth-db-dev
-    restart: always
-    ports:
-      - 5432:5432
-    volumes:
-      - "./pgdata:/var/lib/postgresql/data/pgdata"
-      - "./migrations:/dumps"
-      - "./etc/.pgpass:/root/.pgpass"
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auth 
-      PGDATA: /var/lib/postgresql/data/pgdata
 
 
-  node:
+  auth-node:
     image: "node:alpine"
+    container_name: auth-node
     user: "node"
     working_dir: /home/node/app
     environment:
@@ -42,3 +28,18 @@ services:
     command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
 
 
+  auth-db:
+    image: postgres:10.9-alpine
+    container_name: auth-db-dev
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - "./pgdata:/var/lib/postgresql/data/pgdata"
+      - "./migrations:/dumps"
+      - "./etc/.pgpass:/root/.pgpass"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: auth 
+      PGDATA: /var/lib/postgresql/data/pgdata

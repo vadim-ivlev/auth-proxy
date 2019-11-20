@@ -3,24 +3,11 @@ version: '3.1'
 services:
 
 
-  # база данных
-  db:
-    image: postgres:10.9-alpine
-    container_name: auth-db
-    restart: always
-    # ports:
-    #   - 5432:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auth 
-      PGDATA: /var/lib/postgresql/data/pgdata
-  
 
   # сервер, где запущено приложение
-  runner:
+  auth-proxy-front:
     image: rgru/auth-proxy:latest
-    container_name: auth-runner
+    container_name: auth-proxy-front
     volumes:
       - test_apps:/app/node-apps
 
@@ -35,7 +22,7 @@ services:
 
 
   # server with test applications
-  node:
+  auth-node:
     image: "node:alpine"
     container_name: auth-node
     user: "node"
@@ -50,13 +37,25 @@ services:
       - "3003"
       - "3004"
       - "3005"
-    # ports:
-    #   - 3001:3001
-    #   - 3002:3002
-    #   - 3003:3003
-    #   - 3004:3004
-    #   - 3005:3005
     command: "npm run start12"
+
+
+  # база данных
+  auth-db:
+    image: postgres:10.9-alpine
+    container_name: auth-db
+    restart: always
+    # ports:
+    #   - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: auth 
+      PGDATA: /var/lib/postgresql/data/pgdata
+  
+
+
+
 
 
 volumes: 

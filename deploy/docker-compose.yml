@@ -19,7 +19,7 @@ services:
 
 
   # server with test applications
-  node:
+  auth-node:
     image: "node:10.16-stretch-slim"
     container_name: auth-node
     user: "node"
