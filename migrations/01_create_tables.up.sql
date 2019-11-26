@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     fullname text,
     description text,
     disabled integer NOT NULL DEFAULT 0,
+    id serial,
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS app_user_role (
 CREATE INDEX IF NOT EXISTS aur_appname_idx ON app_user_role (appname);
 CREATE INDEX IF NOT EXISTS aur_username_idx ON app_user_role (username);
 CREATE UNIQUE INDEX IF NOT EXISTS user_email_unique_idx ON "user" (email);
+CREATE UNIQUE INDEX IF NOT EXISTS user_id_unique_idx ON "user" (id);
 -- CREATE INDEX IF NOT EXISTS user_textsearch_idx ON "user" USING gin (to_tsvector('russian', fullname || ' ' || description  || ' ' || email  || ' ' || username ));
 -- CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
 

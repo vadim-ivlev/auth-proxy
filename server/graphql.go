@@ -223,7 +223,7 @@ func panicIfEmpty(v interface{}, message string) {
 	username, _ := v.(string)
 	username = strings.Trim(username, " ")
 	if len(username) == 0 {
-		panic(errors.New("Ошипка: " + message))
+		panic(errors.New("Внимание: " + message))
 	}
 }
 

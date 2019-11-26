@@ -48,6 +48,10 @@ var userFields = gq.Fields{
 		Type:        gq.Int,
 		Description: "Если не равно 0, пользователь отключен",
 	},
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "автогенерируемый id пользователя",
+	},
 }
 
 var appFields = gq.Fields{

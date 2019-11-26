@@ -67,7 +67,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					return nil, errors.New(username + " деактивирован.")
 				}
 				counter.ResetCounter(username)
-				SetSessionVariable(c, "user", dbUsername)
+				_ = SetSessionVariable(c, "user", dbUsername)
 				return "Success. " + dbUsername + " is authenticated.", nil
 			},
 		},
@@ -289,6 +289,51 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				}
 
 				return m, nil
+
+			},
+		},
+
+		"list_user_by_ids": &gq.Field{
+			Type:        gq.NewList(userObject),
+			Description: "Получить список пользователей по их id.",
+			Args: gq.FieldConfigArgument{
+				"ids": &gq.ArgumentConfig{
+					Type:        gq.NewList(gq.Int),
+					Description: "Массив идентификаторов id",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
+				fields := getSelectedFields([]string{"list_user_by_ids"}, params)
+				ids, ok := params.Args["ids"]
+				if !ok {
+					return nil, errors.New("ids param is absent")
+				}
+
+				idss, ok := db.SerializeIfArray(ids).(string)
+				if !ok {
+					return nil, errors.New("Can't convert []interface to string")
+				}
+
+				idss = strings.Trim(idss, "[]")
+
+				query := fmt.Sprintf(`SELECT %s FROM "user" WHERE id IN (%s)`, fields, idss)
+				fmt.Println("query=", query)
+				return db.QuerySliceMap(query)
+
+				// return nil, errors.New("Not implemented")
+
+				// list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "user"` + wherePart + orderAndLimits)
+				// if err != nil {
+				// 	return nil, err
+				// }
+
+				// m := map[string]interface{}{
+				// 	"length": count["count"],
+				// 	"list":   list,
+				// }
+
+				// return m, nil
 
 			},
 		},
