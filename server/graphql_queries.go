@@ -298,43 +298,45 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Description: "Получить список пользователей по их id.",
 			Args: gq.FieldConfigArgument{
 				"ids": &gq.ArgumentConfig{
-					Type:        gq.NewList(gq.Int),
+					Type:        gq.NewNonNull(gq.NewList(gq.Int)),
 					Description: "Массив идентификаторов id",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 				fields := getSelectedFields([]string{"list_user_by_ids"}, params)
-				ids, ok := params.Args["ids"]
-				if !ok {
-					return nil, errors.New("ids param is absent")
-				}
-
-				idss, ok := db.SerializeIfArray(ids).(string)
-				if !ok {
-					return nil, errors.New("Can't convert []interface to string")
-				}
-
+				ids, _ := params.Args["ids"]
+				idss, _ := db.SerializeIfArray(ids).(string)
 				idss = strings.Trim(idss, "[]")
-
+				if idss == "" {
+					return []interface{}{}, nil
+				}
 				query := fmt.Sprintf(`SELECT %s FROM "user" WHERE id IN (%s)`, fields, idss)
-				fmt.Println("query=", query)
 				return db.QuerySliceMap(query)
+			},
+		},
 
-				// return nil, errors.New("Not implemented")
-
-				// list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "user"` + wherePart + orderAndLimits)
-				// if err != nil {
-				// 	return nil, err
-				// }
-
-				// m := map[string]interface{}{
-				// 	"length": count["count"],
-				// 	"list":   list,
-				// }
-
-				// return m, nil
-
+		"list_user_by_usernames": &gq.Field{
+			Type:        gq.NewList(userObject),
+			Description: "Получить пользователей по списку их username.",
+			Args: gq.FieldConfigArgument{
+				"usernames": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.NewList(gq.String)),
+					Description: "Массив идентификаторов username",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				panicIfNotAdmin(params)
+				fields := getSelectedFields([]string{"list_user_by_usernames"}, params)
+				ids, _ := params.Args["usernames"]
+				idss, _ := db.SerializeIfArray(ids).(string)
+				idss = strings.Trim(idss, "[]")
+				if idss == "" {
+					return []interface{}{}, nil
+				}
+				idss = strings.ReplaceAll(idss, "\"", "'")
+				query := fmt.Sprintf(`SELECT %s FROM "user" WHERE username IN (%s)`, fields, idss)
+				return db.QuerySliceMap(query)
 			},
 		},
 
