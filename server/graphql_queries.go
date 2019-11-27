@@ -318,7 +318,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 		"list_user_by_usernames": &gq.Field{
 			Type:        gq.NewList(userObject),
-			Description: "Получить пользователей по списку их username.",
+			Description: "Получить список пользователей по их username.",
 			Args: gq.FieldConfigArgument{
 				"usernames": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.NewList(gq.String)),
