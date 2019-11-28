@@ -1,11 +1,12 @@
 ## TODO:
 
+- allow renaming a user 
+
+- [GIN] 2019/11/28 - 18:27:49 | 404 |      14.536µs |             ::1 | GET      /bundles/jurist/fonts/rg/noto.woff.min.css
+
+
 - Oauth2 (finish logout for yandex, vk, mail.ru)
 
-- add: GraphQL 
-    -   list_oauth2_providers(), 
-    -   memstat(), <https://golangcode.com/print-the-current-memory-usage/>
-    -   set_parameters()
 
 
 

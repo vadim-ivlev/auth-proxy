@@ -70,9 +70,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Description: "Обновить пользователя",
 			Type:        userObject,
 			Args: gq.FieldConfigArgument{
+				"old_username": &gq.ArgumentConfig{
+					Type:         gq.NewNonNull(gq.String),
+					Description:  "Имя пользователя до обновления (уникальное)",
+					DefaultValue: "",
+				},
 				"username": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя пользователя (уникальное)",
+					Type:         gq.NewNonNull(gq.String),
+					Description:  "Имя пользователя (уникальное)",
+					DefaultValue: "",
 				},
 				"password": &gq.ArgumentConfig{
 					Type:        gq.String,
@@ -98,12 +104,23 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
 
+				ArgToLowerCase(params, "old_username")
 				ArgToLowerCase(params, "username")
 				ArgToLowerCase(params, "email")
 
 				processPassword(params)
 				clearUserCache(params)
-				return updateRecord("username", params, "user", "user")
+
+				old_username, _ := params.Args["old_username"].(string)
+				if old_username == "" {
+					old_username, _ = params.Args["username"].(string)
+				}
+				if old_username == "" {
+					return nil, errors.New("username is blank")
+				}
+
+				delete(params.Args, "old_username")
+				return updateRecord(old_username, "username", params, "user", "user")
 			},
 		},
 
@@ -202,9 +219,15 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Description: "Обновить приложение",
 			Type:        appObject,
 			Args: gq.FieldConfigArgument{
+				"old_appname": &gq.ArgumentConfig{
+					Type:         gq.NewNonNull(gq.String),
+					Description:  "Имя приложения до обновления (уникальное)",
+					DefaultValue: "",
+				},
 				"appname": &gq.ArgumentConfig{
-					Type:        gq.NewNonNull(gq.String),
-					Description: "Имя приложения (уникальное)",
+					Type:         gq.NewNonNull(gq.String),
+					Description:  "Имя приложения (уникальное)",
+					DefaultValue: "",
 				},
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
@@ -225,7 +248,17 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
-				res, err := updateRecord("appname", params, "app", "app")
+
+				old_appname, _ := params.Args["old_appname"].(string)
+				if old_appname == "" {
+					old_appname, _ = params.Args["appname"].(string)
+				}
+				if old_appname == "" {
+					return nil, errors.New("appname is blank")
+				}
+
+				delete(params.Args, "old_appname")
+				res, err := updateRecord(old_appname, "appname", params, "app", "app")
 				if err == nil {
 					app, _ := params.Args["appname"].(string)
 					rebase, _ := params.Args["rebase"].(string)

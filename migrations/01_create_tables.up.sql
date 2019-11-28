@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS app_user_role (
     rolename text NOT NULL,
 
     CONSTRAINT app_user_role_pkey PRIMARY KEY (appname, username, rolename),
-    CONSTRAINT app_user_role_fk_u FOREIGN KEY (username) REFERENCES "user"(username) ON DELETE CASCADE DEFERRABLE,
-    CONSTRAINT app_user_role_fk_a FOREIGN KEY (appname)  REFERENCES "app" (appname)  ON DELETE CASCADE DEFERRABLE
+    CONSTRAINT app_user_role_fk_u FOREIGN KEY (username) REFERENCES "user"(username) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE,
+    CONSTRAINT app_user_role_fk_a FOREIGN KEY (appname)  REFERENCES "app" (appname)  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
 );
 
 -- TODO: get rid of because of sqlite

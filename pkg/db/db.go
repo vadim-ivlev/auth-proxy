@@ -189,7 +189,7 @@ func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldV
 
 	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`,
 		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "), id)
-
+	log.Println("sqlText=", sqlText, values)
 	res, err := QueryExec(sqlText, values...)
 	if err != nil {
 		return nil, err
