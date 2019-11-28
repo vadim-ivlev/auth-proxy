@@ -209,7 +209,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				ArgToLowerCase(params, "username")
-				panicIfNotOwnerOrAdmin(params)
+				panicIfNotOwnerOrAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"get_user"}, params)
 				return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
 			},
@@ -239,7 +239,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfNotAdmin(params)
+				panicIfNotAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"get_app"}, params)
 				return db.QueryRowMap("SELECT "+fields+" FROM app WHERE appname = $1 ;", params.Args["appname"])
 			},
@@ -270,7 +270,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfNotAdmin(params)
+				panicIfNotAdminOrAuditor(params)
 				wherePart, orderAndLimits := QueryEnd(params, "fullname,description,email,username")
 				fields := getSelectedFields([]string{"list_user", "list"}, params)
 
@@ -303,7 +303,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfNotAdmin(params)
+				panicIfNotAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"list_user_by_ids"}, params)
 				ids, _ := params.Args["ids"]
 				idss, _ := db.SerializeIfArray(ids).(string)
@@ -326,7 +326,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfNotAdmin(params)
+				panicIfNotAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"list_user_by_usernames"}, params)
 				ids, _ := params.Args["usernames"]
 				idss, _ := db.SerializeIfArray(ids).(string)
@@ -408,7 +408,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				panicIfNotOwnerOrAdmin(params)
+				panicIfNotOwnerOrAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"list_app_user_role"}, params)
 				wherePart := list_app_user_roleWherePart(params)
 				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s `, fields, wherePart)
@@ -437,9 +437,9 @@ func list_app_user_roleWherePart(params gq.ResolveParams) (wherePart string) {
 func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orderAndLimits string) {
 	var searchConditions []string
 
-	// Если запрос к таблице app и это не админский запрос
+	// Если запрос к таблице app и это не админский или аудиторский запрос
 	// ограничиваем выборку
-	isAdm := isAuthAdmin(params)
+	isAdm := (isAuthAdmin(params) || isAuditor(params))
 	isAppQuery := strings.Contains(fieldList, "appname")
 	if isAppQuery && !isAdm {
 		userName := getLoginedUserName(params)

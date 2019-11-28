@@ -200,9 +200,23 @@ func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
 	panicIfNotAdmin(params)
 }
 
+func panicIfNotOwnerOrAdminOrAuditor(params gq.ResolveParams) {
+	uname := getLoginedUserName(params)
+	pname, ok := params.Args["username"].(string)
+	if ok && pname == uname {
+		return
+	}
+	panicIfNotAdminOrAuditor(params)
+}
+
 func isAuthAdmin(params gq.ResolveParams) bool {
 	username := getLoginedUserName(params)
 	return auth.AppUserRoleExist("auth", username, "authadmin")
+}
+
+func isAuditor(params gq.ResolveParams) bool {
+	username := getLoginedUserName(params)
+	return auth.AppUserRoleExist("auth", username, "auditor")
 }
 
 func panicIfNotAdmin(params gq.ResolveParams) {
@@ -210,6 +224,16 @@ func panicIfNotAdmin(params gq.ResolveParams) {
 		return
 	}
 	panic("Sorry. No admin rights.")
+}
+
+func panicIfNotAdminOrAuditor(params gq.ResolveParams) {
+	if isAuthAdmin(params) {
+		return
+	}
+	if isAuditor(params) {
+		return
+	}
+	panic("Sorry. No admin or auditor rights.")
 }
 
 func panicIfNotUser(params gq.ResolveParams) {
