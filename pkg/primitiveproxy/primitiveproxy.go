@@ -12,12 +12,17 @@ import (
 	"strings"
 )
 
+// PrimitiveProxy Структура для хранения параметров прокси.
+// auth-proxy хранит map таких структур индексированную по имени приложения/ маршруту проксирования
 type PrimitiveProxy struct {
-	url     string
+	// куда проксировать запросы
+	Url string
+	// префикс проксирования и дновременно имя приложения в терминах auth-proxy
 	appname string
-	rebase  string
+	Rebase  string
 }
 
+// NewPrimitiveProxy Возвращает указатель на PrimitiveProxy
 func NewPrimitiveProxy(url, appname, rebase string) *PrimitiveProxy {
 	return &PrimitiveProxy{url, appname, rebase}
 }
@@ -26,7 +31,7 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 
 	// строим url из маршрута и строки запроса
-	url := p.url + r.URL.Path
+	url := p.Url + r.URL.Path
 	if r.URL.RawQuery != "" {
 		url += "?" + r.URL.RawQuery
 	}
@@ -36,7 +41,7 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 
 	// Копируем заголовки из исходного запроса в новый
 	for name, value := range r.Header {
-		if p.rebase == "Y" && name == "Accept-Encoding" {
+		if p.Rebase == "Y" && name == "Accept-Encoding" {
 			continue
 		}
 		req.Header.Set(name, value[0])
@@ -56,7 +61,7 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 		wr.Header().Set(k, v[0])
 	}
 
-	if p.rebase == "Y" {
+	if p.Rebase == "Y" {
 		replaceAbsoluteLinks(wr, r, resp, p)
 	}
 
@@ -100,29 +105,29 @@ func replaceAbsoluteLinks(wr http.ResponseWriter, r *http.Request, resp *http.Re
 		bodyString := string(bodyBytes)
 
 		if isHTML {
-			// bodyString = strings.Replace(bodyString, "<head>", `<head><base href="`+base+`">`, 1)
-			bodyString = strings.Replace(bodyString, `href="//`, `href="||`, -1)
-			bodyString = strings.Replace(bodyString, `href='//`, `href='||`, -1)
-			bodyString = strings.Replace(bodyString, `src="//`, `src="||`, -1)
-			bodyString = strings.Replace(bodyString, `src='//`, `src='||`, -1)
+			// bodyString = strings.ReplaceAll(bodyString, "<head>", `<head><base href="`+base+`">)
+			bodyString = strings.ReplaceAll(bodyString, `href="//`, `href="||`)
+			bodyString = strings.ReplaceAll(bodyString, `href='//`, `href='||`)
+			bodyString = strings.ReplaceAll(bodyString, `src="//`, `src="||`)
+			bodyString = strings.ReplaceAll(bodyString, `src='//`, `src='||`)
 
-			bodyString = strings.Replace(bodyString, `href="/`, `href="`+path, -1)
-			bodyString = strings.Replace(bodyString, `href='/`, `href='`+path, -1)
-			bodyString = strings.Replace(bodyString, `src="/`, `src="`+path, -1)
-			bodyString = strings.Replace(bodyString, `src='/`, `src='`+path, -1)
+			bodyString = strings.ReplaceAll(bodyString, `href="/`, `href="`+path)
+			bodyString = strings.ReplaceAll(bodyString, `href='/`, `href='`+path)
+			bodyString = strings.ReplaceAll(bodyString, `src="/`, `src="`+path)
+			bodyString = strings.ReplaceAll(bodyString, `src='/`, `src='`+path)
 
-			bodyString = strings.Replace(bodyString, `href="||`, `href="//`, -1)
-			bodyString = strings.Replace(bodyString, `href='||`, `href='//`, -1)
-			bodyString = strings.Replace(bodyString, `src="||`, `src="//`, -1)
-			bodyString = strings.Replace(bodyString, `src='||`, `src='//`, -1)
+			bodyString = strings.ReplaceAll(bodyString, `href="||`, `href="//`)
+			bodyString = strings.ReplaceAll(bodyString, `href='||`, `href='//`)
+			bodyString = strings.ReplaceAll(bodyString, `src="||`, `src="//`)
+			bodyString = strings.ReplaceAll(bodyString, `src='||`, `src='//`)
 		}
 		if isCSS {
-			bodyString = strings.Replace(bodyString, `url(/`, `url(`+path, -1)
-			bodyString = strings.Replace(bodyString, `url("/`, `url("`+path, -1)
-			bodyString = strings.Replace(bodyString, `url('/`, `url('`+path, -1)
+			bodyString = strings.ReplaceAll(bodyString, `url(/`, `url(`+path)
+			bodyString = strings.ReplaceAll(bodyString, `url("/`, `url("`+path)
+			bodyString = strings.ReplaceAll(bodyString, `url('/`, `url('`+path)
 		}
 		if isJS {
-			bodyString = strings.Replace(bodyString, `sourceMappingURL=`, `sourceMappingURL=`+path, -1)
+			bodyString = strings.ReplaceAll(bodyString, `sourceMappingURL=`, `sourceMappingURL=`+path)
 		}
 		fmt.Fprint(wr, bodyString)
 	}

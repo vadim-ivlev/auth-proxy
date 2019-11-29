@@ -259,18 +259,33 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 				delete(params.Args, "old_appname")
 				res, err := updateRecord(old_appname, "appname", params, "app", "app")
+
+				// изменяем массив прокси
 				if err == nil {
-					app, _ := params.Args["appname"].(string)
-					rebase, _ := params.Args["rebase"].(string)
-					u, ok := params.Args["url"]
-					if ok {
+					appname, _ := params.Args["appname"].(string)
+
+					// если appname изменилось перепорождаем прокси со старыми Url, Rebase
+					if appname != old_appname {
+						old_proxy := *proxies[old_appname]
+						log.Println("renaming old_url, old_appname, old_rebase", old_proxy.Url, old_appname, old_proxy.Rebase)
+						delete(proxies, old_appname)
+						proxies[appname] = createProxy(old_proxy.Url, appname, old_proxy.Rebase)
+						// clear old_appname cache
+						auth.Cache.Delete("is-" + old_appname + "-public")
+					}
+
+					// Если обновляется Url, Rebase пререпорождаем прокси
+					r, ok_r := params.Args["rebase"]
+					u, ok_u := params.Args["url"]
+					if ok_r || ok_u {
+						rebase, _ := r.(string)
 						url, _ := u.(string)
 						if url == "" {
-							delete(proxies, app)
-							log.Printf("Proxy deleted appname=%s", app)
+							delete(proxies, appname)
+							log.Printf("Proxy deleted appname=%s", appname)
 						} else {
-							proxies[app] = createProxy(url, app, rebase)
-							log.Printf("Proxy created appname=%v target=%v", app, url)
+							proxies[appname] = createProxy(url, appname, rebase)
+							log.Printf("Proxy created appname=%v target=%v", appname, url)
 						}
 					}
 					clearAppCache(params)

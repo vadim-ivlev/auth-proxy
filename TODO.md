@@ -1,6 +1,6 @@
 ## TODO:
 
-- allow renaming a user 
+- allow renaming a user , app
 
 - [GIN] 2019/11/28 - 18:27:49 | 404 |      14.536µs |             ::1 | GET      /bundles/jurist/fonts/rg/noto.woff.min.css
 
