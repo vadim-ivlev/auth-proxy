@@ -337,6 +337,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				panicIfNotAdmin(params)
 				ArgToLowerCase(params, "username")
 				clearAppUserRolesCache(params)
+				clearUserCache(params)
 				return db.CreateRow("app_user_role", params.Args)
 			},
 		},
@@ -370,6 +371,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					return nil, err
 				}
 				clearAppUserRolesCache(params)
+				clearUserCache(params)
 				return map[string]interface{}{"appname": a, "username": u, "rolename": r}, nil
 			},
 		},

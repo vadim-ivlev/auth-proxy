@@ -98,7 +98,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		isAppPublic := auth.IsAppPublic(appName)
 
 		// роли пользователя в приложении
-		userRoles := auth.GetUserRoles(userName, appName)
+		userRoles := auth.GetUserRolesString(userName, appName)
 
 		// !!! Если приложение не публичное и пользователю не назначены роли ПРЕРЫВАЕМ ЗАПРОС
 		if userRoles == "[]" && !isAppPublic {
@@ -107,7 +107,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		}
 
 		// информация о текущем пользователе
-		userInfo := auth.GetUserInfo(userName)
+		userInfo := auth.GetUserInfoString(userName, appName)
 
 		// Добавляем заголовки к запросу
 		c.Request.Header.Set("user-roles", userRoles)

@@ -102,30 +102,42 @@ func GetAppURLs() (map[string][]string, error) {
 	return m, nil
 }
 
-// GetUserRoles возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
-func GetUserRoles(user, app string) string {
+// GetUserRoles возвращает массив ролей пользователя в заданном приложении.
+func GetUserRoles(user, app string) []string {
+	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
+	if err != nil {
+		return []string{}
+	}
+
+	roles := []string{}
+	for _, rec := range records {
+		role, _ := rec["rolename"].(string)
+		roles = append(roles, role)
+	}
+
+	return roles
+}
+
+// GetUserRolesString возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
+func GetUserRolesString(user, app string) string {
 	cacheKey := user + "-" + app + "-roles"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
 		fmt.Println("cached ", cacheKey, "=", cachedValue)
 		return cachedValue.(string)
 	}
+	roles := GetUserRoles(user, app)
 
-	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
-	if err != nil {
-		return ""
-	}
+	bytes, _ := json.Marshal(roles)
+	rolesString := string(bytes)
 
-	bytes, _ := json.Marshal(records)
-	roles := string(bytes)
-
-	Cache.Set(cacheKey, roles, cache.DefaultExpiration)
-	return roles
+	Cache.Set(cacheKey, rolesString, cache.DefaultExpiration)
+	return rolesString
 
 }
 
-// GetUserInfo возвращает сериализованную информацию о пользователе
-func GetUserInfo(user string) string {
+// GetUserInfoString возвращает сериализованную информацию о пользователе, включая его роли в приложении.
+func GetUserInfoString(user, app string) string {
 	cacheKey := user + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
@@ -133,12 +145,16 @@ func GetUserInfo(user string) string {
 		return cachedValue.(string)
 	}
 
-	record, err := db.QueryRowMap(`SELECT username, email, fullname, description 
+	record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description 
 		FROM "user" 
 		WHERE username = $1;`, user)
 	if err != nil {
 		return ""
 	}
+
+	roles := GetUserRoles(user, app)
+	record["roles"] = roles
+
 	jsonBytes, _ := json.Marshal(record)
 	jsonString := string(jsonBytes)
 
