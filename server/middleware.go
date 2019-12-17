@@ -116,7 +116,9 @@ func CheckUserMiddleware() gin.HandlerFunc {
 
 		// Подписываем запрос
 		if auth.IsRequestToAppSigned(appName) {
-			signature.Sign(c.Request)
+			r := c.Request
+			signature.Sign(r)
+			signature.Verify(r)
 		}
 
 		c.Next()
