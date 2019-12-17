@@ -46,6 +46,9 @@ func setup() *gin.Engine {
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
 	r.GET("/captcha", Captcha)
+
+	r.OPTIONS("/graphql", optionHandler)
+	r.OPTIONS("/schema", optionHandler)
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)
 

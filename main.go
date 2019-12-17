@@ -5,6 +5,7 @@ import (
 	"auth-proxy/pkg/counter"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
+	"auth-proxy/pkg/signature"
 	"auth-proxy/server"
 	"flag"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 )
 
 func main() {
-	fmt.Println("████████████████████████ revision 7 ████████████████████████")
+	fmt.Println("████████████████████████ revision 8 ████████████████████████")
 	// считать параметры командной строки
 	servePort, env := readCommandLineParams()
 
@@ -54,6 +55,8 @@ func readConfigsAndSetParams(env string) bool {
 	mail.ReadMailTemplate("./configs/mail-templates.yaml")
 	// читаем конфиг Oauth2
 	server.ReadOauth2Config("./configs/oauth2.yaml", env)
+	// читаем конфиг signature
+	signature.ReadConfig("./configs/signature.yaml", env)
 
 	// читаем конфиг общих параметров приложения.
 	app.ReadConfig("./configs/app.yaml", env)

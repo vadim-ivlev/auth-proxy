@@ -3,6 +3,7 @@ package server
 import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/reqcounter"
+	"auth-proxy/pkg/signature"
 	"fmt"
 	"net/http"
 	"strings"
@@ -112,6 +113,11 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		// Добавляем заголовки к запросу
 		c.Request.Header.Set("user-roles", userRoles)
 		c.Request.Header.Set("user-info", userInfo)
+
+		// Подписываем запрос
+		if auth.IsRequestToAppSigned(appName) {
+			signature.Sign(c.Request)
+		}
 
 		c.Next()
 	}

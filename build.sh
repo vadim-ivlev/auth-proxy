@@ -29,6 +29,7 @@ rm -f deploy/configs/mail-templates.yaml.yaml
 rm -f deploy/configs/sqlite.yaml
 rm -f deploy/configs/app.yaml
 rm -f deploy/configs/oauth2.yaml
+rm -f deploy/configs/signature.yaml
 
 
 echo "copying stuff ..."
@@ -51,3 +52,4 @@ cp -f configs/mail-templates.yaml  deploy/configs/mail-templates.yaml
 cp -f configs/sqlite.yaml  deploy/configs/sqlite.yaml
 cp -f configs/app.yaml  deploy/configs/app.yaml
 cp -f configs/oauth2.yaml  deploy/configs/oauth2.yaml
+cp -f configs/signature.yaml  deploy/configs/signature.yaml

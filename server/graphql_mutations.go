@@ -196,6 +196,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
 				},
+				"sign": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - для цифровой подписи запросов к приложению",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
@@ -245,6 +249,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
 				},
+				"sign": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "Y - для цифровой подписи запросов к приложению",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
@@ -272,6 +280,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 						proxies[appname] = createProxy(old_proxy.Url, appname, old_proxy.Rebase)
 						// clear old_appname cache
 						auth.Cache.Delete("is-" + old_appname + "-public")
+						auth.Cache.Delete("is-request-to-" + old_appname + "-signed")
 					}
 
 					// Если обновляется Url, Rebase пререпорождаем прокси
@@ -393,6 +402,7 @@ func clearUserCache(params gq.ResolveParams) {
 func clearAppCache(params gq.ResolveParams) {
 	app, _ := params.Args["appname"].(string)
 	auth.Cache.Delete("is-" + app + "-public")
+	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
 
 func sendMessageToNewUser(params gq.ResolveParams, password string) {

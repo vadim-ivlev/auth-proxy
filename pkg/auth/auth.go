@@ -209,6 +209,24 @@ func IsAppPublic(appName string) bool {
 	return false
 }
 
+// IsRequestToAppSigned  true если приложение доступно для пользователей без роли
+func IsRequestToAppSigned(appName string) bool {
+	cacheKey := "is-request-to-" + appName + "-signed"
+	cachedValue, found := Cache.Get(cacheKey)
+	if found {
+		fmt.Println("cached ", cacheKey, "=", cachedValue)
+		return cachedValue.(bool)
+	}
+
+	_, err := db.QueryRowMap(`SELECT * FROM "app" WHERE appname = $1 AND sign = 'Y' ;`, appName)
+	if err == nil {
+		Cache.Set(cacheKey, true, cache.DefaultExpiration)
+		return true
+	}
+	Cache.Set(cacheKey, false, cache.DefaultExpiration)
+	return false
+}
+
 func GetHash(s string) string {
 	sum := sha256.Sum256([]byte(s))
 	return fmt.Sprintf("%x", sum)

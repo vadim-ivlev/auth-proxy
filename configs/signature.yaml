@@ -1,0 +1,18 @@
+# Местоположение сертификатов для цифровой подписи запросов
+# к проксируемым приложениям.
+# для окружений dev, front, prod
+
+
+dev:
+  private_key_file: ./certificates/auth-proxy.key
+  public_key_file: ./certificates/auth-proxy.key.pub
+
+
+front:
+  private_key_file: ./certificates/auth-proxy.key
+  public_key_file: ./certificates/auth-proxy.key.pub
+
+
+prod:
+  private_key_file: ./certificates/auth-proxy.key
+  public_key_file: ./certificates/auth-proxy.key.pub

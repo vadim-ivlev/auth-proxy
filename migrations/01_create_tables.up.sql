@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS app (
     description text,
     rebase text,
     public text,
+    sign text,
 
     CONSTRAINT app_pkey PRIMARY KEY (appname)
 );

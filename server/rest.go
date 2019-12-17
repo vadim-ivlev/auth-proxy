@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
 	"log"
@@ -65,4 +66,11 @@ func CreateProxies() {
 	for app, url_rebase := range appUrls {
 		proxies[app] = createProxy(url_rebase[0], app, url_rebase[1])
 	}
+}
+
+// По просьбе Леши. Appolo требует этого
+func optionHandler(c *gin.Context) {
+	c.Header("Access-Control-Allow-Headers", "origin, content-type, accept, cookie")
+	c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, PATCH, OPTIONS")
+	c.JSON(http.StatusOK, "")
 }

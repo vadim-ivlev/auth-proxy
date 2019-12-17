@@ -75,6 +75,10 @@ var appFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
 	},
+	"sign": &gq.Field{
+		Type:        gq.String,
+		Description: "Y - для цифровой подписи запросов к приложению",
+	},
 }
 
 var app_user_roleFields = gq.Fields{
