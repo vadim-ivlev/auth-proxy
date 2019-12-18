@@ -241,7 +241,7 @@
    
     Это один из способов контроля источников запросов наряду с ограничениями по IP адресу.
     Позволяет конечному приложению удостовериться, что запрос поступил от auth-proxy.
-    Имеет значение для публично доступных в Интернет приложений, которые хотели бы принимать запросы через
+    Важен для публично доступных в Интернет приложений, которые хотели бы принимать запросы через
     auth-proxy. 
  
    
@@ -249,6 +249,8 @@
     публично доступные приложения или HTML приложения.
 
     Примеры верификации подписи на golang https://github.com/spacemonkeygo/httpsig, на python https://github.com/spacemonkeygo/httpsig
+
+    Файл `signature/verify.go` содержит пример функции Verify(request) для верификации подписи на стороне конечного приложения.
 
 
 
@@ -266,11 +268,26 @@ __Схема__
 
 http://auth-proxy.rg.ru/graphql
 
-__Тестовое GUI приложение__
+__Тестовое GUI приложение__ - админка для контроля пользователей, приложений и ролей.
 
-http://auth-proxy.rg.ru/testapp
+http://auth-proxy.rg.ru/admin
+
+__Captcha__
+
+http://auth-proxy.rg.ru/captcha
+
+__Public Key__
+
+http://auth-proxy.rg.ru/publickey
 
 
+__Статистика__
+
+http://auth-proxy.rg.ru/stat
+
+__Провайдеры Oauth2__
+
+http://auth-proxy.rg.ru/oauthproviders
 
 
 

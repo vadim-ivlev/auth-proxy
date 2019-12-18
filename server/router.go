@@ -49,9 +49,11 @@ func setup() *gin.Engine {
 
 	r.OPTIONS("/graphql", optionHandler)
 	r.OPTIONS("/schema", optionHandler)
+
 	r.POST("/graphql", GraphQL)
 	r.POST("/schema", GraphQL)
 
+	r.GET("/publickey", publicKeyHandler)
 	r.GET("/stat", app.Stat)
 	r.GET("/oauthproviders", ListOauthProviders)
 	r.GET("/oauthlogin/:provider", OauthLogin)

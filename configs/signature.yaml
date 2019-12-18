@@ -6,13 +6,19 @@
 dev:
   private_key_file: ./certificates/auth-proxy.key
   public_key_file: ./certificates/auth-proxy.key.pub
+  headers: ["(request-target)", "host", "date"]
+  keyid: auth-proxy
 
 
 front:
   private_key_file: ./certificates/auth-proxy.key
   public_key_file: ./certificates/auth-proxy.key.pub
+  headers: ["(request-target)", "host", "date"]
+  keyid: auth-proxy
 
 
 prod:
   private_key_file: ./certificates/auth-proxy.key
   public_key_file: ./certificates/auth-proxy.key.pub
+  headers: ["(request-target)", "host", "date"]
+  keyid: auth-proxy

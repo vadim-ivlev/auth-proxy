@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/signature"
 	"net/http"
 
 	"auth-proxy/pkg/primitiveproxy"
@@ -68,9 +69,15 @@ func CreateProxies() {
 	}
 }
 
-// По просьбе Леши. Appolo требует этого
+// optionHandler По просьбе Леши. Appolo требует этого
 func optionHandler(c *gin.Context) {
 	c.Header("Access-Control-Allow-Headers", "origin, content-type, accept, cookie")
 	c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, PATCH, OPTIONS")
 	c.JSON(http.StatusOK, "")
+}
+
+// publicKeyHandler returns text representaton of the public key used for verifying request signatures
+func publicKeyHandler(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.String(200, signature.PublicKeyText)
 }
