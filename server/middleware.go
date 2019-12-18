@@ -120,6 +120,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 
 			_ = signature.Sign(r)
 
+			fmt.Println("Authorization:", r.Header.Get("Authorization"))
 			// err := signature.Sign(r)
 			// if err == nil {
 			// 	fmt.Println("Signed")
