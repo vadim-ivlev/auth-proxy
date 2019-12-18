@@ -50,7 +50,7 @@ build:
         - rm -rf   $BUILD_PATH/deploy
         - cp -r    deploy $BUILD_PATH
         - mkdir -p $BUILD_PATH/deploy/configs
-        - chmod -R 777 $BUILD_PATH/node-apps
+        # - chmod -R 777 $BUILD_PATH/node-apps
     artifacts:
         paths:
             - $BUILD_PATH/deploy
@@ -83,6 +83,8 @@ deploy&copy:
         - ssh gitupdater@dockerweb.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        # change rights to auth-node
+        - ssh gitupdater@dockerweb.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
     only:
         - production
 
