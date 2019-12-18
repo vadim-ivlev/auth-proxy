@@ -7,8 +7,6 @@ services:
   auth-proxy-prod:
     image: auth-proxy-prod
     container_name: auth-proxy-prod
-    # volumes:
-    #   - test_apps:/app/node-apps
 
     # command: bash -c "cd /app && ./auth -serve 4400 -env=prod" 
     restart: always
@@ -29,7 +27,6 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      # - test_apps:/home/node/app
       - ./node-apps:/home/node/app
     expose:
       - "3001"
@@ -39,7 +36,4 @@ services:
       - "3005"
     command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12 ; sleep 20000'
 
-
-# volumes: 
-#   test_apps:
     
