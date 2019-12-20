@@ -4,6 +4,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/reqcounter"
 	"auth-proxy/pkg/signature"
+	"auth-proxy/pkg/vutils"
 	"fmt"
 	"net/http"
 	"strings"
@@ -128,13 +129,14 @@ func CheckUserMiddleware() gin.HandlerFunc {
 			// 	fmt.Println("Signing error:", err)
 			// }
 
+			vutils.PrintRequestHeaders(r)
 			// Verification
-			// err = signature.Verify(r)
-			// if err == nil {
-			// 	fmt.Println("Verified")
-			// } else {
-			// 	fmt.Println("Verification error:", err)
-			// }
+			err := signature.Verify(r)
+			if err == nil {
+				fmt.Println("Verified")
+			} else {
+				fmt.Println("Verification error:", err)
+			}
 
 			// fmt.Println(signature.PublicKeyText)
 

@@ -47,6 +47,9 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 		req.Header.Set(name, value[0])
 	}
 
+	// vutils.PrintRequestHeaders(req)
+	// vutils.PrintRequestBody(req)
+
 	// Исполняем новый запрос
 	resp, err := client.Do(req)
 	r.Body.Close()
