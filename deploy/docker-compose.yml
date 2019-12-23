@@ -34,6 +34,6 @@ services:
       - "3003"
       - "3004"
       - "3005"
-    command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12 ; sleep 20000'
+    command: /bin/sh -c 'cd /home/node/app && npm install && chmod -Rf 777 node_modules && npm run start12 ; sleep 20000'
 
     
