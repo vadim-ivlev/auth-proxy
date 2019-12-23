@@ -3,8 +3,6 @@ package server
 import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/reqcounter"
-	"auth-proxy/pkg/signature"
-	"auth-proxy/pkg/vutils"
 	"fmt"
 	"net/http"
 	"strings"
@@ -114,33 +112,6 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		// Добавляем заголовки к запросу
 		c.Request.Header.Set("user-roles", userRoles)
 		c.Request.Header.Set("user-info", userInfo)
-
-		// Подписываем запрос
-		if auth.IsRequestToAppSigned(appName) {
-			r := c.Request
-
-			_ = signature.Sign(r)
-
-			fmt.Println("Authorization:", r.Header.Get("Authorization"))
-			// err := signature.Sign(r)
-			// if err == nil {
-			// 	fmt.Println("Signed")
-			// } else {
-			// 	fmt.Println("Signing error:", err)
-			// }
-
-			vutils.PrintRequestHeaders(r)
-			// Verification
-			err := signature.Verify(r)
-			if err == nil {
-				fmt.Println("Verified")
-			} else {
-				fmt.Println("Verification error:", err)
-			}
-
-			// fmt.Println(signature.PublicKeyText)
-
-		}
 
 		c.Next()
 	}

@@ -5,6 +5,8 @@
 package primitiveproxy
 
 import (
+	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/signature"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -47,8 +49,14 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 		req.Header.Set(name, value[0])
 	}
 
-	// vutils.PrintRequestHeaders(req)
-	// vutils.PrintRequestBody(req)
+
+	// Подписываем запрос
+	if auth.IsRequestToAppSigned(p.appname) {
+		err := signature.Sign(req)
+		if err != nil {
+			fmt.Println("Signing error:", err)
+		}
+	}
 
 	// Исполняем новый запрос
 	resp, err := client.Do(req)

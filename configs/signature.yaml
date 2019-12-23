@@ -6,7 +6,7 @@
 dev:
   private_key_file: ./certificates/auth-proxy.key
   public_key_file: ./certificates/auth-proxy.key.pub
-  headers: ["date"]
+  headers: ["(request-target)", "host", "date"]
   keyid: auth-proxy
 
 
@@ -20,5 +20,5 @@ front:
 prod:
   private_key_file: ./certificates/auth-proxy.key
   public_key_file: ./certificates/auth-proxy.key.pub
-  headers: ["date"]
+  headers: ["(request-target)", "host", "date"]
   keyid: auth-proxy
