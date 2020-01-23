@@ -21,7 +21,7 @@ var requestsTotal = promauto.NewCounter(prometheus.CounterOpts{
 func CountersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// считаем все кроме запросов на выдачу статистики
-		if c.Request.URL.Path != "/stat" {
+		if c.Request.URL.Path != "/stat" && c.Request.URL.Path != "/metrics" {
 			reqcounter.IncrementCounters()
 			requestsTotal.Inc()
 		}
