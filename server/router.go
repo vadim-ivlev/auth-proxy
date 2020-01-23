@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // SecureCookie флаг secure на куки браузера
@@ -46,6 +47,7 @@ func setup() *gin.Engine {
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
 	r.GET("/captcha", Captcha)
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	r.OPTIONS("/graphql", optionHandler)
 	r.OPTIONS("/schema", optionHandler)

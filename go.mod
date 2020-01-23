@@ -43,6 +43,7 @@ require (
 	github.com/nakagami/firebirdsql v0.0.0-20190609025626-90ca2b3395f5 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prateek/gorename v0.0.0-20180424020013-52c7307cddd2 // indirect
+	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/steambap/captcha v1.3.0
 	github.com/stretchr/objx v0.2.0 // indirect

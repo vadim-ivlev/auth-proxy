@@ -31,13 +31,7 @@ func GetCounters() (int64, int64, int64, int64) {
 
 func addIncCounter(name string, duration time.Duration) {
 	_ = theCache.Add(name, int64(0), duration)
-	// if err != nil {
-	// 	log.Println("reqcounter.IncrementCounters.Add "+name+":", err)
-	// }
 	_ = theCache.Increment(name, 1)
-	// if err != nil {
-	// 	log.Println("counter.IncrementCounter.Increment"+name+":", err)
-	// }
 }
 
 func getCounter(name string) int64 {

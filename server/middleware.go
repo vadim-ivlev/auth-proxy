@@ -8,7 +8,14 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
+
+var requestsTotal = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "auth_proxy_requests_total",
+	Help: "Тотальное количество запросов",
+})
 
 // CountersMiddleware считает запросы
 func CountersMiddleware() gin.HandlerFunc {
@@ -16,6 +23,7 @@ func CountersMiddleware() gin.HandlerFunc {
 		// считаем все кроме запросов на выдачу статистики
 		if c.Request.URL.Path != "/stat" {
 			reqcounter.IncrementCounters()
+			requestsTotal.Inc()
 		}
 		c.Next()
 	}
