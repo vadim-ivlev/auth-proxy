@@ -4,6 +4,7 @@ import (
 	// "github.com/gin-gonic/contrib/sessions"
 	// "github.com/gin-contrib/sessions"
 	"auth-proxy/pkg/app"
+	"auth-proxy/pkg/prometeo"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -38,6 +39,7 @@ func setup() *gin.Engine {
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 
+	r.Use(prometeo.CountersMiddleware())
 	r.Use(CountersMiddleware())
 	r.Use(RedirectsMiddleware())
 	r.Use(HeadersMiddleware())
