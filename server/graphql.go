@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/prometeo"
 	"context"
 	"errors"
 	"log"
@@ -303,6 +304,11 @@ func GraphQL(c *gin.Context) {
 		Context:        context.WithValue(context.Background(), "ginContext", c),
 		VariableValues: variables,
 	})
+
+	if len(result.Errors) > 0 {
+		// инкрементируем счетчик ошибок GraphQL
+		prometeo.GraphQLErrorsTotal.Inc()
+	}
 
 	c.JSON(200, result)
 }
