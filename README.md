@@ -563,10 +563,26 @@ Postgres доступен на localhost:5432.
     docker-compose exec redis redis-cli
 
 
+## Деплой
+
+Перед запуском приложения на боевом сервере должна существовать 
+сеть `auth_proxy_network`. Сеть порождается командой:
+
+    sudo docker network create auth_proxy_network
+
+Запуск деплоя
+
+    git push origin master:production
+
+или 
+
+    sh/deploy.sh
+
 
 ## контроль деплоя на works
 
-    ssh -i ~/.ssh/deploy_gitupdater_works_open_ssh gitupdater@212.69.111.246
+    ssh -i ~/.ssh/deploy_gitupdater_works_open_ssh gitupdater@dockerweb.rgwork.ru
+
 
     sudo docker network ls
     sudo docker exec -it auth-proxy-prod bash

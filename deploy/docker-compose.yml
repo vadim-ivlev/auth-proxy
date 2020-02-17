@@ -1,4 +1,4 @@
-version: '2.0'
+version: '2.1'
 
 services:
 
@@ -36,4 +36,7 @@ services:
       - "3005"
     command: /bin/sh -c 'cd /home/node/app && npm install && chmod -Rf 777 node_modules && npm run start12 ; sleep 20000'
 
-    
+networks:
+  default:
+    external:
+      name: auth_proxy_network    
