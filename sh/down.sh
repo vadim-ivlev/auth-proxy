@@ -3,7 +3,7 @@
 
 
 echo 'гасим бд'
-docker-compose down
+docker-compose down -v
 
 echo 'удаляем db postgress'
 sudo rm -rf pgdata 
