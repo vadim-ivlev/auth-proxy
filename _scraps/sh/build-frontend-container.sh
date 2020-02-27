@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Если под Windows, добавляем команду sudo
+if [[ "$OSTYPE" == "msys" ]]; then alias sudo=""; fi
+
 
 # гасим бд
 docker-compose down

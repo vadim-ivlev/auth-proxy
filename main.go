@@ -25,7 +25,7 @@ func main() {
 
 	// Ждем готовности базы данных
 	db.PrintConfig()
-	db.WaitForDbOrExit(10)
+	db.WaitForDbOrExit(20)
 
 	// порождаем базу данных если ее нет
 	db.CreateDatabaseIfNotExists()

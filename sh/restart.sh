@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Если под Windows, добавляем команду sudo
+if [[ "$OSTYPE" == "msys" ]]; then alias sudo=""; fi
+
+
 echo 'гасим бд'
 docker-compose down
 
@@ -8,7 +12,7 @@ sudo rm -rf pgdata
 
 echo 'поднимаем бд'
 docker-compose up -d
-sleep 2
+sleep 5
 
 echo 'запускаем приложение'
 go run main.go -serve 4400 -env=dev
