@@ -16,9 +16,9 @@ services:
     ports:
       - 4400:4400
     depends_on:
-      - db
+      - auth-db
     links:
-      - db
+      - auth-db
 
 
   # server with test applications

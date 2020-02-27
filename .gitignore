@@ -8,7 +8,7 @@ moon.py
 node_modules
 docs/doc
 auth.db
-auth-proxy
+#auth-proxy
 
 deploy/auth-proxy
 deploy/configs

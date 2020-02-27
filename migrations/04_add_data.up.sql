@@ -14,8 +14,8 @@ INSERT INTO app (appname, url, description) VALUES ('auth','', 'Сервис а�
 INSERT INTO app (appname, url, description, sign) VALUES ('node1','http://auth-node:3001', 'Работает на продакшн env=prod. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение', 'Y');
 INSERT INTO app (appname, url, description, sign) VALUES ('node2','http://localhost:3002', 'Работает на компьютере разработчика env=dev. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение', 'Y');
 INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru', 'Прокси к https://rg.ru', 'Y' );
-INSERT INTO app (appname, url, description, public) VALUES ('photoreports-admin','http://photoreports-admin:8091', 'GraphQL API админки фоторепов');
-INSERT INTO app (appname, url, description, public) VALUES ('rgcore','http://rgru-core:8076', 'GraphQL API редакторского интерфейса');
+INSERT INTO app (appname, url, description, public) VALUES ('photoreports-admin','http://photoreports-admin:8091', 'GraphQL API админки фоторепов', 'Y');
+INSERT INTO app (appname, url, description, public) VALUES ('rgcore','http://rgru-core:8076', 'GraphQL API редакторского интерфейса', 'Y');
 
 
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('admin', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'admin@rg.ru' , 'Админ Админов'  , 'Администратор auth-proxy');
