@@ -17,7 +17,6 @@ INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru'
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin','http://photoreports-admin:8091', 'GraphQL API админки фоторепов');
 INSERT INTO app (appname, url, description) VALUES ('rgcore','http://rgru-core:8076', 'GraphQL API редакторского интерфейса');
 INSERT INTO app (appname, url, description) VALUES ('rgru-file-uploader','http://rgru-file-uploader:8077', 'GraphQL API загрузки файлов');
-INSERT INTO app (appname, url, description) VALUES ('rgru-image-resizer','http://rgru-image-resizer:8078', 'Nginx ресайз изображений');
 
 
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('admin', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'admin@rg.ru' , 'Админ Админов'  , 'Администратор auth-proxy');
@@ -67,18 +66,6 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploa
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'filatchev', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'nsinetskiy', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'parshin', 'admin');
-
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'admin', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'test', 'editor');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'chagin', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'chernyshev', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'ismagilov', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'kondratiev', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'ivlev', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'barsuk', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'filatchev', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'nsinetskiy', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-image-resizer', 'parshin', 'admin');
 
 
 -- EXCEPTION WHEN OTHERS THEN 
