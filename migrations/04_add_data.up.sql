@@ -16,6 +16,7 @@ INSERT INTO app (appname, url, description, sign) VALUES ('node2','http://localh
 INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru', 'Прокси к https://rg.ru', 'Y' );
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin','http://photoreports-admin:8091', 'GraphQL API админки фоторепов');
 INSERT INTO app (appname, url, description) VALUES ('rgcore','http://rgru-core:8076', 'GraphQL API редакторского интерфейса');
+INSERT INTO app (appname, url, description) VALUES ('rgru-file-uploader','http://rgru-file-uploader:8077', 'GraphQL API загрузки файлов');
 
 
 INSERT INTO "user" (username, password, email, fullname, description) VALUES ('admin', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'admin@rg.ru' , 'Админ Админов'  , 'Администратор auth-proxy');
@@ -53,6 +54,18 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'barsu
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'filatchev', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'nsinetskiy', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'parshin', 'admin');
+
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'admin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'test', 'editor');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'chagin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'chernyshev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'ismagilov', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'kondratiev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'ivlev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'barsuk', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'filatchev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'nsinetskiy', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'parshin', 'admin');
 
 
 -- EXCEPTION WHEN OTHERS THEN 
