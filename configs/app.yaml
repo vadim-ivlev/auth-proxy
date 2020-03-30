@@ -10,9 +10,9 @@ dev:
   # Использовать SQLite
   sqlite: false
   # Использовать https вместо http
-  tls: false
+  tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
-  secure: false
+  secure: true
   # Пользователи могут регистрироваться самостоятельно
   selfreg: true
   # Нужно ли вводить капчу при входе в систему
@@ -25,19 +25,19 @@ dev:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   http://localhost:5000/?url=http://localhost:4400
-    /testapp: https://auth-admin.now.sh/?url=http://localhost:4400
+    /admin:   http://localhost:5000/?url=https://localhost:4400
+    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=http://localhost:4400/schema&tab_name=auth-proxy4400
+    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 front:
   # Использовать SQLite
   sqlite: false
   # Использовать https вместо http
-  tls: false
+  tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
-  secure: false
+  secure: true
   # Пользователи могут регистрироваться самостоятельно
   selfreg: false
   # Нужно ли вводить капчу при входе в систему
@@ -50,10 +50,10 @@ front:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   https://auth-admin.now.sh/?url=http://localhost:4400
-    /testapp: https://auth-admin.now.sh/?url=http://localhost:4400
+    /admin:   https://auth-admin.now.sh/?url=https://localhost:4400
+    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=http://localhost:4400/schema&tab_name=auth-proxy4400
+    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 

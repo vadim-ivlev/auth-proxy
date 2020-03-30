@@ -5,6 +5,7 @@ import (
 	// "github.com/gin-contrib/sessions"
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/prometeo"
+	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -45,7 +46,17 @@ func setup() *gin.Engine {
 	r.Use(HeadersMiddleware())
 
 	Store = cookie.NewStore([]byte("secret"))
-	Store.Options(sessions.Options{MaxAge: 86400 * 365 * 5, Secure: SecureCookie, Path: "/"}) //0 - for session life
+	Store.Options(sessions.Options{
+		MaxAge: 86400 * 365 * 5, //0 - for session life
+		Secure: SecureCookie,
+		Path:   "/",
+		// FIXME: Новая версия Chrome требует установки флага SameSite: http.SameSiteNoneMode.
+		// что требует установки флага Secure: true,
+		// что в свою очередь требует https протокола (tls=true),
+		// что не работает в локальной версии без валидного сертификата.
+		// Попросить валидный сертификат у админов или поставить envoy as an ssl proxy
+		SameSite: http.SameSiteNoneMode,
+	})
 	r.Use(sessions.Sessions("auth-proxy", Store))
 
 	r.GET("/captcha", Captcha)
