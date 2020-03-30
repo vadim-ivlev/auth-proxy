@@ -86,7 +86,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 
 		// !!! Если пользователь заблокирован ПРЕРЫВАЕМ ЗАПРОС
 		if auth.IsUserEnabled(userName) == false {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " is disabled."})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " is disabled or DB is unavailable. Please ask admins."})
 			return
 		}
 		appPath := strings.TrimPrefix(c.Request.URL.Path, "/apps/")

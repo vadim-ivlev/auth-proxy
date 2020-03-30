@@ -59,7 +59,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 				r, dbUsername := auth.CheckUserPassword2(username, password)
 				if r == auth.NO_USER {
-					return nil, errors.New(username + " не зарегистрирован")
+					return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
 				} else if r == auth.WRONG_PASSWORD {
 					counter.IncrementCounter(username)
 					return nil, errors.New("Неверный пароль")
