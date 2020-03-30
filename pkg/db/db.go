@@ -48,7 +48,9 @@ func getDBFromPool() (*sqlx.DB, error) {
 		DBPool, err = sqlx.Connect("postgres", params.connectStr)
 		printIf("getDBFromPool(): postgres", err)
 	}
-
+	if err != nil {
+		return nil, err
+	}
 	DBPool.SetMaxOpenConns(1000) // The default is 0 (unlimited)
 	DBPool.SetMaxIdleConns(4)    // defaultMaxIdleConns = 2
 	DBPool.SetConnMaxLifetime(0) // 0, connections are reused forever.
