@@ -404,7 +404,7 @@ http://auth-proxy.rg.ru/oauthproviders
 чтобы он допускал самоподписанные сертификаты на localhost.
 Сделать это можно набрав в строке браузера
 
-    chrome://flags/#allow-insecure-localhostvv
+    chrome://flags/#allow-insecure-localhost
 
 
 О программе
