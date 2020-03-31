@@ -212,7 +212,7 @@
         requests_per_minute     # запросов в минуту
         requests_per_second     # запросов в секунду
     }
-    }
+    
 
 Те же данные можно получить делая `GET` запрос по маршруту `/stat`. 
 В последнем случае сам запрос на получение статистики не учитывается при вычислениях количеств запросов за единицу времени.
@@ -266,34 +266,34 @@
 
 __Приложение в Интернет__
 
-http://auth-proxy.rg.ru/
+https://auth-proxy.rg.ru/
 
 __Схема__
 
-http://auth-proxy.rg.ru/graphql
+https://auth-proxy.rg.ru/graphql
 
 __Тестовое GUI приложение__ - админка для контроля пользователей, приложений и ролей.
 
-http://auth-proxy.rg.ru/admin
+https://auth-proxy.rg.ru/admin
 
 __Captcha__
 
-http://auth-proxy.rg.ru/captcha
+https://auth-proxy.rg.ru/captcha
 
 __Public Key__
 
-http://auth-proxy.rg.ru/publickey
+https://auth-proxy.rg.ru/publickey
 
 
 __Статистика__
 
-http://auth-proxy.rg.ru/stat
+https://auth-proxy.rg.ru/stat
 
-http://auth-proxy.rg.ru/metrics
+https://auth-proxy.rg.ru/metrics
 
 __Провайдеры Oauth2__
 
-http://auth-proxy.rg.ru/oauthproviders
+https://auth-proxy.rg.ru/oauthproviders
 
 
 
@@ -309,11 +309,11 @@ http://auth-proxy.rg.ru/oauthproviders
 Локальные адреса
 
 
-- Тестовая страница API: <http://localhost:4400/> `GET`.
+- Тестовая страница API: <https://localhost:4400/> `GET`.
 
-- Конечная точка GraphQL <http://localhost:4400/schema> `POST`.
+- Конечная точка GraphQL <https://localhost:4400/schema> `POST`.
 
-- Тестовое приложение <http://localhost:4400/testapp> `GET`.
+- Тестовое приложение <https://localhost:4400/admin> `GET`.
 
 
 Запуск приложения 
@@ -478,7 +478,7 @@ SQL скрипты для порождения объектов базы дан�
     templates/
 
 
-Шаблоны приветственного сообщения приложения и тестовой страницы API <http://localhost:4400/>.
+Шаблоны приветственного сообщения приложения и тестовой страницы API <https://localhost:4400/>.
 
 
 
