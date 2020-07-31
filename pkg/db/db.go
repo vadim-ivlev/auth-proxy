@@ -29,10 +29,9 @@ func getDB() (*sqlx.DB, error) {
 	// Если пул не используется каждый раз коннектимся к БД заново
 	if SQLite {
 		return sqlx.Open("sqlite3", sqliteParams.Sqlitefile)
-	} else {
-		return sqlx.Open("postgres", params.connectStr)
 	}
 
+	return sqlx.Open("postgres", params.connectStr)
 }
 
 func getDBFromPool() (*sqlx.DB, error) {
@@ -264,6 +263,7 @@ func CreateDatabaseIfNotExists() {
 	MigrateUp("./migrations/")
 }
 
+// MigrateUp миграция БД
 func MigrateUp(dirname string) {
 	files, err := ioutil.ReadDir(dirname)
 	panicIf(err)

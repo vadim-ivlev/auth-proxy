@@ -9,6 +9,7 @@ dev:
   database: auth 
   port: 5432
   sslmode: disable
+  search_path: auth, extensions
 
 
 front:
@@ -18,6 +19,7 @@ front:
   database: auth 
   port: 5432
   sslmode: disable
+  search_path: auth, extensions
 
 
 prod:
@@ -27,3 +29,4 @@ prod:
   database: auth 
   port: 5432
   sslmode: disable
+  search_path: auth, extensions
