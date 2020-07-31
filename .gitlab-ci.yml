@@ -68,6 +68,8 @@ staging&copy:
     dependencies:
         - build
     script:
+        - echo %APP%
+        - echo $APP
         - echo "$APP"
         - echo '$APP'
         - echo '{$APP}'
