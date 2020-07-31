@@ -7,6 +7,8 @@ stages:
     # - test
     - build
     # - deploy&test
+    - staging&copy
+    - staging&compose
     - prod&copy
     - prod&compose
     - message_on_success
@@ -59,14 +61,14 @@ build:
         - production
 
 staging&copy:
-    stage: prod&copy
+    stage: staging&copy
     variables:
         IMAGE_NAME: auth-proxy-prod
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
         - build
     script:
-        - echo ${APP}
+        - echo $APP
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
         # public key added by user "chagin"
@@ -91,14 +93,14 @@ staging&copy:
         - staging
 
 staging&compose:
-    stage: prod&compose
+    stage: staging&compose
     variables:
         IMAGE_NAME: auth-proxy-prod
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
-        - prod&copy
+        - staging&copy
     script:
-        - echo ${APP}
+        - echo $APP
         # import ssh-key
         # use key name: deploy_gitupdater_base64
         # public key added by user "chagin"
