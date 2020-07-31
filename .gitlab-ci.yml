@@ -63,7 +63,7 @@ build:
 staging&copy:
     stage: staging&copy
     variables:
-        IMAGE_NAME: auth-proxy-prod
+        IMAGE_NAME: auth-proxy-staging
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
         - build
@@ -93,7 +93,7 @@ staging&copy:
         # copy new dir on server
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
-        - ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+        # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
 
     only:
         - staging
@@ -101,7 +101,7 @@ staging&copy:
 staging&compose:
     stage: staging&compose
     variables:
-        IMAGE_NAME: auth-proxy-prod
+        IMAGE_NAME: auth-proxy-staging
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
         - staging&copy
@@ -119,7 +119,7 @@ staging&compose:
         - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
         - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
         # !!! start real deploy and docker-compose
-        - ssh gitupdater@dockerweb2.rgwork.ru auth-proxy-prod
+        - ssh gitupdater@dockerweb2.rgwork.ru auth-proxy-staging
     only:
         - staging
 
