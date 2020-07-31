@@ -68,7 +68,7 @@ staging&copy:
     dependencies:
         - build
     script:
-        - echo $APP
+        - echo "$APP"
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
         # public key added by user "chagin"
@@ -100,7 +100,7 @@ staging&compose:
     dependencies:
         - staging&copy
     script:
-        - echo $APP
+        - echo "$APP"
         # import ssh-key
         # use key name: deploy_gitupdater_base64
         # public key added by user "chagin"
