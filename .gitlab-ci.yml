@@ -69,6 +69,10 @@ staging&copy:
         - build
     script:
         - echo "$APP"
+        - echo '$APP'
+        - echo '{$APP}'
+        - echo "{$APP}"
+        - echo {$APP}
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
         # public key added by user "chagin"
