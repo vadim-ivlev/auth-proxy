@@ -65,10 +65,8 @@ staging&copy:
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
         - build
-    tags:
-        - gl
-        - rg
     script:
+        - echo ${APP}
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
         # public key added by user "chagin"
@@ -99,13 +97,8 @@ staging&compose:
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
         - prod&copy
-    tags:
-        - gl
-        - rg
     script:
-        - echo ${CI_COMMIT_TAG}
-        - echo ${CI_JOB_STAGE}
-        - echo ${CI_RUNNER_TAGS}
+        - echo ${APP}
         # import ssh-key
         # use key name: deploy_gitupdater_base64
         # public key added by user "chagin"
