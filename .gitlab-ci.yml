@@ -59,6 +59,7 @@ build:
         expire_in: 60 minutes
     only:
         - production
+        - staging
 
 staging&copy:
     stage: staging&copy
@@ -106,7 +107,6 @@ staging&compose:
     dependencies:
         - staging&copy
     script:
-        - echo "$APP"
         # import ssh-key
         # use key name: deploy_gitupdater_base64
         # public key added by user "chagin"
