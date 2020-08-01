@@ -13,25 +13,25 @@ services:
       - 4400:4400
 
 
-  # server with test applications
-  auth-node:
-    image: "node:10.16-stretch-slim"
-    container_name: auth-node
-    user: "node"
-    working_dir: /home/node/app
-    depends_on: 
-      - auth-proxy-prod
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - ./node-apps:/home/node/app
-    expose:
-      - "3001"
-      - "3002"
-      - "3003"
-      - "3004"
-      - "3005"
-    command: /bin/sh -c 'cd /home/node/app && npm install && chmod -Rf 777 node_modules && npm run start12 ; sleep 20000'
+  # # server with test applications
+  # auth-node:
+  #   image: "node:10.16-stretch-slim"
+  #   container_name: auth-node
+  #   user: "node"
+  #   working_dir: /home/node/app
+  #   depends_on: 
+  #     - auth-proxy-prod
+  #   environment:
+  #     - NODE_ENV=production
+  #   volumes:
+  #     - ./node-apps:/home/node/app
+  #   expose:
+  #     - "3001"
+  #     - "3002"
+  #     - "3003"
+  #     - "3004"
+  #     - "3005"
+  #   command: /bin/sh -c 'cd /home/node/app && npm install && chmod -Rf 777 node_modules && npm run start12 ; sleep 20000'
 
 networks:
   default:

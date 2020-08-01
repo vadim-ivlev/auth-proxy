@@ -65,8 +65,8 @@ staging&copy:
         - ls -lF
         # remove old dir
         - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
-        - cp -r $BUILD_PATH/deploy/staging $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging
         # copy new dir on server
+        - cp -r $BUILD_PATH/deploy/staging $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
         # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
@@ -120,14 +120,12 @@ prod&copy:
         # deploy on server
         - ls -lF
         # remove old dir
-        - ssh gitupdater@dockerweb.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
-        # copy new dir on server
-        - scp -pr $BUILD_PATH/deploy/prod gitupdater@dockerweb.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy deploy exclude prod dir
-        - shopt -s extglob
-        - scp -pr !(prod) $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        - cp -r $BUILD_PATH/deploy/prod $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging
+        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
-        - ssh gitupdater@dockerweb.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+        - ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
 
     only:
         - production
@@ -152,7 +150,7 @@ prod&compose:
         - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
         - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
         # !!! start real deploy and docker-compose
-        - ssh gitupdater@dockerweb.rgwork.ru auth-proxy-prod
+        - ssh gitupdater@dockerweb2.rgwork.ru auth-proxy-prod
     only:
         - production
 
