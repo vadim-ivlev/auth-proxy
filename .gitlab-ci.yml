@@ -66,7 +66,7 @@ staging&copy:
         # remove old dir
         - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server
-        - cp -r $BUILD_PATH/deploy/staging $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging
+        - cp -r $BUILD_PATH/deploy/staging/* $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging && rm -rf $BUILD_PATH/deploy/prod
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
         # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
@@ -122,10 +122,10 @@ prod&copy:
         # remove old dir
         - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy deploy exclude prod dir
-        - cp -r $BUILD_PATH/deploy/prod $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging
+        - cp -r $BUILD_PATH/deploy/prod/* $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging && rm -rf $BUILD_PATH/deploy/prod
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
-        - ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+        # - ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
 
     only:
         - production
@@ -176,7 +176,7 @@ message_on_success:
         # send to telegram proxy
         - curl -v http://proxy.govoru.com/?message=%E2%9C%85%20Success.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
     only:
-        - production
+        - production2222
 
 message_on_failure:
     stage: message_on_failure
@@ -188,4 +188,4 @@ message_on_failure:
         # send to telegram proxy
         - curl -v http://proxy.govoru.com/?message=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20failed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
     only:
-        - production
+        - production2222
