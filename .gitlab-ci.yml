@@ -14,25 +14,6 @@ stages:
     - message_on_success
     - message_on_failure
 
-# before_script:
-#     # import ssh-key
-#     # use key name: deploy_gitupdater_works_base64
-#     # public key added by user "chagin"
-#     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-#     - eval $(ssh-agent -s)
-#     # Attention! Key need convert in base64 and add in secret variable PROD_RSA_PRIVATE_KEY
-#     - ssh-add <(echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode)
-#     - mkdir -p /root/.ssh
-#     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-#     - echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
-#     - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
-#     # key for deployment
-#     # use key name: deploy_gitupdater_base64
-#     - ssh-add <(echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode)
-#     - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa_deploy
-#     - chmod 600 /root/.ssh/id_rsa_deploy
-
-
 build:
     stage: build
     variables:
@@ -69,13 +50,6 @@ staging&copy:
     dependencies:
         - build
     script:
-        - echo %APP%
-        - echo $APP
-        - echo "$APP"
-        - echo '$APP'
-        - echo '{$APP}'
-        - echo "{$APP}"
-        - echo {$APP}
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
         # public key added by user "chagin"
@@ -92,7 +66,7 @@ staging&copy:
         # remove old dir
         - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server
-        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        - scp -pr $BUILD_PATH/deploy/staging gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
         # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
 
@@ -147,7 +121,7 @@ prod&copy:
         # remove old dir
         - ssh gitupdater@dockerweb.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
         # copy new dir on server
-        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        - scp -pr $BUILD_PATH/deploy/prod gitupdater@dockerweb.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
         - ssh gitupdater@dockerweb.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
 

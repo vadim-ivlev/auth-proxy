@@ -2,7 +2,6 @@ version: '2.1'
 
 services:
 
-
   # сервер, где запущено приложение
   auth-proxy-prod:
     image: auth-proxy-prod
@@ -12,8 +11,6 @@ services:
     restart: always
     ports:
       - 4400:4400
-
-
 
 
   # server with test applications
@@ -39,4 +36,4 @@ services:
 networks:
   default:
     external:
-      name: auth_proxy_network    
+      name: auth_proxy_network
