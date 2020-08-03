@@ -10,9 +10,10 @@ build-gl:
         - cd       /go/src/$REPO_NAME
 
         # build app
-        - rm -rf ./build.sh
-        - mv ./build-gl.sh ./build.sh
-        - ./build.sh
+        # - rm -rf ./build.sh
+        # - mv ./build-gl.sh ./build.sh
+        - chmod +x ./build-gl.sh
+        - ./build-gl.sh
 
         # collect files to deploy on prod
         - rm -rf   $BUILD_PATH/deploy
