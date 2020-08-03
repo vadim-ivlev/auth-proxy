@@ -4,13 +4,16 @@ image: golang:1.14.6
 #   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
-    # - test
+    # rgru
     - build
-    # - deploy&test
-    - staging-gl&copy
-    - staging-gl&compose
     - prod&copy
     - prod&compose
+    # - deploy&test
+    # godliteratury
+    - build-gl
+    - staging-gl&copy
+    - staging-gl&compose
+    # telegram message
     - message_on_success
     - message_on_failure
 

@@ -1,5 +1,5 @@
-build:
-    stage: build
+build-gl:
+    stage: build-gl
     variables:
         REPO_NAME: auth-proxy
         BUILD_PATH: /builds/masterback/auth-proxy
@@ -10,7 +10,7 @@ build:
         - cd       /go/src/$REPO_NAME
 
         # build app
-        - ./build.sh
+        - ./build-gl.sh
 
         # collect files to deploy on prod
         - rm -rf   $BUILD_PATH/deploy
@@ -31,7 +31,7 @@ staging-gl&copy:
         IMAGE_NAME: auth-proxy-staging
         BUILD_PATH: /builds/masterback/auth-proxy
     dependencies:
-        - build
+        - build-gl
     script:
         # import ssh-key
         # use key name: deploy_gitupdater_works_base64
