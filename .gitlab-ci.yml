@@ -15,8 +15,8 @@ stages:
     - message_on_failure
 
 include:
-    - local: /.gitlab-ci/gl-tmpl.yml
-    - local: /.gitlab-ci/rg-tmpl.yml
+    - local: /gitlab-ci/gl-tmpl.yml
+    - local: /gitlab-ci/rg-tmpl.yml
 
 
 message_on_success:

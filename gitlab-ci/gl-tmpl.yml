@@ -54,7 +54,6 @@ staging-gl&copy:
         - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
         # change rights to auth-node
         # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
-
     only:
         - staging-gl
 
