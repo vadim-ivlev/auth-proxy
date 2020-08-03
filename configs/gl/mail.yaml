@@ -1,0 +1,21 @@
+# Параметры подключения к почтовому серверу
+# для окружений dev, front, prod
+
+
+dev:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+    
+
+front:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+        
+
+prod:
+  addr: mail3.rg.ru:25
+  from: noreply@rg.ru
+    
+
+   
+

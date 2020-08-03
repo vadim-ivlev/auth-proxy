@@ -1,0 +1,110 @@
+# Общие параметры приложения
+# для окружений dev, front, prod
+
+# изначально 
+# были параметрами запуска приложения.
+# Теперь перенесены в настроечные файлы для упрощения запуска приложения
+
+
+dev:
+  # Использовать SQLite
+  sqlite: false
+  # Использовать https вместо http
+  tls: true
+  # Установить флаг secure на куки браузера. Работает только для https протокола.
+  secure: true
+  # Пользователи могут регистрироваться самостоятельно
+  selfreg: true
+  # Нужно ли вводить капчу при входе в систему
+  use_captcha: true
+  # Максимально допустимое число ошибок ввода пароля
+  max_attempts: 5
+  # Время сброса счетчика ошибок пароля в минутах
+  reset_time: 60
+
+  # перенаправления браузера для предоставления различных GUI 
+  redirects:
+    # админка сервиса. 
+    /admin:   http://localhost:5000/?url=https://localhost:4400
+    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
+    # тест GraphQL API. 
+    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+
+
+front:
+  # Использовать SQLite
+  sqlite: false
+  # Использовать https вместо http
+  tls: true
+  # Установить флаг secure на куки браузера. Работает только для https протокола.
+  secure: true
+  # Пользователи могут регистрироваться самостоятельно
+  selfreg: false
+  # Нужно ли вводить капчу при входе в систему
+  use_captcha: true
+  # Максимально допустимое число ошибок ввода пароля
+  max_attempts: 5
+  # Время сброса счетчика ошибок пароля в минутах
+  reset_time: 60
+
+  # перенаправления браузера для предоставления различных GUI 
+  redirects:
+    # админка сервиса. 
+    /admin:   https://auth-admin.now.sh/?url=https://localhost:4400
+    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
+    # тест GraphQL API. 
+    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+
+staging:
+  # Использовать SQLite
+  sqlite: false
+  # Использовать https вместо http
+  tls: false
+  # Установить флаг secure на куки браузера. Работает только для https протокола. 
+  # На продакшене установлен в true, не смотря на tls: false.
+  # Так как приложение проксируется через отдельный сервер со своим TLS
+  secure: true
+  # Пользователи могут регистрироваться самостоятельно
+  selfreg: false
+  # Нужно ли вводить капчу при входе в систему
+  use_captcha: true
+  # Максимально допустимое число ошибок ввода пароля
+  max_attempts: 5
+  # Время сброса счетчика ошибок пароля в минутах
+  reset_time: 60
+
+  # перенаправления браузера для предоставления различных GUI 
+  redirects:
+    # админка сервиса. 
+    /admin:   https://auth-admin.now.sh/?url=https://auth-staging.godliteratury.ru
+    /testapp: https://auth-admin.now.sh/?url=https://auth-staging.godliteratury.ru
+    # тест GraphQL API. 
+    /test: https://graphql-test.now.sh/?end_point=https://auth-staging.godliteratury.ru/schema&tab_name=auth-proxy
+
+
+prod:
+  # Использовать SQLite
+  sqlite: false
+  # Использовать https вместо http
+  tls: false
+  # Установить флаг secure на куки браузера. Работает только для https протокола. 
+  # На продакшене установлен в true, не смотря на tls: false.
+  # Так как приложение проксируется через отдельный сервер со своим TLS
+  secure: true
+  # Пользователи могут регистрироваться самостоятельно
+  selfreg: false
+  # Нужно ли вводить капчу при входе в систему
+  use_captcha: true
+  # Максимально допустимое число ошибок ввода пароля
+  max_attempts: 5
+  # Время сброса счетчика ошибок пароля в минутах
+  reset_time: 60
+
+  # перенаправления браузера для предоставления различных GUI 
+  redirects:
+    # админка сервиса. 
+    /admin:   https://auth-admin.now.sh/?url=https://auth.godliteratury.ru
+    /testapp: https://auth-admin.now.sh/?url=https://auth.godliteratury.ru
+    # тест GraphQL API. 
+    /test: https://graphql-test.now.sh/?end_point=https://auth.godliteratury.ru/schema&tab_name=auth-proxy
+

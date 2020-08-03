@@ -16,10 +16,10 @@ echo "cleaning  deploy/ directory "
 
 # clean deploy/ directory
 rm -rf deploy/auth-proxy
-rm -rf deploy/configs_example
+# rm -rf deploy/configs_example
 rm -rf deploy/migrations
 rm -rf deploy/templates
-rm -rf deploy/node-apps
+# rm -rf deploy/node-apps
 rm -rf deploy/etc
 rm -rf deploy/certificates
 
@@ -35,10 +35,10 @@ rm -f deploy/configs/signature.yaml
 echo "copying stuff ..."
 # copy files to deploy/
 cp    auth-proxy        deploy/auth-proxy
-cp -r configs           deploy/configs_example
+# cp -r configs           deploy/configs_example
 cp -r migrations        deploy/migrations
 cp -r templates         deploy/templates
-cp -r node-apps         deploy/node-apps
+# cp -r node-apps         deploy/node-apps
 cp -r etc               deploy/etc
 cp -r certificates      deploy/certificates
 

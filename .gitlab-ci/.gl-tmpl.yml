@@ -1,0 +1,83 @@
+build:
+    stage: build
+    variables:
+        REPO_NAME: auth-proxy
+        BUILD_PATH: /builds/masterback/auth-proxy
+    script:
+
+        - echo 'Copying to files to /go/src and go there'
+        - mkdir -p /go/src/$REPO_NAME
+        - cp -r .  /go/src/$REPO_NAME
+        - cd       /go/src/$REPO_NAME
+
+        # build app
+        - ./build.sh
+
+        # collect files to deploy on prod
+        - rm -rf   $BUILD_PATH/deploy
+        - cp -r    deploy $BUILD_PATH
+        - mkdir -p $BUILD_PATH/deploy/configs
+        # - chmod -R 777 $BUILD_PATH/node-apps
+    artifacts:
+        paths:
+            - $BUILD_PATH/deploy
+        expire_in: 60 minutes
+    only:
+        - production-gl
+        - staging-gl
+
+staging-gl&copy:
+    stage: staging-gl&copy
+    variables:
+        IMAGE_NAME: auth-proxy-staging
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - build
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_works_base64
+        # public key added by user "chagin"
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+        # Attention! Key need convert in base64 and add in secret variable PROD_RSA_PRIVATE_KEY
+        - ssh-add <(echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode)
+        - mkdir -p /root/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        - echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
+        - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
+        # deploy on server
+        - ls -lF
+        # remove old dir
+        - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
+        # copy new dir on server
+        - cp -r $BUILD_PATH/deploy/staging/* $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging && rm -rf $BUILD_PATH/deploy/prod
+        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        # change rights to auth-node
+        # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+
+    only:
+        - staging-gl
+
+        staging-gl&compose:
+    stage: staging-gl&compose
+    variables:
+        IMAGE_NAME: auth-proxy-staging
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - staging-gl&copy
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_base64
+        # public key added by user "chagin"
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+        # Attention! Key need convert in base64 and add in secret variable DEPLOY_RSA_PRIVATE_KEY
+        - ssh-add <(echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode)
+        - mkdir -p /root/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
+        - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
+        # !!! start real deploy and docker-compose
+        - ssh gitupdater@dockerweb2.rgwork.ru auth-proxy-staging
+    only:
+        - staging-gl
