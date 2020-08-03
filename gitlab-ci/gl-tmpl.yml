@@ -4,7 +4,6 @@ build:
         REPO_NAME: auth-proxy
         BUILD_PATH: /builds/masterback/auth-proxy
     script:
-
         - echo 'Copying to files to /go/src and go there'
         - mkdir -p /go/src/$REPO_NAME
         - cp -r .  /go/src/$REPO_NAME
@@ -57,7 +56,8 @@ staging-gl&copy:
     only:
         - staging-gl
 
-        staging-gl&compose:
+
+staging-gl&compose:
     stage: staging-gl&compose
     variables:
         IMAGE_NAME: auth-proxy-staging
