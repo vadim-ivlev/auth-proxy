@@ -1,11 +1,12 @@
 ## TODO:
 
 
-aaa
+Add PUT, DELETE verbs
+add auth_proxy_network
 
 
 
-- [GIN] 2019/11/28 - 18:27:49 | 404 |      14.536µs |             ::1 | GET      /bundles/jurist/fonts/rg/noto.woff.min.css
+- [GIN] 2019/11/2   8 - 18:27:49 | 404 |      14.536µs |             ::1 | GET      /bundles/jurist/fonts/rg/noto.woff.min.css
 
 
 

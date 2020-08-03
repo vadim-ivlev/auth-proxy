@@ -40,7 +40,8 @@ services:
     command: "npm run start12"
 
 
-  # база данных
+  # база данных Postgres 
+  # Используется если при запуске приложения не указано использовать Sqlite. Ключ -sqlite.
   auth-db:
     image: postgres:10.9-alpine
     container_name: auth-db
@@ -60,4 +61,13 @@ services:
 
 volumes: 
   test_apps:
-    
+
+# внешняя сеть добавлена, чтобы можно было проксировать или обращаться к приложениям по именам служб,
+# прописанных в файлах docker-compose.yml этих приложений, если конечно эти приложения так же 
+# входят в подсеть auth_proxy_network.
+#  В противном случае придётся прописывать IP адреса приложений, 
+# что неудобно при переносе приложений или их перезапуске. 
+networks:
+  default:
+    external:
+      name: auth_proxy_network    
