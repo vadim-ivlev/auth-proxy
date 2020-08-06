@@ -4,19 +4,19 @@
 dev:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
-  link: http://localhost:3000/auth/login
+  link: https://auth-proxy.rg.ru/admin
     
 front:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
-  link: http://localhost:3000/auth/login
+  link: https://auth-proxy.rg.ru/admin
         
 staging:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
-  link: https://rg-editor-staging.rg.ru/auth/login
+  link: https://auth-proxy.rg.ru/admin
 
 prod:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
-  link: https://rg-editor.rg.ru/auth/login
+  link: https://auth-proxy.rg.ru/admin
