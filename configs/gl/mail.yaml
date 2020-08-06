@@ -4,15 +4,19 @@
 dev:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
+  link: http://localhost:3000/auth/login
     
 front:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
+  link: http://localhost:3000/auth/login
         
 staging:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
+  link: https://gl-editor-staging.rg.ru/auth/login
 
 prod:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
+  link: https://gl-editor.rg.ru/auth/login
