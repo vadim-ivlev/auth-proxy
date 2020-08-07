@@ -4,6 +4,7 @@ build-gl:
         REPO_NAME: auth-proxy
         BUILD_PATH: /builds/masterback/auth-proxy
     script:
+        - cat /etc/resolv.conf
         - echo 'Copying to files to /go/src and go there'
         - mkdir -p /go/src/$REPO_NAME
         - cp -r .  /go/src/$REPO_NAME
