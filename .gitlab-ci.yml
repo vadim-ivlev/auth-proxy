@@ -1,4 +1,4 @@
-image: golang:1.14.6
+image: golang:1.14
 
 # variables:
 #   GIT_SUBMODULE_STRATEGY: recursive

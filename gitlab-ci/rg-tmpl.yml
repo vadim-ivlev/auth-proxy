@@ -11,7 +11,8 @@ build:
         - cd       /go/src/$REPO_NAME
 
         # build app
-        - ./build.sh
+        - chmod +x ./gitlab-ci/build.sh
+        - ./gitlab-ci/build.sh
 
         # collect files to deploy on prod
         - rm -rf   $BUILD_PATH/deploy
@@ -34,16 +35,10 @@ prod&copy:
         - build
     script:
         # import ssh-key
-        # use key name: deploy_gitupdater_works_base64
-        # public key added by user "chagin"
-        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-        - eval $(ssh-agent -s)
+        # use key name: deploy_gitupdater_works_base64 (public key added by user chagin)
         # Attention! Key need convert in base64 and add in secret variable PROD_RSA_PRIVATE_KEY
-        - ssh-add <(echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode)
-        - mkdir -p /root/.ssh
-        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-        - echo "$PROD_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
-        - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $PROD_RSA_PRIVATE_KEY
         # deploy on server
         - ls -lF
         # remove old dir
@@ -66,16 +61,10 @@ prod&compose:
         - prod&copy
     script:
         # import ssh-key
-        # use key name: deploy_gitupdater_base64
-        # public key added by user "chagin"
-        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-        - eval $(ssh-agent -s)
+        # use key name: deploy_gitupdater_base64 (public key added by user chagin)
         # Attention! Key need convert in base64 and add in secret variable DEPLOY_RSA_PRIVATE_KEY
-        - ssh-add <(echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode)
-        - mkdir -p /root/.ssh
-        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-        - echo "$DEPLOY_RSA_PRIVATE_KEY" | base64 --decode > /root/.ssh/id_rsa
-        - chmod 600 /root/.ssh/id_rsa && chmod 700 /root/.ssh
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $DEPLOY_RSA_PRIVATE_KEY
         # !!! start real deploy and docker-compose
         - ssh gitupdater@dockerweb.rgwork.ru auth-proxy-prod
     only:
