@@ -1,32 +1,20 @@
 # Параметры подключения к Postgres
-# для окружений dev, front, prod
-
+# для окружений dev, front
 
 dev:
-  host: localhost
-  user: root 
-  password: root 
-  database: auth 
-  port: 5432
-  sslmode: disable
+  host:     localhost
+  user:     pgadmin
+  password: 159753
+  database: rgru
+  port:     5432
   search_path: auth, extensions
-
+  sslmode:  disable
 
 front:
-  host: auth-db
-  user: root 
-  password: root 
-  database: auth 
-  port: 5432
-  sslmode: disable
+  host:     postgres
+  user:     pgadmin
+  password: 159753
+  database: rgru
+  port:     5432
   search_path: auth, extensions
-
-
-prod:
-  host: localhost
-  user: root 
-  password: root 
-  database: auth 
-  port: 5432
-  sslmode: disable
-  search_path: auth, extensions
+  sslmode:  disable
