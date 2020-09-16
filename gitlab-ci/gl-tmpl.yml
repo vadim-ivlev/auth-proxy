@@ -95,7 +95,7 @@ prod-gl&copy:
         # change rights to auth-node
         # ssh gitupdater@dockerweb3.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
     only:
-        - prod-gl
+        - production-gl
 
 
 prod-gl&compose:
@@ -114,4 +114,4 @@ prod-gl&compose:
         # !!! start real deploy and docker-compose
         - ssh gitupdater@dockerweb3.rgwork.ru auth-proxy-prod
     only:
-        - prod-gl
+        - production-gl
