@@ -76,10 +76,10 @@ staging:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   https://auth-admin.now.sh/?url=https://auth-staging.godliteratury.ru
-    /testapp: https://auth-admin.now.sh/?url=https://auth-staging.godliteratury.ru
+    /admin:   https://auth-admin.now.sh/?url=https://gl-auth-staging.rg.ru
+    /testapp: https://auth-admin.now.sh/?url=https://gl-auth-staging.rg.ru
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=https://auth-staging.godliteratury.ru/schema&tab_name=auth-proxy
+    /test: https://graphql-test.now.sh/?end_point=https://gl-auth-staging.rg.ru/schema&tab_name=auth-proxy
 
 
 prod:
@@ -103,8 +103,8 @@ prod:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   https://auth-admin.now.sh/?url=https://auth.godliteratury.ru
-    /testapp: https://auth-admin.now.sh/?url=https://auth.godliteratury.ru
+    /admin:   https://auth-admin.now.sh/?url=https://gl-auth.rg.ru
+    /testapp: https://auth-admin.now.sh/?url=https://gl-auth.rg.ru
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=https://auth.godliteratury.ru/schema&tab_name=auth-proxy
+    /test: https://graphql-test.now.sh/?end_point=https://gl-auth.rg.ru/schema&tab_name=auth-proxy
 

@@ -1,7 +1,6 @@
 # Параметры подключения к Postgres
 # для окружений dev, front, prod
 
-
 dev:
   host: localhost
   user: root 
@@ -11,19 +10,8 @@ dev:
   sslmode: disable
   search_path: auth, extensions
 
-
 front:
   host: auth-db
-  user: root 
-  password: root 
-  database: auth 
-  port: 5432
-  sslmode: disable
-  search_path: auth, extensions
-
-
-prod:
-  host: localhost
   user: root 
   password: root 
   database: auth 

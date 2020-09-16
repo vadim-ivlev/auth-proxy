@@ -1,4 +1,4 @@
-image: golang:1.14
+image: golang:1.15
 
 # variables:
 #   GIT_SUBMODULE_STRATEGY: recursive
@@ -13,6 +13,8 @@ stages:
     - build-gl
     - staging-gl&copy
     - staging-gl&compose
+    - prod-gl&copy
+    - prod-gl&compose
     # telegram message
     - message_on_success
     - message_on_failure
@@ -27,21 +29,25 @@ message_on_success:
     allow_failure: true
     dependencies:
         - prod&compose
+        - prod-gl&compose
     when: on_success
     script:
         # send to telegram proxy
         - curl -v http://proxy.govoru.com/?message=%E2%9C%85%20Success.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
     only:
         - production
+        - production-gl
 
 message_on_failure:
     stage: message_on_failure
     allow_failure: true
     dependencies:
         - prod&compose
+        - prod-gl&compose
     when: on_failure
     script:
         # send to telegram proxy
         - curl -v http://proxy.govoru.com/?message=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20failed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
     only:
         - production
+        - production-gl
