@@ -10,10 +10,6 @@ RUN apt-get -y install curl
 WORKDIR /app
 COPY . .
 
-EXPOSE 4400
-
 CMD bash -c "cd /app && ./auth-proxy -serve 4400 -env=prod"
 
-
-
-
+EXPOSE 4400

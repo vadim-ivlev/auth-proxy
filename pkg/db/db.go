@@ -29,10 +29,9 @@ func getDB() (*sqlx.DB, error) {
 	// Если пул не используется каждый раз коннектимся к БД заново
 	if SQLite {
 		return sqlx.Open("sqlite3", sqliteParams.Sqlitefile)
-	} else {
-		return sqlx.Open("postgres", params.connectStr)
 	}
 
+	return sqlx.Open("postgres", params.connectStr)
 }
 
 func getDBFromPool() (*sqlx.DB, error) {
@@ -48,7 +47,9 @@ func getDBFromPool() (*sqlx.DB, error) {
 		DBPool, err = sqlx.Connect("postgres", params.connectStr)
 		printIf("getDBFromPool(): postgres", err)
 	}
-
+	if err != nil {
+		return nil, err
+	}
 	DBPool.SetMaxOpenConns(1000) // The default is 0 (unlimited)
 	DBPool.SetMaxIdleConns(4)    // defaultMaxIdleConns = 2
 	DBPool.SetConnMaxLifetime(0) // 0, connections are reused forever.
@@ -262,6 +263,7 @@ func CreateDatabaseIfNotExists() {
 	MigrateUp("./migrations/")
 }
 
+// MigrateUp миграция БД
 func MigrateUp(dirname string) {
 	files, err := ioutil.ReadDir(dirname)
 	panicIf(err)

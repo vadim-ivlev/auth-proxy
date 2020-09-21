@@ -1,4 +1,3 @@
-// https://github.com/golang/go/wiki/SendingMail
 package mail
 
 import (
@@ -6,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/smtp"
-	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -14,12 +12,12 @@ import (
 type connectionParams struct {
 	Addr string
 	From string
+	Link string
 }
 
 var params connectionParams
 var mailTemplates map[string]string
 
-// **********************************************************************************
 // ReadConfig reads YAML file
 func ReadConfig(fileName string, env string) {
 	yamlFile, err := ioutil.ReadFile(fileName)
@@ -36,7 +34,7 @@ func ReadConfig(fileName string, env string) {
 	params = envParams[env]
 }
 
-// ReadConfig reads YAML file with mail templates
+// ReadMailTemplate reads YAML file with mail templates
 func ReadMailTemplate(fileName string) {
 	yamlFile, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -51,7 +49,9 @@ func ReadMailTemplate(fileName string) {
 	}
 }
 
+// SendMessage send mail
 // TODO: https://stackoverflow.com/questions/46805579/send-smtp-email-to-multiple-receivers
+// https://github.com/golang/go/wiki/SendingMail
 func SendMessage(templateName string, username, toMail, password string) error {
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial(params.Addr)
@@ -75,7 +75,7 @@ func SendMessage(templateName string, username, toMail, password string) error {
 	}
 	defer wc.Close()
 
-	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
+	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, params.Link, username, password)
 	_, err = fmt.Fprintf(wc, msg)
 	if err != nil {
 		return err
@@ -95,12 +95,13 @@ func SendMessage(templateName string, username, toMail, password string) error {
 	return nil
 }
 
-func SendMessage2(templateName string, username, toMail, password string) error {
-	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
+// SendMessage2 ???
+// func SendMessage2(templateName string, username, toMail, password string) error {
+// 	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
 
-	auth := smtp.PlainAuth("", "noreply@rg.ru", "", "mail3.rg.ru")
-	to := strings.Split(toMail, ",")
-	err := smtp.SendMail(params.Addr, auth, params.From, to, []byte(msg))
+// 	auth := smtp.PlainAuth("", "noreply@rg.ru", "", "mail3.rg.ru")
+// 	to := strings.Split(toMail, ",")
+// 	err := smtp.SendMail(params.Addr, auth, params.From, to, []byte(msg))
 
-	return err
-}
+// 	return err
+// }

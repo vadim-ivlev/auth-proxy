@@ -1,0 +1,117 @@
+build-gl:
+    stage: build-gl
+    variables:
+        REPO_NAME: auth-proxy
+        BUILD_PATH: /builds/masterback/auth-proxy
+    script:
+        - cat /etc/resolv.conf
+        - echo 'Copying to files to /go/src and go there'
+        - mkdir -p /go/src/$REPO_NAME
+        - cp -r .  /go/src/$REPO_NAME
+        - cd       /go/src/$REPO_NAME
+
+        # build app
+        - chmod +x ./gitlab-ci/build-gl.sh
+        - ./gitlab-ci/build-gl.sh
+
+        # collect files to deploy on prod
+        - rm -rf   $BUILD_PATH/deploy
+        - cp -r    deploy $BUILD_PATH
+        - mkdir -p $BUILD_PATH/deploy/configs
+        # - chmod -R 777 $BUILD_PATH/node-apps
+    artifacts:
+        paths:
+            - $BUILD_PATH/deploy
+        expire_in: 60 minutes
+    only:
+        - production-gl
+        - staging-gl
+
+staging-gl&copy:
+    stage: staging-gl&copy
+    variables:
+        IMAGE_NAME: auth-proxy-staging
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - build-gl
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_works_base64 (public key added by user chagin)
+        # Attention! Key need convert in base64 and add in secret variable PROD_RSA_PRIVATE_KEY
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $PROD_RSA_PRIVATE_KEY
+        # deploy on server
+        - ls -lF
+        # remove old dir
+        - ssh gitupdater@dockerweb2.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
+        # copy new dir on server
+        - cp -r $BUILD_PATH/deploy/staging/* $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/staging && rm -rf $BUILD_PATH/deploy/prod
+        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb2.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        # change rights to auth-node
+        # ssh gitupdater@dockerweb2.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+    only:
+        - staging-gl
+
+
+staging-gl&compose:
+    stage: staging-gl&compose
+    variables:
+        IMAGE_NAME: auth-proxy-staging
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - staging-gl&copy
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_base64 (public key added by user chagin)
+        # Attention! Key need convert in base64 and add in secret variable DEPLOY_RSA_PRIVATE_KEY
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $DEPLOY_RSA_PRIVATE_KEY
+        # !!! start real deploy and docker-compose
+        - ssh gitupdater@dockerweb2.rgwork.ru auth-proxy-staging
+    only:
+        - staging-gl
+
+
+prod-gl&copy:
+    stage: prod-gl&copy
+    variables:
+        IMAGE_NAME: auth-proxy-prod
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - build-gl
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_works_base64 (public key added by user chagin)
+        # Attention! Key need convert in base64 and add in secret variable PROD_RSA_PRIVATE_KEY
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $PROD_RSA_PRIVATE_KEY
+        # deploy on server
+        - ls -lF
+        # remove old dir
+        - ssh gitupdater@dockerweb3.rgwork.ru 'rm -rf /home/gitupdater/'$IMAGE_NAME
+        # copy new dir on server
+        - cp -r $BUILD_PATH/deploy/prod/* $BUILD_PATH/deploy && rm -rf $BUILD_PATH/deploy/prod && rm -rf $BUILD_PATH/deploy/prod
+        - scp -pr $BUILD_PATH/deploy gitupdater@dockerweb3.rgwork.ru:/home/gitupdater/$IMAGE_NAME
+        # change rights to auth-node
+        # ssh gitupdater@dockerweb3.rgwork.ru 'chmod -R 777 /home/gitupdater/'$IMAGE_NAME/node-apps
+    only:
+        - production-gl
+
+
+prod-gl&compose:
+    stage: prod-gl&compose
+    variables:
+        IMAGE_NAME: auth-proxy-prod
+        BUILD_PATH: /builds/masterback/auth-proxy
+    dependencies:
+        - prod-gl&copy
+    script:
+        # import ssh-key
+        # use key name: deploy_gitupdater_base64 (public key added by user chagin)
+        # Attention! Key need convert in base64 and add in secret variable DEPLOY_RSA_PRIVATE_KEY
+        - chmod +x ./gitlab-ci/import-ssh-key.sh
+        - ./gitlab-ci/import-ssh-key.sh $DEPLOY_RSA_PRIVATE_KEY
+        # !!! start real deploy and docker-compose
+        - ssh gitupdater@dockerweb3.rgwork.ru auth-proxy-prod
+    only:
+        - production-gl

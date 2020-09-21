@@ -2,6 +2,7 @@ package server
 
 import (
 	"log"
+	"net/http"
 
 	// "github.com/gin-gonic/contrib/sessions"
 	// gsessions "github.com/gorilla/sessions"
@@ -36,6 +37,11 @@ func GetSessionVariable(c *gin.Context, varname string) string {
 func DeleteSession(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
-	session.Options(sessions.Options{MaxAge: -1})
+	session.Options(sessions.Options{
+		MaxAge:   -1,
+		Secure:   SecureCookie,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+	})
 	session.Save()
 }

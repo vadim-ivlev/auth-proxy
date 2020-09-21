@@ -15,6 +15,7 @@ INSERT INTO app (appname, url, description, sign) VALUES ('node1','http://auth-n
 INSERT INTO app (appname, url, description, sign) VALUES ('node2','http://localhost:3002', 'Работает на компьютере разработчика env=dev. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение', 'Y');
 INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru', 'Прокси к https://rg.ru', 'Y' );
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin','http://photoreports-admin:8091', 'GraphQL API админки фоторепов');
+INSERT INTO app (appname, url, description) VALUES ('photoreports-admin-new','http://photoreports-admin:8094', 'Новое GraphQL API админки фоторепов');
 INSERT INTO app (appname, url, description) VALUES ('rgcore','http://rgru-core:8076', 'GraphQL API редакторского интерфейса');
 INSERT INTO app (appname, url, description) VALUES ('rgru-file-uploader','http://rgru-file-uploader:8077', 'GraphQL API загрузки файлов');
 
@@ -42,6 +43,20 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('node1', 'admin'
 
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('node2', 'admin', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('node2', 'admin', 'user');
+
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin', 'admin', 'admin');
+
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'admin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'test', 'editor');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'chagin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'chernyshev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'ismagilov', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'kondratiev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'ivlev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'barsuk', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'filatchev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'nsinetskiy', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin-new', 'parshin', 'admin');
 
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'admin', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgcore', 'test', 'editor');

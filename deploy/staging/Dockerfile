@@ -1,0 +1,15 @@
+FROM ubuntu:18.04
+
+RUN apt-get -y update 
+RUN apt-get -y install curl
+# RUN apt-get -y install iputils-ping
+# RUN apt-get -y install mc
+# RUN apt-get -y install nodejs
+# RUN apt-get -y install sqlite3 
+
+WORKDIR /app
+COPY . .
+
+CMD bash -c "cd /app && ./auth-proxy -serve 4402 -env=staging"
+
+EXPOSE 4402
