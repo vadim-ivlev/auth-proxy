@@ -11,8 +11,8 @@ build-gl:
         - cd       /go/src/$REPO_NAME
 
         # build app
-        - export GO111MODULE=on
-        - go build -tags=jsoniter -ldflags="-X 'main.Build=${CI_PIPELINE_ID}'"
+        # - export GO111MODULE=on
+        # - go build -tags=jsoniter -ldflags="-X 'main.Build=${CI_PIPELINE_ID}'"
         - chmod +x ./gitlab-ci/build-gl.sh
         - ./gitlab-ci/build-gl.sh
 
