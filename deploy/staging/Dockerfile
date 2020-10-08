@@ -10,6 +10,6 @@ COPY . .
 RUN ls
 
 # Start app
-CMD bash -c "cd /app && ./auth-proxy -env=prod -serve=4402"
+CMD bash -c "cd /app && ./auth-proxy -env=staging -serve=4402"
 
 EXPOSE 4402
