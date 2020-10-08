@@ -80,7 +80,7 @@ func buildOauthConfig(provider string) *oauth2.Config {
 // ListOauthProviders перечисляет Oauth2 login URIs для каждого провайдера сервиса аутентификации
 func ListOauthProviders(c *gin.Context) {
 	providerURLs := make(map[string][]string)
-	for provider, _ := range Oauth2Params {
+	for provider := range Oauth2Params {
 		providerURLs[provider] = []string{"/oauthlogin/" + provider, "/oauthlogout/" + provider}
 	}
 	c.JSON(200, providerURLs)

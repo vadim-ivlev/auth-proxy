@@ -1,15 +1,15 @@
-FROM ubuntu:18.04
+FROM alpine
 
-RUN apt-get -y update 
-RUN apt-get -y install curl
-# RUN apt-get -y install iputils-ping
-# RUN apt-get -y install mc
-# RUN apt-get -y install nodejs
-# RUN apt-get -y install sqlite3 
+RUN apk update
+RUN apk add --update bash && rm -rf /var/cache/apk/*
+RUN apk add libc6-compat
 
+# Go App
 WORKDIR /app
 COPY . .
+RUN ls
 
-CMD bash -c "cd /app && ./auth-proxy -serve 4402 -env=staging"
+# Start app
+CMD bash -c "./auth-proxy -env=prod -serve=4402"
 
 EXPOSE 4402

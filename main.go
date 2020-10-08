@@ -9,13 +9,18 @@ import (
 	"auth-proxy/server"
 	"flag"
 	"fmt"
-	"os"
-	"strconv"
 	"time"
 )
 
+// Build версия сборки из gitlab-ci,
+// используется флаг со значением переменнай CI_PIPELINE_ID (-ldflags="-X 'main.Build=${CI_PIPELINE_ID}'")
+// если не установлено по умолчанию равно development
+var Build = "development"
+
 func main() {
-	fmt.Println("████████████████████████ revision 8 ████████████████████████")
+
+	fmt.Println("Build number:\t", Build)
+
 	// считать параметры командной строки
 	servePort, env := readCommandLineParams()
 
@@ -23,18 +28,16 @@ func main() {
 
 	fmt.Println(app.Params)
 
-	// Ждем готовности базы данных
+	// ждем готовности базы данных
 	db.PrintConfig()
 	db.WaitForDbOrExit(20)
 
 	// порождаем базу данных если ее нет
 	db.CreateDatabaseIfNotExists()
 
-	// если servePort > 0, печатаем приветствие и запускаем сервер
-	if servePort > 0 {
-		printGreetings(servePort, env, app.Params.Sqlite, tls)
-		server.Serve(":"+strconv.Itoa(servePort), tls)
-	}
+	// печатаем приветствие и запускаем сервер
+	printGreetings(servePort, env, app.Params.Sqlite, tls)
+	server.Up(servePort, tls, Build)
 
 	db.DBPool.Close()
 	fmt.Println("Bye")
@@ -74,21 +77,17 @@ func readConfigsAndSetParams(env string) bool {
 }
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort int, env string) {
-	flag.IntVar(&serverPort, "serve", 0, "Запустить приложение на порту с номером > 0 ")
-	flag.StringVar(&env, "env", "prod", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - по умолчанию для продакшн.")
+func readCommandLineParams() (serverPort string, env string) {
+	flag.StringVar(&serverPort, "serve", "4400", "Запустить приложение на порту")
+	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
 
 	flag.Parse()
-	fmt.Println("\nПример запуска: ./auth-proxy -serve 4400 -env=dev\n ")
 	flag.Usage()
-	if serverPort == 0 {
-		os.Exit(0)
-	}
 	return
 }
 
 // printGreetings печатаем приветственное сообщение
-func printGreetings(serverPort int, env string, sqlite bool, tls bool) {
+func printGreetings(serverPort string, env string, sqlite bool, tls bool) {
 	protocol := "http"
 	if tls {
 		protocol = "https"
@@ -134,6 +133,4 @@ TLS:%v
 		fmt.Println("\n━━━━━━━━━━ Login credentials for 'dev' or 'front' evironments ━━━━━━━━")
 		fmt.Println("username = admin , password = rosgas2011")
 	}
-
-	fmt.Println("\n\nCTRL-C to interrupt.\n")
 }

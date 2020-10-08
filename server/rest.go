@@ -17,9 +17,10 @@ import (
 // var proxies map[string]*httputil.ReverseProxy
 var proxies map[string]*primitiveproxy.PrimitiveProxy
 
-// перенаправления браузера для предоставления различных GUI
+// Redirects перенаправления браузера для предоставления различных GUI
 var Redirects map[string]string
 
+// Proxy проксирование
 func Proxy(c *gin.Context) {
 	appname := c.Param("appname")
 	proxypath := c.Param("proxypath")
@@ -33,8 +34,7 @@ func Proxy(c *gin.Context) {
 	}
 }
 
-// Captcha
-// source https://github.com/steambap/captcha
+// Captcha source https://github.com/steambap/captcha
 func Captcha(c *gin.Context) {
 	data, _ := captcha.New(120, 38, func(options *captcha.Options) {
 		options.CharPreset = "123456789"
@@ -64,8 +64,8 @@ func CreateProxies() {
 	if err != nil {
 		return
 	}
-	for app, url_rebase := range appUrls {
-		proxies[app] = createProxy(url_rebase[0], app, url_rebase[1])
+	for app, urlRebase := range appUrls {
+		proxies[app] = createProxy(urlRebase[0], app, urlRebase[1])
 	}
 }
 
@@ -80,4 +80,15 @@ func optionHandler(c *gin.Context) {
 func publicKeyHandler(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.String(200, signature.PublicKeyText)
+}
+
+// Для тестирования работоспособности
+func pingHandler(c *gin.Context) {
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.JSON(http.StatusOK, "pong")
+}
+
+// Вывод версии сборки, используется для проверки консистентности запущенных приложений
+func (b Build) buildHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, b.Number)
 }

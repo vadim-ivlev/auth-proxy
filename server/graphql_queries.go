@@ -110,7 +110,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 				results := []map[string]string{}
 
-				for provider, _ := range Oauth2Params {
+				for provider := range Oauth2Params {
 					rec := make(map[string]string)
 					rec["provider_name"] = provider
 					rec["login_endpoint"] = "/oauthlogin/" + provider
@@ -390,7 +390,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 		},
 
 		"list_app_user_role": &gq.Field{
-			Type:        gq.NewList(app_user_role_extendedObject),
+			Type:        gq.NewList(appUserRoleExtendedObject),
 			Description: "Получить список приложений пользователей и их ролей.",
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
@@ -409,7 +409,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdminOrAuditor(params)
 				fields := getSelectedFields([]string{"list_app_user_role"}, params)
-				wherePart := list_app_user_roleWherePart(params)
+				wherePart := listAppUserRoleWherePart(params)
 				query := fmt.Sprintf(`SELECT DISTINCT %s FROM app_user_role_extended %s `, fields, wherePart)
 				return db.QuerySliceMap(query)
 			},
@@ -417,7 +417,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 	},
 })
 
-func list_app_user_roleWherePart(params gq.ResolveParams) (wherePart string) {
+func listAppUserRoleWherePart(params gq.ResolveParams) (wherePart string) {
 	var searchConditions []string
 
 	for paramName, v := range params.Args {

@@ -28,9 +28,8 @@ func GetSessionVariable(c *gin.Context, varname string) string {
 	varvalue := session.Get(varname)
 	if varvalue == nil {
 		return ""
-	} else {
-		return varvalue.(string)
 	}
+	return varvalue.(string)
 }
 
 // DeleteSession удаляет текущую сессию (стирает куки на стороне клиента)

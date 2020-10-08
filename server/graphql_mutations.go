@@ -59,10 +59,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 						sendMessageToNewUser(params, password)
 					}
 					return res, err
-				} else {
-					return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators.")
 				}
-
+				return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators")
 			},
 		},
 
@@ -111,16 +109,16 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				processPassword(params)
 				clearUserCache(params)
 
-				old_username, _ := params.Args["old_username"].(string)
-				if old_username == "" {
-					old_username, _ = params.Args["username"].(string)
+				oldUsername, _ := params.Args["old_username"].(string)
+				if oldUsername == "" {
+					oldUsername, _ = params.Args["username"].(string)
 				}
-				if old_username == "" {
+				if oldUsername == "" {
 					return nil, errors.New("username is blank")
 				}
 
 				delete(params.Args, "old_username")
-				return updateRecord(old_username, "username", params, "user", "user")
+				return updateRecord(oldUsername, "username", params, "user", "user")
 			},
 		},
 
@@ -257,36 +255,36 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotAdmin(params)
 
-				old_appname, _ := params.Args["old_appname"].(string)
-				if old_appname == "" {
-					old_appname, _ = params.Args["appname"].(string)
+				oldAppname, _ := params.Args["old_appname"].(string)
+				if oldAppname == "" {
+					oldAppname, _ = params.Args["appname"].(string)
 				}
-				if old_appname == "" {
+				if oldAppname == "" {
 					return nil, errors.New("appname is blank")
 				}
 
 				delete(params.Args, "old_appname")
-				res, err := updateRecord(old_appname, "appname", params, "app", "app")
+				res, err := updateRecord(oldAppname, "appname", params, "app", "app")
 
 				// изменяем массив прокси
 				if err == nil {
 					appname, _ := params.Args["appname"].(string)
 
 					// если appname изменилось перепорождаем прокси со старыми Url, Rebase
-					if appname != old_appname {
-						old_proxy := *proxies[old_appname]
-						log.Println("renaming old_url, old_appname, old_rebase", old_proxy.Url, old_appname, old_proxy.Rebase)
-						delete(proxies, old_appname)
-						proxies[appname] = createProxy(old_proxy.Url, appname, old_proxy.Rebase)
+					if appname != oldAppname {
+						oldProxy := *proxies[oldAppname]
+						log.Println("renaming old_url, old_appname, old_rebase", oldProxy.Url, oldAppname, oldProxy.Rebase)
+						delete(proxies, oldAppname)
+						proxies[appname] = createProxy(oldProxy.Url, appname, oldProxy.Rebase)
 						// clear old_appname cache
-						auth.Cache.Delete("is-" + old_appname + "-public")
-						auth.Cache.Delete("is-request-to-" + old_appname + "-signed")
+						auth.Cache.Delete("is-" + oldAppname + "-public")
+						auth.Cache.Delete("is-request-to-" + oldAppname + "-signed")
 					}
 
 					// Если обновляется Url, Rebase пререпорождаем прокси
-					r, ok_r := params.Args["rebase"]
-					u, ok_u := params.Args["url"]
-					if ok_r || ok_u {
+					r, okRebase := params.Args["rebase"]
+					u, okURL := params.Args["url"]
+					if okRebase || okURL {
 						rebase, _ := r.(string)
 						url, _ := u.(string)
 						if url == "" {
@@ -327,7 +325,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"create_app_user_role": &gq.Field{
 			Description: "Создать роль пользователя для приложения",
-			Type:        app_user_roleObject,
+			Type:        appUserRoleObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),
@@ -353,7 +351,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 		"delete_app_user_role": &gq.Field{
 			Description: "Удалить роль пользователя для приложения",
-			Type:        app_user_roleObject,
+			Type:        appUserRoleObject,
 			Args: gq.FieldConfigArgument{
 				"appname": &gq.ArgumentConfig{
 					Type:        gq.NewNonNull(gq.String),

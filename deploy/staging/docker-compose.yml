@@ -6,8 +6,6 @@ services:
   auth-proxy-staging:
     image: auth-proxy-staging
     container_name: auth-proxy-staging
-
-    # command: bash -c "cd /app && ./auth -serve 4402 -env=staging" 
     restart: always
     ports:
       - 4402:4402

@@ -81,7 +81,7 @@ var appFields = gq.Fields{
 	},
 }
 
-var app_user_roleFields = gq.Fields{
+var appUserRoleFields = gq.Fields{
 	"appname": &gq.Field{
 		Type:        gq.String,
 		Description: "Идентификатор приложения",
@@ -96,7 +96,7 @@ var app_user_roleFields = gq.Fields{
 	},
 }
 
-var app_user_role_extendedFields = gq.Fields{
+var appUserRoleExtendedFields = gq.Fields{
 	"appname": &gq.Field{
 		Type:        gq.String,
 		Description: "Идентификатор приложения",
@@ -174,16 +174,16 @@ var appObject = gq.NewObject(gq.ObjectConfig{
 	Fields:      appFields,
 })
 
-var app_user_roleObject = gq.NewObject(gq.ObjectConfig{
+var appUserRoleObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AppUserRole",
 	Description: "Роль пользователя в приложении",
-	Fields:      app_user_roleFields,
+	Fields:      appUserRoleFields,
 })
 
-var app_user_role_extendedObject = gq.NewObject(gq.ObjectConfig{
+var appUserRoleExtendedObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AppUserRoleExtended",
 	Description: "Роль пользователя в приложении с дополнительными полями из справочных таблиц",
-	Fields:      app_user_role_extendedFields,
+	Fields:      appUserRoleExtendedFields,
 })
 
 // LISTS *************************************************************

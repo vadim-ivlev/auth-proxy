@@ -6,8 +6,6 @@ services:
   auth-proxy-prod:
     image: auth-proxy-prod
     container_name: auth-proxy-prod
-
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=prod" 
     restart: always
     ports:
       - 4400:4400

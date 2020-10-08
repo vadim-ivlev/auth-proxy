@@ -7,7 +7,7 @@ dev:
   password: 159753
   database: rgru
   port:     5432
-  search_path: auth, extensions
+  search_path: auth,extensions
   sslmode:  disable
 
 front:
@@ -16,5 +16,5 @@ front:
   password: 159753
   database: rgru
   port:     5432
-  search_path: auth, extensions
+  search_path: auth,extensions
   sslmode:  disable

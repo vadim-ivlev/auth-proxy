@@ -14,24 +14,29 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// Build структура информации о сборке
+type Build struct {
+	Number string
+}
+
 // SecureCookie флаг secure на куки браузера
 var SecureCookie = false
+
+// Store куки
 var Store cookie.Store
 
-// var StoreCapt cookie.Store
-
-// Serve запускает сервер на заданном порту. ============================================================
-func Serve(port string, tls bool) {
-	r := setup()
+// Up запускает сервер на заданном порту
+func Up(port string, tls bool, build string) {
+	r := setup(build)
 	if tls {
-		_ = r.RunTLS(port, "./certificates/cert.pem", "./certificates/key.pem")
+		_ = r.RunTLS(":"+port, "./certificates/cert.pem", "./certificates/key.pem")
 	} else {
-		_ = r.Run(port)
+		_ = r.Run(":" + port)
 	}
 }
 
 // Setup определяет пути и присоединяет функции middleware.
-func setup() *gin.Engine {
+func setup(build string) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// r := gin.New()
@@ -74,6 +79,13 @@ func setup() *gin.Engine {
 	r.GET("/oauthlogin/:provider", OauthLogin)
 	r.GET("/oauthlogout/:provider", OauthLogout)
 	r.GET("/oauthcallback/:provider", OauthCallback)
+
+	// проверка работоспособности
+	r.GET("/ping", pingHandler)
+	// вывод информации о сборки
+	r.GET("/build", Build{
+		Number: build,
+	}.buildHandler)
 
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
