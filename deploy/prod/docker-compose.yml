@@ -7,6 +7,9 @@ services:
     image: auth-proxy-prod
     container_name: auth-proxy-prod
     restart: always
+    dns:
+      - '194.190.37.16'
+      - '194.190.23.68'
     ports:
       - 4400:4400
 

@@ -7,6 +7,9 @@ services:
     image: auth-proxy-staging
     container_name: auth-proxy-staging
     restart: always
+    dns:
+      - '194.190.37.16'
+      - '194.190.23.68'
     ports:
       - 4402:4402
 
