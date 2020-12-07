@@ -3,9 +3,9 @@
 
 dev:
   host:     localhost
-  user:     pgadmin
-  password: 159753
-  database: rgru
+  user:     root
+  password: root
+  database: auth
   port:     5432
   search_path: auth,extensions
   sslmode:  disable

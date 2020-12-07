@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 }
 
 func Test_dbAvailable(t *testing.T) {
-	if !dbAvailable() {
+	if !DbAvailable() {
 		t.Errorf("dbAvailable() = false")
 	}
 }

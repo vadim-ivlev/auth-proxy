@@ -27,18 +27,16 @@ function handler(req, res) {
 
 app: ${appName}    
 ---------------------------
-method: ${ st(req.method)}
-headers: ${ st(req.headers)}
-url:         ${ st(req.url)}
-originalUrl: ${ st(req.originalUrl)}
-path:        ${ st(req.path)}
-query: ${ st(req.query)}
-body: ${ st(req.body)}
+method: ${ st(req.method) }
+headers: ${ st(tryConvertToJSON(req.headers)) }
+url:         ${ st(req.url) }
+originalUrl: ${ st(req.originalUrl) }
+path:        ${ st(req.path) }
+query: ${ st(req.query) }
+body: ${ st(req.body) }
 ---------------------------
+
 `
-
-
-    
 
     res.send(`
     <!DOCTYPE html>
@@ -47,14 +45,13 @@ body: ${ st(req.body)}
     <body>
         <h1>${appName}</h1>
         <pre>
-            ${info}
+            ${decode_utf8(info)}
         </pre>
     </body>
     </html>    
     `)
 
-    console.log(info)
-
+    console.log(decode_utf8(info))
     // res.end()
 }
 
@@ -62,3 +59,30 @@ function st(params) {
     return JSON.stringify(params, null, '  ')
 }
 
+// Преобразование русских букв
+function encode_utf8(s) {
+    return unescape(encodeURIComponent(s));
+}
+
+function decode_utf8(s) {
+    return decodeURIComponent(escape(s));
+}
+
+/**
+ * Пытается преобразовать значения хедэров запроса в JSON.
+ * Для более красивого показа. 
+ * @param {*} headers -- хедэры запроса
+ */
+function tryConvertToJSON(headers) {
+    var h = {}
+    for (const [key, value] of Object.entries(headers)) {
+        let v= value
+        try {
+            v= JSON.parse(value) 
+        } catch (error) {
+            v= value
+        }
+        h[key]= v
+    }              
+    return h
+}

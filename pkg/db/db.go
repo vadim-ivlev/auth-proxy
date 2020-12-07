@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	jsoniter "github.com/json-iterator/go"
@@ -57,8 +55,8 @@ func getDBFromPool() (*sqlx.DB, error) {
 
 }
 
-// dbAvailable проверяет, доступна ли база данных
-func dbAvailable() bool {
+// DbAvailable проверяет, доступна ли база данных
+func DbAvailable() bool {
 	conn, err := getDB()
 	if err != nil {
 		fmt.Println(err)
@@ -83,23 +81,6 @@ func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 		defer conn.Close()
 	}
 	return conn.Exec(sqlText, args...)
-}
-
-// WaitForDbOrExit ожидает доступности базы данных
-// делая несколько попыток. Если все попытки неудачны
-// завершает программу. Нужна для запуска программы в докерах,
-// когда запуск базы данных может быть произойти позже.
-func WaitForDbOrExit(attempts int) {
-	for i := 0; i < attempts; i++ {
-		fmt.Println("\nОжидание готовности базы данных...")
-		fmt.Printf("Попытка %d/%d. CTRL-C для прерывания.\n", i+1, attempts)
-		if dbAvailable() {
-			return
-		}
-		time.Sleep(5 * time.Second)
-	}
-	fmt.Println("Не удалось подключиться к базе данных.")
-	os.Exit(7777)
 }
 
 // mapValuesToStrings фикс драйвера sqlite3. Преобразует []uint8 -> string

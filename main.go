@@ -30,7 +30,8 @@ func main() {
 
 	// ждем готовности базы данных
 	db.PrintConfig()
-	db.WaitForDbOrExit(20)
+	waitForDbConnection(env)
+	db.PrintConfig()
 
 	// порождаем базу данных если ее нет
 	db.CreateDatabaseIfNotExists()
@@ -74,6 +75,19 @@ func readConfigsAndSetParams(env string) bool {
 	counter.RESET_TIME = time.Duration(app.Params.ResetTime)
 
 	return tls
+}
+
+// waitForDbConnection - Ожидает соединения с базой данных
+func waitForDbConnection(env string) {
+	for {
+		fmt.Println("Пытаемся зачитать параметры configs/db.yaml и соединиться с базой.")
+		// читаем конфиг Postgres.
+		db.ReadConfig("./configs/db.yaml", env)
+		if db.DbAvailable() {
+			return
+		}
+		time.Sleep(5 * time.Second)
+	}
 }
 
 // readCommandLineParams читает параметры командной строки
