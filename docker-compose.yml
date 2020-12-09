@@ -13,20 +13,9 @@ services:
       - NODE_ENV=production
     volumes:
       - ./node-apps:/home/node/app
-    # expose:
-    #   - "3001"
-    #   - "3002"
-    #   - "3003"
-    #   - "3004"
-    #   - "3005"
     ports:
       - 3001-3005:3001-3005
-      # - 3001:3001
-      # - 3002:3002
-      # - 3003:3003
-      # - 3004:3004
-      # - 3005:3005
-    command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
+   command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
 
 
   auth-db:
@@ -40,9 +29,9 @@ services:
     #   - "./migrations:/dumps"
     #   - "./etc/.pgpass:/root/.pgpass"
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auth 
+      POSTGRES_USER: pgadmin
+      POSTGRES_PASSWORD: 159753
+      POSTGRES_DB: rgru 
       PGDATA: /var/lib/postgresql/data/pgdata
 
 

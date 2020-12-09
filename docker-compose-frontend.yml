@@ -31,12 +31,6 @@ services:
       - NODE_ENV=production
     volumes:
       - test_apps:/home/node/app
-    expose:
-      - "3001"
-      - "3002"
-      - "3003"
-      - "3004"
-      - "3005"
     command: "npm run start12"
 
 
@@ -49,9 +43,9 @@ services:
     # ports:
     #   - 5432:5432
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auth 
+      POSTGRES_USER: pgadmin
+      POSTGRES_PASSWORD: 159753
+      POSTGRES_DB: rgru 
       PGDATA: /var/lib/postgresql/data/pgdata
   
 

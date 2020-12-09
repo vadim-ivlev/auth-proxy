@@ -136,30 +136,52 @@ func GetUserRolesString(user, app string) string {
 
 }
 
+// addRolesToUserInfoString Добавляет поле со списком ролей пользователя к информации о пользователе.
+func addRolesToUserInfoString(userInfoString, rolesString string) string {
+	info := make(map[string]interface{})
+	roles := make([]string, 0)
+
+	_ = json.UnmarshalFromString(userInfoString, &info)
+	_ = json.UnmarshalFromString(rolesString, &roles)
+
+	info["roles"] = roles
+	s, _ := json.MarshalToString(info)
+	return s
+}
+
 // GetUserInfoString возвращает сериализованную информацию о пользователе, включая его роли в приложении.
 func GetUserInfoString(user, app string) string {
+
+	userInfoString := ""
+	rolesString := ""
+	userInfoStringWithRoles := ""
+
+	// читаем из кэша
 	cacheKey := user + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
-		fmt.Println("cached ", cacheKey, "=", cachedValue)
-		return cachedValue.(string)
+		fmt.Println("Cached:", cacheKey, "=", cachedValue)
+		// return cachedValue.(string)
+		userInfoString = cachedValue.(string)
+	} else {
+		fmt.Println("NOT cached:", cacheKey)
+		// обновляем кэш
+		record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description FROM "user" WHERE username = $1;`, user)
+		if err != nil {
+			return ""
+		}
+		jsonBytes, _ := json.Marshal(record)
+		userInfoString = string(jsonBytes)
+		Cache.Set(cacheKey, userInfoString, cache.DefaultExpiration)
 	}
 
-	record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description 
-		FROM "user" 
-		WHERE username = $1;`, user)
-	if err != nil {
-		return ""
-	}
-
-	roles := GetUserRoles(user, app)
-	record["roles"] = roles
-
-	jsonBytes, _ := json.Marshal(record)
-	jsonString := string(jsonBytes)
-
-	Cache.Set(cacheKey, jsonString, cache.DefaultExpiration)
-	return jsonString
+	// FIXME: из соображений производительности нужно возвращать информацию без ролей
+	// возвращаем информацию о пользователе
+	rolesString = GetUserRolesString(user, app)
+	userInfoStringWithRoles = addRolesToUserInfoString(userInfoString, rolesString)
+	fmt.Println("userInfoStringWithRoles=", userInfoStringWithRoles)
+	fmt.Println("------------------------------------------------------")
+	return userInfoStringWithRoles
 }
 
 // AppUserRoleExist проверят наличие связки appname-username-rolename в таблице app_user_role.
