@@ -15,7 +15,7 @@ services:
       - ./node-apps:/home/node/app
     ports:
       - 3001-3005:3001-3005
-   command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
+    command: /bin/sh -c 'cd /home/node/app && npm install && npm run start12'
 
 
   auth-db:
