@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -259,6 +260,8 @@ func MigrateUp(dirname string) {
 				continue
 			}
 			sqlText := string(sqlBytes)
+			// чистим текст от выражений специфичных для postgresql
+			sqlText = removeLinesContaining(sqlText, "postgresql-specific")
 			_, err = QueryExec(sqlText)
 			if err != nil {
 				log.Printf("Query Execution error: %s.\t Error:  %v ", fileName, err)
@@ -267,4 +270,12 @@ func MigrateUp(dirname string) {
 			log.Printf("Executed: %s \n", fileName)
 		}
 	}
+}
+
+// removeLinesContaining - удаляет из текста строки содержащие данную подстроку
+// Функция используется для чистки SQL текстов от выражений специфичных для Postgresql.
+func removeLinesContaining(str, substr string) string {
+	re := regexp.MustCompile("(?m)^.*" + substr + ".*$")
+	res := re.ReplaceAllString(str, "")
+	return res
 }
