@@ -1,5 +1,12 @@
-CREATE SCHEMA IF NOT EXISTS auth;
-CREATE SCHEMA IF NOT EXISTS extensions;
+/*
+Внимание!
+Строки помеченные postgresql-specific
+будут удалены из текста если используется база данных из SQLite.
+Старайтесь писать скрипты так, чтобы они работали с обеими базами данных.
+*/
+
+CREATE SCHEMA IF NOT EXISTS auth; -- postgresql-specific Будет удалена для SQLite моды
+CREATE SCHEMA IF NOT EXISTS extensions; -- postgresql-specific  Будет удалена для SQLite моды
 
 -- Справочная таблица.
 -- Пользователь с дополнительными сведениями 
