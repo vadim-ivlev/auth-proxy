@@ -275,7 +275,10 @@ func MigrateUp(dirname string) {
 // removeLinesContaining - удаляет из текста строки содержащие данную подстроку
 // Функция используется для чистки SQL текстов от выражений специфичных для Postgresql.
 func removeLinesContaining(str, substr string) string {
-	re := regexp.MustCompile("(?m)^.*" + substr + ".*$")
-	res := re.ReplaceAllString(str, "")
+	res := str
+	if SQLite {
+		re := regexp.MustCompile("(?m)^.*" + substr + ".*$")
+		res = re.ReplaceAllString(str, "")
+	}
 	return res
 }

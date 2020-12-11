@@ -73,10 +73,13 @@ func ReadSQLiteConfig(fileName string, env string) {
 
 // PrintConfig prints DB connection parameters.
 func PrintConfig() {
-	s, _ := yaml.Marshal(params)
-	fmt.Printf("\nDB connection parameters:\n%s\n", s)
-	fmt.Printf("Postgres connection string: %s\n", params.connectStr)
-	fmt.Printf("SQLite file: %s\n", sqliteParams.Sqlitefile)
+	if SQLite {
+		fmt.Printf("SQLite file: %s\n", sqliteParams.Sqlitefile)
+	} else {
+		fmt.Printf("Postgres connection string: %s\n", params.connectStr)
+	}
+	// s, _ := yaml.Marshal(params)
+	// fmt.Printf("\nDB connection parameters:\n%s\n", s)
 }
 
 func panicIf(err error) {

@@ -15,7 +15,7 @@ import (
 // Build версия сборки из gitlab-ci,
 // используется флаг со значением переменнай CI_PIPELINE_ID (-ldflags="-X 'main.Build=${CI_PIPELINE_ID}'")
 // если не установлено по умолчанию равно development
-var Build = "development"
+var Build = "development-1"
 
 func main() {
 
@@ -24,12 +24,10 @@ func main() {
 	// считать параметры командной строки
 	servePort, env := readCommandLineParams()
 
+	// Считать конфиги и установить параметры
 	tls := readConfigsAndSetParams(env)
 
-	fmt.Println(app.Params)
-
 	// ждем готовности базы данных
-	db.PrintConfig()
 	waitForDbConnection(env)
 	db.PrintConfig()
 
