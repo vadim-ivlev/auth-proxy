@@ -18,8 +18,8 @@ sudo rm -rf pgdata
 #echo "Кросскомпиляция на компьютере разработчика"
 #env CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .
 
-echo "Кросскомпиляция в докере. Сделано чтобы компилировать под windows. 1.13.4 версия go на момент написания кода."
-docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e CGO_ENABLED=1 -e GOOS=linux golang:1.13.4 go build -a -ldflags '-linkmode external -extldflags "-static"'
+echo "Кросскомпиляция в докере. Сделано чтобы компилировать под windows. 1.15.6 версия go"
+docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e CGO_ENABLED=1 -e GOOS=linux golang:1.15.6 go build -a -ldflags '-linkmode external -extldflags "-static"'
 
 
 echo "build a docker image"
