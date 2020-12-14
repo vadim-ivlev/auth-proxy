@@ -82,7 +82,7 @@ func setup(build string) *gin.Engine {
 
 	// проверка работоспособности
 	r.GET("/ping", pingHandler)
-	// вывод информации о сборки
+	// вывод информации о сборке
 	r.GET("/build", Build{
 		Number: build,
 	}.buildHandler)
