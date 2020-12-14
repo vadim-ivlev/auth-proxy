@@ -68,6 +68,20 @@ func CheckUserMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		appPath := strings.TrimPrefix(c.Request.URL.Path, "/apps/")
+
+		// К какому приложению делается запрос
+		appName := strings.SplitN(appPath, "/", 2)[0]
+
+		// публичное ли это приложение? (доступно ли для незалогиненых пользователей?)
+		isAppPublic := auth.IsAppPublic(appName)
+
+		if isAppPublic {
+			fmt.Println("Публичное приложение:", appName)
+			c.Next()
+			return
+		}
+
 		// Кто делает запрос
 		userName := GetSessionVariable(c, "user")
 
@@ -89,13 +103,6 @@ func CheckUserMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " is disabled or DB is unavailable. Please ask admins."})
 			return
 		}
-		appPath := strings.TrimPrefix(c.Request.URL.Path, "/apps/")
-
-		// К какому приложению делается запрос
-		appName := strings.SplitN(appPath, "/", 2)[0]
-
-		// публичное ли это приложение (доступно ли для пользователей без роли)
-		isAppPublic := auth.IsAppPublic(appName)
 
 		// роли пользователя в приложении
 		userRoles := auth.GetUserRolesString(userName, appName)
