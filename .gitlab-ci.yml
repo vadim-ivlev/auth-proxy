@@ -15,6 +15,7 @@ stages:
     - staging-gl&compose
     - prod-gl&copy
     - prod-gl&compose
+    - prod-gl&compose2
     # telegram message
     - message_on_success
     - message_on_failure
@@ -29,7 +30,7 @@ message_on_success:
     allow_failure: true
     dependencies:
         - prod&compose
-        - prod-gl&compose
+        - prod-gl&compose2
     when: on_success
     script:
         # send to telegram proxy
@@ -43,7 +44,7 @@ message_on_failure:
     allow_failure: true
     dependencies:
         - prod&compose
-        - prod-gl&compose
+        - prod-gl&compose2
     when: on_failure
     script:
         # send to telegram proxy
