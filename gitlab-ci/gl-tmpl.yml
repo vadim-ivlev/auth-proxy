@@ -12,7 +12,7 @@ build-gl:
 
         # build app
         - export GO111MODULE=on
-        - go build -tags=jsoniter -ldflags="-X 'main.Build=${CI_PIPELINE_ID}'"
+        - go build -tags=jsoniter -ldflags="-X 'main.Build=${CI_PIPELINE_ID}' -linkmode external -extldflags '-static'"
         - chmod +x ./gitlab-ci/build-gl.sh
         - ./gitlab-ci/build-gl.sh
 
