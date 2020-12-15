@@ -223,7 +223,12 @@
 
 Запись о приложении в таблице app имеет поля `public`,`rebase`, `sign`.
 
-- `public` Установите в "Y" чтобы сделать приложение доступным для пользователей без роли. В списке приложений пользователь может видеть только те, в которых у него определена роль и приложения с `public=Y`. Другие приложения недоступны пользователю, как для перечислений в списках поиска, так и для проксирования.
+- `public` Установите в "Y" чтобы сделать приложение доступным для 
+  неавторизованных пользователей. 
+  В списке приложений пользователь может видеть только те, 
+  в которых у него определена роль и приложения с `public=Y`. 
+  Другие приложения недоступны пользователю, как для перечислений в списках поиска, 
+  так и для проксирования.
 
 - `rebase` 
     Поле имеет смысл только для проксирования HTML web приложений.
@@ -254,38 +259,51 @@
 
 Приложение запущенное без параметров выдает список возможных параметров и завершается. 
 
-
+## Конечные точки
 
 __Приложение в Интернет__
 
 https://auth-proxy.rg.ru/
 
-__Схема__
-
-https://auth-proxy.rg.ru/graphql
-
 __Тестовое GUI приложение__ - админка для контроля пользователей, приложений и ролей.
 
 https://auth-proxy.rg.ru/admin
 
+https://auth-admin.now.sh/?url=https://auth-proxy.rg.ru#apps
+
+## Конечные точки
+
+__Схема__
+
+POST https://auth-proxy.rg.ru/schema
+
+POST https://auth-proxy.rg.ru/graphql
+
+
 __Captcha__
 
-https://auth-proxy.rg.ru/captcha
+GET https://auth-proxy.rg.ru/captcha
 
-__Public Key__
+__Публичный ключ__
 
-https://auth-proxy.rg.ru/publickey
-
+GET https://auth-proxy.rg.ru/publickey
 
 __Статистика__
 
-https://auth-proxy.rg.ru/stat
+GET https://auth-proxy.rg.ru/stat
 
-https://auth-proxy.rg.ru/metrics
+__Метрики для Prometheus__
+
+GET https://auth-proxy.rg.ru/metrics
+
+__Список публичных приложений__
+
+GET https://auth-proxy.rg.ru/publicapps
+
 
 __Провайдеры Oauth2__
 
-https://auth-proxy.rg.ru/oauthproviders
+GET https://auth-proxy.rg.ru/oauthproviders
 
 
 

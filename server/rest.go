@@ -92,3 +92,8 @@ func pingHandler(c *gin.Context) {
 func (b Build) buildHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, b.Number)
 }
+
+// listPublicApps - возвращает список публичных приложений не требующих авторизации пользователя.
+func listPublicApps(c *gin.Context) {
+	c.JSON(http.StatusOK, auth.ListPublicApps())
+}
