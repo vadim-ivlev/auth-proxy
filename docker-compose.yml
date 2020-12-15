@@ -9,6 +9,7 @@ services:
     container_name: auth-node
     user: "node"
     working_dir: /home/node/app
+    restart: unless-stopped
     environment:
       - NODE_ENV=production
     volumes:
