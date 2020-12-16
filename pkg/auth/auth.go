@@ -261,3 +261,12 @@ func GetUserNameByEmail(email string) string {
 	}
 	return rec["username"].(string)
 }
+
+// ListPublicApps Возвращает список публичных приложений не требующих авторизации пользователя.
+func ListPublicApps() []map[string]interface{} {
+	records, err := db.QuerySliceMap(`SELECT appname,description FROM app WHERE public='Y'`)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return records
+}
