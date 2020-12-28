@@ -313,6 +313,12 @@ __Список публичных приложений__
 
 GET https://auth-proxy.rg.ru/publicapps
 
+__Тест логирования__
+
+GET https://auth-proxy.rg.ru/logmessage/some_message
+
+Вместо some_message можно вставить собственное сообщение. Сделано для проверки записи логов в Эластик.
+
 
 __Провайдеры Oauth2__
 

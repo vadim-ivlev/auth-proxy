@@ -21,7 +21,7 @@ services:
       - auth-db
 
 
-  # server with test applications
+  # test applications
   auth-node:
     image: "node:alpine"
     container_name: auth-node
@@ -35,7 +35,6 @@ services:
 
 
   # база данных Postgres 
-  # Используется если при запуске приложения не указано использовать Sqlite. Ключ -sqlite.
   auth-db:
     image: postgres:10.9-alpine
     container_name: auth-db

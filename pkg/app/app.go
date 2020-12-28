@@ -10,6 +10,8 @@ import (
 	"log"
 	"runtime"
 
+	// log "github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -85,4 +87,11 @@ func GetStat() map[string]interface{} {
 // Stat A controller wrapper for REST
 func Stat(c *gin.Context) {
 	c.JSON(200, GetStat())
+}
+
+// LogMessage message controller
+func LogMessage(c *gin.Context) {
+	message := c.Param("message")
+	log.Println("LogMessage", message)
+	c.String(200, "Logger test. Search log file or Elastic for: %s", message)
 }

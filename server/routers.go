@@ -75,6 +75,7 @@ func setup(build string) *gin.Engine {
 
 	r.GET("/publickey", publicKeyHandler)
 	r.GET("/stat", app.Stat)
+	r.GET("/logmessage/:message", app.LogMessage)
 	r.GET("/publicapps", listPublicApps)
 	r.GET("/oauthproviders", ListOauthProviders)
 	r.GET("/oauthlogin/:provider", OauthLogin)
