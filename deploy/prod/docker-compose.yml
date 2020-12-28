@@ -12,9 +12,9 @@ services:
       - '194.190.23.68'
     ports:
       - 4400:4400
-    volumes: 
-      - app-logs:/app/logs      
-    command: bash -c "cd /app && ./auth-proxy -env=prod -serve=4400 2>/app/logs/auth-proxy.log"
+    # volumes: 
+    #   - app-logs:/app/logs      
+    # command: bash -c "cd /app && ./auth-proxy -env=prod -serve=4400 2>/app/logs/auth-proxy.log"
 
 
   # server with test applications
