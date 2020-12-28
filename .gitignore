@@ -9,6 +9,7 @@ node_modules
 docs/doc
 auth.db
 auth-proxy
+*.log
 
 deploy/auth-proxy
 deploy/configs
