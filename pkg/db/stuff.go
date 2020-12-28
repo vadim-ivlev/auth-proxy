@@ -53,6 +53,10 @@ func ReadConfig(fileName string, env string) {
 	err = yaml.Unmarshal(yamlFile, &envParams)
 	printIf("ReadConfig()", err)
 	params = envParams[env]
+	// устанавливаем значение по умолчанию
+	if params.SearchPath == "" {
+		params.SearchPath = "auth,extensions"
+	}
 	params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
 	params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode, params.SearchPath)
 	// params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s ", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode)
