@@ -18,7 +18,7 @@ build:
         - rm -rf   $BUILD_PATH/deploy
         - cp -r    deploy $BUILD_PATH
         - mkdir -p $BUILD_PATH/deploy/configs
-        # - chmod -R 777 $BUILD_PATH/node-apps
+        - chmod -R 777 $BUILD_PATH/node-apps
     artifacts:
         paths:
             - $BUILD_PATH/deploy
