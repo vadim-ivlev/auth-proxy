@@ -13,8 +13,11 @@ services:
     ports:
       - 4400:4400
     volumes: 
+      # Пишем логи в общий том, чтобы они сохранялись в Эластик
       - app-logs:/app/logs
+      # чтобы можно было подсунуть новый db.yaml
       - ./configs:/app/configs
+      # Перенаправляем сообщение об ошибках в файл
     command: bash -c "cd /app && ./auth-proxy -env=prod -serve=4400 2>/app/logs/auth-proxy.log"
 
 
