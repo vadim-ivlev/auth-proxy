@@ -6,10 +6,10 @@ if [[ "$OSTYPE" == "msys" ]]; then alias sudo=""; fi
 
 
 echo "гасим бд"
-docker-compose down
+docker-compose down -v
 
-echo "удаляем файлы бд"
-sudo rm -rf pgdata 
+# echo "удаляем файлы бд"
+# sudo rm -rf pgdata 
 
 # компилируем. линкуем статически под линукс
 # env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a  .

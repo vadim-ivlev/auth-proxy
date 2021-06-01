@@ -16,15 +16,20 @@ services:
     ports:
       - 4400:4400
     depends_on:
-      - auth-db
+      - postgres
     links:
-      - auth-db
+      - postgres
 
 
   # test applications
   auth-node:
     image: "node:alpine"
     container_name: auth-node
+    restart: unless-stopped
+    # потому что именно там лежат node-modules используемые здесь. 
+    # TODO: отказаться от node реализации? Сделать отдельный имидж?
+    depends_on:
+      - auth-proxy-front
     user: "node"
     working_dir: /home/node/app
     environment:
@@ -35,9 +40,9 @@ services:
 
 
   # база данных Postgres 
-  auth-db:
+  postgres:
     image: postgres:10.9-alpine
-    container_name: auth-db
+    container_name: postgres
     restart: always
     # ports:
     #   - 5432:5432

@@ -1,7 +1,7 @@
 #!/bin/bash
 git add -A .
-git commit -m "."
-
+echo "commit message = $1."
+git commit -m "$1."
 
 git push gitlab --all #master
 git push github --all #master
