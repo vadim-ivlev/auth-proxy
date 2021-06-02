@@ -5,7 +5,9 @@ import (
 	// "github.com/gin-contrib/sessions"
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/prometeo"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -29,9 +31,17 @@ var Store cookie.Store
 func Up(port string, tls bool, build string) {
 	r := setup(build)
 	if tls {
-		_ = r.RunTLS(":"+port, "./certificates/cert.pem", "./certificates/key.pem")
+		err := r.RunTLS(":"+port, "./certificates/cert.pem", "./certificates/key.pem")
+		if err != nil {
+			fmt.Println("Error RunTLS", err)
+			os.Exit(1)
+		}
 	} else {
-		_ = r.Run(":" + port)
+		err := r.Run(":" + port)
+		if err != nil {
+			fmt.Println("Error server Run", err)
+			os.Exit(1)
+		}
 	}
 }
 
