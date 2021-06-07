@@ -11,8 +11,7 @@
 
 
 INSERT INTO app (appname, url, description) VALUES ('auth','', 'Сервис авторизации');
-INSERT INTO app (appname, url, description, sign) VALUES ('node1','http://auth-node:3001', 'Работает на продакшн env=prod. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение', 'Y');
-INSERT INTO app (appname, url, description, sign) VALUES ('node2','http://localhost:3002', 'Работает на компьютере разработчика env=dev. Служит для показа заголовков и тела запросов пропущенных через auth-proxy. Express приложение', 'Y');
+INSERT INTO app (appname, url, description, sign) VALUES ('echo','https://echo-request.vercel.app/api', 'Показывает заголовки и тело запросов пропущенных через auth-proxy.', 'Y');
 INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru', 'Прокси к https://rg.ru', 'Y' );
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin','http://host.docker.internal:8091', 'GraphQL API админки фоторепов');
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin-new','http://host.docker.internal:8094', 'Новое GraphQL API админки фоторепов');
@@ -37,12 +36,9 @@ INSERT INTO "user" (username, password, email, fullname, description) VALUES ('p
 
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('auth', 'admin', 'authadmin');
 
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('node1', 'admin', 'manager');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('node1', 'admin', 'worker');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('node1', 'admin', 'boss');
-
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('node2', 'admin', 'admin');
-INSERT INTO app_user_role (appname, username, rolename) VALUES ('node2', 'admin', 'user');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('echo', 'admin', 'manager');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('echo', 'admin', 'worker');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('echo', 'admin', 'boss');
 
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('photoreports-admin', 'admin', 'admin');
 

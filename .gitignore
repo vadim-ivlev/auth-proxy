@@ -4,8 +4,8 @@ pgdata
 #push.sh
 uploads
 uploads*
-moon.py
-node_modules
+
+
 docs/doc
 auth.db
 auth-proxy
@@ -16,7 +16,7 @@ deploy/configs
 deploy/configs_example
 deploy/migrations
 deploy/templates
-deploy/node-apps
+
 deploy/etc
 deploy/certificates
 
