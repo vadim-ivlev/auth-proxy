@@ -1,5 +1,4 @@
 ## TODO:
 
-
-- Make possible proxying to url with path http://abc.com/a/b/c. Remove prefix.
-- make echo app. Possibly on Vercel 
+- remove sqlite
+- When proxying to url with path http://abc.com/a/b/c. Remove prefix?
