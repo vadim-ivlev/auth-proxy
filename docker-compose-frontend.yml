@@ -7,7 +7,7 @@ services:
     image: rgru/auth-proxy:latest
     container_name: auth-proxy-front
     # command: bash -c "cd /app && ./auth -serve 4400 -env=front" 
-    restart: always
+    restart: unless-stopped
     ports:
       - 4400:4400
     depends_on:
@@ -18,7 +18,7 @@ services:
   postgres:
     image: postgres:10.9-alpine
     container_name: postgres
-    restart: always
+    restart: unless-stopped
     # ports:
     #   - 5432:5432
     environment:

@@ -26,9 +26,9 @@ dev:
   redirects:
     # админка сервиса. 
     /admin:   http://localhost:5000/?url=https://localhost:4400
-    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
+    /testapp: https://auth-admin.vercel.app/?url=https://localhost:4400
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+    /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 front:
@@ -50,10 +50,10 @@ front:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   https://auth-admin.now.sh/?url=https://localhost:4400
-    /testapp: https://auth-admin.now.sh/?url=https://localhost:4400
+    /admin:   https://auth-admin.vercel.app/?url=https://localhost:4400
+    /testapp: https://auth-admin.vercel.app/?url=https://localhost:4400
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+    /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 
@@ -79,8 +79,8 @@ prod:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   https://auth-admin.now.sh/?url=https://auth-proxy.rg.ru
-    /testapp: https://auth-admin.now.sh/?url=https://auth-proxy.rg.ru
+    /admin:   https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru
+    /testapp: https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru
     # тест GraphQL API. 
-    /test: https://graphql-test.now.sh/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
+    /test: https://graphql-test.vercel.app/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
 

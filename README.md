@@ -282,7 +282,7 @@ __Тестовое GUI приложение__ - админка для контр
 
 https://auth-proxy.rg.ru/admin
 
-https://auth-admin.now.sh/?url=https://auth-proxy.rg.ru#apps
+https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru#apps
 
 ## Конечные точки
 
@@ -400,7 +400,7 @@ auth-proxy Может быть запущена с базами данных **S
     go test -v ./...
 
 
-Функциональные тесты (End to End) проводятся с помощью <https://auth-admin.now.sh/?url=https://auth-proxy.rg.ru#apps>
+Функциональные тесты (End to End) проводятся с помощью <https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru#apps>
 
 
 Бенчмарки соединений с БД с пулом и без
@@ -605,7 +605,7 @@ SQL скрипты для порождения объектов базы дан�
 
 Контроль программы из GUI 
 
-https://auth-admin.now.sh/?url=https://gl-auth-staging.rg.ru#apps
+https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru#apps
 
 
 

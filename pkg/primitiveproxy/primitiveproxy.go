@@ -40,6 +40,13 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 
 	// Создаем новый запрос с методом и телом исходного запроса
 	req, err := http.NewRequest(r.Method, url, r.Body)
+	if err != nil {
+		fmt.Println("Ошибка создания http.NewRequest.", err.Error())
+		http.Error(wr, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Устанавливаем длину контента
+	req.ContentLength = r.ContentLength
 
 	// Копируем заголовки из исходного запроса в новый
 	for name, value := range r.Header {
@@ -48,7 +55,6 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 		}
 		req.Header.Set(name, value[0])
 	}
-
 
 	// Подписываем запрос
 	if auth.IsRequestToAppSigned(p.appname) {
