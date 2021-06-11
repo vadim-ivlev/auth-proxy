@@ -403,8 +403,6 @@ GET https://auth-proxy.rg.ru/oauthproviders
     Benchmark_local_DB_pool-4    10000      221768 ns/op     1181 B/op      28 allocs/op
     Benchmark_remote_DB-4          200     7894973 ns/op    22676 B/op     312 allocs/op
     Benchmark_remote_DB_pool-4   10000      210710 ns/op     1181 B/op      28 allocs/op
-    Benchmark_SQLite-4           10000      114440 ns/op     4328 B/op      89 allocs/op
-    Benchmark_SQLite_pool-4      10000      209662 ns/op     1511 B/op      29 allocs/op
 
 оптимизация `getKeysAndValues()`
 

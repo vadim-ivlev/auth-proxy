@@ -23,16 +23,6 @@ func Test_dbAvailable(t *testing.T) {
 // Локальная БД
 func Benchmark_local_DB(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "dev")
-	UsePool = false
-	for i := 0; i < b.N; i++ {
-		_, _ = QueryRowMap("select $1", i)
-	}
-}
-
-// Локальная БД с пулом
-func Benchmark_local_DB_pool(b *testing.B) {
-	ReadConfig("../../configs/db.yaml", "dev")
-	UsePool = true
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
@@ -41,16 +31,6 @@ func Benchmark_local_DB_pool(b *testing.B) {
 // Удаленная БД
 func Benchmark_remote_DB(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "prod")
-	UsePool = false
-	for i := 0; i < b.N; i++ {
-		_, _ = QueryRowMap("select $1", i)
-	}
-}
-
-// Удаленная БД с пулом
-func Benchmark_remote_DB_pool(b *testing.B) {
-	ReadConfig("../../configs/db.yaml", "prod")
-	UsePool = true
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}

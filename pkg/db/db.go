@@ -17,13 +17,6 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-func getDB() (*sqlx.DB, error) {
-	if UsePool {
-		return getDBFromPool()
-	}
-	return sqlx.Open("postgres", params.connectStr)
-}
-
 func getDBFromPool() (*sqlx.DB, error) {
 	if DBPool != nil {
 		return DBPool, nil
@@ -39,18 +32,14 @@ func getDBFromPool() (*sqlx.DB, error) {
 	DBPool.SetMaxIdleConns(4)    // defaultMaxIdleConns = 2
 	DBPool.SetConnMaxLifetime(0) // 0, connections are reused forever.
 	return DBPool, err
-
 }
 
 // DbAvailable проверяет, доступна ли база данных
 func DbAvailable() bool {
-	conn, err := getDB()
+	conn, err := getDBFromPool()
 	if err != nil {
 		fmt.Println(err)
 		return false
-	}
-	if !UsePool {
-		defer conn.Close()
 	}
 	err = conn.Ping()
 	if err != nil {
@@ -62,23 +51,16 @@ func DbAvailable() bool {
 
 // QueryExec исполняет запросы заданные в sqlText.
 func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
-	conn, err := getDB()
+	conn, err := getDBFromPool()
 	panicIf(err)
-	if !UsePool {
-		defer conn.Close()
-	}
 	return conn.Exec(sqlText, args...)
 }
 
 // QuerySliceMap возвращает результат запроса заданного sqlText, как срез отображений ключ - значение.
 // Применяется для запросов SELECT возвращающих набор записей.
 func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{}, error) {
-	conn, err := getDB()
+	conn, err := getDBFromPool()
 	panicIf(err)
-	if !UsePool {
-		defer conn.Close()
-	}
-
 	rows, err := conn.Queryx(sqlText, args...) //.MapScan(result)
 	if err != nil {
 		fmt.Println("QuerySliceMap():", err.Error())
@@ -103,11 +85,8 @@ func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{
 // QueryRowMap возвращает результат запроса заданного sqlText, с возможными параметрами args.
 // Применяется для исполнения запросов , INSERT, SELECT.
 func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, error) {
-	conn, err := getDB()
+	conn, err := getDBFromPool()
 	panicIf(err)
-	if !UsePool {
-		defer conn.Close()
-	}
 	result := make(map[string]interface{})
 	err = conn.QueryRowx(sqlText, args...).MapScan(result)
 	printIf("QueryRowMap() sqlText="+sqlText, err)

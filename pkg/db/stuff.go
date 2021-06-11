@@ -10,9 +10,6 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// UsePool использовать ли пул соединений для подключения к БД.
-var UsePool bool = true
-
 // DBPool пул соединений
 var DBPool *sqlx.DB = nil
 

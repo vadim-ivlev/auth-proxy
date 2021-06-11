@@ -9,7 +9,6 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10
 	github.com/lib/pq v1.9.0
-	github.com/mattn/go-sqlite3 v1.14.5
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.8.0
 	github.com/steambap/captcha v1.3.1
