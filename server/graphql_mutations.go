@@ -281,7 +281,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 						auth.Cache.Delete("is-request-to-" + oldAppname + "-signed")
 					}
 
-					// Если обновляется Url, Rebase пререпорождаем прокси
+					// Если обновляется Url, Rebase перепорождаем прокси
 					r, okRebase := params.Args["rebase"]
 					u, okURL := params.Args["url"]
 					if okRebase || okURL {

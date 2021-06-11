@@ -99,7 +99,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		}
 
 		// !!! Если пользователь заблокирован ПРЕРЫВАЕМ ЗАПРОС
-		if auth.IsUserEnabled(userName) == false {
+		if !auth.IsUserEnabled(userName) {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " is disabled or DB is unavailable. Please ask admins."})
 			return
 		}

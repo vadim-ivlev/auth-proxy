@@ -189,10 +189,7 @@ func AppUserRoleExist(appname, username, rolename string) bool {
 	_, err := db.QueryRowMap(`SELECT * FROM  app_user_role  
 		WHERE appname = $1 AND username = $2 AND rolename = $3 ;`,
 		appname, username, rolename)
-	if err == nil {
-		return true
-	}
-	return false
+	return err == nil
 }
 
 // IsUserEnabled  Если false, пользователь отключен
