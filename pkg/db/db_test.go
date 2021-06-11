@@ -9,8 +9,6 @@ import (
 
 func TestMain(m *testing.M) {
 	ReadConfig("../../configs/db.yaml", "dev")
-	ReadSQLiteConfig("../../configs/sqlite.yaml", "dev")
-	SQLite = false
 
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())
@@ -26,7 +24,6 @@ func Test_dbAvailable(t *testing.T) {
 func Benchmark_local_DB(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "dev")
 	UsePool = false
-	SQLite = false
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
@@ -36,7 +33,6 @@ func Benchmark_local_DB(b *testing.B) {
 func Benchmark_local_DB_pool(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "dev")
 	UsePool = true
-	SQLite = false
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
@@ -46,7 +42,6 @@ func Benchmark_local_DB_pool(b *testing.B) {
 func Benchmark_remote_DB(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "prod")
 	UsePool = false
-	SQLite = false
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
@@ -56,25 +51,6 @@ func Benchmark_remote_DB(b *testing.B) {
 func Benchmark_remote_DB_pool(b *testing.B) {
 	ReadConfig("../../configs/db.yaml", "prod")
 	UsePool = true
-	SQLite = false
-	for i := 0; i < b.N; i++ {
-		_, _ = QueryRowMap("select $1", i)
-	}
-}
-
-// SQLite
-func Benchmark_SQLite(b *testing.B) {
-	UsePool = false
-	SQLite = true
-	for i := 0; i < b.N; i++ {
-		_, _ = QueryRowMap("select $1", i)
-	}
-}
-
-// SQLite с пулом
-func Benchmark_SQLite_pool(b *testing.B) {
-	UsePool = true
-	SQLite = true
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}

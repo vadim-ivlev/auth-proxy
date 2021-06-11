@@ -17,8 +17,6 @@ import (
 )
 
 type appParams struct {
-	// Использовать SQLite
-	Sqlite bool
 	// Использовать https вместо http
 	Tls bool
 	// Установить флаг secure на куки браузера. Работает только для https протокола.

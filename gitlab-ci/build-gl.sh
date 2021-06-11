@@ -8,9 +8,6 @@
 # линкуем статически под линукс
 # env CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' . 
 
-# CGO_ENABLED=1 нужно для драйвера SQLite
-# env CGO_ENABLED=1 GOOS=linux go build -a -tags=jsoniter -ldflags '-linkmode external -extldflags "-static"' .  || exit 1
-
 
 echo "cleaning  deploy/ directory "
 
@@ -25,7 +22,6 @@ rm -rf deploy/certificates
 # careful with configs, everything excluding db.yaml
 rm -f deploy/configs/mail.yaml
 rm -f deploy/configs/mail-templates.yaml.yaml
-rm -f deploy/configs/sqlite.yaml
 rm -f deploy/configs/app.yaml
 rm -f deploy/configs/oauth2.yaml
 rm -f deploy/configs/signature.yaml

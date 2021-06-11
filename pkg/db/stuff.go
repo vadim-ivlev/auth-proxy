@@ -16,9 +16,6 @@ var UsePool bool = true
 // DBPool пул соединений
 var DBPool *sqlx.DB = nil
 
-// SQLite Использовать ли SQLite
-var SQLite bool = false
-
 // параметры подсоединения к Postgres
 type postgresConnectParams struct {
 	Host       string
@@ -31,13 +28,7 @@ type postgresConnectParams struct {
 	connectStr string
 }
 
-// параметры подсоединения к SQLite
-type sqliteConnectParams struct {
-	Sqlitefile string
-}
-
 var params postgresConnectParams
-var sqliteParams sqliteConnectParams
 
 // var connectURL string
 
@@ -62,29 +53,9 @@ func ReadConfig(fileName string, env string) {
 	// params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s ", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode)
 }
 
-// ReadSQLiteConfig reads YAML with SQLite params
-func ReadSQLiteConfig(fileName string, env string) {
-	yamlFile, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Println(err.Error())
-		return
-	}
-
-	envParams := make(map[string]sqliteConnectParams)
-	err = yaml.Unmarshal(yamlFile, &envParams)
-	printIf("ReadSQLiteConfig()", err)
-	sqliteParams = envParams[env]
-}
-
 // PrintConfig prints DB connection parameters.
 func PrintConfig() {
-	if SQLite {
-		fmt.Printf("SQLite file: %s\n", sqliteParams.Sqlitefile)
-	} else {
-		fmt.Printf("Postgres connection string: %s\n", params.connectStr)
-	}
-	// s, _ := yaml.Marshal(params)
-	// fmt.Printf("\nDB connection parameters:\n%s\n", s)
+	fmt.Printf("Postgres connection string: %s\n", params.connectStr)
 }
 
 func panicIf(err error) {

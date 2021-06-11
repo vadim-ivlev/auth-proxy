@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -14,8 +13,6 @@ import (
 
 	//blank import
 	_ "github.com/lib/pq"
-	//blank import
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -24,12 +21,6 @@ func getDB() (*sqlx.DB, error) {
 	if UsePool {
 		return getDBFromPool()
 	}
-
-	// Если пул не используется каждый раз коннектимся к БД заново
-	if SQLite {
-		return sqlx.Open("sqlite3", sqliteParams.Sqlitefile)
-	}
-
 	return sqlx.Open("postgres", params.connectStr)
 }
 
@@ -39,13 +30,8 @@ func getDBFromPool() (*sqlx.DB, error) {
 	}
 
 	var err error
-	if SQLite {
-		DBPool, err = sqlx.Connect("sqlite3", sqliteParams.Sqlitefile)
-		printIf("getDBFromPool(): sqlite3", err)
-	} else {
-		DBPool, err = sqlx.Connect("postgres", params.connectStr)
-		printIf("getDBFromPool(): postgres", err)
-	}
+	DBPool, err = sqlx.Connect("postgres", params.connectStr)
+	printIf("getDBFromPool(): postgres", err)
 	if err != nil {
 		return nil, err
 	}
@@ -84,20 +70,6 @@ func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 	return conn.Exec(sqlText, args...)
 }
 
-// mapValuesToStrings фикс драйвера sqlite3. Преобразует []uint8 -> string
-func mapValuesToStrings(m map[string]interface{}) map[string]interface{} {
-	mm := make(map[string]interface{})
-	for k, v := range m {
-		bytes, ok := v.([]byte)
-		if ok {
-			mm[k] = string(bytes)
-		} else {
-			mm[k] = v
-		}
-	}
-	return mm
-}
-
 // QuerySliceMap возвращает результат запроса заданного sqlText, как срез отображений ключ - значение.
 // Применяется для запросов SELECT возвращающих набор записей.
 func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{}, error) {
@@ -121,11 +93,8 @@ func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{
 		if err != nil {
 			log.Println("QuerySliceMap(): ", err)
 		}
-		if SQLite {
-			results = append(results, mapValuesToStrings(row))
-		} else {
-			results = append(results, row)
-		}
+		results = append(results, row)
+
 	}
 
 	return results, nil
@@ -142,9 +111,6 @@ func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, e
 	result := make(map[string]interface{})
 	err = conn.QueryRowx(sqlText, args...).MapScan(result)
 	printIf("QueryRowMap() sqlText="+sqlText, err)
-	if SQLite {
-		return mapValuesToStrings(result), err
-	}
 	return result, err
 }
 
@@ -260,8 +226,6 @@ func MigrateUp(dirname string) {
 				continue
 			}
 			sqlText := string(sqlBytes)
-			// чистим текст от выражений специфичных для postgresql
-			sqlText = removeLinesContaining(sqlText, "postgresql-specific")
 			_, err = QueryExec(sqlText)
 			if err != nil {
 				log.Printf("Query Execution error: %s.\t Error:  %v ", fileName, err)
@@ -270,15 +234,4 @@ func MigrateUp(dirname string) {
 			log.Printf("Executed: %s \n", fileName)
 		}
 	}
-}
-
-// removeLinesContaining - удаляет из текста строки содержащие данную подстроку
-// Функция используется для чистки SQL текстов от выражений специфичных для Postgresql.
-func removeLinesContaining(str, substr string) string {
-	res := str
-	if SQLite {
-		re := regexp.MustCompile("(?m)^.*" + substr + ".*$")
-		res = re.ReplaceAllString(str, "")
-	}
-	return res
 }

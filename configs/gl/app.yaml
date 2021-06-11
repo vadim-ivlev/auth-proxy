@@ -7,8 +7,6 @@
 
 
 dev:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -32,8 +30,6 @@ dev:
 
 
 front:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -56,8 +52,6 @@ front:
     /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 staging:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: false
   # Установить флаг secure на куки браузера. Работает только для https протокола. 
@@ -83,8 +77,6 @@ staging:
 
 
 prod:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: false
   # Установить флаг secure на куки браузера. Работает только для https протокола. 

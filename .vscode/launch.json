@@ -17,21 +17,6 @@
                 "4400",
                 "-env=dev"
             ]
-        },
-        {
-            "name": "Launch SQLite",
-            "type": "go",
-            "request": "launch",
-            "mode": "auto",
-            // "program": "${fileDirname}",
-            "program": "${workspaceRoot}",
-            "env": {},
-            "args": [
-                "-serve",
-                "4400",
-                "-env=dev",
-                "-sqlite"
-            ]
         }
     ]
 }

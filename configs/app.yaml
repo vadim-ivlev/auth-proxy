@@ -7,8 +7,6 @@
 
 
 dev:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -32,8 +30,6 @@ dev:
 
 
 front:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -59,8 +55,6 @@ front:
 
 
 prod:
-  # Использовать SQLite
-  sqlite: false
   # Использовать https вместо http
   tls: false
   # Установить флаг secure на куки браузера. Работает только для https протокола. 

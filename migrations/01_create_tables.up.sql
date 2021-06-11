@@ -1,12 +1,7 @@
-/*
-Внимание!
-Строки помеченные postgresql-specific
-будут удалены из текста если используется база данных SQLite.
-Старайтесь писать скрипты так, чтобы они работали с обеими базами данных.
-*/
 
-CREATE SCHEMA IF NOT EXISTS auth; -- postgresql-specific Будет удалена для SQLite моды
-CREATE SCHEMA IF NOT EXISTS extensions; -- postgresql-specific  Будет удалена для SQLite моды
+
+CREATE SCHEMA IF NOT EXISTS auth; 
+CREATE SCHEMA IF NOT EXISTS extensions; 
 
 -- Справочная таблица.
 -- Пользователь с дополнительными сведениями 
@@ -49,7 +44,6 @@ CREATE TABLE IF NOT EXISTS app_user_role (
     CONSTRAINT app_user_role_fk_a FOREIGN KEY (appname)  REFERENCES "app" (appname)  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
 );
 
--- TODO: get rid of because of sqlite
 -- индексы для ускорения выборок
 CREATE INDEX IF NOT EXISTS aur_appname_idx ON app_user_role (appname);
 CREATE INDEX IF NOT EXISTS aur_username_idx ON app_user_role (username);

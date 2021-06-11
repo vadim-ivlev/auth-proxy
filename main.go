@@ -35,7 +35,7 @@ func main() {
 	db.CreateDatabaseIfNotExists()
 
 	// печатаем приветствие и запускаем сервер
-	printGreetings(servePort, env, app.Params.Sqlite, tls)
+	printGreetings(servePort, env, tls)
 	server.Up(servePort, tls, Build)
 
 	db.DBPool.Close()
@@ -49,8 +49,6 @@ func main() {
 func readConfigsAndSetParams(env string) bool {
 	// читаем конфиг Postgres.
 	db.ReadConfig("./configs/db.yaml", env)
-	// читаем конфиг SQLite.
-	db.ReadSQLiteConfig("./configs/sqlite.yaml", env)
 	// читаем конфиг mail.
 	mail.ReadConfig("./configs/mail.yaml", env)
 	// читаем шаблоны писем
@@ -64,7 +62,6 @@ func readConfigsAndSetParams(env string) bool {
 	app.ReadConfig("./configs/app.yaml", env)
 	// устанавливаем параметры пакетов
 	tls := app.Params.Tls
-	db.SQLite = app.Params.Sqlite
 	server.SelfRegistrationAllowed = app.Params.Selfreg
 	server.SecureCookie = app.Params.Secure
 	server.UseCaptcha = app.Params.UseCaptcha
@@ -99,17 +96,12 @@ func readCommandLineParams() (serverPort string, env string) {
 }
 
 // printGreetings печатаем приветственное сообщение
-func printGreetings(serverPort string, env string, sqlite bool, tls bool) {
+func printGreetings(serverPort string, env string, tls bool) {
 	protocol := "http"
 	if tls {
 		protocol = "https"
 	}
-
 	database := "Postgres"
-	if sqlite {
-		database = "SQLite"
-	}
-
 	msg := `
 	
  █████  ██    ██ ████████ ██   ██
