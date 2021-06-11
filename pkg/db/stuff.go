@@ -27,7 +27,17 @@ type postgresConnectParams struct {
 
 var params postgresConnectParams
 
-// var connectURL string
+// ReadConfig reads YAML with Postgres params
+func ReadEnvConfig(fileName string) {
+	// printIf("ReadEnvConfig()", err)
+
+	// // устанавливаем значение по умолчанию
+	// if params.SearchPath == "" {
+	// 	params.SearchPath = "auth,extensions"
+	// }
+	// params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
+	// params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode, params.SearchPath)
+}
 
 // ReadConfig reads YAML with Postgres params
 func ReadConfig(fileName string, env string) {
