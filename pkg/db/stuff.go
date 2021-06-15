@@ -2,12 +2,13 @@ package db
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"strings"
 
+	"github.com/caarlos0/env/v6"
 	"github.com/jmoiron/sqlx"
-	yaml "gopkg.in/yaml.v2"
+	"github.com/joho/godotenv"
+	// yaml "gopkg.in/yaml.v2"
 )
 
 // DBPool пул соединений
@@ -15,13 +16,13 @@ var DBPool *sqlx.DB = nil
 
 // параметры подсоединения к Postgres
 type postgresConnectParams struct {
-	Host       string
-	Port       string
-	User       string
-	Password   string
-	Dbname     string `yaml:"database"`
-	Sslmode    string
-	SearchPath string `yaml:"search_path"`
+	Host       string `env:"PG_HOST"`
+	Port       string `env:"PG_PORT"`
+	User       string `env:"PG_USER"`
+	Password   string `env:"PG_PASSWORD"`
+	Dbname     string `env:"PG_DATABASE"`
+	Sslmode    string `env:"PG_SSLMODE"`
+	SearchPath string `env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
 	connectStr string
 }
 
@@ -29,40 +30,20 @@ var params postgresConnectParams
 
 // ReadConfig reads YAML with Postgres params
 func ReadEnvConfig(fileName string) {
-	// printIf("ReadEnvConfig()", err)
-
-	// // устанавливаем значение по умолчанию
-	// if params.SearchPath == "" {
-	// 	params.SearchPath = "auth,extensions"
-	// }
-	// params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
-	// params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode, params.SearchPath)
-}
-
-// ReadConfig reads YAML with Postgres params
-func ReadConfig(fileName string, env string) {
-	yamlFile, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Println(err.Error())
+	if err := godotenv.Load(fileName); err != nil {
+		log.Println("ОШИБКА чтения env файла:", err.Error())
 		return
 	}
-
-	envParams := make(map[string]postgresConnectParams)
-	err = yaml.Unmarshal(yamlFile, &envParams)
-	printIf("ReadConfig()", err)
-	params = envParams[env]
-	// устанавливаем значение по умолчанию
-	if params.SearchPath == "" {
-		params.SearchPath = "auth,extensions"
+	if err := env.Parse(&params); err != nil {
+		fmt.Printf("%+v\n", err)
 	}
 	params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
 	params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode, params.SearchPath)
-	// params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s ", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode)
 }
 
 // PrintConfig prints DB connection parameters.
 func PrintConfig() {
-	fmt.Printf("Postgres connection string: %s\n", params.connectStr)
+	fmt.Printf("Строка соединения Postgres: %s\n", params.connectStr)
 }
 
 func panicIf(err error) {

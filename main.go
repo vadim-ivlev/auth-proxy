@@ -15,7 +15,7 @@ import (
 // Build версия сборки из gitlab-ci,
 // используется флаг со значением переменнай CI_PIPELINE_ID (-ldflags="-X 'main.Build=${CI_PIPELINE_ID}'")
 // если не установлено по умолчанию равно development
-var Build = "development-1"
+var Build = "env variables"
 
 func main() {
 
@@ -26,10 +26,10 @@ func main() {
 
 	// Считать конфиги и установить параметры
 	tls := readConfigsAndSetParams(env)
+	db.PrintConfig()
 
 	// ждем готовности базы данных
-	waitForDbConnection(env)
-	db.PrintConfig()
+	waitForDbConnection()
 
 	// порождаем базу данных если ее нет
 	db.CreateDatabaseIfNotExists()
@@ -48,7 +48,8 @@ func main() {
 // возвращаем true если требуется соединение по https.
 func readConfigsAndSetParams(env string) bool {
 	// читаем конфиг Postgres.
-	db.ReadConfig("./configs/db.yaml", env)
+	// db.ReadConfig("./configs/db.yaml", env)
+	db.ReadEnvConfig("./configs/db.env." + env)
 	// читаем конфиг mail.
 	mail.ReadConfig("./configs/mail.yaml", env)
 	// читаем шаблоны писем
@@ -73,11 +74,9 @@ func readConfigsAndSetParams(env string) bool {
 }
 
 // waitForDbConnection - Ожидает соединения с базой данных
-func waitForDbConnection(env string) {
+func waitForDbConnection() {
 	for {
-		fmt.Println("Пытаемся зачитать параметры configs/db.yaml и соединиться с базой.")
-		// читаем конфиг Postgres.
-		db.ReadConfig("./configs/db.yaml", env)
+		fmt.Println("Пытаемся соединиться с базой.")
 		if db.DbAvailable() {
 			return
 		}

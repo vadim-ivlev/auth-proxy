@@ -6,12 +6,24 @@ services:
   auth-proxy-front:
     image: rgru/auth-proxy:latest
     container_name: auth-proxy-front
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front" 
     restart: unless-stopped
+    # параметры подсоединения к Postgres могут быть указаны в файле или в переменных
+    # environment:
+    #   - PG_HOST=postgres
+    #   - PG_USER=pgadmin
+    #   - PG_PASSWORD=159753
+    #   - PG_DATABASE=rgru
+    #   - PG_PORT=5432
+    #   - PG_SEARCH_PATH=auth,extensions
+    #   - PG_SSLMODE=disable      
+    # env_file:
+    #   - ./db.env
     ports:
       - 4400:4400
     depends_on:
       - postgres
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=front" 
+  
 
 
   # база данных Postgres 

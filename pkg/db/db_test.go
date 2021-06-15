@@ -8,7 +8,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	ReadConfig("../../configs/db.yaml", "dev")
+	ReadEnvConfig("../../configs/db.env.dev")
 
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())
@@ -22,7 +22,7 @@ func Test_dbAvailable(t *testing.T) {
 
 // Локальная БД
 func Benchmark_local_DB(b *testing.B) {
-	ReadConfig("../../configs/db.yaml", "dev")
+	ReadEnvConfig("../../configs/db.env.dev")
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
@@ -30,7 +30,7 @@ func Benchmark_local_DB(b *testing.B) {
 
 // Удаленная БД
 func Benchmark_remote_DB(b *testing.B) {
-	ReadConfig("../../configs/db.yaml", "prod")
+	ReadEnvConfig("../../configs/db.env.prod")
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}
