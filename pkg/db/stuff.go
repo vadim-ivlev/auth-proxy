@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/jmoiron/sqlx"
@@ -32,7 +33,6 @@ var params postgresConnectParams
 func ReadEnvConfig(fileName string) {
 	if err := godotenv.Load(fileName); err != nil {
 		log.Println("ОШИБКА чтения env файла:", err.Error())
-		return
 	}
 	if err := env.Parse(&params); err != nil {
 		fmt.Printf("%+v\n", err)
@@ -55,5 +55,16 @@ func panicIf(err error) {
 func printIf(msg string, err error) {
 	if err != nil {
 		log.Println(msg, err.Error())
+	}
+}
+
+// WaitForDbConnection - Ожидает соединения с базой данных
+func WaitForDbConnection() {
+	for {
+		fmt.Println("Пытаемся соединиться с базой.")
+		if DbAvailable() {
+			return
+		}
+		time.Sleep(5 * time.Second)
 	}
 }

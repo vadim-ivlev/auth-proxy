@@ -22,14 +22,14 @@ func main() {
 	fmt.Println("Build number:\t", Build)
 
 	// считать параметры командной строки
-	servePort, env := readCommandLineParams()
+	servePort, env, pgconfig := readCommandLineParams()
 
 	// Считать конфиги и установить параметры
-	tls := readConfigsAndSetParams(env)
+	tls := readConfigsAndSetParams(env, pgconfig)
 	db.PrintConfig()
 
 	// ждем готовности базы данных
-	waitForDbConnection()
+	db.WaitForDbConnection()
 
 	// порождаем базу данных если ее нет
 	db.CreateDatabaseIfNotExists()
@@ -46,10 +46,16 @@ func main() {
 
 // readConfigsAndSetParams читаем конфиги, устанавливаем параметры,
 // возвращаем true если требуется соединение по https.
-func readConfigsAndSetParams(env string) bool {
-	// читаем конфиг Postgres.
-	// db.ReadConfig("./configs/db.yaml", env)
-	db.ReadEnvConfig("./configs/db.env." + env)
+// env - конфигурация {dev|front|prod}
+// pgconfig - env файл с параметрами подсоединения к Postgres
+func readConfigsAndSetParams(env, pgconfig string) bool {
+	// читаем конфиг Postgres если он задан в pgconfig.
+	// В противном случае читаем конфиг соответствующий заданной конфигурации env
+	if pgconfig != "" {
+		db.ReadEnvConfig(pgconfig)
+	} else {
+		db.ReadEnvConfig("./configs/db.env." + env)
+	}
 	// читаем конфиг mail.
 	mail.ReadConfig("./configs/mail.yaml", env)
 	// читаем шаблоны писем
@@ -73,21 +79,11 @@ func readConfigsAndSetParams(env string) bool {
 	return tls
 }
 
-// waitForDbConnection - Ожидает соединения с базой данных
-func waitForDbConnection() {
-	for {
-		fmt.Println("Пытаемся соединиться с базой.")
-		if db.DbAvailable() {
-			return
-		}
-		time.Sleep(5 * time.Second)
-	}
-}
-
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort string, env string) {
+func readCommandLineParams() (serverPort, env, pgconfig string) {
 	flag.StringVar(&serverPort, "serve", "4400", "Запустить приложение на порту")
 	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
+	flag.StringVar(&pgconfig, "pgconfig", "", "Конфигурационный файл Postgres.")
 
 	flag.Parse()
 	flag.Usage()
