@@ -7,7 +7,16 @@ services:
     image: rgru/auth-proxy:latest
     container_name: auth-proxy-front
     restart: unless-stopped
-    # параметры подсоединения к Postgres могут быть указаны в файле или в переменных
+    ports:
+      - 4400:4400
+    depends_on:
+      - postgres
+      
+    # Параметры подсоединения к Postgres могут быть указаны в файле 
+    # env_file:
+    #   - ./my_db.env
+
+    # Параметры подсоединения к Postgres могут быть указаны в переменных
     # environment:
     #   - PG_HOST=postgres
     #   - PG_USER=pgadmin
@@ -15,14 +24,13 @@ services:
     #   - PG_DATABASE=rgru
     #   - PG_PORT=5432
     #   - PG_SEARCH_PATH=auth,extensions
-    #   - PG_SSLMODE=disable      
-    # env_file:
-    #   - ./db.env
-    ports:
-      - 4400:4400
-    depends_on:
-      - postgres
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front" 
+    #   - PG_SSLMODE=disable   
+    # Тогда необходимо запустить программу с параметром -pg-params-from-os.   
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -pg-params-from-os" 
+    
+    # Конфигурационный файл Postgres может быть задан явно 
+    # и через параметр командной строки -pgconfig
+    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -pgconfig=shared_dir/my_db.env" 
   
 
 

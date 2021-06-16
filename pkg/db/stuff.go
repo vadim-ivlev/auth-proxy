@@ -17,12 +17,12 @@ var DBPool *sqlx.DB = nil
 
 // параметры подсоединения к Postgres
 type postgresConnectParams struct {
-	Host       string `env:"PG_HOST"`
-	Port       string `env:"PG_PORT"`
-	User       string `env:"PG_USER"`
-	Password   string `env:"PG_PASSWORD"`
-	Dbname     string `env:"PG_DATABASE"`
-	Sslmode    string `env:"PG_SSLMODE"`
+	Host       string `env:"PG_HOST" envDefault:"localhost"`
+	Port       string `env:"PG_PORT" envDefault:"5432"`
+	User       string `env:"PG_USER" envDefault:"pgadmin"`
+	Password   string `env:"PG_PASSWORD" envDefault:"159753"`
+	Database   string `env:"PG_DATABASE" envDefault:"rgru"`
+	Sslmode    string `env:"PG_SSLMODE" envDefault:"disable"`
 	SearchPath string `env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
 	connectStr string
 }
@@ -31,14 +31,19 @@ var params postgresConnectParams
 
 // ReadConfig reads YAML with Postgres params
 func ReadEnvConfig(fileName string) {
-	if err := godotenv.Load(fileName); err != nil {
-		log.Println("ОШИБКА чтения env файла:", err.Error())
+	if fileName != "" {
+		if err := godotenv.Load(fileName); err != nil {
+			log.Println("ОШИБКА чтения env файла:", err.Error())
+		}
+	} else {
+		fmt.Println("Параметры Postgres берутся из операционной системы.")
 	}
+
 	if err := env.Parse(&params); err != nil {
 		fmt.Printf("%+v\n", err)
 	}
 	params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
-	params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Dbname, params.Sslmode, params.SearchPath)
+	params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Database, params.Sslmode, params.SearchPath)
 }
 
 // PrintConfig prints DB connection parameters.

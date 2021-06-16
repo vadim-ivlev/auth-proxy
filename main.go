@@ -22,10 +22,10 @@ func main() {
 	fmt.Println("Build number:\t", Build)
 
 	// считать параметры командной строки
-	servePort, env, pgconfig := readCommandLineParams()
+	servePort, env, pgconfig, pgParamsFromOS := readCommandLineParams()
 
 	// Считать конфиги и установить параметры
-	tls := readConfigsAndSetParams(env, pgconfig)
+	tls := readConfigsAndSetParams(env, pgconfig, pgParamsFromOS)
 	db.PrintConfig()
 
 	// ждем готовности базы данных
@@ -48,13 +48,20 @@ func main() {
 // возвращаем true если требуется соединение по https.
 // env - конфигурация {dev|front|prod}
 // pgconfig - env файл с параметрами подсоединения к Postgres
-func readConfigsAndSetParams(env, pgconfig string) bool {
-	// читаем конфиг Postgres если он задан в pgconfig.
-	// В противном случае читаем конфиг соответствующий заданной конфигурации env
-	if pgconfig != "" {
-		db.ReadEnvConfig(pgconfig)
+// pgParamsFromOS - Брать параметры Postgres из переменных окружения OS.
+func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
+	// Если приказано читать параметры Postgres из операционной системы, читаем из OS.
+	// Иначе читаем параметры из файлов. Причем:
+	// - читаем файл если если он задан в pgconfig.
+	// - В противном случае читаем конфиг соответствующий заданной конфигурации env
+	if pgParamsFromOS {
+		db.ReadEnvConfig("")
 	} else {
-		db.ReadEnvConfig("./configs/db.env." + env)
+		if pgconfig != "" {
+			db.ReadEnvConfig(pgconfig)
+		} else {
+			db.ReadEnvConfig("./configs/db.env." + env)
+		}
 	}
 	// читаем конфиг mail.
 	mail.ReadConfig("./configs/mail.yaml", env)
@@ -80,10 +87,11 @@ func readConfigsAndSetParams(env, pgconfig string) bool {
 }
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort, env, pgconfig string) {
-	flag.StringVar(&serverPort, "serve", "4400", "Запустить приложение на порту")
+func readCommandLineParams() (serverPort, env, pgconfig string, pgParamsFromOS bool) {
+	flag.StringVar(&serverPort, "serve", "4400", "Запустить приложение на указанном порту.")
 	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
 	flag.StringVar(&pgconfig, "pgconfig", "", "Конфигурационный файл Postgres.")
+	flag.BoolVar(&pgParamsFromOS, "pg-params-from-os", false, "Брать параметры Postgres из переменных окружения OS.")
 
 	flag.Parse()
 	flag.Usage()
