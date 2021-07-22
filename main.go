@@ -88,7 +88,7 @@ func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
 
 // readCommandLineParams читает параметры командной строки
 func readCommandLineParams() (serverPort, env, pgconfig string, pgParamsFromOS bool) {
-	flag.StringVar(&serverPort, "serve", "4400", "Запустить приложение на указанном порту.")
+	flag.StringVar(&serverPort, "port", "4400", "Запустить приложение на указанном порту.")
 	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
 	flag.StringVar(&pgconfig, "pgconfig", "", "Конфигурационный файл Postgres.")
 	flag.BoolVar(&pgParamsFromOS, "pg-params-from-os", false, "Брать параметры Postgres из переменных окружения OS.")

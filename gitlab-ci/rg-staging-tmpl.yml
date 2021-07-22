@@ -1,0 +1,25 @@
+buildstaging:
+  extends: .docker_template
+  stage: build
+  tags:
+    - rgrustaging
+  variables:
+    NODE_ENV: staging
+  only:
+    - staging
+
+deploystaging:
+  extends: .docker_template
+  stage: deploy
+  tags:
+    - rgrustaging
+  variables:
+    PORT: 7079
+    NODE_ENV: staging
+    PRJ: rgru
+  dependencies:
+    - buildstaging
+  script:
+    - docker-compose -p ${PRJ}${PROJECT_NAME}_${NODE_ENV} up -d --build
+  only:
+    - staging

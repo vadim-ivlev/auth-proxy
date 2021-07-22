@@ -1,0 +1,68 @@
+buildprod gl:
+  extends: .docker_template
+  stage: build
+  tags:
+    - glprod
+    - dockerweb5
+  variables:
+    NODE_ENV: prod
+    PRJ: gl
+  only:
+    - production-gl
+
+# deploypreprod gl:
+#   extends: .docker_template
+#   stage: deploypreprod
+#   tags:
+#     - glstaging
+#   variables:
+#     PORT: 7079
+#     NODE_ENV: staging
+#     PRJ: gl
+#   dependencies:
+#     - buildprod gl
+#   script:
+#     - docker-compose -p ${PRJ}${PROJECT_NAME}_${NODE_ENV} up -d --build
+#   only:
+#     - production-gl
+
+deployprod gl node4:
+  extends: .docker_template
+  stage: deploy
+  when: manual
+  tags:
+    - glprod
+    - dockerweb4
+  variables:
+    PORT: 4402
+    NODE_ENV: prod
+    PRJ: gl
+  dependencies:
+    - buildprod gl
+  script:
+    - docker-compose -p ${PROJECT_NAME}_${NODE_ENV} up -d --build
+  only:
+    - production-gl
+
+deployprod gl node5:
+  extends: [".docker_template", ".curl_install"]
+  stage: deploy2
+  tags:
+    - glprod
+    - dockerweb5
+  variables:
+    PORT: 4402
+    NODE_ENV: prod
+    PRJ: gl
+    HOST_4: http://dockerweb4.rgwork.ru:4402/build
+  dependencies:
+    - deployprod gl node4
+  needs:
+    - deployprod gl node4
+  script:
+    # health check on correct deploy first app
+    - chmod +x ./gitlab-ci/deploy-healthchecker.sh
+    - ./gitlab-ci/deploy-healthchecker.sh ${CI_PIPELINE_ID} $HOST_4
+    - docker-compose -p ${PROJECT_NAME}_${NODE_ENV} up -d --build
+  only:
+    - production-gl

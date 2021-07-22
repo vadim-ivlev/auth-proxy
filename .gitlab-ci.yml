@@ -1,54 +1,79 @@
-image: golang:1.15
+image: docker/compose:debian-1.29.1
 
-# variables:
-#   GIT_SUBMODULE_STRATEGY: recursive
+.docker_template: &docker_template
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
+  after_script:
+    - docker logout $CI_REGISTRY
+  script:
+    - cd /builds && docker build --build-arg GROUP=${GROUP} --build-arg CI_PROJECT_NAME=${CI_PROJECT_NAME} --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} --build-arg NODE_ENV=${NODE_ENV} --build-arg PRJ=${PRJ} -t ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} -f ${GROUP}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}/Dockerfile .
+    - docker tag ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} ${REGISTRY}-${NODE_ENV}:latest
+    - docker push ${REGISTRY}-${NODE_ENV}
+
+.curl_install: &curl_install
+  before_script:
+    - apt update && apt upgrade -y
+    - apt install curl -y
 
 stages:
-    # rgru
-    - build
-    - prod&copy
-    - prod&compose
-    # - deploy&test
-    # godliteratury
-    - build-gl
-    - staging-gl&copy
-    - staging-gl&compose
-    - prod-gl&copy
-    - prod-gl&compose
-    - prod-gl&compose2
-    # telegram message
-    - message_on_success
-    - message_on_failure
+  - build
+  - deploypreprod
+  - deploy
+  - deploy2
+  - message_on_success
+  - message_on_failure
+
+variables:
+  GROUP: ${CI_PROJECT_NAMESPACE}
+  REGISTRY: ${CI_REGISTRY_IMAGE}/${CI_PROJECT_NAME}
+  BUILD_PATH: /builds/${GROUP}/${CI_PROJECT_NAME}
+  GIT_CLONE_PATH: ${BUILD_PATH}/${CI_PROJECT_NAME}
+
+build dev:
+  <<: *docker_template
+  stage: build
+  except:
+    - master
+    - tags
+    - staging
+    - staging-gl
+    - production
+    - production-gl
+  tags:
+    - glstaging
+  variables:
+    NODE_ENV: staging
 
 include:
-    - local: /gitlab-ci/gl-tmpl.yml
-    - local: /gitlab-ci/rg-tmpl.yml
-
+  # - local: /gitlab-ci/rg-staging-tmpl.yml
+  # - local: /gitlab-ci/rg-production-tmpl.yml
+  - local: /gitlab-ci/gl-staging-tmpl.yml
+  - local: /gitlab-ci/gl-production-tmpl.yml
 
 message_on_success:
-    stage: message_on_success
-    allow_failure: true
-    dependencies:
-        - prod&compose
-        - prod-gl&compose2
-    when: on_success
-    script:
-        # send to telegram proxy
-        - curl -v http://proxy.govoru.com/?message=%E2%9C%85%20Success.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
-    only:
-        - production
-        - production-gl
+  stage: message_on_success
+  <<: *curl_install
+  allow_failure: true
+  dependencies:
+    - deployprod gl node5
+  when: on_success
+  script:
+    # send to telegram proxy
+    - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9C%85%20Success.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
+  only:
+    - production
+    - production-gl
 
 message_on_failure:
-    stage: message_on_failure
-    allow_failure: true
-    dependencies:
-        - prod&compose
-        - prod-gl&compose2
-    when: on_failure
-    script:
-        # send to telegram proxy
-        - curl -v http://proxy.govoru.com/?message=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20${CI_PROJECT_NAME}%20is%20failed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20${GITLAB_USER_LOGIN}
-    only:
-        - production
-        - production-gl
+  stage: message_on_failure
+  <<: *curl_install
+  allow_failure: true
+  dependencies:
+    - deployprod gl node5
+  when: on_failure
+  script:
+    # send to telegram proxy
+    - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
+  only:
+    - production
+    - production-gl

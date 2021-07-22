@@ -1,0 +1,26 @@
+buildstaging gl:
+  extends: .docker_template
+  stage: build
+  tags:
+    - glstaging
+  variables:
+    NODE_ENV: staging
+    PRJ: gl
+  only:
+    - staging-gl
+
+deploystaging gl:
+  extends: .docker_template
+  stage: deploy
+  tags:
+    - glstaging
+  variables:
+    PORT: 4402
+    NODE_ENV: staging
+    PRJ: gl
+  dependencies:
+    - buildstaging gl
+  script:
+    - docker-compose -p ${PRJ}${PROJECT_NAME}_${NODE_ENV} up -d --build
+  only:
+    - staging-gl

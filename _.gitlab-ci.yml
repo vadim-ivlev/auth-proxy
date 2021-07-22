@@ -1,0 +1,159 @@
+image: docker/compose:debian-1.29.1
+
+.docker_template: &docker_template
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
+  after_script:
+    - docker logout $CI_REGISTRY
+  script:
+    - cd /builds && docker build --build-arg GROUP=${GROUP} --build-arg CI_PROJECT_NAME=${CI_PROJECT_NAME} --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} --build-arg NODE_ENV=${NODE_ENV} --build-arg NODE_APP=${NODE_APP} -t ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} -f ${GROUP}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}/Dockerfile .
+    - docker tag ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} ${REGISTRY}-${NODE_ENV}:latest
+    - docker push ${REGISTRY}-${NODE_ENV}
+
+stages:
+  - build
+  - deploy
+  - message_on_success
+  - message_on_failure
+
+variables:
+  GROUP: ${CI_PROJECT_NAMESPACE}
+  REGISTRY: ${CI_REGISTRY_IMAGE}/${CI_PROJECT_NAME}
+  BUILD_PATH: /builds/${GROUP}/${CI_PROJECT_NAME}
+  GIT_CLONE_PATH: ${BUILD_PATH}/${CI_PROJECT_NAME}
+
+buildstaging:
+    <<: *docker_template
+    stage: build
+    tags:
+      - rgrustaging
+    variables:
+      NODE_ENV: staging
+      NODE_APP: rg
+    only:
+      - staging
+
+buildstaging gl:
+    <<: *docker_template
+    stage: build
+    tags:
+      - glstaging
+    variables:
+      NODE_ENV: staging
+      NODE_APP: gl
+    only:
+      - staging
+
+buildprod:
+    <<: *docker_template
+    stage: build
+    tags:
+      - rgruprod
+    variables:
+      NODE_ENV: prod
+      NODE_APP: rg
+    only:
+      - production
+
+buildprod gl:
+    <<: *docker_template
+    stage: build
+    tags:
+      - glprod
+    variables:
+      NODE_ENV: prod
+      NODE_APP: gl
+    only:
+      - production
+
+deploystaging:
+    <<: *docker_template
+    stage: deploy
+    tags:
+      - rgrustaging
+    variables:
+      PORT: 4402
+      NODE_ENV: staging
+      PRJ: rgru
+    dependencies:
+      - buildstaging
+    script:
+      - docker-compose -p ${PRJ}${PROJECT_NAME}_${NODE_ENV} up -d --build
+    only:
+      - staging
+
+deploystaging gl:
+    <<: *docker_template
+    stage: deploy
+    tags:
+      - glstaging
+    variables:
+      PORT: 4402
+      NODE_ENV: staging
+      PRJ: gl
+    dependencies:
+      - buildstaging
+    script:
+      - docker-compose -p ${PRJ}${PROJECT_NAME}_${NODE_ENV} up -d --build
+    only:
+      - staging
+
+deployprod:
+    <<: *docker_template
+    stage: deploy
+    when: manual
+    tags:
+      - rgruprod
+    variables:
+      PORT: 4402
+      NODE_ENV: prod
+    dependencies:
+      - buildprod
+    script:
+      - docker-compose -p ${PROJECT_NAME}_${NODE_ENV} up -d --build
+    only:
+      - production
+
+deployprod gl:
+    <<: *docker_template
+    stage: deploy
+    when: manual
+    tags:
+      - glprod
+    variables:
+      PORT: 4402
+      NODE_ENV: prod
+    dependencies:
+      - buildprod
+    script:
+      - docker-compose -p ${PROJECT_NAME}_${NODE_ENV} up -d --build
+    only:
+      - production
+
+message_on_success:
+    stage: message_on_success
+    allow_failure: true
+    dependencies:
+        - deployprod
+        - deployprod gl
+    when: on_success
+    script:
+        # send to telegram proxy
+        - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9C%85%20Success.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
+    only:
+        - production
+        - production-gl
+
+message_on_failure:
+    stage: message_on_failure
+    allow_failure: true
+    dependencies:
+        - deployprod
+        - deployprod gl
+    when: on_failure
+    script:
+        # send to telegram proxy
+        - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
+    only:
+        - production
+        - production-gl
