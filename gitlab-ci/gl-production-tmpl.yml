@@ -34,7 +34,7 @@ deployprod gl node4:
     - glprod
     - dockerweb4
   variables:
-    PORT: 4402
+    PORT: 4400
     NODE_ENV: prod
     PRJ: gl
   dependencies:
@@ -51,10 +51,10 @@ deployprod gl node5:
     - glprod
     - dockerweb5
   variables:
-    PORT: 4402
+    PORT: 4400
     NODE_ENV: prod
     PRJ: gl
-    HOST_4: http://dockerweb4.rgwork.ru:4402/build
+    HOST_4: http://dockerweb4.rgwork.ru:4400/build
   dependencies:
     - deployprod gl node4
   needs:
