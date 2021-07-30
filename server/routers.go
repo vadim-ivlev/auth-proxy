@@ -4,10 +4,12 @@ import (
 	// "github.com/gin-gonic/contrib/sessions"
 	// "github.com/gin-contrib/sessions"
 	"auth-proxy/pkg/app"
+	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/prometeo"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -51,7 +53,10 @@ func setup(build string) *gin.Engine {
 	r := gin.Default()
 	// r := gin.New()
 
-	CreateProxies()
+	// CreateProxies()
+	// непрерывно обновляем список проксируемых приложений,
+	// на случай если БД была изменена извне.
+	go keepCreatingProxies()
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
 
@@ -104,4 +109,18 @@ func setup(build string) *gin.Engine {
 	apps.Any("/:appname/*proxypath", Proxy)
 
 	return r
+}
+
+// keepCreatingProxies перезачитывает список проксируемых приложений
+// из базы данных каждые 5 минут. Запускается в отдельной горутине.
+// Сделано для того чтобы поддерживать приложение в актуальном состоянии
+// в случае если база данных была изменена внешним образом.
+func keepCreatingProxies() {
+	i := 0
+	for {
+		CreateProxies()
+		i++
+		fmt.Printf("*** List of proxied apps was refreshed %v times after %v minutes of waiting. ***\n", i, db.Params.Refreshtime)
+		time.Sleep(time.Duration(db.Params.Refreshtime) * time.Minute)
+	}
 }

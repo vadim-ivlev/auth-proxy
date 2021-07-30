@@ -23,7 +23,7 @@ func getDBFromPool() (*sqlx.DB, error) {
 	}
 
 	var err error
-	DBPool, err = sqlx.Connect("postgres", params.connectStr)
+	DBPool, err = sqlx.Connect("postgres", Params.connectStr)
 	printIf("getDBFromPool(): postgres", err)
 	if err != nil {
 		return nil, err

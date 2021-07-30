@@ -17,17 +17,18 @@ var DBPool *sqlx.DB = nil
 
 // параметры подсоединения к Postgres
 type postgresConnectParams struct {
-	Host       string `env:"PG_HOST" envDefault:"localhost"`
-	Port       string `env:"PG_PORT" envDefault:"5432"`
-	User       string `env:"PG_USER" envDefault:"pgadmin"`
-	Password   string `env:"PG_PASSWORD" envDefault:"159753"`
-	Database   string `env:"PG_DATABASE" envDefault:"rgru"`
-	Sslmode    string `env:"PG_SSLMODE" envDefault:"disable"`
-	SearchPath string `env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
-	connectStr string
+	Refreshtime int    `env:"PG_REFRESH_TIME" envDefault:"5"`
+	Host        string `env:"PG_HOST" envDefault:"localhost"`
+	Port        string `env:"PG_PORT" envDefault:"5432"`
+	User        string `env:"PG_USER" envDefault:"pgadmin"`
+	Password    string `env:"PG_PASSWORD" envDefault:"159753"`
+	Database    string `env:"PG_DATABASE" envDefault:"rgru"`
+	Sslmode     string `env:"PG_SSLMODE" envDefault:"disable"`
+	SearchPath  string `env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
+	connectStr  string
 }
 
-var params postgresConnectParams
+var Params postgresConnectParams
 
 // ReadConfig reads YAML with Postgres params
 func ReadEnvConfig(fileName string) {
@@ -39,16 +40,16 @@ func ReadEnvConfig(fileName string) {
 		fmt.Println("Параметры Postgres берутся из операционной системы.")
 	}
 
-	if err := env.Parse(&params); err != nil {
+	if err := env.Parse(&Params); err != nil {
 		fmt.Printf("%+v\n", err)
 	}
-	params.SearchPath = strings.Replace(params.SearchPath, " ", "", -1)
-	params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", params.Host, params.Port, params.User, params.Password, params.Database, params.Sslmode, params.SearchPath)
+	Params.SearchPath = strings.Replace(Params.SearchPath, " ", "", -1)
+	Params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", Params.Host, Params.Port, Params.User, Params.Password, Params.Database, Params.Sslmode, Params.SearchPath)
 }
 
 // PrintConfig prints DB connection parameters.
 func PrintConfig() {
-	fmt.Printf("Строка соединения Postgres: %s\n", params.connectStr)
+	fmt.Printf("Строка соединения Postgres: %s\n", Params.connectStr)
 }
 
 func panicIf(err error) {

@@ -25,6 +25,7 @@ services:
     #   - PG_PORT=5432
     #   - PG_SEARCH_PATH=auth,extensions
     #   - PG_SSLMODE=disable   
+    #   - PG_REFRESH_TIME=4   
     # Тогда необходимо запустить программу с параметром -pg-params-from-os.   
     # command: bash -c "cd /app && ./auth -serve 4400 -env=front -pg-params-from-os" 
     

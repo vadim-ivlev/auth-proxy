@@ -115,6 +115,7 @@ func printGreetings(serverPort string, env string, tls bool) {
 
 
 Auth-Proxy started. 
+Refreshed.
 
 ━━━━━━━━━━ Some parameters ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
