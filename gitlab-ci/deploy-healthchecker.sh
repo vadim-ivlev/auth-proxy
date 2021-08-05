@@ -1,13 +1,13 @@
 #!/bin/bash
 
 CurBuild=$1
+CurHost=$2
 Success=0
 
 # 120 секунд
 for attempt in {1..6}; do
     printf "Attempt: $attempt\n"
-    # Build=$(curl --insecure https://gl-filters-staging.rg.ru/ping)
-    Build=$(curl --insecure http://dockerweb3.rgwork.ru:4400/build)
+    Build=$(curl --insecure $CurHost)
     quotes="\""
     # удаляем кавычки
     Build=${Build//$quotes/}

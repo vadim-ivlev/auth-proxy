@@ -1,0 +1,25 @@
+buildprod:
+  extends: .docker_template
+  stage: build
+  tags:
+    - rgruprod
+  variables:
+    NODE_ENV: prod
+  only:
+    - production
+
+deployprod:
+  extends: .docker_template
+  stage: deploy
+  when: manual
+  tags:
+    - rgruprod
+  variables:
+    PORT: 8079
+    NODE_ENV: prod
+  dependencies:
+    - buildprod
+  script:
+    - docker-compose -p ${PROJECT_NAME}_${NODE_ENV} up -d --build
+  only:
+    - production

@@ -1,10 +1,14 @@
-FROM ubuntu:18.04
-LABEL maintainer="RGRU <ivlev@rg.ru>"
+FROM alpine:latest
 
-RUN apt-get -y update 
-RUN apt-get -y install curl
-RUN apt-get -y install iputils-ping
-# RUN apt-get -y install mc
+RUN apk update
+RUN apk add --update bash && rm -rf /var/cache/apk/*
+RUN apk add libc6-compat
+RUN apk --no-cache add ca-certificates
+# set local date to Europe/Moscow
+RUN apk add --no-cache tzdata
+RUN cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+RUN apk add curl
+# RUN apk add iputils-ping
 
 COPY auth-proxy     /app/auth-proxy
 COPY configs        /app/configs
@@ -13,11 +17,6 @@ COPY templates      /app/templates
 COPY etc            /app/etc
 COPY certificates   /app/certificates
 
+CMD bash -c "cd /app && ./auth-proxy -port=4400 -env=front"
 
 EXPOSE 4400
-
-CMD bash -c "cd /app && ./auth-proxy -serve 4400 -env=front"
-
-
-
-

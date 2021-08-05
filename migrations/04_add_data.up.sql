@@ -15,6 +15,7 @@ INSERT INTO app (appname, url, description, sign) VALUES ('echo','https://echo-r
 INSERT INTO app (appname, url, description, public) VALUES ('rg','https://rg.ru', 'Прокси к https://rg.ru', 'Y' );
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin','http://host.docker.internal:8091', 'GraphQL API админки фоторепов');
 INSERT INTO app (appname, url, description) VALUES ('photoreports-admin-new','http://host.docker.internal:8094', 'Новое GraphQL API админки фоторепов');
+INSERT INTO app (appname, url, description) VALUES ('video','http://host.docker.internal:7700', 'Видео GraphQL API админки');
 INSERT INTO app (appname, url, description) VALUES ('rgcore','http://host.docker.internal:8076', 'GraphQL API редакторского интерфейса');
 INSERT INTO app (appname, url, description) VALUES ('rgru-file-uploader','http://host.docker.internal:8077', 'GraphQL API загрузки файлов');
 
@@ -77,6 +78,18 @@ INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploa
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'filatchev', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'nsinetskiy', 'admin');
 INSERT INTO app_user_role (appname, username, rolename) VALUES ('rgru-file-uploader', 'parshin', 'admin');
+
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'admin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'test', 'editor');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'chagin', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'chernyshev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'ismagilov', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'kondratiev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'ivlev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'barsuk', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'filatchev', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'nsinetskiy', 'admin');
+INSERT INTO app_user_role (appname, username, rolename) VALUES ('video', 'parshin', 'admin');
 
 
 -- EXCEPTION WHEN OTHERS THEN 
