@@ -27,11 +27,11 @@ services:
     #   - PG_SSLMODE=disable   
     #   - PG_REFRESH_TIME=4   
     # Тогда необходимо запустить программу с параметром -pg-params-from-os.   
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -pg-params-from-os" 
+    # command: bash -c "cd /app && ./auth -port 4400 -env=front -pg-params-from-os" 
     
     # Конфигурационный файл Postgres может быть задан явно 
     # и через параметр командной строки -pgconfig
-    # command: bash -c "cd /app && ./auth -serve 4400 -env=front -pgconfig=shared_dir/my_db.env" 
+    # command: bash -c "cd /app && ./auth -port 4400 -env=front -pgconfig=shared_dir/my_db.env" 
   
 
 

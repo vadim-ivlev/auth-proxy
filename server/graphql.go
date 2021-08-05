@@ -99,7 +99,7 @@ func updateRecord(oldKeyValue string, keyFieldName string, params gq.ResolvePara
 	}
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE "+keyFieldName+" = $1 ;", id)
+	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE \""+db.RemoveDoubleQuotesStr(keyFieldName)+"\" = $1 ;", id)
 
 }
 

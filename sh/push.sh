@@ -1,7 +1,13 @@
 #!/bin/bash
+
+echo "Введите комментарий к коммиту:"
+read msg
+echo "Комментарий = $msg."
+echo 
+
+
 git add -A .
-echo "commit message = $1."
-git commit -m "$1."
+git commit -m "$msg."
 
 git push gitlab --all #master
 git push github --all #master

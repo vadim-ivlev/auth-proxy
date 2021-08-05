@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -53,6 +54,7 @@ func DbAvailable() bool {
 func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 	conn, err := getDBFromPool()
 	panicIf(err)
+	// log.Println("QueryExec SQL=", sqlText, args)
 	return conn.Exec(sqlText, args...)
 }
 
@@ -61,7 +63,9 @@ func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 func QuerySliceMap(sqlText string, args ...interface{}) ([]map[string]interface{}, error) {
 	conn, err := getDBFromPool()
 	panicIf(err)
+	// log.Println("QuerySliceMap SQL=", sqlText, args)
 	rows, err := conn.Queryx(sqlText, args...) //.MapScan(result)
+
 	if err != nil {
 		fmt.Println("QuerySliceMap():", err.Error())
 		return nil, err
@@ -88,8 +92,9 @@ func QueryRowMap(sqlText string, args ...interface{}) (map[string]interface{}, e
 	conn, err := getDBFromPool()
 	panicIf(err)
 	result := make(map[string]interface{})
+	// log.Println("QueryRowMap SQL=", sqlText, args)
 	err = conn.QueryRowx(sqlText, args...).MapScan(result)
-	printIf("QueryRowMap() sqlText="+sqlText, err)
+	printIf("QueryRowMap() response=", err)
 	return result, err
 }
 
@@ -116,8 +121,7 @@ func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldV
 	keys, values, dollars := getKeysAndValues(fieldValues)
 
 	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`,
-		tableName, strings.Join(keys, ", "), strings.Join(dollars, ", "), id)
-	log.Println("sqlText=", sqlText, values)
+		RemoveDoubleQuotesStr(tableName), strings.Join(keys, ", "), strings.Join(dollars, ", "), RemoveSingleQuotes(id))
 	res, err := QueryExec(sqlText, values...)
 	if err != nil {
 		return nil, err
@@ -213,4 +217,35 @@ func MigrateUp(dirname string) {
 			log.Printf("Executed: %s \n", fileName)
 		}
 	}
+}
+
+// RemoveSingleQuotes - sanitizes SQL
+func RemoveSingleQuotes(text interface{}) interface{} {
+	// проверяем строка ли это
+	s, ok := text.(string)
+	if !ok {
+		return text
+	}
+	return strings.Replace(s, "'", "", -1)
+}
+
+// RemoveSingleQuotesStr - sanitizes SQL
+func RemoveSingleQuotesStr(text string) string {
+	return strings.ReplaceAll(text, "'", "")
+}
+
+// RemoveDoubleQuotesStr - - sanitizes SQL
+func RemoveDoubleQuotesStr(text string) string {
+	return strings.Replace(text, "\"", "", -1)
+}
+
+// SanitizeOrderClause - sanitizes SQL ORDER BY clause.
+// допускает выражения типа field1 ASC
+func SanitizeOrderClause(text string) string {
+	s := strings.Trim(text, " ")
+	validExpr := regexp.MustCompile(`(?i)^\w+ +(ASC|DESC)$`)
+	if validExpr.MatchString(s) {
+		return s
+	}
+	return ""
 }

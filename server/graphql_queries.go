@@ -45,6 +45,9 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				password, _ := params.Args["password"].(string)
 				captcha, _ := params.Args["captcha"].(string)
 
+				// небольшая задержка чтобы усложнить перебор паролей
+				time.Sleep(500 * time.Millisecond)
+
 				// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
 				if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
 					if captcha == "" {
@@ -329,6 +332,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				fields := getSelectedFields([]string{"list_user_by_usernames"}, params)
 				ids, _ := params.Args["usernames"]
 				idss, _ := db.SerializeIfArray(ids).(string)
+				idss = db.RemoveSingleQuotesStr(idss)
 				idss = strings.Trim(idss, "[]")
 				if idss == "" {
 					return []interface{}{}, nil
@@ -424,7 +428,7 @@ func listAppUserRoleWherePart(params gq.ResolveParams) (wherePart string) {
 		s, ok := v.(string)
 		s = strings.Trim(s, " ")
 		if ok && len(s) > 0 {
-			searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, s))
+			searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, db.RemoveSingleQuotesStr(s)))
 		}
 	}
 	if len(searchConditions) > 0 {
@@ -449,6 +453,7 @@ func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orde
 
 	search, ok := params.Args["search"].(string)
 	search = strings.Trim(search, " ")
+	search = db.RemoveSingleQuotesStr(search)
 	if ok && len(search) > 0 {
 		search = strings.ReplaceAll(search, " ", "%")
 		searchConditions = append(searchConditions, Like(fieldList, search))
@@ -457,7 +462,8 @@ func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orde
 	if len(searchConditions) > 0 {
 		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
 	}
-	orderAndLimits = fmt.Sprintf(" ORDER BY %v LIMIT %v OFFSET %v ;", params.Args["order"], params.Args["limit"], params.Args["offset"])
+	orderClause := db.SanitizeOrderClause(params.Args["order"].(string))
+	orderAndLimits = fmt.Sprintf(" ORDER BY %s LIMIT %v OFFSET %v ;", orderClause, params.Args["limit"], params.Args["offset"])
 	return wherePart, orderAndLimits
 }
 
@@ -488,6 +494,6 @@ func Like(fieldsString, search string) string {
 		chunks = append(chunks, ` LOWER(`+field+`) LIKE LOWER('%`+search+`%') `)
 	}
 	s := strings.Join(chunks, " OR ")
-	fmt.Println(fieldsString, s)
+	// fmt.Println(fieldsString, s)
 	return s
 }

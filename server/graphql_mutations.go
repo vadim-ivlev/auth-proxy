@@ -147,7 +147,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					return "Could not send email to:" + email, err
 				}
 
-				return "Новый пароль для " + foundUsername + " выслан по адресу: " + email, nil
+				return "Новый пароль для " + foundUsername + " выслан.", nil
 
 			},
 		},

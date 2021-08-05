@@ -120,7 +120,7 @@ func keepCreatingProxies() {
 	for {
 		CreateProxies()
 		i++
-		fmt.Printf("*** List of proxied apps was refreshed %v times after %v minutes of waiting. ***\n", i, db.Params.Refreshtime)
+		fmt.Printf("*** List of proxied apps was refreshed %v times. Refresh interval is %v minutes. ***\n", i, db.Params.Refreshtime)
 		time.Sleep(time.Duration(db.Params.Refreshtime) * time.Minute)
 	}
 }

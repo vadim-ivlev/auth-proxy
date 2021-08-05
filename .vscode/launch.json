@@ -13,7 +13,7 @@
             "program": "${workspaceRoot}",
             "env": {},
             "args": [
-                "-serve",
+                "-port",
                 "4400",
                 "-env=dev"
             ]
