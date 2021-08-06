@@ -5,6 +5,7 @@ import (
 	"auth-proxy/pkg/prometeo"
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	// "go/ast"
@@ -287,17 +288,34 @@ func ArgToLowerCase(params gq.ResolveParams, argName string) {
 
 // G R A P H Q L ********************************************************************************
 
-var schema, _ = gq.NewSchema(gq.SchemaConfig{
-	Query:    rootQuery,
-	Mutation: rootMutation,
-})
+var schema gq.Schema
+
+func SchemaInit(noIntrospection bool) {
+	if noIntrospection {
+		fmt.Println("!!!!!!!!!!!!!!! SUPPRESSING GraphQL INTROSPECTION !!!!!!!!!!!!!!!!!!")
+		gq.SchemaMetaFieldDef.Resolve = func(p gq.ResolveParams) (interface{}, error) {
+			return nil, nil
+		}
+		gq.TypeMetaFieldDef.Resolve = func(p gq.ResolveParams) (interface{}, error) {
+			return nil, nil
+		}
+	}
+	var err error
+	schema, err = gq.NewSchema(gq.SchemaConfig{
+		Query:    rootQuery,
+		Mutation: rootMutation,
+	})
+
+	if err != nil {
+		log.Println("SchemaInit ERROR:", err)
+	}
+}
 
 // GraphQL исполняет GraphQL запрос
 func GraphQL(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 100*1024*1024)
 
 	query, variables := getPayload3(c)
-
 	result := gq.Do(gq.Params{
 		Schema:         schema,
 		RequestString:  query,

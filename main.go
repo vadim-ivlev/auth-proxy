@@ -22,7 +22,10 @@ func main() {
 	fmt.Println("Build number:\t", Build)
 
 	// считать параметры командной строки
-	servePort, env, pgconfig, pgParamsFromOS := readCommandLineParams()
+	servePort, env, pgconfig, pgParamsFromOS, noIntrospection := readCommandLineParams()
+
+	// Скрываем описания GraphQL если нужно
+	server.SchemaInit(noIntrospection)
 
 	// Считать конфиги и установить параметры
 	tls := readConfigsAndSetParams(env, pgconfig, pgParamsFromOS)
@@ -87,11 +90,12 @@ func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
 }
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort, env, pgconfig string, pgParamsFromOS bool) {
+func readCommandLineParams() (serverPort, env, pgconfig string, pgParamsFromOS, noIntrospection bool) {
 	flag.StringVar(&serverPort, "port", "4400", "Запустить приложение на указанном порту.")
 	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
 	flag.StringVar(&pgconfig, "pgconfig", "", "Конфигурационный файл Postgres.")
 	flag.BoolVar(&pgParamsFromOS, "pg-params-from-os", false, "Брать параметры Postgres из переменных окружения OS.")
+	flag.BoolVar(&noIntrospection, "no-introspection", false, "Подавлять интроспекцию GraphQL объектов.")
 
 	flag.Parse()
 	flag.Usage()
