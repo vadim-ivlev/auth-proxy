@@ -121,7 +121,7 @@ func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldV
 	keys, values, dollars := getKeysAndValues(fieldValues)
 
 	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`,
-		RemoveDoubleQuotesStr(tableName), strings.Join(keys, ", "), strings.Join(dollars, ", "), RemoveSingleQuotes(id))
+		RemoveDoubleQuotes(tableName), strings.Join(keys, ", "), strings.Join(dollars, ", "), RemoveSingleQuotesIntf(id))
 	res, err := QueryExec(sqlText, values...)
 	if err != nil {
 		return nil, err
@@ -219,8 +219,8 @@ func MigrateUp(dirname string) {
 	}
 }
 
-// RemoveSingleQuotes - sanitizes SQL
-func RemoveSingleQuotes(text interface{}) interface{} {
+// RemoveSingleQuotesIntf - sanitizes SQL if the input parameter is string.
+func RemoveSingleQuotesIntf(text interface{}) interface{} {
 	// проверяем строка ли это
 	s, ok := text.(string)
 	if !ok {
@@ -229,13 +229,13 @@ func RemoveSingleQuotes(text interface{}) interface{} {
 	return strings.Replace(s, "'", "", -1)
 }
 
-// RemoveSingleQuotesStr - sanitizes SQL
-func RemoveSingleQuotesStr(text string) string {
+// RemoveSingleQuotes - sanitizes SQL
+func RemoveSingleQuotes(text string) string {
 	return strings.ReplaceAll(text, "'", "")
 }
 
-// RemoveDoubleQuotesStr - - sanitizes SQL
-func RemoveDoubleQuotesStr(text string) string {
+// RemoveDoubleQuotes - sanitizes SQL
+func RemoveDoubleQuotes(text string) string {
 	return strings.Replace(text, "\"", "", -1)
 }
 

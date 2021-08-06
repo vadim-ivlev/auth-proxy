@@ -332,7 +332,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				fields := getSelectedFields([]string{"list_user_by_usernames"}, params)
 				ids, _ := params.Args["usernames"]
 				idss, _ := db.SerializeIfArray(ids).(string)
-				idss = db.RemoveSingleQuotesStr(idss)
+				idss = db.RemoveSingleQuotes(idss)
 				idss = strings.Trim(idss, "[]")
 				if idss == "" {
 					return []interface{}{}, nil
@@ -428,7 +428,7 @@ func listAppUserRoleWherePart(params gq.ResolveParams) (wherePart string) {
 		s, ok := v.(string)
 		s = strings.Trim(s, " ")
 		if ok && len(s) > 0 {
-			searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, db.RemoveSingleQuotesStr(s)))
+			searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, db.RemoveSingleQuotes(s)))
 		}
 	}
 	if len(searchConditions) > 0 {
@@ -453,7 +453,7 @@ func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orde
 
 	search, ok := params.Args["search"].(string)
 	search = strings.Trim(search, " ")
-	search = db.RemoveSingleQuotesStr(search)
+	search = db.RemoveSingleQuotes(search)
 	if ok && len(search) > 0 {
 		search = strings.ReplaceAll(search, " ", "%")
 		searchConditions = append(searchConditions, Like(fieldList, search))
