@@ -29,20 +29,20 @@ variables:
   BUILD_PATH: /builds/${GROUP}/${CI_PROJECT_NAME}
   GIT_CLONE_PATH: ${BUILD_PATH}/${CI_PROJECT_NAME}
 
-build dev:
-  <<: *docker_template
-  stage: build
-  except:
-    - master
-    - tags
-    - staging
-    - staging-gl
-    - production
-    - production-gl
-  tags:
-    - glstaging
-  variables:
-    NODE_ENV: staging
+# build dev:
+#   <<: *docker_template
+#   stage: build
+#   except:
+#     - master
+#     - tags
+#     - staging
+#     - staging-gl
+#     - production
+#     - production-gl
+#   tags:
+#     - glstaging
+#   variables:
+#     NODE_ENV: staging
 
 include:
   - local: /gitlab-ci/rg-staging-tmpl.yml
