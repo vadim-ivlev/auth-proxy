@@ -5,6 +5,7 @@ buildprod:
     - rgruprod
   variables:
     NODE_ENV: prod
+    PRJ: gl
   only:
     - production
 
