@@ -16,7 +16,7 @@ deploystaging:
   variables:
     PORT: 4400
     NODE_ENV: staging
-    PRJ: rgru
+    PRJ: rg
   dependencies:
     - buildstaging
   script:

@@ -17,6 +17,7 @@ deployprod:
   variables:
     PORT: 4400
     NODE_ENV: prod
+    PRJ: rg
   dependencies:
     - buildprod
   script:
