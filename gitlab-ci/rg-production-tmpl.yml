@@ -15,7 +15,7 @@ deployprod:
   tags:
     - rgruprod
   variables:
-    PORT: 8079
+    PORT: 4400
     NODE_ENV: prod
   dependencies:
     - buildprod

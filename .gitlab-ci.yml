@@ -45,8 +45,8 @@ build dev:
     NODE_ENV: staging
 
 include:
-  # - local: /gitlab-ci/rg-staging-tmpl.yml
-  # - local: /gitlab-ci/rg-production-tmpl.yml
+  - local: /gitlab-ci/rg-staging-tmpl.yml
+  - local: /gitlab-ci/rg-production-tmpl.yml
   - local: /gitlab-ci/gl-staging-tmpl.yml
   - local: /gitlab-ci/gl-production-tmpl.yml
 

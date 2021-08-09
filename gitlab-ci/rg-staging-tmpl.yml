@@ -14,7 +14,7 @@ deploystaging:
   tags:
     - rgrustaging
   variables:
-    PORT: 7079
+    PORT: 4400
     NODE_ENV: staging
     PRJ: rgru
   dependencies:
