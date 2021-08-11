@@ -5,7 +5,7 @@ buildstaging:
     - rgrustaging
   variables:
     NODE_ENV: staging
-    PRJ: gl
+    PRJ: rg
   only:
     - staging
 
