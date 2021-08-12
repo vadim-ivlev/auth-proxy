@@ -570,8 +570,3 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
 https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru#apps
 
-
-
-
-
-
