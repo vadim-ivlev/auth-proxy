@@ -14,7 +14,7 @@ front:
 staging:
   addr: mail3.rg.ru:25
   from: noreply@rg.ru
-  link: https://auth-proxy.rg.ru/admin
+  link: https://rg-editor-staging.rg.ru/auth/login
 
 prod:
   addr: mail3.rg.ru:25
