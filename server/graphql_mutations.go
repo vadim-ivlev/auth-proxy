@@ -42,6 +42,14 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.Int,
 					Description: "Если не равно 0, пользователь отключен",
 				},
+				"pinrequired": &gq.ArgumentConfig{
+					Type:        gq.Boolean,
+					Description: "требуется ли PIN google authenticator",
+				},
+				"pinhash": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "хэш для первоначальной настройки google authenticator",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				if SelfRegistrationAllowed || isAuthAdmin(params) {
@@ -97,6 +105,14 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				"disabled": &gq.ArgumentConfig{
 					Type:        gq.Int,
 					Description: "Если не равно 0, пользователь отключен",
+				},
+				"pinrequired": &gq.ArgumentConfig{
+					Type:        gq.Boolean,
+					Description: "требуется ли PIN google authenticator",
+				},
+				"pinhash": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "хэш для первоначальной настройки google authenticator",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {

@@ -52,6 +52,14 @@ var userFields = gq.Fields{
 		Type:        gq.Int,
 		Description: "автогенерируемый id пользователя",
 	},
+	"pinrequired": &gq.Field{
+		Type:        gq.Boolean,
+		Description: "требуется ли PIN google authenticator",
+	},
+	"pinhash": &gq.Field{
+		Type:        gq.String,
+		Description: "хэш для первоначальной настройки google authenticator",
+	},
 }
 
 var appFields = gq.Fields{
