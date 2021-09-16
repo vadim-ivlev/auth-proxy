@@ -46,6 +46,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.Boolean,
 					Description: "требуется ли PIN google authenticator",
 				},
+				"pinset": &gq.ArgumentConfig{
+					Type:        gq.Boolean,
+					Description: "установил ли пользователь google authenticator на своем телефоне",
+				},
 				"pinhash": &gq.ArgumentConfig{
 					Type:        gq.String,
 					Description: "хэш для первоначальной настройки google authenticator",
@@ -109,6 +113,10 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				"pinrequired": &gq.ArgumentConfig{
 					Type:        gq.Boolean,
 					Description: "требуется ли PIN google authenticator",
+				},
+				"pinset": &gq.ArgumentConfig{
+					Type:        gq.Boolean,
+					Description: "установил ли пользователь google authenticator на своем телефоне",
 				},
 				"pinhash": &gq.ArgumentConfig{
 					Type:        gq.String,

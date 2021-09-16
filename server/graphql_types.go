@@ -56,6 +56,10 @@ var userFields = gq.Fields{
 		Type:        gq.Boolean,
 		Description: "требуется ли PIN google authenticator",
 	},
+	"pinset": &gq.Field{
+		Type:        gq.Boolean,
+		Description: "установил ли пользователь google authenticator на своем телефоне",
+	},
 	"pinhash": &gq.Field{
 		Type:        gq.String,
 		Description: "хэш для первоначальной настройки google authenticator",
