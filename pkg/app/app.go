@@ -25,6 +25,8 @@ type appParams struct {
 	Selfreg bool
 	// Нужно ли вводить капчу при входе в систему
 	UseCaptcha bool `yaml:"use_captcha"`
+	// Нужно ли вводить PIN при входе в систему
+	UsePin bool `yaml:"use_pin"`
 	// Максимально допустимое число ошибок ввода пароля
 	MaxAttempts int64 `yaml:"max_attempts"`
 	// Время сброса счетчика ошибок пароля в минутах
@@ -57,6 +59,7 @@ func GetParams() map[string]interface{} {
 	return map[string]interface{}{
 		"selfreg":      Params.Selfreg,
 		"use_captcha":  Params.UseCaptcha,
+		"use_pin":      Params.UsePin,
 		"max_attempts": Params.MaxAttempts,
 		"reset_time":   Params.ResetTime,
 	}

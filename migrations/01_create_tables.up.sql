@@ -13,12 +13,12 @@ CREATE TABLE IF NOT EXISTS "user" (
     description text,
     disabled integer NOT NULL DEFAULT 0,
     id serial,
-    -- требуется ли PIN google authenticator
+    -- требуется ли вводить PIN Google Authenticator для входа в систему
     pinrequired boolean NOT NULL DEFAULT FALSE,  
-    -- установил ли пользователь google authenticator на своем телефоне.
+    -- установил ли пользователь Google Authenticator на своем телефоне.
     -- показывать ли ему страницу установки аутентификатора.
     pinset boolean NOT NULL DEFAULT FALSE,  
-    pinhash text, -- хэш для первоначальной настройки google authenticator
+    pinhash text, -- хэш для первоначальной настройки Google Authenticator
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );

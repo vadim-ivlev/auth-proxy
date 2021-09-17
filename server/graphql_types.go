@@ -54,15 +54,15 @@ var userFields = gq.Fields{
 	},
 	"pinrequired": &gq.Field{
 		Type:        gq.Boolean,
-		Description: "требуется ли PIN google authenticator",
+		Description: "требуется ли PIN Google Authenticator",
 	},
 	"pinset": &gq.Field{
 		Type:        gq.Boolean,
-		Description: "установил ли пользователь google authenticator на своем телефоне",
+		Description: "установил ли пользователь Google Authenticator на своем телефоне",
 	},
 	"pinhash": &gq.Field{
 		Type:        gq.String,
-		Description: "хэш для первоначальной настройки google authenticator",
+		Description: "хэш для первоначальной настройки Google Authenticator",
 	},
 }
 
@@ -228,7 +228,7 @@ var authMessageObject = gq.NewObject(gq.ObjectConfig{
 	},
 })
 
-// is_captcha_required messages
+// Сообщения GraphQL метода is_captcha_required()
 var isCaptchaRequiredObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "IsCaptchaRequired",
 	Description: "Сообщения метода is_captcha_required()",
@@ -244,7 +244,27 @@ var isCaptchaRequiredObject = gq.NewObject(gq.ObjectConfig{
 	},
 })
 
-// is_captcha_required messages
+// Сообщения GraphQL метода is_pin_required()
+var isPinRequiredObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "IsPinRequired",
+	Description: "Сообщения метода is_pin_required()",
+	Fields: gq.Fields{
+		"use_pin": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Глобальный флаг нужно ли вводить PIN Google Authenticator при входе в систему",
+		},
+		"pinrequired": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "требуется ли вводить PIN Google Authenticator для входа",
+		},
+		"pinset": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "показывать ли ему страницу установки аутентификатора",
+		},
+	},
+})
+
+// Сообщения GraphQL метода get_stat()
 var statObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "Stat",
 	Description: "statistics about the memory allocator and requests",
@@ -291,6 +311,10 @@ var appParamsObject = gq.NewObject(gq.ObjectConfig{
 		"use_captcha": &gq.Field{
 			Type:        gq.Boolean,
 			Description: "Нужно ли вводить капчу при входе в систему",
+		},
+		"use_pin": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Нужно ли вводить PIN при входе в систему",
 		},
 		"max_attempts": &gq.Field{
 			Type:        gq.Int,

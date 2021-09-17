@@ -3,6 +3,7 @@ package server
 import (
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/authenticator"
 	"auth-proxy/pkg/counter"
 
 	"auth-proxy/pkg/db"
@@ -37,6 +38,10 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.String,
 					Description: "Captcha",
 				},
+				"pin": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "PIN by Google Authenticator",
+				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				ArgToLowerCase(params, "username")
@@ -47,6 +52,23 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 				// небольшая задержка чтобы усложнить перебор паролей
 				time.Sleep(500 * time.Millisecond)
+
+				// проверить PIN если установлен глобальный флаг
+				if app.Params.UsePin {
+					// нужен ли PIN для данного пользователя?
+					pinRequired, _, err := getUserPinFields(username)
+					if err != nil {
+						return "", err
+					}
+					if pinRequired {
+						pin, _ := params.Args["pin"].(string)
+						// правильный ли пин?
+						err := authenticator.IsPinGood(pin, username)
+						if err != nil {
+							return "", err
+						}
+					}
+				}
 
 				// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
 				if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
@@ -149,6 +171,11 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					Description:  "Нужно ли вводить капчу при входе в систему",
 					DefaultValue: true,
 				},
+				"use_pin": &gq.ArgumentConfig{
+					Type:         gq.Boolean,
+					Description:  "Нужно ли вводить PIN при входе в систему",
+					DefaultValue: false,
+				},
 				"max_attempts": &gq.ArgumentConfig{
 					Type:         gq.Int,
 					Description:  "Максимально допустимое число ошибок ввода пароля",
@@ -167,6 +194,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 
 				app.Params.Selfreg = params.Args["selfreg"].(bool)
 				app.Params.UseCaptcha = params.Args["use_captcha"].(bool)
+				app.Params.UsePin = params.Args["use_pin"].(bool)
 				app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))
 				app.Params.ResetTime = int64(params.Args["reset_time"].(int))
 
@@ -189,7 +217,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				if UseCaptcha == false {
+				if !UseCaptcha {
 					return gin.H{"is_required": false, "path": ""}, nil
 				}
 				ArgToLowerCase(params, "username")
@@ -198,6 +226,21 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					return gin.H{"is_required": true, "path": "/captcha"}, nil
 				}
 				return gin.H{"is_required": false, "path": ""}, nil
+			},
+		},
+
+		"is_pin_required": &gq.Field{
+			Type:        isPinRequiredObject,
+			Description: "Информация о необходимости вводить PIN для входа в систему",
+			Args: gq.FieldConfigArgument{
+				"username": &gq.ArgumentConfig{
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Идентификатор пользователя",
+				},
+			},
+			Resolve: func(params gq.ResolveParams) (interface{}, error) {
+				pinRequired, pinSet, err := getUserPinFields(params.Args["username"].(string))
+				return gin.H{"use_pin": app.Params.UsePin, "pinrequired": pinRequired, "pinset": pinSet}, err
 			},
 		},
 
@@ -496,4 +539,14 @@ func Like(fieldsString, search string) string {
 	s := strings.Join(chunks, " OR ")
 	// fmt.Println(fieldsString, s)
 	return s
+}
+
+func getUserPinFields(username string) (pinRequired, pinSet bool, err error) {
+	user, err := db.QueryRowMap(`SELECT pinrequired, pinset FROM "user" WHERE username = $1 ;`, username)
+	if err != nil {
+		return
+	}
+	pinRequired, _ = user["pinrequired"].(bool)
+	pinSet, _ = user["pinrequired"].(bool)
+	return
 }
