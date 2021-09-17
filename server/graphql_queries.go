@@ -63,7 +63,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 					if pinRequired {
 						pin, _ := params.Args["pin"].(string)
 						// правильный ли пин?
-						err := authenticator.IsPinGood(pin, username)
+						err := authenticator.IsPinGood(username, pin)
 						if err != nil {
 							return "", err
 						}
@@ -547,6 +547,6 @@ func getUserPinFields(username string) (pinRequired, pinSet bool, err error) {
 		return
 	}
 	pinRequired, _ = user["pinrequired"].(bool)
-	pinSet, _ = user["pinrequired"].(bool)
+	pinSet, _ = user["pinset"].(bool)
 	return
 }

@@ -4,6 +4,7 @@ import (
 	// "github.com/gin-gonic/contrib/sessions"
 	// "github.com/gin-contrib/sessions"
 	"auth-proxy/pkg/app"
+	"auth-proxy/pkg/authenticator"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/prometeo"
 	"fmt"
@@ -96,6 +97,9 @@ func setup(build string) *gin.Engine {
 	r.GET("/oauthlogin/:provider", OauthLogin)
 	r.GET("/oauthlogout/:provider", OauthLogout)
 	r.GET("/oauthcallback/:provider", OauthCallback)
+
+	r.GET("/authenticator_barcode/:username", authenticator.AuthenticatorBarcode)
+	r.GET("/set_authenticator/:username/*pin", authenticator.SetAuthenticator)
 
 	// проверка работоспособности
 	r.GET("/ping", pingHandler)
