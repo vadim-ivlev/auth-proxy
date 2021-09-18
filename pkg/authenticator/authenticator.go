@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -21,8 +22,14 @@ func IsPinGood(username, pin string) error {
 	if len(pin) < 2 {
 		return errors.New("PIN  должен быть длиннее")
 	}
+
 	// validate pin
-	text, err := getResponseText(fmt.Sprintf(`%v/Validate.aspx?Pin=%v&SecretCode=%v%v`, authenticatorURL, pin, username, secret))
+	secretCode, err := getSecretCode(username)
+	if err != nil {
+		return err
+	}
+	text, err := getResponseText(fmt.Sprintf(`%v/Validate.aspx?Pin=%v&SecretCode=%v`, authenticatorURL, pin, secretCode))
+	log.Printf(`%v/Validate.aspx?  Pin=%v&  SecretCode=%v --> text=%v`, authenticatorURL, pin, secretCode, text)
 	if err != nil {
 		return err
 	}
@@ -57,8 +64,24 @@ func AuthenticatorBarcode(c *gin.Context) {
 	username := c.Param("username")
 	// log.Printf(`AuthenticatorBarcode username=%v`, username)
 
+	// проверяем есть ли пользователь в базе данных и установлен ли уже аутентификатор
+	_, pinSet, _, err := GetUserPinFields(username)
+	if err != nil {
+		c.JSON(200, gin.H{"error": err.Error()})
+		return
+	}
+	if pinSet {
+		c.JSON(200, gin.H{"error": "Аутентификатор уже установлен"})
+		return
+	}
+
 	//  get barcode image url
-	pairUrl := fmt.Sprintf(`%v/pair.aspx?AppName=%v&AppInfo=%v&SecretCode=%v%v`, authenticatorURL, AppName, username, username, secret)
+	secretCode, err := getSecretCode(username)
+	if err != nil {
+		c.JSON(200, gin.H{"error": err.Error()})
+		return
+	}
+	pairUrl := fmt.Sprintf(`%v/pair.aspx?AppName=%v&AppInfo=%v&SecretCode=%v`, authenticatorURL, AppName, username, secretCode)
 	text, err := getResponseText(pairUrl)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
@@ -86,6 +109,27 @@ func AuthenticatorBarcode(c *gin.Context) {
 	// return the image
 	c.Data(200, "image/png", body)
 
+}
+
+func GetUserPinFields(username string) (pinRequired, pinSet bool, pinHash string, err error) {
+	user, err := db.QueryRowMap(`SELECT pinrequired, pinset, pinhash FROM "user" WHERE username = $1 ;`, username)
+	if err != nil {
+		return
+	}
+	pinRequired, _ = user["pinrequired"].(bool)
+	pinSet, _ = user["pinset"].(bool)
+	pinHash, _ = user["pinhash"].(string)
+	return
+}
+
+func getSecretCode(username string) (secredCode string, err error) {
+	_, _, pinHash, err := GetUserPinFields(username)
+	if err != nil {
+		log.Printf(`ERROR: authenticator.getSecretCode("%v"): %v`, username, err.Error())
+		return
+	}
+	secredCode = username + secret + pinHash
+	return
 }
 
 func getResponseText(url string) (string, error) {

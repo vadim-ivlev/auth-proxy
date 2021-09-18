@@ -56,7 +56,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				// проверить PIN если установлен глобальный флаг
 				if app.Params.UsePin {
 					// нужен ли PIN для данного пользователя?
-					pinRequired, _, err := getUserPinFields(username)
+					pinRequired, _, _, err := authenticator.GetUserPinFields(username)
 					if err != nil {
 						return "", err
 					}
@@ -239,7 +239,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				pinRequired, pinSet, err := getUserPinFields(params.Args["username"].(string))
+				pinRequired, pinSet, _, err := authenticator.GetUserPinFields(params.Args["username"].(string))
 				return gin.H{"use_pin": app.Params.UsePin, "pinrequired": pinRequired, "pinset": pinSet}, err
 			},
 		},
@@ -539,14 +539,4 @@ func Like(fieldsString, search string) string {
 	s := strings.Join(chunks, " OR ")
 	// fmt.Println(fieldsString, s)
 	return s
-}
-
-func getUserPinFields(username string) (pinRequired, pinSet bool, err error) {
-	user, err := db.QueryRowMap(`SELECT pinrequired, pinset FROM "user" WHERE username = $1 ;`, username)
-	if err != nil {
-		return
-	}
-	pinRequired, _ = user["pinrequired"].(bool)
-	pinSet, _ = user["pinset"].(bool)
-	return
 }

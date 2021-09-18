@@ -99,7 +99,7 @@ func setup(build string) *gin.Engine {
 	r.GET("/oauthcallback/:provider", OauthCallback)
 
 	r.GET("/authenticator_barcode/:username", authenticator.AuthenticatorBarcode)
-	r.GET("/set_authenticator/:username/*pin", authenticator.SetAuthenticator)
+	r.GET("/set_authenticator/:username/:pin", authenticator.SetAuthenticator)
 
 	// проверка работоспособности
 	r.GET("/ping", pingHandler)
