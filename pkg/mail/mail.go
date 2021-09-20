@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -53,6 +54,10 @@ func ReadMailTemplate(fileName string) {
 // TODO: https://stackoverflow.com/questions/46805579/send-smtp-email-to-multiple-receivers
 // https://github.com/golang/go/wiki/SendingMail
 func SendMessage(templateName string, username, toMail, password string) error {
+	if toMail == "" {
+		return errors.New("email address is required")
+	}
+
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial(params.Addr)
 	if err != nil {

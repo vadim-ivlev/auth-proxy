@@ -1,6 +1,7 @@
 package authenticator
 
 import (
+	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/db"
 	"errors"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"regexp"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 var authenticatorURL = "https://www.authenticatorapi.com"
@@ -36,7 +38,7 @@ func IsPinGood(username, pin string) error {
 	if text == "True" {
 		return nil
 	}
-	return errors.New("PIN is not correct")
+	return errors.New("PIN неверен")
 }
 
 // SetAuthenticator если пин правильный устанавливает поле pinset=TRUE для пользователя в базе данных
@@ -50,7 +52,7 @@ func SetAuthenticator(c *gin.Context) {
 		return
 	}
 	// update field pinset in the database
-	_, err = db.QueryExec(`UPDATE "user" SET pinset = TRUE WHERE username = $1;`, username)
+	_, err = db.QueryExec(`UPDATE "user" SET pinset = TRUE WHERE username = $1 OR email = $1 `, username)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
@@ -58,20 +60,60 @@ func SetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
+// ResetAuthenticator если пин правильный устанавливает поле pinset=TRUE для пользователя в базе данных
+func ResetAuthenticator(c *gin.Context) {
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(200, gin.H{"result": false, "error": "username is required"})
+		return
+	}
+	// - утанавливаем поля pinset и pinhash в базе
+	pinhash := uuid.New().String()
+	log.Println("uuid=", pinhash)
+
+	_, err := db.QueryExec(`UPDATE "user" SET ( pinset, pinhash ) = ( FALSE, $1 ) WHERE username = $2 OR email = $2 ;`, pinhash, username)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	// - генерируем ссылку на страничку
+
+	link := fmt.Sprintf(`%v/set-authenticator.html#url=%v&username=%v&pinhash=%v`, app.Params.AuthAdminUrl, app.Params.AuthProxyUrl, username, pinhash)
+	// user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
+	// if err != nil {
+	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
+	// 	return
+	// }
+	// email, _ := user["email"].(string)
+	// err = mail.SendMessage("reset_authenticator", username, email, link)
+	// if err != nil {
+	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
+	// 	return
+	// }
+	c.JSON(200, gin.H{"result": link + " Письмо с инструкциями выслано по электронной почте ", "error": nil})
+}
+
 // SetAuthenticator возвращает изображение Barcode для установки Google Authenticator
 // на телефоне клиента
 func AuthenticatorBarcode(c *gin.Context) {
 	username := c.Param("username")
+	pinhash := c.Param("pinhash")
+	// для обновления картинок в браузерах
+	c.Header("Cache-control", "no-cache")
 	// log.Printf(`AuthenticatorBarcode username=%v`, username)
 
 	// проверяем есть ли пользователь в базе данных и установлен ли уже аутентификатор
-	_, pinSet, _, err := GetUserPinFields(username)
+	_, dbPinSet, dbPinHash, err := GetUserPinFields(username)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
-	if pinSet {
+	if dbPinSet {
 		c.JSON(200, gin.H{"error": "Аутентификатор уже установлен"})
+		return
+	}
+	if pinhash != dbPinHash {
+		c.JSON(200, gin.H{"error": "pinhash не совпадает"})
 		return
 	}
 
@@ -112,7 +154,7 @@ func AuthenticatorBarcode(c *gin.Context) {
 }
 
 func GetUserPinFields(username string) (pinRequired, pinSet bool, pinHash string, err error) {
-	user, err := db.QueryRowMap(`SELECT pinrequired, pinset, pinhash FROM "user" WHERE username = $1 ;`, username)
+	user, err := db.QueryRowMap(`SELECT pinrequired, pinset, pinhash FROM "user" WHERE username=$1 OR email=$1 `, username)
 	if err != nil {
 		return
 	}

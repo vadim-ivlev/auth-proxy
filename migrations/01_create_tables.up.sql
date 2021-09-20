@@ -17,8 +17,9 @@ CREATE TABLE IF NOT EXISTS "user" (
     pinrequired boolean NOT NULL DEFAULT FALSE,  
     -- установил ли пользователь Google Authenticator на своем телефоне.
     -- показывать ли ему страницу установки аутентификатора.
-    pinset boolean NOT NULL DEFAULT FALSE,  
-    pinhash text, -- хэш для первоначальной настройки Google Authenticator
+    pinset boolean NOT NULL DEFAULT FALSE, 
+    -- хэш для первоначальной настройки Google Authenticator 
+    pinhash text DEFAULT uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)::text, 
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );

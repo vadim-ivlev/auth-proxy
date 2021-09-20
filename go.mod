@@ -7,6 +7,7 @@ require (
 	github.com/caarlos0/env/v6 v6.6.2 // indirect
 	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.6.3
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/graphql-go/graphql v0.7.9
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0 // indirect

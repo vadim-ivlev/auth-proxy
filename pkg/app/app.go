@@ -33,6 +33,9 @@ type appParams struct {
 	ResetTime int64 `yaml:"reset_time"`
 	// перенаправления браузера для предоставления различных GUI
 	Redirects map[string]string
+	// для посылки писем
+	AuthAdminUrl string `yaml:"auth_admin_url"`
+	AuthProxyUrl string `yaml:"auth_proxy_url"`
 }
 
 // Общие параметры приложения

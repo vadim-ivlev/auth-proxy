@@ -267,3 +267,7 @@ func ListPublicApps() []map[string]interface{} {
 	}
 	return records
 }
+
+func GetUser(nameOrEmail string) (user map[string]interface{}, err error) {
+	return db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, nameOrEmail)
+}
