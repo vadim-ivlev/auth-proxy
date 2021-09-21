@@ -47,7 +47,7 @@ func Captcha(c *gin.Context) {
 	// })
 
 	SetSessionVariable(c, "captcha", data.Text)
-	log.Println("Captcha text=", data.Text)
+	// log.Println("Captcha text=", data.Text)
 	// send image data to client
 	data.WriteImage(c.Writer)
 }

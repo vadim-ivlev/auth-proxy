@@ -92,7 +92,7 @@ func ResetAuthenticator(c *gin.Context) {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	c.JSON(200, gin.H{"result": link + " Письмо с инструкциями выслано по электронной почте ", "error": nil})
+	c.JSON(200, gin.H{"result": "Письмо с инструкциями выслано по электронной почте ", "error": nil})
 }
 
 // AuthenticatorBarcode возвращает изображение Barcode
@@ -146,7 +146,6 @@ func AuthenticatorCode(c *gin.Context, codetype string) {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("text=", text)
 
 	if codetype == "manualcode" {
 		match := manualcodeRe.FindStringSubmatch(text)

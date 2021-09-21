@@ -135,10 +135,23 @@ func sendSecureMail(fromEmail, toEmail, msg string) error {
 	if toEmail == "" {
 		return errors.New("email должен быть не пустым")
 	}
-	fmt.Println("GMAIL_PASSWORD", os.Getenv("GMAIL_PASSWORD"))
-	auth := smtp.PlainAuth("", "vadim.ivlev@gmail.com", os.Getenv("GMAIL_PASSWORD"), "smtp.gmail.com")
+	username := "vadim.ivlev@gmail.com"
+	password := os.Getenv("GMAIL_PASSWORD")
+	host := "smtp.gmail.com"
+	port := ":587"
+
+	// username := "vadim.ivlev@ymail.com"
+	// password := os.Getenv("YMAIL_PASSWORD")
+	// host := "smtp.mail.yahoo.com"
+	// port := ":465"
+
 	toEmailsArray := strings.Split(toEmail, ",")
-	err := smtp.SendMail("smtp.gmail.com:587", auth, fromEmail, toEmailsArray, []byte(msg))
+
+	fmt.Println("MAIL_PASSWORD=", password, fromEmail, toEmailsArray, msg)
+	err := smtp.SendMail(host+port, smtp.PlainAuth("", username, password, host), fromEmail, toEmailsArray, []byte(msg))
+	if err != nil {
+		log.Println(err)
+	}
 	return err
 }
 
