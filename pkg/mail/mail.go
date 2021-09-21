@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/smtp"
+	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,11 +18,13 @@ type connectionParams struct {
 	Link string
 }
 
+var envName string
 var params connectionParams
 var mailTemplates map[string]string
 
 // ReadConfig reads YAML file
 func ReadConfig(fileName string, env string) {
+	envName = env
 	yamlFile, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Println(err.Error())
@@ -100,13 +104,88 @@ func SendMessage(templateName string, username, toMail, password string) error {
 	return nil
 }
 
-// SendMessage2 ???
-// func SendMessage2(templateName string, username, toMail, password string) error {
-// 	msg := fmt.Sprintf(mailTemplates[templateName], params.From, toMail, username, password)
+// ------------- new code -----------------------------------------------------------------------------
 
-// 	auth := smtp.PlainAuth("", "noreply@rg.ru", "", "mail3.rg.ru")
-// 	to := strings.Split(toMail, ",")
-// 	err := smtp.SendMail(params.Addr, auth, params.From, to, []byte(msg))
+func SendNewUserEmail(username, toEmail, password string) error {
+	msg := fmt.Sprintf(mailTemplates["new_user"], params.From, toEmail, params.Link, username, password)
+	return sendMail(params.From, toEmail, msg)
+}
 
-// 	return err
-// }
+func SendNewPasswordEmail(username, toEmail, password string) error {
+	msg := fmt.Sprintf(mailTemplates["new_password"], params.From, toEmail, params.Link, username, password)
+	return sendMail(params.From, toEmail, msg)
+}
+
+func SendAuthenticatorEmail(toEmail, pageAddress string) error {
+	msg := fmt.Sprintf(mailTemplates["reset_authenticator"], params.From, toEmail, pageAddress)
+	return sendMail(params.From, toEmail, msg)
+}
+
+func sendMail(fromEmail, toEmail, msg string) error {
+	if envName == "dev" {
+		return sendSecureMail(fromEmail, toEmail, msg)
+	} else {
+		return sendInsecureMail(fromEmail, toEmail, msg)
+	}
+}
+
+// sendSecureMail toEmail может содержать несколько адресов через запятую.
+// msg должно быть отформатировано специальным образом.
+func sendSecureMail(fromEmail, toEmail, msg string) error {
+	if toEmail == "" {
+		return errors.New("email должен быть не пустым")
+	}
+	fmt.Println("GMAIL_PASSWORD", os.Getenv("GMAIL_PASSWORD"))
+	auth := smtp.PlainAuth("", "vadim.ivlev@gmail.com", os.Getenv("GMAIL_PASSWORD"), "smtp.gmail.com")
+	toEmailsArray := strings.Split(toEmail, ",")
+	err := smtp.SendMail("smtp.gmail.com:587", auth, fromEmail, toEmailsArray, []byte(msg))
+	return err
+}
+
+// sendInsecureMail toEmail может содержать несколько адресов через запятую.
+// msg должно быть отформатировано специальным образом.
+func sendInsecureMail(fromEmail, toEmail, msg string) error {
+	if toEmail == "" {
+		return errors.New("email address is required")
+	}
+
+	// Connect to the remote SMTP server.
+	c, err := smtp.Dial(params.Addr)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	// Set the sender and recipient first
+	if err := c.Mail(fromEmail); err != nil {
+		return err
+	}
+	if err := c.Rcpt(toEmail); err != nil {
+		return err
+	}
+
+	// Send the email body.
+	wc, err := c.Data()
+	if err != nil {
+		return err
+	}
+	defer wc.Close()
+
+	_, err = fmt.Fprint(wc, msg)
+	if err != nil {
+		return err
+	}
+
+	err = wc.Close()
+	if err != nil {
+		return err
+	}
+
+	// Send the QUIT command and close the connection.
+	err = c.Quit()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

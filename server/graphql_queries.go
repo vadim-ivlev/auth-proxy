@@ -56,17 +56,22 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				// проверить PIN если установлен глобальный флаг
 				if app.Params.UsePin {
 					// нужен ли PIN для данного пользователя?
+					fmt.Println("UsePin!!!!!!")
 					pinRequired, _, _, err := authenticator.GetUserPinFields(username)
 					if err != nil {
 						return "", err
 					}
+					fmt.Println("pin required!!!!!!")
 					if pinRequired {
 						pin, _ := params.Args["pin"].(string)
+						fmt.Println("pin = ", pin)
 						// правильный ли пин?
 						err := authenticator.IsPinGood(username, pin)
 						if err != nil {
+							fmt.Println("pin is bad!!!!!!")
 							return "", err
 						}
+						fmt.Println("pin is good!!!!!!")
 					}
 				}
 

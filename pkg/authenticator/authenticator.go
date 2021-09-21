@@ -3,6 +3,7 @@ package authenticator
 import (
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/mail"
 	"errors"
 	"fmt"
 	"io"
@@ -31,7 +32,7 @@ func IsPinGood(username, pin string) error {
 		return err
 	}
 	text, err := getResponseText(fmt.Sprintf(`%v/Validate.aspx?Pin=%v&SecretCode=%v`, authenticatorURL, pin, secretCode))
-	log.Printf(`%v/Validate.aspx?  Pin=%v&  SecretCode=%v --> text=%v`, authenticatorURL, pin, secretCode, text)
+	log.Printf(`%v/Validate.aspx?  Pin=%v  SecretCode=%v rand=%v --> text=%v`, authenticatorURL, pin, secretCode, text)
 	if err != nil {
 		return err
 	}
@@ -79,17 +80,17 @@ func ResetAuthenticator(c *gin.Context) {
 	// - генерируем ссылку на страничку
 
 	link := fmt.Sprintf(`%v/set-authenticator.html#url=%v&username=%v&pinhash=%v`, app.Params.AuthAdminUrl, app.Params.AuthProxyUrl, username, pinhash)
-	// user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
-	// if err != nil {
-	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
-	// 	return
-	// }
-	// email, _ := user["email"].(string)
-	// err = mail.SendMessage("reset_authenticator", username, email, link)
-	// if err != nil {
-	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
-	// 	return
-	// }
+	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	email, _ := user["email"].(string)
+	err = mail.SendAuthenticatorEmail(email, link)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
 	c.JSON(200, gin.H{"result": link + " Письмо с инструкциями выслано по электронной почте ", "error": nil})
 }
 
@@ -181,6 +182,10 @@ func getResponseText(url string) (string, error) {
 
 func getResponseBody(url string) ([]byte, error) {
 	resp, err := http.Get(url)
+	// client := &http.Client{}
+	// req, _ := http.NewRequest("GET", url, nil)
+	// req.Header.Set("cache", "no-store")
+	// resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}

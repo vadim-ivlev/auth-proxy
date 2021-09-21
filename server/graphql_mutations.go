@@ -68,7 +68,11 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					clearUserCache(params)
 					res, err := createRecord("username", params, "user", "user")
 					if err == nil {
-						sendMessageToNewUser(params, password)
+						// sendMessageToNewUser(params, password)
+						err := mail.SendNewUserEmail(params.Args["username"].(string), params.Args["email"].(string), password)
+						if err != nil {
+							log.Println("create_user SendMessage error:", err)
+						}
 					}
 					return res, err
 				}
@@ -166,7 +170,8 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				if err != nil {
 					return "Could not generate new password", err
 				}
-				err = mail.SendMessage("new_password", foundUsername, email, password)
+				// err = mail.SendMessage("new_password", foundUsername, email, password)
+				err = mail.SendNewPasswordEmail(foundUsername, email, password)
 				if err != nil {
 					return "Could not send email to:" + email, err
 				}
@@ -427,13 +432,14 @@ func clearAppCache(params gq.ResolveParams) {
 	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
 
-func sendMessageToNewUser(params gq.ResolveParams, password string) {
-	email := params.Args["email"].(string)
-	if email == "" {
-		return
-	}
-	err := mail.SendMessage("new_user", params.Args["username"].(string), email, password)
-	if err != nil {
-		log.Println("create_user SendMessage error:", err)
-	}
-}
+// func sendMessageToNewUser(params gq.ResolveParams, password string) {
+// 	email := params.Args["email"].(string)
+// 	if email == "" {
+// 		return
+// 	}
+// 	// err := mail.SendMessage("new_user", params.Args["username"].(string), email, password)
+// 	err := mail.SendNewUserEmail(params.Args["username"].(string), email, password)
+// 	if err != nil {
+// 		log.Println("create_user SendMessage error:", err)
+// 	}
+// }
