@@ -19,6 +19,7 @@ var authenticatorURL = "https://www.authenticatorapi.com"
 var AppName = "auth-proxy"
 var secret = "supersecret"
 var barcodeRe = regexp.MustCompile(`src='(.*?)'`)
+var manualcodeRe = regexp.MustCompile(`secret%3D(.*?)%`)
 
 // IsPinGood верен ли PIN введенный пользователем
 func IsPinGood(username, pin string) error {
@@ -94,9 +95,23 @@ func ResetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": link + " Письмо с инструкциями выслано по электронной почте ", "error": nil})
 }
 
-// SetAuthenticator возвращает изображение Barcode для установки Google Authenticator
-// на телефоне клиента
+// AuthenticatorBarcode возвращает изображение Barcode
+// Google Authenticator на телефоне клиента.
 func AuthenticatorBarcode(c *gin.Context) {
+	AuthenticatorCode(c, "barcode")
+}
+
+// AuthenticatorManualCode возвращает код для ручной установки
+// Google Authenticator на телефоне клиента.
+func AuthenticatorManualCode(c *gin.Context) {
+	AuthenticatorCode(c, "manualcode")
+}
+
+// AuthenticatorCode возвращает изображение Barcode
+// или код для ручной установки Google Authenticator на телефоне клиента
+// в зависимости от параметра:
+// codetype string = {barcode|manualcode}
+func AuthenticatorCode(c *gin.Context, codetype string) {
 	username := c.Param("username")
 	pinhash := c.Param("pinhash")
 	// для обновления картинок в браузерах
@@ -124,12 +139,25 @@ func AuthenticatorBarcode(c *gin.Context) {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
+
 	pairUrl := fmt.Sprintf(`%v/pair.aspx?AppName=%v&AppInfo=%v&SecretCode=%v`, authenticatorURL, AppName, username, secretCode)
 	text, err := getResponseText(pairUrl)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("text=", text)
+
+	if codetype == "manualcode" {
+		match := manualcodeRe.FindStringSubmatch(text)
+		if len(match) < 2 {
+			c.JSON(200, gin.H{"result": nil, "error": "manualcode не найден в ответе " + authenticatorURL})
+			return
+		}
+		c.JSON(200, gin.H{"result": match[1], "error": nil})
+		return
+	}
+
 	match := barcodeRe.FindStringSubmatch(text)
 	if len(match) < 2 {
 		c.JSON(200, gin.H{"error": "barcodeUrl не найден в ответе " + authenticatorURL})
