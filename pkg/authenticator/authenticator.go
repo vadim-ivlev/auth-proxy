@@ -62,7 +62,38 @@ func SetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
+// SetAuthenticator если пин правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
+func SetPassword(c *gin.Context) {
+	//c.Query("username") // c.PostForm("password"),  c.Request.PostForm["password"]
+	username := c.Query("username")
+	pashash := c.Query("pashash")
+	password := c.Query("password")
+	log.Printf(`SetPassword username=%v password=%v pashash=%v`, username, password, pashash)
+
+	// // проверить что  passhash совпадает со значением в базе данных
+	// user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
+	// if err != nil {
+	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
+	// 	return
+	// }
+	// dbPashash, _ := user["pashash"].(string)
+	// if (pashash != dbPashash) {
+	// 	c.JSON(200, gin.H{"result": false, "error": "SetPassword: pashash не совпадает"})
+	// 	return
+	// }
+
+	// обновить поля в базе
+	_, err := db.QueryExec(`UPDATE "user" SET ( password, pashash ) = ( $1, NULL ) 
+		WHERE (username = $2 OR email = $2) AND pashash = $3`, password, username, pashash)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"result": true, "error": nil})
+}
+
 // ResetAuthenticator если пин правильный устанавливает поле pinset=TRUE для пользователя в базе данных
+// и посылает ему письмо по email с адресом страницы установки пина.
 func ResetAuthenticator(c *gin.Context) {
 	username := c.Param("username")
 	if username == "" {
@@ -178,7 +209,6 @@ func AuthenticatorCode(c *gin.Context, codetype string) {
 	}
 	// return the image
 	c.Data(200, "image/png", body)
-
 }
 
 func GetUserPinFields(username string) (pinRequired, pinSet bool, pinHash string, err error) {

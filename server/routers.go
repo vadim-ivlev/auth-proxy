@@ -103,6 +103,8 @@ func setup(build string) *gin.Engine {
 	r.GET("/set_authenticator/:username/:pin", authenticator.SetAuthenticator)
 	r.GET("/reset_authenticator/:username", authenticator.ResetAuthenticator)
 
+	r.GET("/set_password", authenticator.SetPassword)
+
 	// проверка работоспособности
 	r.GET("/ping", pingHandler)
 	// вывод информации о сборке
