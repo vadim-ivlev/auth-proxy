@@ -141,7 +141,21 @@
 
 Сброс забытого пароля
 ----------------------------------------------------------------
+```mermaid
+sequenceDiagram
+    autonumber
+    auth-admin ->>+ auth-proxy : reset_password( username )
 
+    auth-proxy ->>- DB: + user-pashash
+    DB ->> auth-proxy: ок
+    Note over auth-proxy: Email со ссылкой на страницу установки пароля
+    Note right of auth-admin: Email со ссылкой на страницу установки пароля
+        
+
+    auth-admin-->>auth-proxy: set_password(password, pashash)
+    auth-proxy-->>DB: + user-password
+    auth-proxy-->>auth-admin: OK
+```
 <img src="templates/images/reset-password.png">
 
 

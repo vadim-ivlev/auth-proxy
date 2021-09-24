@@ -12,6 +12,7 @@
             // "program": "${fileDirname}",
             "program": "${workspaceRoot}",
             "env": {},
+            "envFile": "${workspaceFolder}/.env",
             "args": [
                 "-port",
                 "4400",

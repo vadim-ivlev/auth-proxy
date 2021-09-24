@@ -129,6 +129,9 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
+				if !isAuthAdmin(params) {
+					delete(params.Args, "pinrequired")
+				}
 
 				ArgToLowerCase(params, "old_username")
 				ArgToLowerCase(params, "username")

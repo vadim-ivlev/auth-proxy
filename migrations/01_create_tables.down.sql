@@ -1,3 +1,4 @@
+DROP INDEX IF EXISTS user_pashash_idx;
 DROP INDEX IF EXISTS aur_appname_idx;
 DROP INDEX IF EXISTS aur_username_idx;
 DROP INDEX IF EXISTS user_email_unique_idx;

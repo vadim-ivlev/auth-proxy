@@ -116,6 +116,11 @@ func SendNewPasswordEmail(username, toEmail, password string) error {
 	return sendMail(params.From, toEmail, msg)
 }
 
+func SendResetPasswordEmail(toEmail, pageAddress string) error {
+	msg := fmt.Sprintf(mailTemplates["reset_password"], params.From, toEmail, pageAddress)
+	return sendMail(params.From, toEmail, msg)
+}
+
 func SendAuthenticatorEmail(toEmail, pageAddress string) error {
 	msg := fmt.Sprintf(mailTemplates["reset_authenticator"], params.From, toEmail, pageAddress)
 	return sendMail(params.From, toEmail, msg)

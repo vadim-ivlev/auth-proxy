@@ -104,6 +104,7 @@ func setup(build string) *gin.Engine {
 	r.GET("/reset_authenticator/:username", authenticator.ResetAuthenticator)
 
 	r.GET("/set_password", authenticator.SetPassword)
+	r.GET("/reset_password", authenticator.ResetPassword)
 
 	// проверка работоспособности
 	r.GET("/ping", pingHandler)

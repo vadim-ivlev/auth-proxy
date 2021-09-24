@@ -2,6 +2,7 @@ package authenticator
 
 import (
 	"auth-proxy/pkg/app"
+	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
 	"errors"
@@ -64,35 +65,75 @@ func SetAuthenticator(c *gin.Context) {
 
 // SetAuthenticator если пин правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
 func SetPassword(c *gin.Context) {
-	//c.Query("username") // c.PostForm("password"),  c.Request.PostForm["password"]
 	username := c.Query("username")
-	pashash := c.Query("pashash")
+	hash := c.Query("hash")
 	password := c.Query("password")
-	log.Printf(`SetPassword username=%v password=%v pashash=%v`, username, password, pashash)
+	log.Printf(`SetPassword username=%v password=%v hash=%v`, username, password, hash)
 
-	// // проверить что  passhash совпадает со значением в базе данных
-	// user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
-	// if err != nil {
-	// 	c.JSON(200, gin.H{"result": false, "error": err.Error()})
-	// 	return
-	// }
-	// dbPashash, _ := user["pashash"].(string)
-	// if (pashash != dbPashash) {
-	// 	c.JSON(200, gin.H{"result": false, "error": "SetPassword: pashash не совпадает"})
-	// 	return
-	// }
+	// проверить длину пароля
+	if len(password) < 6 {
+		c.JSON(200, gin.H{"result": false, "error": "Пароль должен быть не менее 6-ти символов"})
+		return
+	}
+	// зашифровать пароль
+	password = auth.GetHash(password)
 
 	// обновить поля в базе
-	_, err := db.QueryExec(`UPDATE "user" SET ( password, pashash ) = ( $1, NULL ) 
-		WHERE (username = $2 OR email = $2) AND pashash = $3`, password, username, pashash)
+	res, err := db.QueryExec(`UPDATE "user" SET ( password, pashash ) = ( $1, NULL ) WHERE pashash = $2`, password, hash)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		c.JSON(200, gin.H{"result": false, "error": "SetPassword: " + err.Error()})
+		return
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": "SetPassword: " + err.Error()})
+		return
+	}
+	if rowsAffected == 0 {
+		c.JSON(200, gin.H{"result": false, "error": "Пароль уже был установлен"})
 		return
 	}
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
-// ResetAuthenticator если пин правильный устанавливает поле pinset=TRUE для пользователя в базе данных
+// ResetPassword устанавливает поле pashash для пользователя в базе данных
+// и посылает ему письмо по email с адресом страницы установки пароля.
+func ResetPassword(c *gin.Context) {
+	username := c.Query("username")
+	adminurl := c.Query("adminurl")
+	authurl := c.Query("authurl")
+
+	if username == "" {
+		c.JSON(200, gin.H{"result": false, "error": "username is required"})
+		return
+	}
+	// - устанавливаем поле pashash в для пользователя базе
+	hash := uuid.New().String()
+	log.Println("hash=", hash)
+
+	_, err := db.QueryExec(`UPDATE "user" SET  pashash  = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	// - генерируем ссылку на страничку
+	link := fmt.Sprintf(`%v/set-password.html#username=%v&hash=%v&authurl=%v`, adminurl, username, hash, authurl)
+	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	email, _ := user["email"].(string)
+
+	err = mail.SendResetPasswordEmail(email, link)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"result": "Письмо с инструкциями выслано по электронной почте ", "error": nil})
+}
+
+// ResetAuthenticator устанавливает поле pinhash для пользователя в базе данных
 // и посылает ему письмо по email с адресом страницы установки пина.
 func ResetAuthenticator(c *gin.Context) {
 	username := c.Param("username")

@@ -8,6 +8,8 @@ CREATE SCHEMA IF NOT EXISTS extensions;
 CREATE TABLE IF NOT EXISTS "user" (
     username text NOT NULL,
     password text NOT NULL,
+    -- временный хэш для смены пароля 
+    pashash text , 
     email text NOT NULL,
     fullname text,
     description text,
@@ -52,6 +54,7 @@ CREATE TABLE IF NOT EXISTS app_user_role (
 );
 
 -- индексы для ускорения выборок
+CREATE INDEX IF NOT EXISTS user_pashash_idx ON "user" (pashash);
 CREATE INDEX IF NOT EXISTS aur_appname_idx ON app_user_role (appname);
 CREATE INDEX IF NOT EXISTS aur_username_idx ON app_user_role (username);
 CREATE UNIQUE INDEX IF NOT EXISTS user_email_unique_idx ON "user" (email);
