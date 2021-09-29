@@ -21,9 +21,6 @@ dev:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
-  # для посылки писем
-  auth_admin_url: http://localhost:5000
-  auth_proxy_url: https://localhost:4400
 
   # перенаправления браузера для предоставления различных GUI 
   redirects:

@@ -46,13 +46,13 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.Boolean,
 					Description: "требуется ли PIN Google Authenticator",
 				},
-				"pinset": &gq.ArgumentConfig{
-					Type:        gq.Boolean,
-					Description: "установил ли пользователь Google Authenticator на своем телефоне",
+				"pinhash_temp": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "хэш для установки Google Authenticator",
 				},
 				"pinhash": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "хэш для первоначальной настройки Google Authenticator",
+					Description: "хэш для для проверки PIN после установки Google Authenticator",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
@@ -60,6 +60,22 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					panicIfEmpty(params.Args["username"], "Заполните поле Имя пользователя")
 					panicIfEmpty(params.Args["password"], "Введите пароль")
 					panicIfEmpty(params.Args["email"], "Заполните поле Email")
+
+					// Только админ может включить/отключить проверку пина
+					if !isAuthAdmin(params) {
+						delete(params.Args, "pinrequired")
+					}
+					// TODO: может нужно вообще запретить изменение pinhash, pinhash_temp
+					// если значение пусто не меняем его
+					pinhash, _ := params.Args["pinhash"].(string)
+					if pinhash == "" {
+						delete(params.Args, "pinhash")
+					}
+					// если значение пусто не меняем его
+					pinhash_temp, _ := params.Args["pinhash_temp"].(string)
+					if pinhash_temp == "" {
+						delete(params.Args, "pinhash_temp")
+					}
 
 					ArgToLowerCase(params, "username")
 					ArgToLowerCase(params, "email")
@@ -76,7 +92,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					}
 					return res, err
 				}
-				return nil, errors.New("Sorry. Self registration is not allowed. Please ask administrators")
+				return nil, errors.New("self registration is not allowed. Please ask administrators")
 			},
 		},
 
@@ -118,19 +134,32 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Type:        gq.Boolean,
 					Description: "требуется ли PIN Google Authenticator",
 				},
-				"pinset": &gq.ArgumentConfig{
-					Type:        gq.Boolean,
-					Description: "установил ли пользователь Google Authenticator на своем телефоне",
+				"pinhash_temp": &gq.ArgumentConfig{
+					Type:        gq.String,
+					Description: "хэш для установки Google Authenticator",
 				},
 				"pinhash": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "хэш для первоначальной настройки Google Authenticator",
+					Description: "хэш для для проверки PIN после установки Google Authenticator",
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
 				panicIfNotOwnerOrAdmin(params)
+
+				// Только админ может включить/отключить проверку пина
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
+				}
+				// TODO: может нужно вообще запретить изменение pinhash, pinhash_temp
+				// если значение пусто не меняем его
+				pinhash, _ := params.Args["pinhash"].(string)
+				if pinhash == "" {
+					delete(params.Args, "pinhash")
+				}
+				// если значение пусто не меняем его
+				pinhash_temp, _ := params.Args["pinhash_temp"].(string)
+				if pinhash_temp == "" {
+					delete(params.Args, "pinhash_temp")
 				}
 
 				ArgToLowerCase(params, "old_username")

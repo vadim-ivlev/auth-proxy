@@ -1,7 +1,6 @@
 package authenticator
 
 import (
-	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
@@ -23,18 +22,18 @@ var barcodeRe = regexp.MustCompile(`src='(.*?)'`)
 var manualcodeRe = regexp.MustCompile(`secret%3D(.*?)%`)
 
 // IsPinGood верен ли PIN введенный пользователем
-func IsPinGood(username, pin string) error {
+func IsPinGood(username, pin string, tempCode bool) error {
 	if len(pin) < 2 {
 		return errors.New("PIN  должен быть длиннее")
 	}
 
 	// validate pin
-	secretCode, err := getSecretCode(username)
+	secretCode, err := getSecretCode(username, tempCode)
 	if err != nil {
 		return err
 	}
 	text, err := getResponseText(fmt.Sprintf(`%v/Validate.aspx?Pin=%v&SecretCode=%v`, authenticatorURL, pin, secretCode))
-	log.Printf(`%v/Validate.aspx?  Pin=%v  SecretCode=%v rand=%v --> text=%v`, authenticatorURL, pin, secretCode, text)
+	log.Printf(`%v/Validate.aspx?  Pin=%v  SecretCode=%v --> text=%v`, authenticatorURL, pin, secretCode, text)
 	if err != nil {
 		return err
 	}
@@ -44,18 +43,23 @@ func IsPinGood(username, pin string) error {
 	return errors.New("PIN неверен")
 }
 
-// SetAuthenticator если пин правильный устанавливает поле pinset=TRUE для пользователя в базе данных
+// SetAuthenticator если пин правильный  поле pinhash_temp в поле pashash для пользователя в базе данных
 func SetAuthenticator(c *gin.Context) {
-	username := c.Param("username")
-	pin := c.Param("pin")
+	username := c.Query("username")
+	pin := c.Query("pin")
 	// log.Printf(`SetAuthenticator username=%v pin=%v`, username, pin)
-	err := IsPinGood(username, pin)
+	err := IsPinGood(username, pin, true)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	// update field pinset in the database
-	_, err = db.QueryExec(`UPDATE "user" SET pinset = TRUE WHERE username = $1 OR email = $1 `, username)
+	// update field pinhash in the database
+	_, pinHashTemp, _, err := GetUserPinFields(username)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
+		return
+	}
+	_, err = db.QueryExec(`UPDATE "user" SET (pinhash, pinhash_temp) = ($1, NULL)  WHERE username = $2 OR email = $2 `, pinHashTemp, username)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
@@ -118,13 +122,14 @@ func ResetPassword(c *gin.Context) {
 	}
 	// - генерируем ссылку на страничку
 	link := fmt.Sprintf(`%v/set-password.html#username=%v&hash=%v&authurl=%v`, adminurl, username, hash, authurl)
+	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 	email, _ := user["email"].(string)
-
+	// посылаем письмо пользователю
 	err = mail.SendResetPasswordEmail(email, link)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
@@ -136,29 +141,33 @@ func ResetPassword(c *gin.Context) {
 // ResetAuthenticator устанавливает поле pinhash для пользователя в базе данных
 // и посылает ему письмо по email с адресом страницы установки пина.
 func ResetAuthenticator(c *gin.Context) {
-	username := c.Param("username")
+	username := c.Query("username")
+	adminurl := c.Query("adminurl")
+	authurl := c.Query("authurl")
+
 	if username == "" {
 		c.JSON(200, gin.H{"result": false, "error": "username is required"})
 		return
 	}
-	// - утанавливаем поля pinset и pinhash в базе
-	pinhash := uuid.New().String()
-	log.Println("uuid=", pinhash)
+	// - устанавливаем  pinhash_temp в базе
+	hash := uuid.New().String()
+	log.Println("hash=", hash)
 
-	_, err := db.QueryExec(`UPDATE "user" SET ( pinset, pinhash ) = ( FALSE, $1 ) WHERE username = $2 OR email = $2 ;`, pinhash, username)
+	_, err := db.QueryExec(`UPDATE "user" SET pinhash_temp = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 	// - генерируем ссылку на страничку
-
-	link := fmt.Sprintf(`%v/set-authenticator.html#url=%v&username=%v&pinhash=%v`, app.Params.AuthAdminUrl, app.Params.AuthProxyUrl, username, pinhash)
+	link := fmt.Sprintf(`%v/set-authenticator.html#username=%v&hash=%v&authurl=%v`, adminurl, username, hash, authurl)
+	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 	email, _ := user["email"].(string)
+	// посылаем письмо пользователю
 	err = mail.SendAuthenticatorEmail(email, link)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
@@ -184,29 +193,29 @@ func AuthenticatorManualCode(c *gin.Context) {
 // в зависимости от параметра:
 // codetype string = {barcode|manualcode}
 func AuthenticatorCode(c *gin.Context, codetype string) {
-	username := c.Param("username")
-	pinhash := c.Param("pinhash")
+	username := c.Query("username")
+	pinhash := c.Query("hash")
 	// для обновления картинок в браузерах
 	c.Header("Cache-control", "no-cache")
 	// log.Printf(`AuthenticatorBarcode username=%v`, username)
 
 	// проверяем есть ли пользователь в базе данных и установлен ли уже аутентификатор
-	_, dbPinSet, dbPinHash, err := GetUserPinFields(username)
+	_, dbPinHashTemp, _, err := GetUserPinFields(username)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
-	if dbPinSet {
+	if dbPinHashTemp == "" {
 		c.JSON(200, gin.H{"error": "Аутентификатор уже установлен"})
 		return
 	}
-	if pinhash != dbPinHash {
+	if pinhash != dbPinHashTemp {
 		c.JSON(200, gin.H{"error": "pinhash не совпадает"})
 		return
 	}
 
 	//  get barcode image url
-	secretCode, err := getSecretCode(username)
+	secretCode, err := getSecretCode(username, true)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
 		return
@@ -252,24 +261,27 @@ func AuthenticatorCode(c *gin.Context, codetype string) {
 	c.Data(200, "image/png", body)
 }
 
-func GetUserPinFields(username string) (pinRequired, pinSet bool, pinHash string, err error) {
-	user, err := db.QueryRowMap(`SELECT pinrequired, pinset, pinhash FROM "user" WHERE username=$1 OR email=$1 `, username)
+func GetUserPinFields(username string) (pinRequired bool, pinHashTemp, pinHash string, err error) {
+	user, err := db.QueryRowMap(`SELECT pinrequired, pinhash_temp, pinhash FROM "user" WHERE username=$1 OR email=$1 `, username)
 	if err != nil {
 		return
 	}
 	pinRequired, _ = user["pinrequired"].(bool)
-	pinSet, _ = user["pinset"].(bool)
+	pinHashTemp, _ = user["pinhash_temp"].(string)
 	pinHash, _ = user["pinhash"].(string)
 	return
 }
 
-func getSecretCode(username string) (secredCode string, err error) {
-	_, _, pinHash, err := GetUserPinFields(username)
+func getSecretCode(username string, tempCode bool) (secretCode string, err error) {
+	_, pinHashTemp, pinHash, err := GetUserPinFields(username)
 	if err != nil {
 		log.Printf(`ERROR: authenticator.getSecretCode("%v"): %v`, username, err.Error())
 		return
 	}
-	secredCode = username + secret + pinHash
+	secretCode = username + secret + pinHash
+	if tempCode {
+		secretCode = username + secret + pinHashTemp
+	}
 	return
 }
 

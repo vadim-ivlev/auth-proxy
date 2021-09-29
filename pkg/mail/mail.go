@@ -145,11 +145,6 @@ func sendSecureMail(fromEmail, toEmail, msg string) error {
 	host := "smtp.gmail.com"
 	port := ":587"
 
-	// username := "vadim.ivlev@ymail.com"
-	// password := os.Getenv("YMAIL_PASSWORD")
-	// host := "smtp.mail.yahoo.com"
-	// port := ":465"
-
 	toEmailsArray := strings.Split(toEmail, ",")
 
 	fmt.Println("MAIL_PASSWORD=", password, fromEmail, toEmailsArray, msg)

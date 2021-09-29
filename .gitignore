@@ -21,6 +21,9 @@ deploy/etc
 deploy/certificates
 .env
 
+secret
+
+
 
 
 

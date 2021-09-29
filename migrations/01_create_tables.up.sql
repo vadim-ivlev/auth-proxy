@@ -8,23 +8,30 @@ CREATE SCHEMA IF NOT EXISTS extensions;
 CREATE TABLE IF NOT EXISTS "user" (
     username text NOT NULL,
     password text NOT NULL,
-    -- временный хэш для смены пароля 
-    pashash text , 
     email text NOT NULL,
     fullname text,
     description text,
     disabled integer NOT NULL DEFAULT 0,
     id serial,
-    -- требуется ли вводить PIN Google Authenticator для входа в систему
-    pinrequired boolean NOT NULL DEFAULT FALSE,  
-    -- установил ли пользователь Google Authenticator на своем телефоне.
-    -- показывать ли ему страницу установки аутентификатора.
-    pinset boolean NOT NULL DEFAULT FALSE, 
-    -- хэш для первоначальной настройки Google Authenticator 
-    pinhash text DEFAULT uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)::text, 
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );
+
+-- Патч для таблицы пользователей чтобы обеспечить вход по PIN,
+-- И более безопасную смену пароля.
+ALTER TABLE "user"
+    -- временный хэш для смены пароля
+    ADD COLUMN IF NOT EXISTS pashash text, 
+    -- требуется ли вводить PIN Google Authenticator для входа в систему
+    ADD COLUMN IF NOT EXISTS pinrequired boolean NOT NULL DEFAULT FALSE,  
+    -- Новое значение хэша, которое заменит старое при установке аутентификатора. 
+    -- Наличие ненулевого значения в этом поле сигнализирует:
+    --   1. установил ли пользователь Google Authenticator на своем телефоне?
+    --   2. показывать ли ему страницу установки аутентификатора?
+    ADD COLUMN IF NOT EXISTS pinhash_temp text,
+    -- хэш для первоначальной настройки Google Authenticator 
+    ADD COLUMN IF NOT EXISTS pinhash text; -- DEFAULT uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)::text ;
+
 
 -- Справочная таблица.
 -- Приложение с описанием

@@ -98,10 +98,10 @@ func setup(build string) *gin.Engine {
 	r.GET("/oauthlogout/:provider", OauthLogout)
 	r.GET("/oauthcallback/:provider", OauthCallback)
 
-	r.GET("/authenticator_barcode/:username/:pinhash", authenticator.AuthenticatorBarcode)
-	r.GET("/authenticator_manualcode/:username/:pinhash", authenticator.AuthenticatorManualCode)
-	r.GET("/set_authenticator/:username/:pin", authenticator.SetAuthenticator)
-	r.GET("/reset_authenticator/:username", authenticator.ResetAuthenticator)
+	r.GET("/authenticator_barcode", authenticator.AuthenticatorBarcode)
+	r.GET("/authenticator_manualcode", authenticator.AuthenticatorManualCode)
+	r.GET("/set_authenticator", authenticator.SetAuthenticator)
+	r.GET("/reset_authenticator", authenticator.ResetAuthenticator)
 
 	r.GET("/set_password", authenticator.SetPassword)
 	r.GET("/reset_password", authenticator.ResetPassword)

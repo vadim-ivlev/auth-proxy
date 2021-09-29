@@ -66,7 +66,7 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 						pin, _ := params.Args["pin"].(string)
 						fmt.Println("pin = ", pin)
 						// правильный ли пин?
-						err := authenticator.IsPinGood(username, pin)
+						err := authenticator.IsPinGood(username, pin, false)
 						if err != nil {
 							fmt.Println("pin is bad!!!!!!")
 							return "", err
@@ -244,8 +244,12 @@ var rootQuery = gq.NewObject(gq.ObjectConfig{
 				},
 			},
 			Resolve: func(params gq.ResolveParams) (interface{}, error) {
-				pinRequired, pinSet, _, err := authenticator.GetUserPinFields(params.Args["username"].(string))
-				return gin.H{"use_pin": app.Params.UsePin, "pinrequired": pinRequired, "pinset": pinSet}, err
+				pinRequired, _, _, err := authenticator.GetUserPinFields(params.Args["username"].(string))
+				if err != nil {
+					return nil, err
+				}
+
+				return gin.H{"use_pin": app.Params.UsePin, "pinrequired": pinRequired}, err
 			},
 		},
 
@@ -488,7 +492,7 @@ func listAppUserRoleWherePart(params gq.ResolveParams) (wherePart string) {
 func QueryEnd(params gq.ResolveParams, fieldList string) (wherePart string, orderAndLimits string) {
 	var searchConditions []string
 
-	// Если запрос к таблице app и это не админский или аудиторский запрос
+	// Если запрос к таблице app и это не административный или аудиторский запрос
 	// ограничиваем выборку
 	isAdm := (isAuthAdmin(params) || isAuditor(params))
 	isAppQuery := strings.Contains(fieldList, "appname")

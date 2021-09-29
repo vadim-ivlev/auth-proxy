@@ -56,13 +56,13 @@ var userFields = gq.Fields{
 		Type:        gq.Boolean,
 		Description: "требуется ли PIN Google Authenticator",
 	},
-	"pinset": &gq.Field{
-		Type:        gq.Boolean,
-		Description: "установил ли пользователь Google Authenticator на своем телефоне",
+	"pinhash_temp": &gq.Field{
+		Type:        gq.String,
+		Description: "хэш для установки Google Authenticator",
 	},
 	"pinhash": &gq.Field{
 		Type:        gq.String,
-		Description: "хэш для первоначальной настройки Google Authenticator",
+		Description: "хэш для проверки PIN после установки Google Authenticator",
 	},
 }
 
@@ -256,10 +256,6 @@ var isPinRequiredObject = gq.NewObject(gq.ObjectConfig{
 		"pinrequired": &gq.Field{
 			Type:        gq.Boolean,
 			Description: "требуется ли вводить PIN Google Authenticator для входа",
-		},
-		"pinset": &gq.Field{
-			Type:        gq.Boolean,
-			Description: "показывать ли ему страницу установки аутентификатора",
 		},
 	},
 })
