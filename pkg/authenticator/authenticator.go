@@ -4,6 +4,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -296,8 +297,24 @@ func getResponseBody(url string) ([]byte, error) {
 	// req, _ := http.NewRequest("GET", url, nil)
 	// req.Header.Set("cache", "no-store")
 	// resp, err := client.Do(req)
+
 	if err != nil {
-		return nil, err
+		// return nil, err
+		// Если произошла ошибка пробуем сделать запрос без проверки сертификата
+		// https://stackoverflow.com/questions/12122159/how-to-do-a-https-request-with-bad-certificate
+		log.Println("ERROR: Произошла ошибка запроса к ", url)
+		log.Println(err.Error())
+		log.Println("Пробуем запрос без проверки сертификата ------------------ ")
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		client := &http.Client{Transport: tr}
+		resp, err = client.Get(url)
+		if err != nil {
+			log.Println("ERROR: Запрос без проверки сертификата тоже вернул ошибку")
+			log.Println(err.Error())
+			return nil, err
+		}
 	}
 	defer resp.Body.Close()
 	return io.ReadAll(resp.Body)
