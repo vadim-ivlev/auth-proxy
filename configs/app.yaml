@@ -7,6 +7,8 @@
 
 
 dev:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-dev
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -32,6 +34,8 @@ dev:
 
 
 front:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-front
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.

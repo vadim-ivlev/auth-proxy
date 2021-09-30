@@ -300,6 +300,10 @@ var appParamsObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AppParams",
 	Description: "Параметры приложения",
 	Fields: gq.Fields{
+		"app_name": &gq.Field{
+			Type:        gq.String,
+			Description: "Имя приложения. Используется для генерации PIN Google Authenticator",
+		},
 		"selfreg": &gq.Field{
 			Type:        gq.Boolean,
 			Description: "Могут ли пользователи регистрироваться самостоятельно",

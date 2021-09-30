@@ -17,6 +17,8 @@ import (
 )
 
 type appParams struct {
+	// Имя приложения. Используется для генерации PIN Google authenticator
+	AppName string `yaml:"app_name"`
 	// Использовать https вместо http
 	Tls bool
 	// Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -57,6 +59,7 @@ func ReadConfig(fileName string, env string) {
 // GetParams returns some app parameters
 func GetParams() map[string]interface{} {
 	return map[string]interface{}{
+		"app_name":     Params.AppName,
 		"selfreg":      Params.Selfreg,
 		"use_captcha":  Params.UseCaptcha,
 		"use_pin":      Params.UsePin,

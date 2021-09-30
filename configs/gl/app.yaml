@@ -7,6 +7,8 @@
 
 
 dev:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-gl-dev
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -32,6 +34,8 @@ dev:
 
 
 front:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-gl-front
   # Использовать https вместо http
   tls: true
   # Установить флаг secure на куки браузера. Работает только для https протокола.
@@ -56,6 +60,8 @@ front:
     /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 staging:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-gl-staging
   # Использовать https вместо http
   tls: false
   # Установить флаг secure на куки браузера. Работает только для https протокола. 
@@ -83,6 +89,8 @@ staging:
 
 
 prod:
+  # Имя приложения. Используется для генерации PIN Google Authenticator
+  app_name: auth-proxy-gl
   # Использовать https вместо http
   tls: false
   # Установить флаг secure на куки браузера. Работает только для https протокола. 

@@ -50,7 +50,7 @@ new_user: |
 reset_authenticator: |
   From: %s
   To: %s
-  Subject: Установка аутентификатора
+  Subject: Reset authenticator
 
   Если не вы инициировали это письмо, игнорируйте его.
 
@@ -68,7 +68,7 @@ reset_authenticator: |
 reset_password: |
   From: %s
   To: %s
-  Subject: Установка пароля
+  Subject: Reset password
 
   Если не вы инициировали это письмо, игнорируйте его.
 

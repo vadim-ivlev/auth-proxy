@@ -1,6 +1,7 @@
 package authenticator
 
 import (
+	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
@@ -17,7 +18,8 @@ import (
 )
 
 var authenticatorURL = "https://www.authenticatorapi.com"
-var AppName = "auth-proxy"
+
+// var AppName = "auth-proxy"
 var secret = "supersecret"
 var barcodeRe = regexp.MustCompile(`src='(.*?)'`)
 var manualcodeRe = regexp.MustCompile(`secret%3D(.*?)%`)
@@ -222,7 +224,7 @@ func AuthenticatorCode(c *gin.Context, codetype string) {
 		return
 	}
 
-	pairUrl := fmt.Sprintf(`%v/pair.aspx?AppName=%v&AppInfo=%v&SecretCode=%v`, authenticatorURL, AppName, username, secretCode)
+	pairUrl := fmt.Sprintf(`%v/pair.aspx?AppName=%v&AppInfo=%v&SecretCode=%v`, authenticatorURL, app.Params.AppName, username, secretCode)
 	text, err := getResponseText(pairUrl)
 	if err != nil {
 		c.JSON(200, gin.H{"error": err.Error()})
