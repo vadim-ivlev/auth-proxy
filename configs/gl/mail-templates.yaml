@@ -68,7 +68,7 @@ reset_authenticator: |
 reset_password: |
   From: %s
   To: %s
-  Subject: Reset password
+  Subject: Сброс пароля
 
   Если не вы инициировали это письмо, игнорируйте его.
 
