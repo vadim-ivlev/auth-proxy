@@ -144,19 +144,23 @@
 ```mermaid
 sequenceDiagram
     autonumber
-    auth-admin ->>+ auth-proxy : reset_password( username )
+    auth-admin ->>+ auth-proxy : reset_password( username, authadmin, authurl )
 
-    auth-proxy ->>- DB: + user-pashash
+    auth-proxy ->> DB: ++ user-pashash
     DB ->> auth-proxy: ок
-    Note over auth-proxy: Email со ссылкой на страницу установки пароля
-    Note right of auth-admin: Email со ссылкой на страницу установки пароля
-        
+    auth-proxy ->> -auth-admin: ок
 
-    auth-admin-->>auth-proxy: set_password(password, pashash)
-    auth-proxy-->>DB: + user-password
-    auth-proxy-->>auth-admin: OK
+
+    Note over auth-proxy: Посылает  пользователю Email<br>со ссылкой на страницу установки пароля: <br> https://adminurl/set_password.html &pashash &authurl
+
+    Note over auth-admin: Перейдя по ссылке,<br> пользователь делает запрос<br> на установку пароля
+        
+    auth-admin -->>+ auth-proxy: set_password(password, pashash)
+    auth-proxy -->> DB: -- user-pashash ++ user-password 
+    DB ->> auth-proxy: ок
+    auth-proxy -->>- auth-admin: OK
 ```
-<img src="templates/images/reset-password.png">
+<!-- <img src="templates/images/reset-password.png"> -->
 
 
 ## Oauth2
