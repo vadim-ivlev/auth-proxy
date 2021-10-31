@@ -4,12 +4,16 @@ echo "Кросскомпиляция на компьютере разработ�
 env GOOS=linux GOARCH=amd64 go build -tags=jsoniter .
 
 
-echo "build a docker image rgru/auth-proxy"
-docker build -t rgru/auth-proxy:latest -f Dockerfile-frontend . 
+echo "build a docker image auth-proxy"
+# docker build -t rgru/auth-proxy:latest -f Dockerfile-frontend . 
+docker build -t registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev -f Dockerfile-frontend . 
 
 echo "push the docker image" 
-docker login
-docker push rgru/auth-proxy:latest
+# docker login
+# docker push rgru/auth-proxy:latest
+docker login registry.rgwork.ru:5050
+docker push registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev
+
 
 # Если под Windows, добавляем команду sudo
 # if [[ "$OSTYPE" == "msys" ]]; then alias sudo=""; fi
