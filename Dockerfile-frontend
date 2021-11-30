@@ -1,5 +1,8 @@
 FROM alpine:latest
 
+# окружение, может принимать значение front, public
+ARG NODE_ENV
+
 RUN apk update
 RUN apk add --update bash && rm -rf /var/cache/apk/*
 RUN apk add libc6-compat
@@ -17,6 +20,9 @@ COPY templates      /app/templates
 COPY etc            /app/etc
 COPY certificates   /app/certificates
 
-CMD bash -c "cd /app && ./auth-proxy -port=4400 -env=front"
+WORKDIR /app
+# https://stackoverflow.com/questions/35560894/is-docker-arg-allowed-within-cmd-instruction
+ENV NODE_ENV ${NODE_ENV}
+CMD ./auth-proxy -env=${NODE_ENV} -port=4400
 
 EXPOSE 4400

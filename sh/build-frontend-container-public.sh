@@ -1,18 +1,20 @@
 #!/bin/bash
 
-echo "Кросскомпиляция на компьютере разработчика auth-proxy"
+# Компиляция приложения с публичной частью. Т.е может зарегистрироваться любой пользователь.
+
+echo "Кросскомпиляция на компьютере разработчика auth-proxy:devpublic"
 env GOOS=linux GOARCH=amd64 go build -tags=jsoniter .
 
 
-echo "build a docker image auth-proxy"
+echo "build a docker image auth-proxy:devpublic"
 # docker build -t rgru/auth-proxy:latest -f Dockerfile-frontend . 
-docker build -t registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev --build-arg NODE_ENV=front -f Dockerfile-frontend . 
+docker build -t registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:devpublic --build-arg NODE_ENV=public -f Dockerfile-frontend . 
 
 echo "push the docker image" 
 # docker login
 # docker push rgru/auth-proxy:latest
 docker login registry.rgwork.ru:5050
-docker push registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev
+docker push registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:devpublic
 
 
 # Если под Windows, добавляем команду sudo
