@@ -34,11 +34,11 @@ var userFields = gq.Fields{
 	},
 	"email": &gq.Field{
 		Type:        gq.String,
-		Description: "Емайл",
+		Description: "Email пользователя",
 	},
 	"fullname": &gq.Field{
 		Type:        gq.String,
-		Description: "Полное имя пользователя",
+		Description: "Полное имя пользователя (Фамилия Имя)",
 	},
 	"description": &gq.Field{
 		Type:        gq.String,
@@ -124,11 +124,11 @@ var appUserRoleExtendedFields = gq.Fields{
 
 	"user_email": &gq.Field{
 		Type:        gq.String,
-		Description: "Емайл пользователя",
+		Description: "Email пользователя",
 	},
 	"user_fullname": &gq.Field{
 		Type:        gq.String,
-		Description: "Полное имя пользователя",
+		Description: "Полное имя пользователя (Фамилия Имя)",
 	},
 	"user_description": &gq.Field{
 		Type:        gq.String,

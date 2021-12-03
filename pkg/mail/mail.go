@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/smtp"
-	"os"
-	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -126,38 +124,40 @@ func SendAuthenticatorEmail(toEmail, pageAddress string) error {
 	return sendMail(params.From, toEmail, msg)
 }
 
+// func sendMail(fromEmail, toEmail, msg string) error {
+// 	// if envName == "dev" {
+// 	// 	return sendSecureMail(fromEmail, toEmail, msg)
+// 	// } else {
+// 	// 	return sendInsecureMail(fromEmail, toEmail, msg)
+// 	// }
+
+// 	return sendInsecureMail(fromEmail, toEmail, msg)
+// }
+
+// // sendSecureMail toEmail может содержать несколько адресов через запятую.
+// // msg должно быть отформатировано специальным образом.
+// func sendSecureMail(fromEmail, toEmail, msg string) error {
+// 	if toEmail == "" {
+// 		return errors.New("email должен быть не пустым")
+// 	}
+// 	username := "vadim.ivlev@gmail.com"
+// 	password := os.Getenv("GMAIL_PASSWORD")
+// 	host := "smtp.gmail.com"
+// 	port := ":587"
+
+// 	toEmailsArray := strings.Split(toEmail, ",")
+
+// 	fmt.Println("MAIL_PASSWORD=", password, fromEmail, toEmailsArray, msg)
+// 	err := smtp.SendMail(host+port, smtp.PlainAuth("", username, password, host), fromEmail, toEmailsArray, []byte(msg))
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	return err
+// }
+
+// sendMail toEmail может содержать несколько адресов через запятую.
+// msg должно быть отформатировано специальным образом.
 func sendMail(fromEmail, toEmail, msg string) error {
-	if envName == "dev" {
-		return sendSecureMail(fromEmail, toEmail, msg)
-	} else {
-		return sendInsecureMail(fromEmail, toEmail, msg)
-	}
-}
-
-// sendSecureMail toEmail может содержать несколько адресов через запятую.
-// msg должно быть отформатировано специальным образом.
-func sendSecureMail(fromEmail, toEmail, msg string) error {
-	if toEmail == "" {
-		return errors.New("email должен быть не пустым")
-	}
-	username := "vadim.ivlev@gmail.com"
-	password := os.Getenv("GMAIL_PASSWORD")
-	host := "smtp.gmail.com"
-	port := ":587"
-
-	toEmailsArray := strings.Split(toEmail, ",")
-
-	fmt.Println("MAIL_PASSWORD=", password, fromEmail, toEmailsArray, msg)
-	err := smtp.SendMail(host+port, smtp.PlainAuth("", username, password, host), fromEmail, toEmailsArray, []byte(msg))
-	if err != nil {
-		log.Println(err)
-	}
-	return err
-}
-
-// sendInsecureMail toEmail может содержать несколько адресов через запятую.
-// msg должно быть отформатировано специальным образом.
-func sendInsecureMail(fromEmail, toEmail, msg string) error {
 	if toEmail == "" {
 		return errors.New("email address is required")
 	}

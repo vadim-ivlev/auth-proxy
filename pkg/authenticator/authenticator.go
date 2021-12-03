@@ -70,7 +70,7 @@ func SetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
-// SetAuthenticator если пин правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
+// SetPassword если пин правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
 func SetPassword(c *gin.Context) {
 	username := c.Query("username")
 	hash := c.Query("hash")

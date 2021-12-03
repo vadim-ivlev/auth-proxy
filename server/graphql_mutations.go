@@ -27,12 +27,12 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 					Description: "Пароль",
 				},
 				"email": &gq.ArgumentConfig{
-					Type:        gq.String,
-					Description: "Емайл",
+					Type:        gq.NewNonNull(gq.String),
+					Description: "Email пользователя",
 				},
 				"fullname": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "Полное имя",
+					Description: "Полное имя (Фамилия Имя)",
 				},
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
@@ -116,11 +116,11 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 				},
 				"email": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "Емайл",
+					Description: "Email пользователя",
 				},
 				"fullname": &gq.ArgumentConfig{
 					Type:        gq.String,
-					Description: "Полное имя",
+					Description: "Полное имя (Фамилия Имя)",
 				},
 				"description": &gq.ArgumentConfig{
 					Type:        gq.String,
@@ -196,7 +196,7 @@ var rootMutation = gq.NewObject(gq.ObjectConfig{
 
 				username := params.Args["username"].(string)
 				if username == "" {
-					return "Поле username должно быть заполнено", errors.New("Не указаны имя или емайл пользователя")
+					return "Поле username должно быть заполнено", errors.New("Не указаны имя или Email пользователя")
 				}
 				foundUsername, email, password, err := auth.GenerateNewPassword(username)
 				if err != nil {
