@@ -6,25 +6,6 @@ import (
 	gq "github.com/graphql-go/graphql"
 )
 
-// F U N C S ***********************************************
-
-// JSONParamToMap - возвращает параметр paramName в map[string]interface{}.
-// Второй параметр возврата - ошибка.
-// Применяется для сериализации поля JSON таблицы postgres в map.
-func JSONParamToMap(params gq.ResolveParams, paramName string) (interface{}, error) {
-
-	source := params.Source.(map[string]interface{})
-	param := source[paramName]
-
-	// TODO: may be it's better to check if it can be converted to map[string]interface{}
-	paramBytes, ok := param.([]byte)
-	if !ok {
-		return param, nil
-	}
-	var paramMap []map[string]interface{}
-	err := json.Unmarshal(paramBytes, &paramMap)
-	return paramMap, err
-}
 
 // FIELDS **************************************************
 var userFields = gq.Fields{

@@ -86,8 +86,8 @@ func setup(build string) *gin.Engine {
 	r.OPTIONS("/graphql", optionHandler)
 	r.OPTIONS("/schema", optionHandler)
 
-	r.POST("/graphql", GraphQL)
-	r.POST("/schema", GraphQL)
+	r.POST("/graphql", graphqlResult)
+	r.POST("/schema", graphqlResult)
 
 	r.GET("/publickey", publicKeyHandler)
 	r.GET("/stat", app.Stat)

@@ -29,6 +29,7 @@ type oauth2Provider struct {
 	RedirectURI    string   `yaml:"redirect_uri"`
 	Scopes         []string `yaml:"scopes"`
 }
+
 type oauth2Params map[string]oauth2Provider
 
 var (

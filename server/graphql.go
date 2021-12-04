@@ -2,19 +2,17 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
-	"auth-proxy/pkg/prometeo"
-	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	// "go/ast"
-	"net/http"
+
 	"strings"
 
 	"auth-proxy/pkg/db"
 
 	"github.com/gin-gonic/gin"
+	"github.com/graphql-go/graphql"
 	gq "github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
 	jsoniter "github.com/json-iterator/go"
@@ -30,6 +28,24 @@ var SelfRegistrationAllowed = false
 var UseCaptcha = true
 
 // FUNCTIONS *******************************************************
+
+// JSONParamToMap - возвращает параметр paramName в map[string]interface{}.
+// Второй параметр возврата - ошибка.
+// Применяется для сериализации поля JSON таблицы postgres в map.
+func JSONParamToMap(params gq.ResolveParams, paramName string) (interface{}, error) {
+
+	source := params.Source.(map[string]interface{})
+	param := source[paramName]
+
+	// TODO: may be it's better to check if it can be converted to map[string]interface{}
+	paramBytes, ok := param.([]byte)
+	if !ok {
+		return param, nil
+	}
+	var paramMap []map[string]interface{}
+	err := json.Unmarshal(paramBytes, &paramMap)
+	return paramMap, err
+}
 
 // jsonStringToMap преобразует строку JSON в map[string]interface{}
 func jsonStringToMap(s string) map[string]interface{} {
@@ -72,7 +88,7 @@ func getPayload3(c *gin.Context) (query string, variables map[string]interface{}
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на вставку записей.
-func createRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	// вставляем запись
 	fieldValues, err := db.CreateRow(tableToUpdate, params.Args)
 	if err != nil {
@@ -92,7 +108,7 @@ func createRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate st
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на обновление записей.
-func updateRecord(oldKeyValue string, keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func updateRecord(oldKeyValue string, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
 	if err != nil {
@@ -109,7 +125,7 @@ func updateRecord(oldKeyValue string, keyFieldName string, params gq.ResolvePara
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на удаление записей.
-func deleteRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func deleteRecord(keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	// сохраняем запись, которую собираемся удалять
 	id := params.Args[keyFieldName]
 	path := params.Info.FieldName
@@ -154,7 +170,7 @@ func deleteRecord(keyFieldName string, params gq.ResolveParams, tableToUpdate st
 	import "github.com/graphql-go/graphql/language/ast" is added by hands.
 	source: https://github.com/graphql-go/graphql/issues/125
 */
-func getSelectedFields(selectionPath []string, resolveParams gq.ResolveParams) string {
+func getSelectedFields(selectionPath []string, resolveParams graphql.ResolveParams) string {
 	fields := resolveParams.Info.FieldASTs
 	for _, propName := range selectionPath {
 		found := false
@@ -184,7 +200,7 @@ func getSelectedFields(selectionPath []string, resolveParams gq.ResolveParams) s
 	return s
 }
 
-func getLoginedUserName(params gq.ResolveParams) string {
+func getLoginedUserName(params graphql.ResolveParams) string {
 	c, ok := params.Context.Value("ginContext").(*gin.Context)
 	if !ok {
 		log.Println("Not OK: getLoginedUserName")
@@ -193,7 +209,7 @@ func getLoginedUserName(params gq.ResolveParams) string {
 	return GetSessionVariable(c, "user")
 }
 
-func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
+func panicIfNotOwnerOrAdmin(params graphql.ResolveParams) {
 	uname := getLoginedUserName(params)
 	pname, ok := params.Args["username"].(string)
 	if ok && pname == uname {
@@ -202,7 +218,7 @@ func panicIfNotOwnerOrAdmin(params gq.ResolveParams) {
 	panicIfNotAdmin(params)
 }
 
-func panicIfNotOwnerOrAdminOrAuditor(params gq.ResolveParams) {
+func panicIfNotOwnerOrAdminOrAuditor(params graphql.ResolveParams) {
 	uname := getLoginedUserName(params)
 	pname, ok := params.Args["username"].(string)
 	if ok && pname == uname {
@@ -211,24 +227,24 @@ func panicIfNotOwnerOrAdminOrAuditor(params gq.ResolveParams) {
 	panicIfNotAdminOrAuditor(params)
 }
 
-func isAuthAdmin(params gq.ResolveParams) bool {
+func isAuthAdmin(params graphql.ResolveParams) bool {
 	username := getLoginedUserName(params)
 	return auth.AppUserRoleExist("auth", username, "authadmin")
 }
 
-func isAuditor(params gq.ResolveParams) bool {
+func isAuditor(params graphql.ResolveParams) bool {
 	username := getLoginedUserName(params)
 	return auth.AppUserRoleExist("auth", username, "auditor")
 }
 
-func panicIfNotAdmin(params gq.ResolveParams) {
+func panicIfNotAdmin(params graphql.ResolveParams) {
 	if isAuthAdmin(params) {
 		return
 	}
 	panic("Sorry. No admin rights.")
 }
 
-func panicIfNotAdminOrAuditor(params gq.ResolveParams) {
+func panicIfNotAdminOrAuditor(params graphql.ResolveParams) {
 	if isAuthAdmin(params) {
 		return
 	}
@@ -238,7 +254,7 @@ func panicIfNotAdminOrAuditor(params gq.ResolveParams) {
 	panic("Sorry. No admin or auditor rights.")
 }
 
-func panicIfNotUser(params gq.ResolveParams) {
+func panicIfNotUser(params graphql.ResolveParams) {
 	username := getLoginedUserName(params)
 	if username == "" {
 		panic("Войдите в приложение")
@@ -253,7 +269,7 @@ func panicIfEmpty(v interface{}, message string) {
 	}
 }
 
-func processPassword(params gq.ResolveParams) string {
+func processPassword(params graphql.ResolveParams) string {
 	password, _ := params.Args["password"].(string)
 	password = strings.Trim(password, " ")
 
@@ -274,7 +290,7 @@ func processPassword(params gq.ResolveParams) string {
 }
 
 // ArgToLowerCase преобразует значение параметра с именем argName к нижнему регистру
-func ArgToLowerCase(params gq.ResolveParams, argName string) {
+func ArgToLowerCase(params graphql.ResolveParams, argName string) {
 	v, ok := params.Args[argName]
 	if !ok {
 		return
@@ -284,49 +300,4 @@ func ArgToLowerCase(params gq.ResolveParams, argName string) {
 		return
 	}
 	params.Args[argName] = strings.ToLower(s)
-}
-
-// G R A P H Q L ********************************************************************************
-
-var schema gq.Schema
-
-func SchemaInit(noIntrospection bool) {
-	if noIntrospection {
-		fmt.Println("!!!!!!!!!!!!!!! SUPPRESSING GraphQL INTROSPECTION !!!!!!!!!!!!!!!!!!")
-		gq.SchemaMetaFieldDef.Resolve = func(p gq.ResolveParams) (interface{}, error) {
-			return nil, nil
-		}
-		gq.TypeMetaFieldDef.Resolve = func(p gq.ResolveParams) (interface{}, error) {
-			return nil, nil
-		}
-	}
-	var err error
-	schema, err = gq.NewSchema(gq.SchemaConfig{
-		Query:    rootQuery,
-		Mutation: rootMutation,
-	})
-
-	if err != nil {
-		log.Println("SchemaInit ERROR:", err)
-	}
-}
-
-// GraphQL исполняет GraphQL запрос
-func GraphQL(c *gin.Context) {
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 100*1024*1024)
-
-	query, variables := getPayload3(c)
-	result := gq.Do(gq.Params{
-		Schema:         schema,
-		RequestString:  query,
-		Context:        context.WithValue(context.Background(), "ginContext", c),
-		VariableValues: variables,
-	})
-
-	if len(result.Errors) > 0 {
-		// инкрементируем счетчик ошибок GraphQL
-		prometeo.GraphQLErrorsTotal.Inc()
-	}
-
-	c.JSON(200, result)
 }

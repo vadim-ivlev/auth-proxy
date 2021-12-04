@@ -427,15 +427,13 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
     sh/up.sh
 
-Если нужно проверять посылку почты
+Проверка посылки почты
+---------------------
 
-    GMAIL_PASSWORD=password sh/run.sh
+По адресу http://localhost:8025/
 
-Для отладки с посылкой почты должен существовать файл .env,
-указанный в launch.json, в котором должен быть прописан
-пароль доступа к smtp серверу Google
 
-    GMAIL_PASSWORD=password
+
 
 
 ## Миграции
