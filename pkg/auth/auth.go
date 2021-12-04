@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -103,23 +104,27 @@ func GetAppURLs() (map[string][]string, error) {
 }
 
 // GetUserRoles возвращает массив ролей пользователя в заданном приложении.
-func GetUserRoles(user, app string) []string {
+func GetUserRoles(user, app string) (roles []string) {
+	if user == "" {
+		return
+	}
 	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
 	if err != nil {
-		return []string{}
+		return
 	}
-
-	roles := []string{}
 	for _, rec := range records {
 		role, _ := rec["rolename"].(string)
 		roles = append(roles, role)
 	}
-
-	return roles
+	return
 }
 
 // GetUserRolesString возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
-func GetUserRolesString(user, app string) string {
+func GetUserRolesString(user, app string) (rolesString string) {
+	rolesString = "[]"
+	if user == "" {
+		return
+	}
 	cacheKey := user + "-" + app + "-roles"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
@@ -127,30 +132,36 @@ func GetUserRolesString(user, app string) string {
 		return cachedValue.(string)
 	}
 	roles := GetUserRoles(user, app)
-
-	bytes, _ := json.Marshal(roles)
-	rolesString := string(bytes)
+	if len(roles) > 0 {
+		bytes, _ := json.Marshal(roles)
+		rolesString = string(bytes)
+	}
 
 	Cache.Set(cacheKey, rolesString, cache.DefaultExpiration)
 	return rolesString
-
 }
 
 // addRolesToUserInfoString Добавляет поле со списком ролей пользователя к информации о пользователе.
 func addRolesToUserInfoString(userInfoString, rolesString string) string {
-	info := make(map[string]interface{})
-	roles := make([]string, 0)
+	// FIXME: string replacement is faster
+	return strings.Replace(userInfoString, "}", `, "roles":`+rolesString+"}", 1)
 
-	_ = json.UnmarshalFromString(userInfoString, &info)
-	_ = json.UnmarshalFromString(rolesString, &roles)
+	// info := make(map[string]interface{})
+	// roles := make([]string, 0)
 
-	info["roles"] = roles
-	s, _ := json.MarshalToString(info)
-	return s
+	// _ = json.UnmarshalFromString(userInfoString, &info)
+	// _ = json.UnmarshalFromString(rolesString, &roles)
+
+	// info["roles"] = roles
+	// s, _ := json.MarshalToString(info)
+	// return s
 }
 
 // GetUserInfoString возвращает сериализованную информацию о пользователе, включая его роли в приложении.
 func GetUserInfoString(user, app string) string {
+	if user == "" {
+		return `{"roles":[]}`
+	}
 
 	userInfoString := ""
 	rolesString := ""

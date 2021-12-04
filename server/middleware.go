@@ -68,22 +68,23 @@ func CheckUserMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		appPath := strings.TrimPrefix(c.Request.URL.Path, "/apps/")
-
 		// К какому приложению делается запрос
+		appPath := strings.TrimPrefix(c.Request.URL.Path, "/apps/")
 		appName := strings.SplitN(appPath, "/", 2)[0]
 
-		// публичное ли это приложение? (доступно ли для незалогиненых пользователей?)
-		isAppPublic := auth.IsAppPublic(appName)
+		// Кто делает запрос
+		userName := GetSessionVariable(c, "user")
+		userInfo := auth.GetUserInfoString(userName, appName)
+		// Добавляем заголовки к запросу
+		c.Request.Header.Set("user-info", userInfo)
 
+		// публичное ли это приложение? (доступно ли для неавторизованных пользователей?)
+		isAppPublic := auth.IsAppPublic(appName)
 		if isAppPublic {
 			fmt.Println("Публичное приложение:", appName)
 			c.Next()
 			return
 		}
-
-		// Кто делает запрос
-		userName := GetSessionVariable(c, "user")
 
 		// !!! Если пользователь не залогинен ПРЕРЫВАЕМ ЗАПРОС
 		if userName == "" {
@@ -112,13 +113,6 @@ func CheckUserMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Sorry. " + userName + " has no roles in " + appName + ". And " + appName + " is not public."})
 			return
 		}
-
-		// информация о текущем пользователе
-		userInfo := auth.GetUserInfoString(userName, appName)
-
-		// Добавляем заголовки к запросу
-		c.Request.Header.Set("user-roles", userRoles)
-		c.Request.Header.Set("user-info", userInfo)
 
 		c.Next()
 	}
