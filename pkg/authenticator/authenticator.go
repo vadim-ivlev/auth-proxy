@@ -116,7 +116,7 @@ func ResetPassword(c *gin.Context) {
 	}
 	// - устанавливаем поле pashash в для пользователя базе
 	hash := uuid.New().String()
-	log.Println("hash=", hash)
+	log.Println("pashash=", hash)
 
 	_, err := db.QueryExec(`UPDATE "user" SET  pashash  = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
 	if err != nil {

@@ -177,7 +177,7 @@ func GetUserInfoString(user, app string) string {
 	} else {
 		fmt.Println("NOT cached:", cacheKey)
 		// обновляем кэш
-		record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description FROM "user" WHERE username = $1;`, user)
+		record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description FROM "user" WHERE username = $1 OR email = $1 ;`, user)
 		if err != nil {
 			return ""
 		}

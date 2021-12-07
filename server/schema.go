@@ -39,13 +39,13 @@ var mutationObject = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"create_user":          create_user(),
 		"update_user":          update_user(),
-		"generate_password":    generate_password(),
 		"delete_user":          delete_user(),
 		"create_app":           create_app(),
 		"update_app":           update_app(),
 		"delete_app":           delete_app(),
 		"create_app_user_role": create_app_user_role(),
 		"delete_app_user_role": delete_app_user_role(),
+		// "generate_password":    generate_password(),
 	},
 })
 

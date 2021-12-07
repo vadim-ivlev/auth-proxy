@@ -75,6 +75,7 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		// Кто делает запрос
 		userName := GetSessionVariable(c, "user")
 		userInfo := auth.GetUserInfoString(userName, appName)
+
 		// Добавляем заголовки к запросу
 		c.Request.Header.Set("user-info", userInfo)
 

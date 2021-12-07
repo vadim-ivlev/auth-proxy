@@ -31,7 +31,12 @@ ALTER TABLE "user"
     --   2. показывать ли ему страницу установки аутентификатора?
     ADD COLUMN IF NOT EXISTS pinhash_temp text,
     -- хэш для первоначальной настройки Google Authenticator 
-    ADD COLUMN IF NOT EXISTS pinhash text; -- DEFAULT uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)::text ;
+    ADD COLUMN IF NOT EXISTS pinhash text, -- DEFAULT uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)::text ;
+    -- хэш для проверки email
+    ADD COLUMN IF NOT EXISTS emailhash text,
+    -- подтвержеден ли email пользователя
+    ADD COLUMN IF NOT EXISTS emailconfirmed boolean NOT NULL DEFAULT FALSE;
+
 
 
 -- Справочная таблица.

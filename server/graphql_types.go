@@ -6,7 +6,6 @@ import (
 	gq "github.com/graphql-go/graphql"
 )
 
-
 // FIELDS **************************************************
 var userFields = gq.Fields{
 	"username": &gq.Field{
@@ -44,6 +43,14 @@ var userFields = gq.Fields{
 	"pinhash": &gq.Field{
 		Type:        gq.String,
 		Description: "хэш для проверки PIN после установки Google Authenticator",
+	},
+	"emailhash": &gq.Field{
+		Type:        gq.String,
+		Description: "хэш для подтверждения email",
+	},
+	"emailconfirmed": &gq.Field{
+		Type:        gq.Boolean,
+		Description: "подтвержеден ли email",
 	},
 }
 

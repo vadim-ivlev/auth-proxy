@@ -5,6 +5,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/authenticator"
 	"auth-proxy/pkg/counter"
+	"strconv"
 
 	"auth-proxy/pkg/db"
 	"errors"
@@ -91,8 +92,20 @@ func login() *graphql.Field {
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			}
-			counter.ResetCounter(username)
+
+			// Все проверки пройдены. Устанавливаем переменные сессии
 			_ = SetSessionVariable(c, "user", dbUsername)
+
+			user, err := auth.GetUser(username)
+			if err != nil {
+				return nil, errors.New("cant get record for " + username)
+			}
+			id := strconv.FormatInt(user["id"].(int64), 10)
+			_ = SetSessionVariable(c, "id", id)
+			email := user["email"].(string)
+			_ = SetSessionVariable(c, "email", email)
+
+			counter.ResetCounter(username)
 			return "Success. " + dbUsername + " is authenticated.", nil
 		},
 	}
@@ -105,9 +118,9 @@ func logout() *graphql.Field {
 		Args:        graphql.FieldConfigArgument{},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			c, _ := params.Context.Value("ginContext").(*gin.Context)
-			username := GetSessionVariable(c, "user")
+			email := GetSessionVariable(c, "email")
 			DeleteSession(c)
-			return gin.H{"username": username, "message": "Successfully logged out"}, nil
+			return gin.H{"email": email, "message": "Successfully logged out"}, nil
 		},
 	}
 }

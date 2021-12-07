@@ -27,8 +27,9 @@ dev:
   # перенаправления браузера для предоставления различных GUI 
   redirects:
     # админка сервиса. 
-    /admin:   http://localhost:5000/?url=https://localhost:4400
-    /testapp: https://auth-admin.vercel.app/?url=https://localhost:4400
+    /admin-local:   http://localhost:5000/?url=https://localhost:4400
+    /admin: https://auth-admin.vercel.app/?url=https://localhost:4400
+    /admin-test: https://auth-admin-test.vercel.app/?url=https://localhost:4400
     # тест GraphQL API. 
     /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 

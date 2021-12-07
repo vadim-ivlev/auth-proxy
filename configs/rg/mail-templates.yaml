@@ -46,7 +46,7 @@ new_user: |
   Вопросы: dev@rg.ru
 
 
-# Пин для двухфакторной авторизации
+
 reset_authenticator: |
   From: %s
   To: %s
@@ -64,7 +64,7 @@ reset_authenticator: |
 
   Вопросы: dev@rg.ru
 
-# Пин для двухфакторной авторизации
+
 reset_password: |
   From: %s
   To: %s

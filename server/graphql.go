@@ -4,6 +4,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"errors"
 	"log"
+	"strconv"
 
 	// "go/ast"
 
@@ -208,11 +209,33 @@ func getLoginedUserName(params graphql.ResolveParams) string {
 	}
 	return GetSessionVariable(c, "user")
 }
+func getLoginedUserID(params graphql.ResolveParams) string {
+	c, ok := params.Context.Value("ginContext").(*gin.Context)
+	if !ok {
+		log.Println("Not OK: getLoginedUserID")
+		return ""
+	}
+	return GetSessionVariable(c, "id")
+}
+
+func getLoginedUserEmail(params graphql.ResolveParams) string {
+	c, ok := params.Context.Value("ginContext").(*gin.Context)
+	if !ok {
+		log.Println("Not OK: getLoginedUserEmail")
+		return ""
+	}
+	return GetSessionVariable(c, "email")
+}
 
 func panicIfNotOwnerOrAdmin(params graphql.ResolveParams) {
-	uname := getLoginedUserName(params)
-	pname, ok := params.Args["username"].(string)
-	if ok && pname == uname {
+	uName := getLoginedUserName(params)
+	pName, ok := params.Args["username"].(string)
+	if ok && pName == uName {
+		return
+	}
+	uID := getLoginedUserID(params)
+	pID := strconv.Itoa(params.Args["id"].(int))
+	if pID == uID {
 		return
 	}
 	panicIfNotAdmin(params)
@@ -269,7 +292,7 @@ func panicIfEmpty(v interface{}, message string) {
 	}
 }
 
-func processPassword(params graphql.ResolveParams) string {
+func convertPasswordToHash(params graphql.ResolveParams) string {
 	password, _ := params.Args["password"].(string)
 	password = strings.Trim(password, " ")
 

@@ -3,8 +3,6 @@ package mail
 import (
 	"os"
 	"testing"
-
-	"gotest.tools/assert"
 )
 
 func TestMain(m *testing.M) {
@@ -13,7 +11,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func Test_SendPassword(t *testing.T) {
-	err := SendMessage("new_password", "vadim", "ivlev@rg.ru", "123456")
-	assert.NilError(t, err)
-}
+// func Test_SendPassword(t *testing.T) {
+// 	err := SendMessage("new_password", "vadim", "ivlev@rg.ru", "123456")
+// 	assert.NilError(t, err)
+// }
