@@ -23,6 +23,7 @@ dev:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
+
   # url страницы подтверждения email
   confirm_email_url: https://localhost:4400/confirm-email/
   # url куда пренаправляется браузер после подтвержедения email
@@ -54,6 +55,7 @@ front:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
+
   # url страницы подтверждения email
   confirm_email_url: https://localhost:4400/confirm-email/
   # url куда пренаправляется браузер после подтвержедения email
@@ -85,6 +87,7 @@ public:
   max_attempts: 10
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 30
+  
   # url страницы подтверждения email
   confirm_email_url: https://auth-proxy.rg.ru/confirm-email/
   # url куда пренаправляется браузер после подтвержедения email

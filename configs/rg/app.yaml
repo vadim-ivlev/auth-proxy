@@ -22,13 +22,19 @@ dev:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
-  # перенаправления браузера для предоставления различных GUI 
-  redirects:
-    # админка сервиса. 
-    /admin:   http://localhost:5000/?url=https://localhost:4400
-    /testapp: https://auth-admin.vercel.app/?url=https://localhost:4400
-    # тест GraphQL API. 
-    /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+
+  # url страницы подтверждения email
+  confirm_email_url: https://localhost:4400/confirm-email/
+  # url куда пренаправляется браузер после подтвержедения email
+  entry_point: https://www.rg.ru
+  # адрес почтового сервера SMTP
+  smtp_address: localhost:1025
+  # email от которого посылаются письма пользователям
+  from: noreply@rg.ru
+  # админка сервиса. 
+  admin_url:   https://localhost:5000/?url=https://localhost:4400
+  # тестовая страница сервиса
+  graphql_test_url: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 front:
@@ -48,14 +54,19 @@ front:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
-  # перенаправления браузера для предоставления различных GUI 
-  redirects:
-    # админка сервиса. 
-    /admin:   https://auth-admin.vercel.app/?url=https://localhost:4400
-    /testapp: https://auth-admin.vercel.app/?url=https://localhost:4400
-    # тест GraphQL API. 
-    /test: https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
+  # url страницы подтверждения email
+  confirm_email_url: https://localhost:4400/confirm-email/
+  # url куда пренаправляется браузер после подтвержедения email
+  entry_point: https://www.rg.ru
+  # адрес почтового сервера SMTP
+  smtp_address: localhost:1025
+  # email от которого посылаются письма пользователям
+  from: noreply@rg.ru
+  # админка сервиса. 
+  admin_url:   https://auth-admin.vercel.app/?url=https://localhost:4400
+  # тестовая страница сервиса
+  graphql_test_url: https://graphql-test.vercel.app/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
 
 staging:
   # Имя приложения. Используется для генерации PIN Google Authenticator
@@ -76,13 +87,19 @@ staging:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
-  # перенаправления браузера для предоставления различных GUI 
-  redirects:
-    # админка сервиса. 
-    /admin:   https://auth-admin.vercel.app/?url=https://rg-auth-staging.rg.ru
-    /testapp: https://auth-admin.vercel.app/?url=https://rg-auth-staging.rg.ru
-    # тест GraphQL API. 
-    /test: https://graphql-test.vercel.app/?end_point=https://rg-auth-staging.rg.ru/schema&tab_name=auth-proxy
+  
+  # url страницы подтверждения email
+  confirm_email_url: https://auth-proxy.rg.ru/confirm-email/
+  # url куда пренаправляется браузер после подтвержедения email
+  entry_point: https://www.rg.ru
+  # адрес почтового сервера SMTP
+  smtp_address: mail3.rg.ru:25
+  # email от которого посылаются письма пользователям
+  from: noreply@rg.ru
+  # админка сервиса. 
+  admin_url:   https://auth-admin.vercel.app/
+  # тестовая страница сервиса
+  graphql_test_url: https://graphql-test.vercel.app/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
 
 prod:
   # Имя приложения. Используется для генерации PIN Google Authenticator
@@ -103,11 +120,17 @@ prod:
   max_attempts: 5
   # Время сброса счетчика ошибок пароля в минутах
   reset_time: 60
-  # перенаправления браузера для предоставления различных GUI 
-  redirects:
-    # админка сервиса. 
-    /admin:   https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru
-    /testapp: https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru
-    # тест GraphQL API. 
-    /test: https://graphql-test.vercel.app/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
+  
+  # url страницы подтверждения email
+  confirm_email_url: https://auth-proxy.rg.ru/confirm-email/
+  # url куда пренаправляется браузер после подтвержедения email
+  entry_point: https://www.rg.ru
+  # адрес почтового сервера SMTP
+  smtp_address: mail3.rg.ru:25
+  # email от которого посылаются письма пользователям
+  from: noreply@rg.ru
+  # админка сервиса. 
+  admin_url:   https://auth-admin.vercel.app/
+  # тестовая страница сервиса
+  graphql_test_url: https://graphql-test.vercel.app/?end_point=https://auth-proxy.rg.ru/schema&tab_name=auth-proxy
 

@@ -48,6 +48,13 @@ services:
       POSTGRES_DB: rgru 
       PGDATA: /var/lib/postgresql/data/pgdata
   
+  # сервис тестирования отправки почты
+  auth-mail:
+    image: mailhog/mailhog
+    container_name: auth-mail-dev
+    ports:
+      - 1025:1025
+      - 8025:8025
 
 
 # внешняя сеть добавлена, чтобы можно было проксировать или обращаться к приложениям по именам служб,
