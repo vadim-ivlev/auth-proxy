@@ -70,7 +70,7 @@ func SetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
-// SetPassword если пин правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
+// SetPassword если hash из запроса правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
 func SetPassword(c *gin.Context) {
 	username := c.Query("username")
 	hash := c.Query("hash")
@@ -101,6 +101,40 @@ func SetPassword(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"result": true, "error": nil})
+}
+
+// ConfirmEmail HTTP handler.
+// Еесли hash из запроса правильный устанавливает поля
+// emailhash='' и emailconfirmed=TRU для пользователя в базе данных
+// и перенаправляет браузер по адресу указанному в mail.yaml
+func ConfirmEmail(c *gin.Context) {
+	email := c.Query("email")
+	emailhash := c.Query("emailhash")
+	fmt.Printf(`>>>>>> ConfirmEmail request params: email=%v emailhash=%v`, email, emailhash)
+
+	// обновить поля в базе
+	res, err := db.QueryExec(`UPDATE "user" SET ( emailhash, emailconfirmed ) = ( NULL, TRUE ) WHERE email = $1 AND emailhash = $2`, email, emailhash)
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": "ConfirmEmail: " + err.Error()})
+		return
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error": "ConfirmEmail: " + err.Error()})
+		return
+	}
+	if rowsAffected == 0 {
+		c.JSON(200, gin.H{"result": false, "error": "Email уже был подтвержден"})
+		return
+	}
+	// url куда перенаправить браузер если email подтвержден
+	entryPoint := app.Params.EntryPoint
+	// если в  mail.yaml не указано куда перенаправлять браузер возвращаем json
+	if entryPoint == "" {
+		c.JSON(200, gin.H{"result": true, "error": nil})
+	} else {
+		c.Redirect(http.StatusMovedPermanently, entryPoint)
+	}
 }
 
 // ResetPassword устанавливает поле pashash для пользователя в базе данных

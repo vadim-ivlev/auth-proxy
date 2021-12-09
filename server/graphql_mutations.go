@@ -16,10 +16,6 @@ func create_user() *graphql.Field {
 		Description: "Создать пользователя",
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
-			// "username": &graphql.ArgumentConfig{
-			// 	Type:        graphql.NewNonNull(graphql.String),
-			// 	Description: "Имя пользователя (уникальное)",
-			// },
 			"password": &graphql.ArgumentConfig{
 				Type:        graphql.String,
 				Description: "Пароль",
@@ -44,43 +40,20 @@ func create_user() *graphql.Field {
 				Type:        graphql.Boolean,
 				Description: "требуется ли PIN Google Authenticator",
 			},
-			// "pinhash_temp": &graphql.ArgumentConfig{
-			// 	Type:        graphql.String,
-			// 	Description: "хэш для установки Google Authenticator",
-			// },
-			// "pinhash": &graphql.ArgumentConfig{
-			// 	Type:        graphql.String,
-			// 	Description: "хэш для для проверки PIN после установки Google Authenticator",
-			// },
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			if SelfRegistrationAllowed || isAuthAdmin(params) {
-				// panicIfEmpty(params.Args["username"], "Заполните поле Имя пользователя")
 				panicIfEmpty(params.Args["password"], "Введите пароль")
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
-
 				// Только админ может включить/отключить проверку пина
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
 				}
-				// // TODO: может нужно вообще запретить изменение pinhash, pinhash_temp
-				// // если значение пусто не меняем его
-				// pinhash, _ := params.Args["pinhash"].(string)
-				// if pinhash == "" {
-				// 	delete(params.Args, "pinhash")
-				// }
-				// // если значение пусто не меняем его
-				// pinhash_temp, _ := params.Args["pinhash_temp"].(string)
-				// if pinhash_temp == "" {
-				// 	delete(params.Args, "pinhash_temp")
-				// }
-
 				ArgToLowerCase(params, "email")
 				params.Args["username"] = params.Args["email"]
 				convertPasswordToHash(params)
 				emailhash := uuid.New().String()
 				params.Args["emailhash"] = emailhash
-
 				clearUserCache(params)
 				res, err := createRecord("username", params, "user", "user")
 				if err == nil {
@@ -101,16 +74,6 @@ func update_user() *graphql.Field {
 		Description: "Обновить пользователя",
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
-			// "old_username": &graphql.ArgumentConfig{
-			// 	Type:         graphql.NewNonNull(graphql.String),
-			// 	Description:  "Имя пользователя до обновления (уникальное)",
-			// 	DefaultValue: "",
-			// },
-			// "username": &graphql.ArgumentConfig{
-			// 	Type:         graphql.NewNonNull(graphql.String),
-			// 	Description:  "Имя пользователя (уникальное)",
-			// 	DefaultValue: "",
-			// },
 			"id": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.Int),
 				Description: "Идентификатор пользователя",
@@ -119,10 +82,6 @@ func update_user() *graphql.Field {
 				Type:        graphql.String,
 				Description: "Пароль",
 			},
-			// "email": &graphql.ArgumentConfig{
-			// 	Type:        graphql.String,
-			// 	Description: "Email пользователя",
-			// },
 			"fullname": &graphql.ArgumentConfig{
 				Type:        graphql.String,
 				Description: "Полное имя (Фамилия Имя)",
@@ -139,107 +98,36 @@ func update_user() *graphql.Field {
 				Type:        graphql.Boolean,
 				Description: "требуется ли PIN Google Authenticator",
 			},
-			// "pinhash_temp": &graphql.ArgumentConfig{
-			// 	Type:        graphql.String,
-			// 	Description: "хэш для установки Google Authenticator",
-			// },
-			// "pinhash": &graphql.ArgumentConfig{
-			// 	Type:        graphql.String,
-			// 	Description: "хэш для для проверки PIN после установки Google Authenticator",
-			// },
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotOwnerOrAdmin(params)
-
 			// Только админ может включить/отключить проверку пина
 			if !isAuthAdmin(params) {
 				delete(params.Args, "pinrequired")
 			}
-			// // TODO: может нужно вообще запретить изменение pinhash, pinhash_temp
-			// // если значение пусто не меняем его
-			// pinhash, _ := params.Args["pinhash"].(string)
-			// if pinhash == "" {
-			// 	delete(params.Args, "pinhash")
-			// }
-			// // если значение пусто не меняем его
-			// pinhash_temp, _ := params.Args["pinhash_temp"].(string)
-			// if pinhash_temp == "" {
-			// 	delete(params.Args, "pinhash_temp")
-			// }
-
-			// ArgToLowerCase(params, "old_username")
-			// ArgToLowerCase(params, "username")
-			// ArgToLowerCase(params, "email")
-
 			convertPasswordToHash(params)
 			clearUserCache(params)
-
-			// oldUsername, _ := params.Args["old_username"].(string)
-			// if oldUsername == "" {
-			// 	oldUsername, _ = params.Args["username"].(string)
-			// }
-			// if oldUsername == "" {
-			// 	return nil, errors.New("username is blank")
-			// }
-
-			// delete(params.Args, "old_username")
-			// return updateRecord(oldUsername, "username", params, "user", "user")
-
 			id := params.Args["id"].(int)
-			return db.UpdateRowByID("id", "user", id, params.Args)
+			// return db.UpdateRowByID("id", "user", id, params.Args)
+			return updateRecord(id, "id", params, "user", "user")
 		},
 	}
 }
-
-// func generate_password() *graphql.Field {
-// 	return &graphql.Field{
-// 		Description: "Сгенерировать новый пароль пользователю и выслать по электронной почте",
-// 		Type:        graphql.String,
-// 		Args: graphql.FieldConfigArgument{
-// 			"username": &graphql.ArgumentConfig{
-// 				Type:        graphql.NewNonNull(graphql.String),
-// 				Description: "Имя пользователя (уникальное)",
-// 			},
-// 		},
-// 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-// 			ArgToLowerCase(params, "username")
-
-// 			username := params.Args["username"].(string)
-// 			if username == "" {
-// 				return "Поле username должно быть заполнено", errors.New("Не указаны имя или Email пользователя")
-// 			}
-// 			foundUsername, email, password, err := auth.GenerateNewPassword(username)
-// 			if err != nil {
-// 				return "Could not generate new password", err
-// 			}
-// 			// err = mail.SendMessage("new_password", foundUsername, email, password)
-// 			err = mail.SendNewPasswordEmail(foundUsername, email, password)
-// 			if err != nil {
-// 				return "Could not send email to:" + email, err
-// 			}
-
-// 			return "Новый пароль для " + foundUsername + " выслан.", nil
-
-// 		},
-// 	}
-// }
 
 func delete_user() *graphql.Field {
 	return &graphql.Field{
 		Description: "Удалить пользователя",
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
-			"username": &graphql.ArgumentConfig{
-				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Имя пользователя (уникальное)",
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор пользователя",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			ArgToLowerCase(params, "username")
-
 			panicIfNotOwnerOrAdmin(params)
 			clearUserCache(params)
-			return deleteRecord("username", params, "user", "user")
+			return deleteRecord("id", params, "user", "user")
 		},
 	}
 }
@@ -484,15 +372,3 @@ func clearAppCache(params graphql.ResolveParams) {
 	auth.Cache.Delete("is-" + app + "-public")
 	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
-
-// func sendMessageToNewUser(params gq.ResolveParams, password string) {
-// 	email := params.Args["email"].(string)
-// 	if email == "" {
-// 		return
-// 	}
-// 	// err := mail.SendMessage("new_user", params.Args["username"].(string), email, password)
-// 	err := mail.SendNewUserEmail(params.Args["username"].(string), email, password)
-// 	if err != nil {
-// 		log.Println("create_user SendMessage error:", err)
-// 	}
-// }

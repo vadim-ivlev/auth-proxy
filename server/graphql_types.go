@@ -8,6 +8,10 @@ import (
 
 // FIELDS **************************************************
 var userFields = gq.Fields{
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "автогенерируемый id пользователя",
+	},
 	"username": &gq.Field{
 		Type:        gq.String,
 		Description: "Уникальный идентификатор пользователя",
@@ -27,10 +31,6 @@ var userFields = gq.Fields{
 	"disabled": &gq.Field{
 		Type:        gq.Int,
 		Description: "Если не равно 0, пользователь отключен",
-	},
-	"id": &gq.Field{
-		Type:        gq.Int,
-		Description: "автогенерируемый id пользователя",
 	},
 	"pinrequired": &gq.Field{
 		Type:        gq.Boolean,

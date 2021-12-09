@@ -304,9 +304,9 @@ func get_logined_user() *graphql.Field {
 		Args:        graphql.FieldConfigArgument{},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotUser(params)
-			username := getLoginedUserName(params)
+			email := getLoginedUserEmail(params)
 			fields := getSelectedFields([]string{"get_logined_user"}, params)
-			res, err := db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, username)
+			res, err := db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE email = $1 ;`, email)
 			return res, err
 		},
 	}

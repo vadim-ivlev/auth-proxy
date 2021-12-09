@@ -33,8 +33,21 @@ type appParams struct {
 	MaxAttempts int64 `yaml:"max_attempts"`
 	// Время сброса счетчика ошибок пароля в минутах
 	ResetTime int64 `yaml:"reset_time"`
-	// перенаправления браузера для предоставления различных GUI
-	Redirects map[string]string
+	// url страницы подтверждения email
+	ConfirmEmailUrl string `yaml:"confirm_email_url"`
+	// url куда пренаправляется браузер после подтвержедения email
+	EntryPoint string `yaml:"entry_point"`
+	// адрес почтового сервера SMTP
+	SmtpAddress string `yaml:"smtp_address"`
+	// email от которого посылаются письма пользователям
+	From string `yaml:"from"`
+	// админка сервиса
+	AdminUrl string `yaml:"admin_url"`
+	// тестовая страница сервиса
+	GraphqlTestUrl string `yaml:"graphql_test_url"`
+
+	// // перенаправления браузера для предоставления различных GUI
+	// Redirects map[string]string
 }
 
 // Общие параметры приложения

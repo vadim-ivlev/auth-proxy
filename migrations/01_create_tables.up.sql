@@ -7,13 +7,13 @@ CREATE SCHEMA IF NOT EXISTS extensions;
 -- Справочная таблица.
 -- Пользователь с дополнительными сведениями 
 CREATE TABLE IF NOT EXISTS "user" (
+    id serial,
     username text NOT NULL,
     password text NOT NULL,
     email text NOT NULL,
     fullname text,
     description text,
     disabled integer NOT NULL DEFAULT 0,
-    id serial,
 
     CONSTRAINT user_pkey PRIMARY KEY (username)
 );

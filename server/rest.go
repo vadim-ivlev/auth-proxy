@@ -1,6 +1,7 @@
 package server
 
 import (
+	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/signature"
 	"net/http"
@@ -18,7 +19,7 @@ import (
 var proxies map[string]*primitiveproxy.PrimitiveProxy
 
 // Redirects перенаправления браузера для предоставления различных GUI
-var Redirects map[string]string
+// var Redirects map[string]string
 
 // Proxy проксирование
 func Proxy(c *gin.Context) {
@@ -96,4 +97,14 @@ func (b Build) buildHandler(c *gin.Context) {
 // listPublicApps - возвращает список публичных приложений не требующих авторизации пользователя.
 func listPublicApps(c *gin.Context) {
 	c.JSON(http.StatusOK, auth.ListPublicApps())
+}
+
+// redirectToAdminURL - направляет браузер на админку
+func redirectToAdminURL(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, app.Params.AdminUrl)
+}
+
+// redirectToGraphqlTestURL - направляет браузер на тестовую страницу
+func redirectToGraphqlTestURL(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, app.Params.GraphqlTestUrl)
 }

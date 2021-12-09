@@ -151,7 +151,7 @@ sequenceDiagram
     auth-proxy ->> -auth-admin: ок
 
 
-    Note over auth-proxy: Посылает  пользователю Email<br>со ссылкой на страницу установки пароля: <br> https://adminurl/set_password.html &pashash &authurl
+    Note over auth-proxy: Посылает  пользователю Email<br>со ссылкой на страницу установки пароля: <br> https://adminurl/set-password.html &pashash &authurl
 
     Note over auth-admin: Перейдя по ссылке,<br> пользователь делает запрос<br> на установку пароля
         

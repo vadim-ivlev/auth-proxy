@@ -346,7 +346,9 @@ func revokeFacebookToken(urlStr string, clientID string, clientSecret string, ac
 // redirectWithMessage направляет браузер пользователя добавляя сообщение
 // и информацию о пользователе если они не пустые.
 func redirectWithMessage(c *gin.Context, oauth2error string, oauth2email string, oauth2name string) {
-	u := app.Params.Redirects["/admin"]
+	// u := app.Params.Redirects["/admin"]
+	u := app.Params.AdminUrl
+
 	if oauth2error != "" {
 		u += "&oauth2error=" + url.QueryEscape(oauth2error)
 	}

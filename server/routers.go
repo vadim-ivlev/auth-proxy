@@ -63,7 +63,7 @@ func setup(build string) *gin.Engine {
 
 	r.Use(prometeo.CountersMiddleware())
 	r.Use(CountersMiddleware())
-	r.Use(RedirectsMiddleware())
+	// r.Use(RedirectsMiddleware())
 	r.Use(HeadersMiddleware())
 
 	Store = cookie.NewStore([]byte("secret"))
@@ -79,6 +79,9 @@ func setup(build string) *gin.Engine {
 		SameSite: http.SameSiteNoneMode,
 	})
 	r.Use(sessions.Sessions("auth-proxy", Store))
+
+	r.GET("/admin", redirectToAdminURL)
+	r.GET("/graphql_test", redirectToGraphqlTestURL)
 
 	r.GET("/captcha", Captcha)
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
@@ -105,8 +108,8 @@ func setup(build string) *gin.Engine {
 
 	r.GET("/set_password", authenticator.SetPassword)
 	r.GET("/reset_password", authenticator.ResetPassword)
+	r.GET("/confirm-email", authenticator.ConfirmEmail)
 
-	// проверка работоспособности
 	r.GET("/ping", pingHandler)
 	// вывод информации о сборке
 	r.GET("/build", Build{

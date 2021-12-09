@@ -66,8 +66,8 @@ func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
 			db.ReadEnvConfig("./configs/db.env." + env)
 		}
 	}
-	// читаем конфиг mail.
-	mail.ReadConfig("./configs/mail.yaml", env)
+	// // читаем конфиг mail.
+	// mail.ReadConfig("./configs/mail.yaml", env)
 	// читаем шаблоны писем
 	mail.ReadMailTemplate("./configs/mail-templates.yaml")
 	// читаем конфиг Oauth2
@@ -82,7 +82,7 @@ func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
 	server.SelfRegistrationAllowed = app.Params.Selfreg
 	server.SecureCookie = app.Params.Secure
 	server.UseCaptcha = app.Params.UseCaptcha
-	server.Redirects = app.Params.Redirects
+	// server.Redirects = app.Params.Redirects
 	counter.MAX_ATTEMPTS = app.Params.MaxAttempts
 	counter.RESET_TIME = time.Duration(app.Params.ResetTime)
 
@@ -137,12 +137,16 @@ TLS:%v
 `
 	fmt.Printf(msg, env, database, tls, protocol, serverPort, protocol, serverPort)
 
-	for path, url := range server.Redirects {
-		fmt.Printf("%v://localhost:%v%v\t-> %v\n", protocol, serverPort, path, url)
-	}
+	// for path, url := range server.Redirects {
+	// for path, url := range app.Params.Redirects {
+	// 	fmt.Printf("%v://localhost:%v%v\t-> %v\n", protocol, serverPort, path, url)
+	// }
+
+	fmt.Println("Admin Url - >", app.Params.AdminUrl)
+	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
 
 	if env == "dev" || env == "front" {
 		fmt.Println("\n━━━━━━━━━━ Login credentials for 'dev' or 'front' evironments ━━━━━━━━")
-		fmt.Println("username = admin , password = rosgas2011")
+		fmt.Println("email = admin@rg.ru , password = rosgas2011")
 	}
 }

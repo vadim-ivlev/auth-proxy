@@ -109,7 +109,7 @@ func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpda
 // которая является представлением с более богатым содержимым,
 // чем обновленная таблица.
 // Используется в запросах GraphQL на обновление записей.
-func updateRecord(oldKeyValue string, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
+func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
 	if err != nil {
