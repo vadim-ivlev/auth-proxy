@@ -4,7 +4,8 @@ services:
 
   # сервер, где запущено приложение
   auth-proxy-front:
-    image: rgru/auth-proxy:latest
+    # image: rgru/auth-proxy:latest
+    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev
     container_name: auth-proxy-front
     restart: unless-stopped
     ports:
