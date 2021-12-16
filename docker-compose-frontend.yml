@@ -50,6 +50,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
   
   # сервис тестирования отправки почты
+  # Письма смотреть по адресу: http://localhost:8025/
   auth-mail:
     image: mailhog/mailhog
     container_name: auth-mail-dev
