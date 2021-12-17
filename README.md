@@ -1,5 +1,40 @@
 # auth-proxy -  Пользовательская авторизация
 
+API
+
+- RG production
+https://auth-proxy.rg.ru
+
+- RG staging
+https://rg-auth-staging.rg.ru
+
+
+- GL production
+https://gl-auth.rg.ru
+
+- GL staging
+https://gl-auth-staging.rg.ru
+
+
+Админки
+
+- RG production
+https://auth-admin-classic.vercel.app/?url=https://auth-proxy.rg.ru
+
+- RG staging
+https://auth-admin.vercel.app/?url=https://rg-auth-staging.rg.ru
+
+
+- GL production
+https://auth-admin-classic.vercel.app/?url=https://gl-auth.rg.ru
+
+- GL staging
+https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru
+
+
+<br>
+<br>
+
 
 ## Мотивация
 
