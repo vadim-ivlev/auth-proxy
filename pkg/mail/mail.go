@@ -7,33 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/smtp"
+	"net/url"
 
 	"gopkg.in/yaml.v2"
 )
 
-// type connectionParams struct {
-// 	SmtpAddress string `yaml:"smtp_address"`
-// 	From        string `yaml:"from"`
-// }
-
 // var Params connectionParams
 var mailTemplates map[string]string
-
-// // ReadConfig reads YAML file
-// func ReadConfig(fileName string, env string) {
-// 	yamlFile, err := ioutil.ReadFile(fileName)
-// 	if err != nil {
-// 		log.Println(err.Error())
-// 		return
-// 	}
-
-// 	envParams := make(map[string]connectionParams)
-// 	err = yaml.Unmarshal(yamlFile, &envParams)
-// 	if err != nil {
-// 		log.Println("Mail ReadConfig() error:", err)
-// 	}
-// 	Params = envParams[env]
-// }
 
 // ReadMailTemplate reads YAML file with mail templates
 func ReadMailTemplate(fileName string) {
@@ -51,7 +31,7 @@ func ReadMailTemplate(fileName string) {
 }
 
 func SendNewUserEmail(toEmail, emailhash string) error {
-	urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, toEmail, app.Params.EntryPoint)
+	urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, url.QueryEscape(toEmail), app.Params.EntryPoint)
 	msg := fmt.Sprintf(mailTemplates["new_user"], app.Params.From, toEmail, app.Params.ConfirmEmailUrl, urlParams)
 	return sendMail(app.Params.From, toEmail, msg)
 }

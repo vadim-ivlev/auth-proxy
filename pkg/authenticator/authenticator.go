@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"regexp"
 
 	"github.com/gin-gonic/gin"
@@ -158,7 +159,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 	// - генерируем ссылку на страничку
-	link := fmt.Sprintf(`%vset-password.html#username=%v&hash=%v&authurl=%v`, adminurl, username, hash, authurl)
+	link := fmt.Sprintf(`%vset-password.html#username=%v&hash=%v&authurl=%v`, adminurl, url.QueryEscape(username), hash, authurl)
 	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
@@ -196,7 +197,7 @@ func ResetAuthenticator(c *gin.Context) {
 		return
 	}
 	// - генерируем ссылку на страничку
-	link := fmt.Sprintf(`%vset-authenticator.html#username=%v&hash=%v&authurl=%v`, adminurl, username, hash, authurl)
+	link := fmt.Sprintf(`%vset-authenticator.html#username=%v&hash=%v&authurl=%v`, adminurl, url.QueryEscape(username), hash, authurl)
 	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
