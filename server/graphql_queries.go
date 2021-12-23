@@ -111,6 +111,104 @@ func login() *graphql.Field {
 	}
 }
 
+func login_by_email() *graphql.Field {
+	return &graphql.Field{
+		Type:        userObject,
+		Description: "Войти по email и паролю",
+		Args: graphql.FieldConfigArgument{
+			"email": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email пользователя",
+			},
+			"password": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Пароль",
+			},
+			"captcha": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Captcha",
+			},
+			"pin": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "PIN by Google Authenticator",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			ArgToLowerCase(params, "username")
+			c, _ := params.Context.Value("ginContext").(*gin.Context)
+			username, _ := params.Args["email"].(string)
+			password, _ := params.Args["password"].(string)
+			captcha, _ := params.Args["captcha"].(string)
+
+			// небольшая задержка чтобы усложнить перебор паролей
+			time.Sleep(500 * time.Millisecond)
+
+			// проверить PIN если установлен глобальный флаг
+			if app.Params.UsePin {
+				// нужен ли PIN для данного пользователя?
+				fmt.Println("UsePin!!!!!!")
+				pinRequired, _, _, err := authenticator.GetUserPinFields(username)
+				if err != nil {
+					return "", err
+				}
+				fmt.Println("pin required!!!!!!")
+				if pinRequired {
+					pin, _ := params.Args["pin"].(string)
+					fmt.Println("pin = ", pin)
+					// правильный ли пин?
+					err := authenticator.IsPinGood(username, pin, false)
+					if err != nil {
+						fmt.Println("pin is bad!!!!!!")
+						return "", err
+					}
+					fmt.Println("pin is good!!!!!!")
+				}
+			}
+
+			// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
+			if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
+				if captcha == "" {
+					return "", errors.New("Вы должны ввести картинку. uri=/captcha ")
+				}
+
+				sessionCaptcha := GetSessionVariable(c, "captcha")
+				if sessionCaptcha != captcha {
+					return "", errors.New("Картинка введена с ошибкой")
+				}
+			}
+
+			r, dbUsername := auth.CheckUserPassword2(username, password)
+			if r == auth.NO_USER {
+				return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
+			} else if r == auth.WRONG_PASSWORD {
+				counter.IncrementCounter(username)
+				return nil, errors.New("Неверный пароль")
+			} else if r == auth.USER_DISABLED {
+				return nil, errors.New(username + " деактивирован.")
+			}
+
+			// Все проверки пройдены. Устанавливаем переменные сессии
+			_ = SetSessionVariable(c, "user", dbUsername)
+
+			user, err := auth.GetUser(username)
+			if err != nil {
+				return nil, errors.New("cant get record for " + username)
+			}
+			id := strconv.FormatInt(user["id"].(int64), 10)
+			_ = SetSessionVariable(c, "id", id)
+			email := user["email"].(string)
+			_ = SetSessionVariable(c, "email", email)
+
+			counter.ResetCounter(username)
+
+			fields := getSelectedFields([]string{"login_by_email"}, params)
+			res, err := db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE email = $1 ;`, email)
+			return res, err
+
+		},
+	}
+}
+
 func logout() *graphql.Field {
 	return &graphql.Field{
 		Type:        authMessageObject,

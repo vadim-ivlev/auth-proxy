@@ -205,9 +205,9 @@ var authMessageObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "AuthMessage",
 	Description: "Сообщения AUTH",
 	Fields: gq.Fields{
-		"username": &gq.Field{
+		"email": &gq.Field{
 			Type:        gq.String,
-			Description: "Имя пользователя",
+			Description: "Email пользователя",
 		},
 		"message": &gq.Field{
 			Type:        gq.String,

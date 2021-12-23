@@ -15,6 +15,7 @@ var queryObject = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
 	Fields: graphql.Fields{
 		"login":                  login(),
+		"login_by_email":         login_by_email(),
 		"logout":                 logout(),
 		"is_selfreg_allowed":     is_selfreg_allowed(),
 		"get_stat":               get_stat(),
