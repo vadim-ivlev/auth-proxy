@@ -78,7 +78,7 @@ func setup(build string) *gin.Engine {
 		// Попросить валидный сертификат у админов или поставить envoy as an ssl proxy
 		SameSite: http.SameSiteNoneMode,
 	})
-	r.Use(sessions.Sessions("auth-proxy", Store))
+	r.Use(sessions.Sessions(app.Params.CookieName, Store))
 
 	r.GET("/admin", redirectToAdminURL)
 	r.GET("/graphql_test", redirectToGraphqlTestURL)

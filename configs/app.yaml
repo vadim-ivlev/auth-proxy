@@ -7,6 +7,8 @@
 
 
 dev:
+  # Имя Cookie хранимых на компьютере  пользователя
+  cookie_name: auth-proxy
   # Имя приложения. Используется для генерации PIN Google Authenticator
   app_name: auth-proxy-dev
   # Использовать https вместо http
@@ -39,6 +41,8 @@ dev:
  
 
 front:
+  # Имя Cookie хранимых на компьютере  пользователя
+  cookie_name: auth-proxy
   # Имя приложения. Используется для генерации PIN Google Authenticator
   app_name: auth-proxy-front
   # Использовать https вместо http
@@ -71,6 +75,8 @@ front:
 
 
 public:
+  # Имя Cookie хранимых на компьютере  пользователя
+  cookie_name: auth-proxy
   # Имя приложения. Используется для генерации PIN Google Authenticator
   app_name: auth-proxy-public
   # Использовать https вместо http

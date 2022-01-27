@@ -3,7 +3,7 @@
 echo 'поднимаем бд'
 docker-compose -f docker-compose-dev.yml up -d
 
-echo 'спим 2 секунд'
+echo 'спим 2 секунды'
 sleep 2
 
 echo 'запускаем приложение'

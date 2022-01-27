@@ -17,6 +17,8 @@ import (
 )
 
 type appParams struct {
+	// Имя Cookie хранимых на компьютере  пользователя
+	CookieName string `yaml:"cookie_name"`
 	// Имя приложения. Используется для генерации PIN Google authenticator
 	AppName string `yaml:"app_name"`
 	// Использовать https вместо http
