@@ -22,13 +22,13 @@ func main() {
 	fmt.Println("Build number:\t", Build)
 
 	// считать параметры командной строки
-	servePort, env, pgconfig, pgParamsFromOS, noIntrospection := readCommandLineParams()
+	servePort, env, config, pgconfig, pgParamsFromOS, noIntrospection := readCommandLineParams()
 
 	// Скрываем описания GraphQL если нужно
 	server.SchemaInit(noIntrospection)
 
 	// Считать конфиги и установить параметры
-	tls := readConfigsAndSetParams(env, pgconfig, pgParamsFromOS)
+	tls := readConfigsAndSetParams(env, config, pgconfig, pgParamsFromOS)
 	db.PrintConfig()
 
 	// ждем готовности базы данных
@@ -50,9 +50,14 @@ func main() {
 // readConfigsAndSetParams читаем конфиги, устанавливаем параметры,
 // возвращаем true если требуется соединение по https.
 // env - конфигурация {dev|front|prod}
+// config - env файл с параметрами приложения
 // pgconfig - env файл с параметрами подсоединения к Postgres
 // pgParamsFromOS - Брать параметры Postgres из переменных окружения OS.
-func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
+func readConfigsAndSetParams(env, config, pgconfig string, pgParamsFromOS bool) bool {
+	fmt.Println("config=", config)
+	app.ReadEnvConfig(config)
+	fmt.Println("app.EnvParams=", app.EnvParams)
+
 	// Если приказано читать параметры Postgres из операционной системы, читаем из OS.
 	// Иначе читаем параметры из файлов. Причем:
 	// - читаем файл если если он задан в pgconfig.
@@ -90,9 +95,10 @@ func readConfigsAndSetParams(env, pgconfig string, pgParamsFromOS bool) bool {
 }
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort, env, pgconfig string, pgParamsFromOS, noIntrospection bool) {
+func readCommandLineParams() (serverPort, env, config, pgconfig string, pgParamsFromOS, noIntrospection bool) {
 	flag.StringVar(&serverPort, "port", "4400", "Запустить приложение на указанном порту.")
 	flag.StringVar(&env, "env", "dev", "Окружение. Возможные значения: dev - разработка, front - в докере для фронтэнд разработчиков. prod - продакшн.")
+	flag.StringVar(&config, "config", "./configs/app.env", "Конфигурационный файл приложения.")
 	flag.StringVar(&pgconfig, "pgconfig", "", "Конфигурационный файл Postgres.")
 	flag.BoolVar(&pgParamsFromOS, "pg-params-from-os", false, "Брать параметры Postgres из переменных окружения OS.")
 	flag.BoolVar(&noIntrospection, "no-introspection", false, "Подавлять интроспекцию GraphQL объектов.")

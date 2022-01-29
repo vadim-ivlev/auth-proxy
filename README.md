@@ -450,12 +450,11 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
 Запуск приложения 
 -----------------
-
-Для работы с Postgres перед запуском приложения нужно запустить Postgres
+Перед запуском приложения нужно запустить Postgres
 
     docker-compose -f docker-compose-dev.yml up -d    
 
-Затем запустить приложение командой
+Затем запустить приложение 
     
     go run main.go -port 4400 -env=dev
 
@@ -463,10 +462,12 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
     sh/up.sh
 
-Проверка посылки почты
+Проверка 
 ---------------------
 
-По адресу http://localhost:8025/
+- посылки почты http://localhost:8025/
+- Admin Url - > https://auth-admin.vercel.app/?url=https://localhost:4400
+- Test  Url - > https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 

@@ -30,7 +30,7 @@ type postgresConnectParams struct {
 
 var Params postgresConnectParams
 
-// ReadConfig reads YAML with Postgres params
+// ReadEnvConfig reads YAML with Postgres params
 func ReadEnvConfig(fileName string) {
 	if fileName != "" {
 		if err := godotenv.Load(fileName); err != nil {
