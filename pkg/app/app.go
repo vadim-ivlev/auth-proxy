@@ -6,6 +6,7 @@ package app
 
 import (
 	"auth-proxy/pkg/reqcounter"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"runtime"
@@ -113,4 +114,9 @@ func LogMessage(c *gin.Context) {
 	message := c.Param("message")
 	log.Println("LogMessage", message)
 	c.String(200, "Logger test. Search log file or Elastic for: %s", message)
+}
+
+func Serialize(v interface{}) string {
+	b, _ := json.MarshalIndent(v, "", "  ")
+	return string(b)
 }

@@ -17,15 +17,15 @@ var DBPool *sqlx.DB = nil
 
 // параметры подсоединения к Postgres
 type postgresConnectParams struct {
-	Refreshtime int    `env:"PG_REFRESH_TIME" envDefault:"5"`
-	Host        string `env:"PG_HOST" envDefault:"localhost"`
-	Port        string `env:"PG_PORT" envDefault:"5432"`
-	User        string `env:"PG_USER" envDefault:"pgadmin"`
-	Password    string `env:"PG_PASSWORD" envDefault:"159753"`
-	Database    string `env:"PG_DATABASE" envDefault:"rgru"`
-	Sslmode     string `env:"PG_SSLMODE" envDefault:"disable"`
-	SearchPath  string `env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
-	connectStr  string
+	Refreshtime int    `json:"PG_REFRESH_TIME" env:"PG_REFRESH_TIME" envDefault:"5"`
+	Host        string `json:"PG_HOST" env:"PG_HOST" envDefault:"localhost"`
+	Port        string `json:"PG_PORT" env:"PG_PORT" envDefault:"5432"`
+	User        string `json:"PG_USER" env:"PG_USER" envDefault:"pgadmin"`
+	Password    string `json:"PG_PASSWORD" env:"PG_PASSWORD" envDefault:"159753"`
+	Database    string `json:"PG_DATABASE" env:"PG_DATABASE" envDefault:"rgru"`
+	Sslmode     string `json:"PG_SSLMODE" env:"PG_SSLMODE" envDefault:"disable"`
+	SearchPath  string `json:"PG_SEARCH_PATH" env:"PG_SEARCH_PATH" envDefault:"auth,extensions"`
+	ConnectStr  string `json:"PG_CONNECT_STR" env:"PG_CONNECT_STR"`
 }
 
 var Params postgresConnectParams
@@ -44,12 +44,7 @@ func ReadEnvConfig(fileName string) {
 		fmt.Printf("%+v\n", err)
 	}
 	Params.SearchPath = strings.Replace(Params.SearchPath, " ", "", -1)
-	Params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", Params.Host, Params.Port, Params.User, Params.Password, Params.Database, Params.Sslmode, Params.SearchPath)
-}
-
-// PrintConnectStr prints DB connection parameters.
-func PrintConnectStr() {
-	fmt.Printf("Строка соединения Postgres: %s\n", Params.connectStr)
+	Params.ConnectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", Params.Host, Params.Port, Params.User, Params.Password, Params.Database, Params.Sslmode, Params.SearchPath)
 }
 
 func panicIf(err error) {
