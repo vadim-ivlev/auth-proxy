@@ -107,4 +107,5 @@ TLS:%v
 	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort)
 	fmt.Println("Admin Url - >", app.Params.AdminUrl)
 	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
+	fmt.Printf("\n\n")
 }

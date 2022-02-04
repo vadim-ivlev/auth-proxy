@@ -13,31 +13,36 @@ services:
     depends_on:
       - postgres
       
-    # Параметры подсоединения к Postgres могут быть указаны в файле 
-    # env_file:
-    #   - ./my_db.env
-
-    # Параметры подсоединения к Postgres могут быть указаны в переменных
+    # Параметры приложения и базы данных можно установить в переменных окружения.
+    # Текущие параметры показаны в логе при старте приложения.
+    # Полный список параметров в смотри в репозитории  configs/app.env и db.env
     # environment:
-    #     # Имя Cookie хранимых на компьютере  пользователя
-    #     - cookie_name=auth-proxy-test
-    #     # Имя приложения. Используется для генерации PIN Google Authenticator
-    #     - app_name=auth-proxy-tttt
-
-    #   - PG_HOST=postgres
-    #   - PG_USER=pgadmin
-    #   - PG_PASSWORD=159753
-    #   - PG_DATABASE=rgru
-    #   - PG_PORT=5432
-    #   - PG_SEARCH_PATH=auth,extensions
-    #   - PG_SSLMODE=disable   
-    #   - PG_REFRESH_TIME=4   
-    # Тогда необходимо запустить программу с параметром -pg-params-from-os.   
-    # command: bash -c "cd /app && ./auth -port 4400 -env=front -pg-params-from-os" 
+      # # база данных ---ї--------------
+      # - PG_HOST=postgres
+      # - PG_PORT=5432
+      # - PG_USER=pgadmin
+      # - PG_PASSWORD=159753
+      # - PG_DATABASE=rgru
+      # - PG_SEARCH_PATH=auth,extensions
+      # # приложение ------------------
+      # - cookie_name=auth-proxy-front
+      # - app_name=auth-proxy-front
+      # - tls=true
+      # - secure=true
+      # - selfreg=false
+      # - use_captcha=true
+      # - use_pin=false
+      # - max_attempts=5
+      # - reset_time=60
+      # - confirm_email_url=https://localhost:4400/confirm-email/
+      # - entry_point=https://www.rg.ru
+      # - smtp_address=auth-mail:1025
+      # - from=noreply@rg.ru
+      # - admin_url=https://auth-admin.vercel.app/?url=https://localhost:4400
+      # - graphql_test_url=https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema\u0026tab_name=auth-proxy4400
     
-    # Конфигурационный файл Postgres может быть задан явно 
-    # и через параметр командной строки -pgconfig
-    # command: bash -c "cd /app && ./auth -port 4400 -env=front -pgconfig=shared_dir/my_db.env" 
+    # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки 
+    # command: bash -c "cd /app && ./auth -port 4400  -config=shared_dir/myapp.env -pgconfig=shared_dir/mydb.env" 
   
 
 

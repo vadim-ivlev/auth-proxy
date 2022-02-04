@@ -10,6 +10,6 @@ echo "build a docker image auth-proxy:public"
 docker build -t registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:public -f Dockerfile-public . 
 
 echo "push the docker image" 
-# docker login registry.rgwork.ru:5050
-# docker push registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:public
+docker login registry.rgwork.ru:5050
+docker push registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:public
 
