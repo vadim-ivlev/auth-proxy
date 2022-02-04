@@ -3,10 +3,10 @@ version: '3.1'
 services:
 
   # сервер, где запущено приложение
-  auth-proxy-front:
+  auth-proxy-public:
     # image: rgru/auth-proxy:latest
-    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:front
-    container_name: auth-proxy-front
+    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:public
+    container_name: auth-proxy-public
     restart: unless-stopped
     ports:
       - 4400:4400
@@ -15,7 +15,7 @@ services:
       
     # Параметры приложения и базы данных можно установить в переменных окружения.
     # Текущие параметры показаны в логе при старте приложения.
-    # Полный список параметров в репозитории  configs/app.env.front и configs/db.env.front
+    # Полный список параметров в репозитории  configs/app.env.public и configs/db.env.public
     # environment:
       # # база данных ---ї--------------
       # - PG_HOST=postgres
@@ -25,8 +25,8 @@ services:
       # - PG_DATABASE=rgru
       # - PG_SEARCH_PATH=auth,extensions
       # # приложение ------------------
-      # - cookie_name=auth-proxy-front
-      # - app_name=auth-proxy-front
+      # - cookie_name=auth-proxy-public
+      # - app_name=auth-proxy-public
       # - tls=true
       # - secure=true
       # - selfreg=false

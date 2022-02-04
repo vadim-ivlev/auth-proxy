@@ -7,70 +7,13 @@ package app
 import (
 	"auth-proxy/pkg/reqcounter"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"runtime"
 
 	// log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	yaml "gopkg.in/yaml.v2"
 )
-
-type appParams0 struct {
-	// Имя Cookie хранимых на компьютере  пользователя
-	CookieName string `yaml:"cookie_name"`
-	// Имя приложения. Используется для генерации PIN Google authenticator
-	AppName string `yaml:"app_name"`
-	// Использовать https вместо http
-	Tls bool
-	// Установить флаг secure на куки браузера. Работает только для https протокола.
-	Secure bool
-	// Пользователи могут регистрироваться самостоятельно
-	Selfreg bool
-	// Нужно ли вводить капчу при входе в систему
-	UseCaptcha bool `yaml:"use_captcha"`
-	// Нужно ли вводить PIN при входе в систему
-	UsePin bool `yaml:"use_pin"`
-	// Максимально допустимое число ошибок ввода пароля
-	MaxAttempts int64 `yaml:"max_attempts"`
-	// Время сброса счетчика ошибок пароля в минутах
-	ResetTime int64 `yaml:"reset_time"`
-	// url страницы подтверждения email
-	ConfirmEmailUrl string `yaml:"confirm_email_url"`
-	// url куда пренаправляется браузер после подтвержедения email
-	EntryPoint string `yaml:"entry_point"`
-	// адрес почтового сервера SMTP
-	SmtpAddress string `yaml:"smtp_address"`
-	// email от которого посылаются письма пользователям
-	From string `yaml:"from"`
-	// админка сервиса
-	AdminUrl string `yaml:"admin_url"`
-	// тестовая страница сервиса
-	GraphqlTestUrl string `yaml:"graphql_test_url"`
-
-	// // перенаправления браузера для предоставления различных GUI
-	// Redirects map[string]string
-}
-
-// Общие параметры приложения
-var Params0 appParams0
-
-// ReadConfig reads YAML with Postgres params
-func ReadConfig(fileName string, env string) {
-	yamlFile, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Println(err.Error())
-		return
-	}
-
-	envParams := make(map[string]appParams)
-	err = yaml.Unmarshal(yamlFile, &envParams)
-	if err != nil {
-		panic(err.Error())
-	}
-	Params = envParams[env]
-}
 
 // GetParams returns some app parameters
 func GetParams() map[string]interface{} {
