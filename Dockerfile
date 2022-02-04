@@ -28,4 +28,5 @@ COPY --from=builder /go/src/${CI_PROJECT_NAME}/certificates/* ./certificates/
 ADD db_conf/${CI_PROJECT_NAME}-${NODE_ENV}/configs/* ./configs/
 # https://stackoverflow.com/questions/35560894/is-docker-arg-allowed-within-cmd-instruction
 ENV CI_PROJECT_NAME ${CI_PROJECT_NAME}
-CMD ./${CI_PROJECT_NAME} -env=${NODE_ENV} -port=${PORT}
+# CMD ./${CI_PROJECT_NAME} -env=${NODE_ENV} -port=${PORT}
+CMD ./${CI_PROJECT_NAME} -port=${PORT}

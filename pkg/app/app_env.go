@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type AppEnvParams struct {
+type appParams struct {
 	// Имя Cookie хранимых на компьютере  пользователя
 	CookieName string `env:"cookie_name" envDefault:"auth-proxy"`
 	// Имя приложения. Используется для генерации PIN Google authenticator
@@ -41,7 +41,8 @@ type AppEnvParams struct {
 	GraphqlTestUrl string `env:"graphql_test_url" envDefault:"https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400"`
 }
 
-var EnvParams AppEnvParams
+// var EnvParams AppEnvParams
+var Params appParams
 
 // ReadEnvConfig reads env file and fill EnvParams with environment variables values
 func ReadEnvConfig(fileName string) {
@@ -49,7 +50,7 @@ func ReadEnvConfig(fileName string) {
 		log.Println(err.Error())
 	}
 
-	if err := env.Parse(&EnvParams); err != nil {
+	if err := env.Parse(&Params); err != nil {
 		log.Println(err.Error())
 	}
 }

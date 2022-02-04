@@ -47,8 +47,8 @@ func ReadEnvConfig(fileName string) {
 	Params.connectStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s", Params.Host, Params.Port, Params.User, Params.Password, Params.Database, Params.Sslmode, Params.SearchPath)
 }
 
-// PrintConfig prints DB connection parameters.
-func PrintConfig() {
+// PrintConnectStr prints DB connection parameters.
+func PrintConnectStr() {
 	fmt.Printf("Строка соединения Postgres: %s\n", Params.connectStr)
 }
 

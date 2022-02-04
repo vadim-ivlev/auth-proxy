@@ -76,7 +76,7 @@ front:
 
 public:
   # Имя Cookie хранимых на компьютере  пользователя
-  cookie_name: auth-proxy
+  cookie_name: auth-proxy-public
   # Имя приложения. Используется для генерации PIN Google Authenticator
   app_name: auth-proxy-public
   # Использовать https вместо http

@@ -5,7 +5,7 @@ services:
   # сервер, где запущено приложение
   auth-proxy-front:
     # image: rgru/auth-proxy:latest
-    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev
+    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:front
     container_name: auth-proxy-front
     restart: unless-stopped
     ports:
@@ -19,6 +19,11 @@ services:
 
     # Параметры подсоединения к Postgres могут быть указаны в переменных
     # environment:
+    #     # Имя Cookie хранимых на компьютере  пользователя
+    #     - cookie_name=auth-proxy-test
+    #     # Имя приложения. Используется для генерации PIN Google Authenticator
+    #     - app_name=auth-proxy-tttt
+
     #   - PG_HOST=postgres
     #   - PG_USER=pgadmin
     #   - PG_PASSWORD=159753

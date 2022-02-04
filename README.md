@@ -336,9 +336,22 @@ sequenceDiagram
 - -env  default=dev, Окружение. Возможные значения: 
   dev - разработка, front - в докере для фронтэнд
   разработчиков. prod - продакшн.
+- -config - Конфигурационный файл приложения (default configs/db.env).
 - -pgconfig - Конфигурационный файл Postgres.
-- -pg-params-from-os default=false, Брать параметры Postgres из переменных окружения OS.
+<!-- - -pg-params-from-os default=false, Брать параметры Postgres из переменных окружения OS. -->
 - -no-introspection default=false, Подавлять интроспекцию GraphQL объектов.
+
+
+## Конфигурационный файл приложения app.env
+
+Параметры приложения по умолчанию находятся в в файле  `configs/app.env`.
+Другой файл с параметрами можно указать в командной строке приложения. Например `./auth-proxy -config=./configs/my_app.env`.
+
+Переменные окружения операционной системы имеют преимущество перед параметрами
+определенными в файле. Изменить значение переменной можно в docker-compose.yml
+
+    environment:
+      - cookie_name=auth-proxy-dev
 
 ## Конфигурационные файлы Postgres
 

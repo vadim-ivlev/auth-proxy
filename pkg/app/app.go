@@ -16,7 +16,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type appParams struct {
+type appParams0 struct {
 	// Имя Cookie хранимых на компьютере  пользователя
 	CookieName string `yaml:"cookie_name"`
 	// Имя приложения. Используется для генерации PIN Google authenticator
@@ -53,7 +53,7 @@ type appParams struct {
 }
 
 // Общие параметры приложения
-var Params appParams
+var Params0 appParams0
 
 // ReadConfig reads YAML with Postgres params
 func ReadConfig(fileName string, env string) {
