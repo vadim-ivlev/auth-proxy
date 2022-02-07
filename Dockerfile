@@ -17,6 +17,7 @@ RUN apk add --no-cache tzdata
 RUN cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 
 ARG CI_PROJECT_NAME
+# Какие значкения принимают ???? может заменить их одной переменной ???
 ARG NODE_ENV
 ARG PRJ
 

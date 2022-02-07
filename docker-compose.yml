@@ -3,6 +3,7 @@ version: '3.9'
 services:
   auth-proxy:
     image: ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID}
+    # что есть env ?????
     env_file:
       - /builds/db_conf/${CI_PROJECT_NAME}-${NODE_ENV}/configs/env
     environment:
