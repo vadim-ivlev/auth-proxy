@@ -139,16 +139,16 @@ VALUES
 INSERT INTO "group"
 (id, groupname       , description)
 VALUES 
-(0 ,'administrators' , 'Группа администраторов'),
-(3 ,'guests'         , 'Посетители')            ,
-(5 ,'developers'     , 'Разработчики');
+(1 ,'administrators' , 'Группа администраторов'),
+(2 ,'guests'         , 'Посетители')            ,
+(3 ,'developers'     , 'Разработчики');
 
 INSERT INTO group_app_role 
-(id, group_id, app_id, rolename)
+(group_id, app_id, rolename)
 VALUES 
-(1 ,0, 0, 'authadmin'),
-(2 ,3, 1, 'guestrole1'),
-(3 ,3, 1, 'guestrole2');
+(1, 0, 'authadmin'),
+(2, 1, 'guestrole1'),
+(2, 1, 'guestrole2');
 
 
 -- EXCEPTION WHEN OTHERS THEN 
