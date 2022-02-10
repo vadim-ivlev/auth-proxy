@@ -79,19 +79,16 @@ CREATE UNIQUE INDEX IF NOT EXISTS user_id_unique_idx ON "user" (id);
 
 -- GROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPS
 
--- добавляем id в таблицу приложений
-ALTER TABLE "app" ADD COLUMN IF NOT EXISTS id serial;
--- ALTER TABLE "app" ADD UNIQUE (id);
-
-
+-- добавляем id в app
+CREATE SEQUENCE IF NOT EXISTS app_id_sequence START 101;
+ALTER TABLE "app" ADD COLUMN IF NOT EXISTS id integer NOT NULL DEFAULT nextval('app_id_sequence');
 ALTER TABLE "app" DROP CONSTRAINT IF EXISTS app_unique_id_constraint CASCADE;
 ALTER TABLE "app" ADD CONSTRAINT app_unique_id_constraint UNIQUE (id);
-
+ALTER SEQUENCE app_id_sequence OWNED BY app.id;
 
 
 -- Группа 
-CREATE SEQUENCE group_id_sequence START 101;
-
+CREATE SEQUENCE IF NOT EXISTS group_id_sequence START 101;
 CREATE TABLE IF NOT EXISTS "group" (
     id integer NOT NULL DEFAULT nextval('group_id_sequence'),
     groupname text NOT NULL,
@@ -108,7 +105,7 @@ ALTER SEQUENCE group_id_sequence OWNED BY "group".id;
 CREATE TABLE IF NOT EXISTS group_user_role (
     group_id int NOT NULL,
     user_id int NOT NULL,
-    rolename text NOT NULL,
+    rolename text,
 
     CONSTRAINT group_user_role_pkey PRIMARY KEY (group_id, user_id),
     CONSTRAINT group_user_role_fk_u FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE,

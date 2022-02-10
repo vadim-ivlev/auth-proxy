@@ -57,6 +57,10 @@ EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные user уже сущест�
 END $$;
 
 
+
+DO $$
+BEGIN
+
 INSERT INTO app_user_role 
 (appname                 , username    , rolename)
 VALUES 
@@ -132,6 +136,8 @@ VALUES
 ('admin-comment'         , 'kataev'    , 'admin'),
 ('admin-comment'         , 'pologov'   , 'admin');
 
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app_user_role уже существуют.';
+END $$;
 
 
 -- Группы ---------------------------------------------------------
@@ -149,6 +155,15 @@ VALUES
 (1, 0, 'authadmin'),
 (2, 1, 'guestrole1'),
 (2, 1, 'guestrole2');
+
+INSERT INTO group_user_role 
+(group_id, user_id)
+VALUES 
+(1, 1),
+(1, 3),
+(1, 7),
+(2, 3),
+(2, 7);
 
 
 -- EXCEPTION WHEN OTHERS THEN 
