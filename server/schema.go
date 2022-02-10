@@ -46,7 +46,6 @@ var mutationObject = graphql.NewObject(graphql.ObjectConfig{
 		"delete_app":           delete_app(),
 		"create_app_user_role": create_app_user_role(),
 		"delete_app_user_role": delete_app_user_role(),
-		// "generate_password":    generate_password(),
 	},
 })
 

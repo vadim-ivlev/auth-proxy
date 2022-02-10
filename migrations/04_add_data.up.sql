@@ -9,24 +9,30 @@
 
 -- данные
 
-
+DO $$
+BEGIN
 
 INSERT INTO app 
-(appname                 , url                                 , description                                                         , public, sign)
+(id, appname                 , url                                 , description                                                         , public, sign)
 VALUES
-('auth'                  ,''                                   , 'Сервис авторизации'                                                ,NULL   ,NULL),
-('echo'                  ,'https://echo-request.vercel.app/api', 'Показывает заголовки и тело запросов пропущенных через auth-proxy.',NULL   ,'Y' ),
-('echo-public'           ,'https://echo-request.vercel.app/api', 'Показывает заголовки и тело запросов пропущенных через auth-proxy.','Y'    ,NULL),
-('rg'                    ,'https://rg.ru'                      , 'Прокси к https://rg.ru'                                            ,'Y'    ,NULL),
-('photoreports-admin'    ,'http://host.docker.internal:8091'   , 'GraphQL API админки фоторепов'                                     ,NULL   ,NULL),
-('photoreports-admin-new','http://host.docker.internal:8094'   , 'Новое GraphQL API админки фоторепов'                               ,NULL   ,NULL),
-('video'                 ,'http://host.docker.internal:7700'   , 'Видео GraphQL API админки'                                         ,NULL   ,NULL),
-('admin-comment'         ,'http://host.docker.internal:8095'   , 'GraphQL API комментарией'                                          ,NULL   ,NULL),
-('rgcore'                ,'http://host.docker.internal:8076'   , 'GraphQL API редакторского интерфейса'                              ,NULL   ,NULL),
-('rgru-file-uploader'    ,'http://host.docker.internal:8077'   , 'GraphQL API загрузки файлов'                                       ,NULL   ,NULL);
+(0,'auth'                  ,''                                   , 'Сервис авторизации'                                                ,NULL   ,NULL),
+(1,'echo'                  ,'https://echo-request.vercel.app/api', 'Показывает заголовки и тело запросов пропущенных через auth-proxy.',NULL   ,'Y' ),
+(2,'echo-public'           ,'https://echo-request.vercel.app/api', 'Показывает заголовки и тело запросов пропущенных через auth-proxy.','Y'    ,NULL),
+(3,'rg'                    ,'https://rg.ru'                      , 'Прокси к https://rg.ru'                                            ,'Y'    ,NULL),
+(4,'photoreports-admin'    ,'http://host.docker.internal:8091'   , 'GraphQL API админки фоторепов'                                     ,NULL   ,NULL),
+(5,'photoreports-admin-new','http://host.docker.internal:8094'   , 'Новое GraphQL API админки фоторепов'                               ,NULL   ,NULL),
+(6,'video'                 ,'http://host.docker.internal:7700'   , 'Видео GraphQL API админки'                                         ,NULL   ,NULL),
+(7,'admin-comment'         ,'http://host.docker.internal:8095'   , 'GraphQL API комментарией'                                          ,NULL   ,NULL),
+(8,'rgcore'                ,'http://host.docker.internal:8076'   , 'GraphQL API редакторского интерфейса'                              ,NULL   ,NULL),
+(9,'rgru-file-uploader'    ,'http://host.docker.internal:8077'   , 'GraphQL API загрузки файлов'                                       ,NULL   ,NULL);
+
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app уже существуют.';
+END $$;
 
 
 
+DO $$
+BEGIN
 
 INSERT INTO "user" 
 (username    , password                                                          , email              , fullname           , description)
@@ -46,6 +52,9 @@ VALUES
 
 -- rosgas2011 => '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f'
 -- 1 => '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные user уже существуют.';
+END $$;
 
 
 INSERT INTO app_user_role 
@@ -122,6 +131,24 @@ VALUES
 ('admin-comment'         , 'nsinetskiy', 'admin'),
 ('admin-comment'         , 'kataev'    , 'admin'),
 ('admin-comment'         , 'pologov'   , 'admin');
+
+
+
+-- Группы ---------------------------------------------------------
+
+INSERT INTO "group"
+(id, groupname       , description)
+VALUES 
+(0 ,'administrators' , 'Группа администраторов'),
+(3 ,'guests'         , 'Посетители')            ,
+(5 ,'developers'     , 'Разработчики');
+
+INSERT INTO group_app_role 
+(id, group_id, app_id, rolename)
+VALUES 
+(1 ,0, 0, 'authadmin'),
+(2 ,3, 1, 'guestrole1'),
+(3 ,3, 1, 'guestrole2');
 
 
 -- EXCEPTION WHEN OTHERS THEN 
