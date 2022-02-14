@@ -81,6 +81,51 @@ var appFields = gq.Fields{
 	},
 }
 
+var groupFields = gq.Fields{
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Уникальный идентификатор группы",
+	},
+	"groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Уникальное  имя группы",
+	},
+	"description": &gq.Field{
+		Type:        gq.String,
+		Description: "Дополнительная информация",
+	},
+}
+
+var groupUserRoleFields = gq.Fields{
+	"group_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор группы",
+	},
+	"user_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор пользователя",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль пользователя в группе",
+	},
+}
+
+var groupAppRoleFields = gq.Fields{
+	"group_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор группы",
+	},
+	"app_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор приложения",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль группы в приложении",
+	},
+}
+
 var appUserRoleFields = gq.Fields{
 	"appname": &gq.Field{
 		Type:        gq.String,
@@ -172,6 +217,12 @@ var appObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "App",
 	Description: "Приложение к которому требуется авторизация",
 	Fields:      appFields,
+})
+
+var groupObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "Group",
+	Description: "Группа пользователей",
+	Fields:      groupFields,
 })
 
 var appUserRoleObject = gq.NewObject(gq.ObjectConfig{

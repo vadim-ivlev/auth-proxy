@@ -32,6 +32,10 @@ var queryObject = graphql.NewObject(graphql.ObjectConfig{
 		"list_user_by_usernames": list_user_by_usernames(),
 		"list_app":               list_app(),
 		"list_app_user_role":     list_app_user_role(),
+		// "get_group":              get_group(),
+		// "list_group":             list_group(),
+		// "list_group_app_role":    list_group_app_role(),
+		// "list_group_user_role":   list_group_user_role(),
 	},
 })
 
@@ -46,6 +50,13 @@ var mutationObject = graphql.NewObject(graphql.ObjectConfig{
 		"delete_app":           delete_app(),
 		"create_app_user_role": create_app_user_role(),
 		"delete_app_user_role": delete_app_user_role(),
+		// "create_group":           create_group(),
+		// "update_group":           update_group(),
+		// "delete_group":           delete_group(),
+		// "create_group_app_role":  create_group_app_role(),
+		// "delete_group_app_role":  delete_group_app_role(),
+		// "create_group_user_role": create_group_user_role(),
+		// "delete_group_user_role": delete_group_user_role(),
 	},
 })
 
