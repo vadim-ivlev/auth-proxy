@@ -205,6 +205,17 @@ var listAppFields = gq.Fields{
 	},
 }
 
+var listGroupFields = gq.Fields{
+	"length": &gq.Field{
+		Type:        gq.Int,
+		Description: "Количество элементов в списке",
+	},
+	"list": &gq.Field{
+		Type:        gq.NewList(groupObject),
+		Description: "Список групп",
+	},
+}
+
 // TYPES ****************************************************
 
 var userObject = gq.NewObject(gq.ObjectConfig{
@@ -223,6 +234,18 @@ var groupObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "Group",
 	Description: "Группа пользователей",
 	Fields:      groupFields,
+})
+
+var groupUserRoleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "GroupUserRole",
+	Description: "Роль пользователя в группе",
+	Fields:      groupUserRoleFields,
+})
+
+var groupAppRoleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "GroupAppRole",
+	Description: "Роль группы в приложении",
+	Fields:      groupAppRoleFields,
 })
 
 var appUserRoleObject = gq.NewObject(gq.ObjectConfig{
@@ -249,6 +272,12 @@ var listAppGQType = gq.NewObject(gq.ObjectConfig{
 	Name:        "ListApp",
 	Description: "Список приложений и их количество",
 	Fields:      listAppFields,
+})
+
+var listGroupGQType = gq.NewObject(gq.ObjectConfig{
+	Name:        "ListGroup",
+	Description: "Список групп и их количество",
+	Fields:      listGroupFields,
 })
 
 // AUTH messages

@@ -410,6 +410,183 @@ func get_logined_user() *graphql.Field {
 	}
 }
 
+func get_group() *graphql.Field {
+	return &graphql.Field{
+		Type:        groupObject,
+		Description: "Показать группу по id",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "id группы",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdminOrAuditor(params)
+			fields := getSelectedFields([]string{"get_group"}, params)
+			return db.QueryRowMap("SELECT "+fields+" FROM \"group\" WHERE id = $1 ;", params.Args["id"])
+		},
+	}
+}
+
+func get_group_by_name() *graphql.Field {
+	return &graphql.Field{
+		Type:        groupObject,
+		Description: "Показать группу по имени",
+		Args: graphql.FieldConfigArgument{
+			"groupname": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя группы",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdminOrAuditor(params)
+			fields := getSelectedFields([]string{"get_group_by_name"}, params)
+			return db.QueryRowMap("SELECT "+fields+" FROM \"group\" WHERE groupname = $1 ;", params.Args["groupname"])
+		},
+	}
+}
+
+func list_group() *graphql.Field {
+	return &graphql.Field{
+		Type:        listGroupGQType,
+		Description: "Получить список групп.",
+		Args: graphql.FieldConfigArgument{
+			"search": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Строка полнотекстового поиска.",
+			},
+			"order": &graphql.ArgumentConfig{
+				Type:         graphql.String,
+				Description:  "сортировка строк в определённом порядке. По умолчанию 'appname ASC'",
+				DefaultValue: "groupname ASC",
+			},
+			"limit": &graphql.ArgumentConfig{
+				Type:         graphql.Int,
+				Description:  "возвратить не больше заданного числа строк. По умолчанию 100.",
+				DefaultValue: 1000,
+			},
+			"offset": &graphql.ArgumentConfig{
+				Type:         graphql.Int,
+				Description:  "пропустить указанное число строк, прежде чем начать выдавать строки. По умолчанию 0.",
+				DefaultValue: 0,
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotUser(params)
+
+			wherePart, orderAndLimits := QueryEnd(params, "groupname,description")
+			fields := getSelectedFields([]string{"list_group", "list"}, params)
+			fmt.Printf("wherePart:%v, orderAndLimits:%v", wherePart, orderAndLimits)
+			list, err := db.QuerySliceMap("SELECT " + fields + ` FROM "group"` + wherePart + orderAndLimits)
+			if err != nil {
+				return nil, err
+			}
+
+			count, err := db.QueryRowMap(`SELECT count(*) AS count FROM "group"` + wherePart)
+			if err != nil {
+				return nil, err
+			}
+
+			m := map[string]interface{}{
+				"length": count["count"],
+				"list":   list,
+			}
+
+			return m, nil
+
+		},
+	}
+}
+
+func list_group_user_role() *graphql.Field {
+	return &graphql.Field{
+		Type:        graphql.NewList(groupUserRoleObject),
+		Description: "Получить список групп пользователей и их ролей.",
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.Int,
+				Description: "Идентификатор группы",
+			},
+			"user_id": &graphql.ArgumentConfig{
+				Type:        graphql.Int,
+				Description: "Идентификатор пользователя",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotOwnerOrAdminOrAuditor(params)
+			fields := getSelectedFields([]string{"list_group_user_role"}, params)
+			wherePart := listGroupUserRoleWherePart(params)
+			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_user_role %s `, fields, wherePart)
+			return db.QuerySliceMap(query)
+		},
+	}
+}
+
+func listGroupUserRoleWherePart(params graphql.ResolveParams) (wherePart string) {
+	var searchConditions []string
+	for paramName, v := range params.Args {
+		n, ok := v.(int)
+		if ok {
+			searchConditions = append(searchConditions, fmt.Sprintf(" %s = %d ", paramName, n))
+		}
+	}
+	if len(searchConditions) > 0 {
+		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+	}
+	return wherePart
+}
+
+func list_group_app_role() *graphql.Field {
+	return &graphql.Field{
+		Type:        graphql.NewList(groupAppRoleObject),
+		Description: "Получить список приложений групп и их ролей.",
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.Int,
+				Description: "Идентификатор группы",
+			},
+			"app_id": &graphql.ArgumentConfig{
+				Type:        graphql.Int,
+				Description: "Идентификатор приложения",
+			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Идентификатор роли",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotOwnerOrAdminOrAuditor(params)
+			fields := getSelectedFields([]string{"list_group_app_role"}, params)
+			wherePart := listGroupAppRoleWherePart(params)
+			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_app_role %s `, fields, wherePart)
+			return db.QuerySliceMap(query)
+		},
+	}
+}
+
+func listGroupAppRoleWherePart(params graphql.ResolveParams) (wherePart string) {
+	var searchConditions []string
+	for paramName, v := range params.Args {
+		// if v is a number
+		n, ok := v.(int)
+		if ok {
+			searchConditions = append(searchConditions, fmt.Sprintf(" %s = %d ", paramName, n))
+		} else {
+			// if v is a string
+			s, ok := v.(string)
+			s = strings.Trim(s, " ")
+			if ok && len(s) > 0 {
+				searchConditions = append(searchConditions, fmt.Sprintf(" %s = '%s' ", paramName, db.RemoveSingleQuotes(s)))
+			}
+		}
+
+	}
+	if len(searchConditions) > 0 {
+		wherePart = " WHERE " + strings.Join(searchConditions, " AND ")
+	}
+	return wherePart
+}
+
 func get_app() *graphql.Field {
 	return &graphql.Field{
 		Type:        appObject,
@@ -612,7 +789,6 @@ func list_app_user_role() *graphql.Field {
 
 func listAppUserRoleWherePart(params graphql.ResolveParams) (wherePart string) {
 	var searchConditions []string
-
 	for paramName, v := range params.Args {
 		s, ok := v.(string)
 		s = strings.Trim(s, " ")
@@ -653,6 +829,9 @@ func QueryEnd(params graphql.ResolveParams, fieldList string) (wherePart string,
 	}
 	orderClause := db.SanitizeOrderClause(params.Args["order"].(string))
 	orderAndLimits = fmt.Sprintf(" ORDER BY %s LIMIT %v OFFSET %v ;", orderClause, params.Args["limit"], params.Args["offset"])
+	if orderClause == "" {
+		orderAndLimits = fmt.Sprintf(" LIMIT %v OFFSET %v ;", params.Args["limit"], params.Args["offset"])
+	}
 	return wherePart, orderAndLimits
 }
 
