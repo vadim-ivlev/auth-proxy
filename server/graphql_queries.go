@@ -516,7 +516,7 @@ func list_group_user_role() *graphql.Field {
 			panicIfNotOwnerOrAdminOrAuditor(params)
 			fields := getSelectedFields([]string{"list_group_user_role"}, params)
 			wherePart := listGroupUserRoleWherePart(params)
-			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_user_role %s `, fields, wherePart)
+			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_user_role_extended %s `, fields, wherePart)
 			return db.QuerySliceMap(query)
 		},
 	}
@@ -558,7 +558,7 @@ func list_group_app_role() *graphql.Field {
 			panicIfNotOwnerOrAdminOrAuditor(params)
 			fields := getSelectedFields([]string{"list_group_app_role"}, params)
 			wherePart := listGroupAppRoleWherePart(params)
-			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_app_role %s `, fields, wherePart)
+			query := fmt.Sprintf(`SELECT DISTINCT %s FROM group_app_role_extended %s `, fields, wherePart)
 			return db.QuerySliceMap(query)
 		},
 	}

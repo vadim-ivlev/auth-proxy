@@ -455,8 +455,8 @@ func delete_group() *graphql.Field {
 func create_group_app_role() *graphql.Field {
 	return &graphql.Field{
 		Description: "Создать роль группы для приложения",
-		// Type:        groupAppRoleObject,
-		Type: insertResultObject,
+		Type:        groupAppRoleObject,
+		// Type: insertResultObject,
 		Args: graphql.FieldConfigArgument{
 			"group_id": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.Int),
@@ -475,7 +475,16 @@ func create_group_app_role() *graphql.Field {
 			panicIfNotAdmin(params)
 			clearGroupAppRolesCache(params)
 			clearGroupCache(params)
-			return db.CreateRow("group_app_role", params.Args)
+			_, err := db.CreateRow("group_app_role", params.Args)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{
+				"app_id":   params.Args["app_id"],
+				"group_id": params.Args["group_id"],
+				"rolename": params.Args["rolename"],
+			}, nil
+
 		},
 	}
 }
@@ -502,10 +511,14 @@ func delete_group_app_role() *graphql.Field {
 			panicIfNotAdmin(params)
 			app_id, group_id, rolename := params.Args["app_id"], params.Args["group_id"], params.Args["rolename"]
 
-			_, err := db.QueryExec(
+			res, err := db.QueryExec(
 				`DELETE FROM group_app_role WHERE app_id = $1 AND group_id = $2 AND rolename = $3 ;`, app_id, group_id, rolename)
 			if err != nil {
 				return nil, err
+			}
+			rowsAffected, _ := res.RowsAffected()
+			if rowsAffected == 0 {
+				return nil, errors.New("no records to delete")
 			}
 			clearGroupAppRolesCache(params)
 			clearGroupCache(params)

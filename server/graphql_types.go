@@ -26,7 +26,7 @@ var userFields = gq.Fields{
 	},
 	"description": &gq.Field{
 		Type:        gq.String,
-		Description: "Дополнительная информация",
+		Description: "Описание пользователя",
 	},
 	"disabled": &gq.Field{
 		Type:        gq.Int,
@@ -109,6 +109,32 @@ var groupUserRoleFields = gq.Fields{
 		Type:        gq.String,
 		Description: "Роль пользователя в группе",
 	},
+
+	"group_groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя группы",
+	},
+	"group_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание группы",
+	},
+
+	"user_email": &gq.Field{
+		Type:        gq.String,
+		Description: "Email пользователя",
+	},
+	"user_fullname": &gq.Field{
+		Type:        gq.String,
+		Description: "Фамилия Имя пользователя",
+	},
+	"user_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание пользователя",
+	},
+	"user_disabled": &gq.Field{
+		Type:        gq.Int,
+		Description: "Если не равно 0, пользователь отключен",
+	},
 }
 
 var groupAppRoleFields = gq.Fields{
@@ -123,6 +149,24 @@ var groupAppRoleFields = gq.Fields{
 	"rolename": &gq.Field{
 		Type:        gq.String,
 		Description: "Роль группы в приложении",
+	},
+
+	"group_groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя группы",
+	},
+	"group_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание группы",
+	},
+
+	"app_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание приложения",
+	},
+	"app_url": &gq.Field{
+		Type:        gq.String,
+		Description: "URL приложения",
 	},
 }
 
