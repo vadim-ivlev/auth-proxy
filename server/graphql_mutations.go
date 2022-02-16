@@ -372,3 +372,81 @@ func clearAppCache(params graphql.ResolveParams) {
 	auth.Cache.Delete("is-" + app + "-public")
 	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
+
+//----------------------------------------------------------------
+func create_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Создать группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"groupname": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя группы (уникальное)",
+			},
+			"description": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Описание",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			panicIfEmpty(params.Args["groupname"], "Имя группы не должно быть пустым")
+			res, err := createRecord("groupname", params, "group", "group")
+			// if err == nil {
+			// 	clearGroupCache(params)
+			// }
+			return res, err
+		},
+	}
+}
+
+func update_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Обновить группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"groupname": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Имя группы (уникальное)",
+			},
+			"description": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Описание",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			id, _ := params.Args["id"].(int)
+			res, err := updateRecord(id, "id", params, "group", "group")
+			// if err == nil {
+			// 	clearGroupCache(params)
+			// }
+			return res, err
+		},
+	}
+}
+
+func delete_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Удалить группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			res, err := deleteRecord("id", params, "group", "group")
+			// if err == nil {
+			// 	clearGroupCache(params)
+			// }
+			return res, err
+		},
+	}
+}
