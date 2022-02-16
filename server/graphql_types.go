@@ -413,3 +413,14 @@ var oauthProviderObject = gq.NewObject(gq.ObjectConfig{
 		},
 	},
 })
+
+var insertResultObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "InsertResult",
+	Description: "Результаты вставки записи",
+	Fields: gq.Fields{
+		"RowsAffected": &gq.Field{
+			Type:        gq.Int,
+			Description: "Количество порожденных записей",
+		},
+	},
+})
