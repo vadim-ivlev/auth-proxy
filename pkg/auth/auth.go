@@ -103,6 +103,7 @@ func GetAppURLs() (map[string][]string, error) {
 	return m, nil
 }
 
+// FIXME: add group roles (postresql view or function)
 // GetUserRoles возвращает массив ролей пользователя в заданном приложении.
 func GetUserRoles(user, app string) (roles []string) {
 	if user == "" {

@@ -101,6 +101,9 @@ TLS:%v
 %v://localhost:%v/schema
 %v://localhost:%v/graphql
 
+local test
+http://localhost:5000/?url=https://localhost:4400
+
 ━━━━━━━━━━ URLS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 `
