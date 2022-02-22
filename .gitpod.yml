@@ -10,6 +10,8 @@ tasks:
       echo '-----------------------------'
       alias d='docker'
       alias dc='docker-compose'
+      printf "alias d='docker'\n" >> ~/.bashrc
+      printf "alias dc='docker-compose'\n" >> ~/.bashrc
       echo '-----------------------------'
       mkdir -p ~/.config/fish/functions
       printf "function d\n  docker \$argv;\nend\n" > ~/.config/fish/functions/d.fish
