@@ -3,13 +3,17 @@ tasks:
   # - init: go get && go build ./... && go test ./...
   - init: |
       sudo apt install pgcli -y
+      echo '-----------------------------'
+      go get
+      echo '-----------------------------'
+      docker network create auth_proxy_network
+      echo '-----------------------------'
       alias d='docker'
       alias dc='docker-compose'
+      echo '-----------------------------'
       mkdir -p ~/.config/fish/functions
       printf "function d\n  docker \$argv;\nend\n" > ~/.config/fish/functions/d.fish
       printf "function dc\n  docker-compose \$argv;\nend\n" > ~/.config/fish/functions/dc.fish
-      docker network create auth_proxy_network
-      go get
     
     # command: go run
 
