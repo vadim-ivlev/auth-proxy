@@ -3,6 +3,8 @@ tasks:
   - before: |
       echo "before-------------------------"
       sudo apt install pgcli -y
+      brew install httpie ccat
+      docker-compose -f docker-compose-dev.yml pull
       echo '-----------------------------'
       go get
       echo '-----------------------------'
