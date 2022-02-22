@@ -9,6 +9,7 @@ import (
 	"auth-proxy/server"
 	"flag"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -103,11 +104,13 @@ TLS:%v
 
 local test
 http://localhost:5000/?url=https://localhost:4400
+gitpod workspace URL
+%v
 
 ━━━━━━━━━━ URLS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 `
-	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort)
+	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort, os.Getenv("GITPOD_WORKSPACE_URL"))
 	fmt.Println("Admin Url - >", app.Params.AdminUrl)
 	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
 	fmt.Printf("\n\n")
