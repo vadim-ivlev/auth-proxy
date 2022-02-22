@@ -5,11 +5,13 @@
 tasks:
   # - init: go get && go build ./... && go test ./...
   - init: |
-      echo 'hello1'
       sudo apt install pgcli -y
       alias d='docker'
       alias dc='docker-compose'
-      echo 'hello2'
+      mkdir -p ~/.config/fish/functions
+      printf "function d\n  docker \$argv;\nend\n" > ~/.config/fish/functions/d.fish
+      printf "function dc\n  docker-compose \$argv;\nend\n" > ~/.config/fish/functions/dc.fish
+
       go get
     
     # command: go run
