@@ -7,6 +7,8 @@ tasks:
   - init: |
       echo 'hello1'
       sudo apt install pgcli -y
+      alias d='docker'
+      alias dc='docker-compose'
       echo 'hello2'
       go get
     
