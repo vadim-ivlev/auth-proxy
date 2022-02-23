@@ -45,3 +45,5 @@ ports:
 vscode:
   extensions:
     - mikestead.dotenv
+    - streetsidesoftware.code-spell-checker
+    - streetsidesoftware.code-spell-checker-russian
