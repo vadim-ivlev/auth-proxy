@@ -2,7 +2,7 @@ buildstaging:
   extends: .docker_template
   stage: build
   tags:
-    - rgrustaging
+    - g10-3
   variables:
     NODE_ENV: staging
     PRJ: rg
@@ -13,7 +13,7 @@ deploystaging:
   extends: .docker_template
   stage: deploy
   tags:
-    - rgrustaging
+    - g10-3
   variables:
     PORT: 4400
     NODE_ENV: staging
