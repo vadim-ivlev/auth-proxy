@@ -444,6 +444,21 @@ GET https://auth-proxy.rg.ru/oauthproviders
 - Test  Url - > https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
+доступ к базе данных pgcli
+
+
+    pgcli -u pgadmin -d rgru -h 0.0.0.0 -p 5432
+
+В файле ~/.config/pgcli/config определить dsn
+
+    [alias_dsn]
+    auth = postgresql://pgadmin:159753@localhost:5432/rgru
+
+Запуск командой
+
+    pgcli -D auth
+    
+
 
 
 

@@ -10,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -81,6 +82,8 @@ func readCommandLineParams() (serverPort, config, pgconfig string, noIntrospecti
 
 // printGreetings печатаем приветственное сообщение
 func printGreetings(serverPort string, tls bool) {
+	gitpodurl := strings.Replace(os.Getenv("GITPOD_WORKSPACE_URL"), "://", "://"+serverPort+"-",1) 
+
 	protocol := "http"
 	if tls {
 		protocol = "https"
@@ -104,13 +107,14 @@ TLS:%v
 
 local test
 http://localhost:5000/?url=https://localhost:4400
-gitpod workspace URL
+
+GitPod URL
 %v
 
 ━━━━━━━━━━ URLS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 `
-	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort, os.Getenv("GITPOD_WORKSPACE_URL"))
+	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort, gitpodurl)
 	fmt.Println("Admin Url - >", app.Params.AdminUrl)
 	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
 	fmt.Printf("\n\n")
