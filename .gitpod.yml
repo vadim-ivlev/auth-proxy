@@ -3,7 +3,6 @@ tasks:
   - before: |
       echo "before-------------------------"
       sudo apt install pgcli -y
-      #brew install httpie ccat
       docker-compose -f docker-compose-dev.yml pull
       echo '-----------------------------'
       go get
@@ -20,6 +19,8 @@ tasks:
       printf "function dc\n  docker-compose \$argv;\nend\n" > ~/.config/fish/functions/dc.fish
       echo "end before-------------------------"
 
+    #  brew install httpie ccat
+    
   - init: |
       echo "init-------------------------"
     
