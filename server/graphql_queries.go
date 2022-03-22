@@ -395,6 +395,25 @@ func get_user() *graphql.Field {
 	}
 }
 
+func get_user_by_id() *graphql.Field {
+	return &graphql.Field{
+		Type:        userObject,
+		Description: "Показать пользователя",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "id пользователя",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			ArgToLowerCase(params, "username")
+			panicIfNotOwnerOrAdminOrAuditor(params)
+			fields := getSelectedFields([]string{"get_user_by_id"}, params)
+			return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE id = $1 ;`, params.Args["id"])
+		},
+	}
+}
+
 func get_logined_user() *graphql.Field {
 	return &graphql.Field{
 		Type:        userObject,

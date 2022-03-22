@@ -25,6 +25,7 @@ var queryObject = graphql.NewObject(graphql.ObjectConfig{
 		"is_captcha_required":    is_captcha_required(),
 		"is_pin_required":        is_pin_required(),
 		"get_user":               get_user(),
+		"get_user_by_id":         get_user_by_id(),
 		"get_logined_user":       get_logined_user(),
 		"get_app":                get_app(),
 		"list_user":              list_user(),
