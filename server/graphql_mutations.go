@@ -576,11 +576,15 @@ func delete_group_user_role() *graphql.Field {
 				Type:        graphql.NewNonNull(graphql.Int),
 				Description: "Идентификатор пользователя",
 			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя роли",
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
-			user_id, group_id := params.Args["user_id"], params.Args["group_id"]
-			res, err := db.QueryExec(`DELETE FROM group_user_role WHERE user_id = $1 AND group_id = $2 ;`, user_id, group_id)
+			user_id, group_id, rolename := params.Args["user_id"], params.Args["group_id"], params.Args["rolename"]
+			res, err := db.QueryExec(`DELETE FROM group_user_role WHERE user_id = $1 AND group_id = $2 AND rolename = $3;`, user_id, group_id, rolename)
 			if err != nil {
 				return nil, err
 			}
@@ -590,7 +594,7 @@ func delete_group_user_role() *graphql.Field {
 			}
 			clearGroupUserRolesCache(params)
 			clearGroupCache(params)
-			return map[string]interface{}{"user_id": user_id, "group_id": group_id}, nil
+			return map[string]interface{}{"user_id": user_id, "group_id": group_id, "rolename": rolename}, nil
 		},
 	}
 }

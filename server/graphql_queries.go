@@ -383,14 +383,14 @@ func get_user() *graphql.Field {
 		Args: graphql.FieldConfigArgument{
 			"username": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Имя пользователя",
+				Description: "Имя пользователя или email",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			ArgToLowerCase(params, "username")
 			panicIfNotOwnerOrAdminOrAuditor(params)
 			fields := getSelectedFields([]string{"get_user"}, params)
-			return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 ;`, params.Args["username"])
+			return db.QueryRowMap("SELECT "+fields+` FROM "user" WHERE username = $1 OR email = $1 ;`, params.Args["username"])
 		},
 	}
 }

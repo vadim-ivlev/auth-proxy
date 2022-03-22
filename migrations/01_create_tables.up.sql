@@ -105,9 +105,9 @@ ALTER SEQUENCE group_id_sequence OWNED BY "group".id;
 CREATE TABLE IF NOT EXISTS group_user_role (
     group_id int NOT NULL,
     user_id int NOT NULL,
-    rolename text,
+    rolename text NOT NULL DEFAULT 'member',
 
-    CONSTRAINT group_user_role_pkey PRIMARY KEY (group_id, user_id),
+    CONSTRAINT group_user_role_pkey PRIMARY KEY (group_id, user_id, rolename),
     CONSTRAINT group_user_role_fk_u FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE,
     CONSTRAINT group_user_role_fk_g FOREIGN KEY (group_id)  REFERENCES "group" (id)  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
 );
