@@ -52,6 +52,7 @@ CREATE VIEW group_app_role_extended AS
         g.groupname   AS group_groupname,
         g.description AS group_description,
 
+        a.appname      AS app_appname,
         a.description  AS app_description,
         a.url          AS app_url
            

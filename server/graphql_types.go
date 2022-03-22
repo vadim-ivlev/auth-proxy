@@ -55,9 +55,13 @@ var userFields = gq.Fields{
 }
 
 var appFields = gq.Fields{
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Уникальный атогенерируемый идентификатор",
+	},
 	"appname": &gq.Field{
 		Type:        gq.String,
-		Description: "Уникальный идентификатор приложения",
+		Description: "Уникальное имя приложения",
 	},
 	"description": &gq.Field{
 		Type:        gq.String,
@@ -160,6 +164,10 @@ var groupAppRoleFields = gq.Fields{
 		Description: "Описание группы",
 	},
 
+	"app_appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя приложения",
+	},
 	"app_description": &gq.Field{
 		Type:        gq.String,
 		Description: "Описание приложения",
@@ -173,11 +181,11 @@ var groupAppRoleFields = gq.Fields{
 var appUserRoleFields = gq.Fields{
 	"appname": &gq.Field{
 		Type:        gq.String,
-		Description: "Идентификатор приложения",
+		Description: "Имя приложения",
 	},
 	"username": &gq.Field{
 		Type:        gq.String,
-		Description: "Идентификатор пользователя",
+		Description: "Имя пользователя",
 	},
 	"rolename": &gq.Field{
 		Type:        gq.String,
