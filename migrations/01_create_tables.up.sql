@@ -82,10 +82,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS user_id_unique_idx ON "user" (id);
 -- добавляем id в app
 CREATE SEQUENCE IF NOT EXISTS app_id_sequence START 101;
 ALTER TABLE "app" ADD COLUMN IF NOT EXISTS id integer NOT NULL DEFAULT nextval('app_id_sequence');
-ALTER TABLE "app" DROP CONSTRAINT IF EXISTS app_unique_id_constraint CASCADE;
-ALTER TABLE "app" ADD CONSTRAINT app_unique_id_constraint UNIQUE (id);
 ALTER SEQUENCE app_id_sequence OWNED BY app.id;
-
+-- ALTER TABLE "app" DROP CONSTRAINT IF EXISTS app_unique_id_constraint CASCADE;
+-- ALTER TABLE "app" ADD CONSTRAINT app_unique_id_constraint UNIQUE (id);
+CREATE UNIQUE INDEX IF NOT EXISTS app_id_unique_idx ON "app" (id);
 
 -- Группа 
 CREATE SEQUENCE IF NOT EXISTS group_id_sequence START 101;
