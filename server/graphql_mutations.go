@@ -5,7 +5,6 @@ import (
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -374,6 +373,10 @@ func clearAppCache(params graphql.ResolveParams) {
 	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
 
+func clearCache() {
+	auth.Cache.Flush()
+}
+
 //----------------------------------------------------------------
 func create_group() *graphql.Field {
 	return &graphql.Field{
@@ -394,7 +397,8 @@ func create_group() *graphql.Field {
 			panicIfEmpty(params.Args["groupname"], "Имя группы не должно быть пустым")
 			res, err := createRecord("groupname", params, "group", "group")
 			if err == nil {
-				clearGroupCache(params)
+				// clearGroupCache(params)
+				clearCache()
 			}
 			return res, err
 		},
@@ -424,7 +428,8 @@ func update_group() *graphql.Field {
 			id, _ := params.Args["id"].(int)
 			res, err := updateRecord(id, "id", params, "group", "group")
 			if err == nil {
-				clearGroupCache(params)
+				// clearGroupCache(params)
+				clearCache()
 			}
 			return res, err
 		},
@@ -445,7 +450,8 @@ func delete_group() *graphql.Field {
 			panicIfNotAdmin(params)
 			res, err := deleteRecord("id", params, "group", "group")
 			if err == nil {
-				clearGroupCache(params)
+				// clearGroupCache(params)
+				clearCache()
 			}
 			return res, err
 		},
@@ -477,8 +483,9 @@ func create_group_app_role() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
-			clearGroupAppRolesCache(params)
-			clearGroupCache(params)
+			// clearGroupAppRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
 			return map[string]interface{}{
 				"app_id":   params.Args["app_id"],
 				"group_id": params.Args["group_id"],
@@ -520,8 +527,9 @@ func delete_group_app_role() *graphql.Field {
 			if rowsAffected == 0 {
 				return nil, errors.New("no records to delete")
 			}
-			clearGroupAppRolesCache(params)
-			clearGroupCache(params)
+			// clearGroupAppRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
 			return map[string]interface{}{"app_id": app_id, "group_id": group_id, "rolename": rolename}, nil
 		},
 	}
@@ -551,8 +559,9 @@ func create_group_user_role() *graphql.Field {
 			if err != nil {
 				return nil, err
 			}
-			clearGroupUserRolesCache(params)
-			clearGroupCache(params)
+			// clearGroupUserRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
 			return map[string]interface{}{
 				"user_id":  params.Args["user_id"],
 				"group_id": params.Args["group_id"],
@@ -592,26 +601,27 @@ func delete_group_user_role() *graphql.Field {
 			if rowsAffected == 0 {
 				return nil, errors.New("no records to delete")
 			}
-			clearGroupUserRolesCache(params)
-			clearGroupCache(params)
+			// clearGroupUserRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
 			return map[string]interface{}{"user_id": user_id, "group_id": group_id, "rolename": rolename}, nil
 		},
 	}
 }
 
-func clearGroupAppRolesCache(params graphql.ResolveParams) {
-	cacheKey := fmt.Sprintf("group%d-app%d-roles", params.Args["group_id"].(int), params.Args["app_id"].(int))
-	auth.Cache.Delete(cacheKey)
-}
+// func clearGroupAppRolesCache(params graphql.ResolveParams) {
+// 	cacheKey := fmt.Sprintf("group%d-app%d-roles", params.Args["group_id"].(int), params.Args["app_id"].(int))
+// 	auth.Cache.Delete(cacheKey)
+// }
 
-func clearGroupCache(params graphql.ResolveParams) {
-	group_id, _ := params.Args["group_id"].(int)
-	k := fmt.Sprintf("group-%d", group_id)
-	auth.Cache.Delete(k + "-info")
-	auth.Cache.Delete(k + "-enabled")
-}
+// func clearGroupCache(params graphql.ResolveParams) {
+// 	group_id, _ := params.Args["group_id"].(int)
+// 	k := fmt.Sprintf("group-%d", group_id)
+// 	auth.Cache.Delete(k + "-info")
+// 	auth.Cache.Delete(k + "-enabled")
+// }
 
-func clearGroupUserRolesCache(params graphql.ResolveParams) {
-	cacheKey := fmt.Sprintf("group%d-user%d-roles", params.Args["group_id"].(int), params.Args["user_id"].(int))
-	auth.Cache.Delete(cacheKey)
-}
+// func clearGroupUserRolesCache(params graphql.ResolveParams) {
+// 	cacheKey := fmt.Sprintf("group%d-user%d-roles", params.Args["group_id"].(int), params.Args["user_id"].(int))
+// 	auth.Cache.Delete(cacheKey)
+// }

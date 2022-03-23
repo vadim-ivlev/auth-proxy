@@ -857,7 +857,7 @@ func QueryEnd(params graphql.ResolveParams, fieldList string) (wherePart string,
 func getListOfAllowedAppNames(userName string) string {
 	slice, err := db.QuerySliceMap(`
 		SELECT DISTINCT appname
-		FROM app_user_role
+		FROM app_user_role_union
 		WHERE username = $1
 		UNION
 		SELECT appname FROM app WHERE public = 'Y';	

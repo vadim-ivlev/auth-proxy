@@ -103,13 +103,12 @@ func GetAppURLs() (map[string][]string, error) {
 	return m, nil
 }
 
-// FIXME: add group roles (postresql view or function)
 // GetUserRoles возвращает массив ролей пользователя в заданном приложении.
 func GetUserRoles(user, app string) (roles []string) {
 	if user == "" {
 		return
 	}
-	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role WHERE  appname  = $1 AND username = $2 `, app, user)
+	records, err := db.QuerySliceMap(`SELECT rolename FROM app_user_role_union WHERE  appname  = $1 AND username = $2 `, app, user)
 	if err != nil {
 		return
 	}
@@ -198,7 +197,7 @@ func GetUserInfoString(user, app string) string {
 
 // AppUserRoleExist проверят наличие связки appname-username-rolename в таблице app_user_role.
 func AppUserRoleExist(appname, username, rolename string) bool {
-	_, err := db.QueryRowMap(`SELECT * FROM  app_user_role  
+	_, err := db.QueryRowMap(`SELECT * FROM  app_user_role_union  
 		WHERE appname = $1 AND username = $2 AND rolename = $3 ;`,
 		appname, username, rolename)
 	return err == nil
