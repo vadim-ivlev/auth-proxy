@@ -519,7 +519,7 @@ GET https://auth-proxy.rg.ru/oauthproviders
 Если фронтэнд разработчики используют Chrome
 им возможно придется установить флаг браузера,
 чтобы он допускал самоподписанные сертификаты на localhost.
-Сделать это можно набрав в строке браузера
+
 
     chrome://flags/#allow-insecure-localhost
 

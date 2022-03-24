@@ -1,0 +1,82 @@
+version: '3.1'
+
+services:
+
+  # сервер, где запущено приложение
+  auth-proxy-front:
+    # image: rgru/auth-proxy:latest
+    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:test
+    container_name: auth-proxy-front
+    restart: unless-stopped
+    ports:
+      - 4400:4400
+    depends_on:
+      - postgres
+      
+    # Параметры приложения и базы данных можно установить в переменных окружения.
+    # Текущие параметры показаны в логе при старте приложения.
+    # Полный список параметров в репозитории  configs/app.env.front и configs/db.env.front
+    environment:
+      # # база данных ---ї--------------
+      # - PG_HOST=postgres
+      # - PG_PORT=5432
+      # - PG_USER=pgadmin
+      # - PG_PASSWORD=159753
+      # - PG_DATABASE=rgru
+      # - PG_SEARCH_PATH=auth,extensions
+      # # приложение ------------------
+      # - cookie_name=auth-proxy-front
+      # - app_name=auth-proxy-front
+      # - tls=true
+      # - secure=true
+      # - selfreg=false
+      # - use_captcha=true
+      # - use_pin=false
+      # - max_attempts=5
+      # - reset_time=60
+      # - confirm_email_url=https://localhost:4400/confirm-email/
+      # - entry_point=https://www.rg.ru
+      # - smtp_address=auth-mail:1025
+      # - from=noreply@rg.ru
+      - admin_url=https://auth-admin-test.vercel.app/?url=https://localhost:4400
+      # - graphql_test_url=https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
+    
+    # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки 
+    # command: bash -c "cd /app && ./auth-proxy -port 4400  -config=shared_dir/myapp.env -pgconfig=shared_dir/mydb.env" 
+    # command: ["sleep", "3000"]
+    # command: bash -c "echo hello1 && echo hello2 && sleep 3000"
+  
+
+
+  # база данных Postgres 
+  postgres:
+    image: postgres:10.9-alpine
+    container_name: postgres
+    restart: unless-stopped
+    # ports:
+    #   - 5432:5432
+    environment:
+      POSTGRES_USER: pgadmin
+      POSTGRES_PASSWORD: 159753
+      POSTGRES_DB: rgru 
+      PGDATA: /var/lib/postgresql/data/pgdata
+  
+  # сервис тестирования отправки почты
+  # Письма смотреть по адресу: http://localhost:8025/
+  auth-mail:
+    image: mailhog/mailhog
+    container_name: auth-mail-dev
+    ports:
+      - 1025:1025
+      - 8025:8025
+
+
+# внешняя сеть добавлена, чтобы можно было проксировать или обращаться к приложениям по именам служб,
+# прописанных в файлах docker-compose.yml этих приложений, если конечно эти приложения так же 
+# входят в подсеть auth_proxy_network.
+#  В противном случае придётся прописывать IP адреса приложений, 
+# что неудобно при переносе приложений или их перезапуске. 
+networks:
+  default:
+    external: true
+    name: auth_proxy_network    
