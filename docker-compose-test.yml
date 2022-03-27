@@ -38,7 +38,8 @@ services:
       # - entry_point=https://www.rg.ru
       # - smtp_address=auth-mail:1025
       # - from=noreply@rg.ru
-      - admin_url=https://auth-admin-test.vercel.app/?url=http://localhost:4400
+      # - admin_url=https://auth-admin-test.vercel.app/?url=http://localhost:4400
+      - admin_url=https://localhost:4300/?url=http://localhost:4400
       # - graphql_test_url=https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
     
     # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки 
@@ -69,6 +70,16 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+
+
+
+  auth-admin:
+    image: vadimivlev/auth-admin:front
+    container_name: auth-admin
+    restart: unless-stopped
+    ports:
+      - 4300:80
+
 
 
 # внешняя сеть добавлена, чтобы можно было проксировать или обращаться к приложениям по именам служб,
