@@ -511,8 +511,7 @@ GET https://auth-proxy.rg.ru/oauthproviders
 Сборка для фронтэнд разработчиков
 ----------------------------------------------
 
-    sh/build-front-container.sh
-    sh/build-public-container.sh
+    sh/build-frontend-container.sh
 
 ## Браузер Chrome и localhost
 
