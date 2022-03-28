@@ -141,6 +141,8 @@ END $$;
 
 
 -- Группы ---------------------------------------------------------
+DO $$
+BEGIN
 
 INSERT INTO "group"
 (id, groupname       , description)
@@ -149,12 +151,28 @@ VALUES
 (2 ,'guests'         , 'Посетители')            ,
 (3 ,'developers'     , 'Разработчики');
 
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group уже существуют.';
+END $$;
+
+
+
+
+DO $$
+BEGIN
+
 INSERT INTO group_app_role 
 (group_id, app_id, rolename)
 VALUES 
 (1, 0, 'authadmin'),
 (2, 1, 'guestrole1'),
 (2, 1, 'guestrole2');
+
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group_app_role уже существуют.';
+END $$;
+
+
+DO $$
+BEGIN
 
 INSERT INTO group_user_role 
 (group_id, user_id)
@@ -164,6 +182,9 @@ VALUES
 (1, 7),
 (2, 3),
 (2, 7);
+
+EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group_user_role уже существуют.';
+END $$;
 
 
 -- EXCEPTION WHEN OTHERS THEN 

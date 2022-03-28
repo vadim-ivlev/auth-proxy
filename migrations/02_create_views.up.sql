@@ -3,7 +3,7 @@
 
 -- Расширенное представление основной таблицы
 -- С дополнительными полями из справочных таблиц 
-DROP VIEW IF EXISTS app_user_role_extended;
+DROP VIEW IF EXISTS app_user_role_extended CASCADE;
 CREATE VIEW app_user_role_extended AS
     SELECT 
         aur.appname    AS appname,
@@ -24,7 +24,7 @@ CREATE VIEW app_user_role_extended AS
     INNER JOIN app       AS a   ON aur.appname  = a.appname
 ;
 
-DROP VIEW IF EXISTS group_user_role_extended;
+DROP VIEW IF EXISTS group_user_role_extended CASCADE;
 CREATE VIEW group_user_role_extended AS
     SELECT 
         gu.group_id   AS group_id,
@@ -45,7 +45,7 @@ CREATE VIEW group_user_role_extended AS
     JOIN "user" u           ON u.id = gu.user_id
 ;
 
-DROP VIEW IF EXISTS group_app_role_extended;
+DROP VIEW IF EXISTS group_app_role_extended CASCADE;
 CREATE VIEW group_app_role_extended AS
     SELECT 
         ga.group_id   AS group_id,
@@ -77,7 +77,7 @@ CREATE VIEW app_group_user_role AS
  ;
 
 -- объединенная таблица ролей пользователя в приложении
-DROP VIEW IF EXISTS app_user_role_union ;
+DROP VIEW IF EXISTS app_user_role_union CASCADE;
 CREATE VIEW app_user_role_union AS
 	SELECT * FROM app_group_user_role 
 	UNION
