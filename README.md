@@ -122,7 +122,7 @@ https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru
 
 ## Модель данных
 
-Ядром авторизации служит таблица **app_user_role**, с полями **usernamе, appname, rolename** 
+Ядром авторизации служит таблица **app_user_role** (и представление **app_user_role_union**), с полями **usernamе, appname, rolename** 
 для хранения идентификатора пользователя, имени приложения и роли пользователя в этом приложении. 
 Пользователь может выполнять несколько ролей в конкретном приложении. 
 В этом случае под каждую роль в таблице заводится отдельная запись.
@@ -143,11 +143,9 @@ https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru
 
 Таблица `app` используется для проксирования запросов к конечным приложениям и помимо прочего содержит IP адрес конечного приложения, возможно недоступный с компьютера клиента.
 
+Полная схема
 
-Таблицы БД восстанавливаются и наполняются тестовыми данными при каждом запуске приложения. Тестовые данные помечены словом test.
-
-Для обеспечения ссылочной целостности на таблицы наложены ограничения внешних ключей с каскадным удалением из подчиненных таблиц. На ключи построены индексы.
-
+![alt_text](templates/images/db_schema.png "image_tooltip")
 
 
 
@@ -444,6 +442,21 @@ GET https://auth-proxy.rg.ru/oauthproviders
 - Test  Url - > https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
+доступ к базе данных pgcli
+
+
+    pgcli -u pgadmin -d rgru -h 0.0.0.0 -p 5432
+
+В файле ~/.config/pgcli/config определить dsn
+
+    [alias_dsn]
+    auth = postgresql://pgadmin:159753@localhost:5432/rgru
+
+Запуск командой
+
+    pgcli -D auth
+    
+
 
 
 
@@ -506,7 +519,7 @@ GET https://auth-proxy.rg.ru/oauthproviders
 Если фронтэнд разработчики используют Chrome
 им возможно придется установить флаг браузера,
 чтобы он допускал самоподписанные сертификаты на localhost.
-Сделать это можно набрав в строке браузера
+
 
     chrome://flags/#allow-insecure-localhost
 

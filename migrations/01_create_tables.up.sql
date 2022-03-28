@@ -76,3 +76,52 @@ CREATE UNIQUE INDEX IF NOT EXISTS user_id_unique_idx ON "user" (id);
 -- CREATE INDEX IF NOT EXISTS app_textsearch_idx ON "app" USING gin (to_tsvector('russian', appname || ' ' || description ));
 
 
+
+-- GROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPSGROUPS
+
+-- добавляем id в app
+CREATE SEQUENCE IF NOT EXISTS app_id_sequence START 101;
+ALTER TABLE "app" ADD COLUMN IF NOT EXISTS id integer NOT NULL DEFAULT nextval('app_id_sequence');
+ALTER SEQUENCE app_id_sequence OWNED BY app.id;
+-- ALTER TABLE "app" DROP CONSTRAINT IF EXISTS app_unique_id_constraint CASCADE;
+-- ALTER TABLE "app" ADD CONSTRAINT app_unique_id_constraint UNIQUE (id);
+CREATE UNIQUE INDEX IF NOT EXISTS app_id_unique_idx ON "app" (id);
+
+-- Группа 
+CREATE SEQUENCE IF NOT EXISTS group_id_sequence START 101;
+CREATE TABLE IF NOT EXISTS "group" (
+    id integer NOT NULL DEFAULT nextval('group_id_sequence'),
+    groupname text NOT NULL,
+    description text,
+    disabled integer NOT NULL DEFAULT 0,
+
+    CONSTRAINT group_pkey PRIMARY KEY (id),
+    UNIQUE (groupname)
+);
+ALTER SEQUENCE group_id_sequence OWNED BY "group".id;
+
+
+-- Роль пользователя в группе
+CREATE TABLE IF NOT EXISTS group_user_role (
+    group_id int NOT NULL,
+    user_id int NOT NULL,
+    rolename text NOT NULL DEFAULT 'member',
+
+    CONSTRAINT group_user_role_pkey PRIMARY KEY (group_id, user_id, rolename),
+    CONSTRAINT group_user_role_fk_u FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE,
+    CONSTRAINT group_user_role_fk_g FOREIGN KEY (group_id)  REFERENCES "group" (id)  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
+);
+
+
+-- Роль группы в приложении
+CREATE TABLE IF NOT EXISTS group_app_role (
+    group_id int NOT NULL,
+    app_id int NOT NULL,
+    rolename text NOT NULL
+
+    ,CONSTRAINT group_app_role_pkey PRIMARY KEY (group_id, app_id, rolename)
+    ,CONSTRAINT group_app_role_fk_g FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
+    ,CONSTRAINT group_app_role_fk_a FOREIGN KEY (app_id)  REFERENCES "app" (id)  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
+);
+
+

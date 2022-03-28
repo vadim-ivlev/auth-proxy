@@ -1,0 +1,50 @@
+
+tasks:
+  - before: |
+      echo "before-------------------------"
+      sudo apt install pgcli -y
+      docker-compose -f docker-compose-dev.yml pull
+      echo '-----------------------------'
+      go get
+      echo '-----------------------------'
+      docker network create auth_proxy_network
+      echo '-----------------------------'
+      alias d='docker'
+      alias dc='docker-compose'
+      printf "alias d='docker'\n" >> ~/.bashrc
+      printf "alias dc='docker-compose'\n" >> ~/.bashrc
+      echo '-----------------------------'
+      mkdir -p ~/.config/fish/functions
+      printf "function d\n  docker \$argv;\nend\n" > ~/.config/fish/functions/d.fish
+      printf "function dc\n  docker-compose \$argv;\nend\n" > ~/.config/fish/functions/dc.fish
+      echo "end before-------------------------"
+
+    #  brew install httpie ccat
+    
+  - init: |
+      echo "init-------------------------"
+    
+    # command: go run
+
+ports:
+  - port: 4400
+    visibility: public
+    onOpen: ignore
+  - port: 5432
+    visibility: public
+    onOpen: ignore
+  - port: 1025
+    visibility: public
+    onOpen: ignore
+  - port: 8025
+    visibility: public
+    onOpen: ignore
+  - port: 8000
+    visibility: public
+    onOpen: ignore
+
+vscode:
+  extensions:
+    - mikestead.dotenv
+    - streetsidesoftware.code-spell-checker
+    - streetsidesoftware.code-spell-checker-russian

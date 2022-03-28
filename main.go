@@ -9,6 +9,8 @@ import (
 	"auth-proxy/server"
 	"flag"
 	"fmt"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -80,6 +82,8 @@ func readCommandLineParams() (serverPort, config, pgconfig string, noIntrospecti
 
 // printGreetings печатаем приветственное сообщение
 func printGreetings(serverPort string, tls bool) {
+	gitpodurl := strings.Replace(os.Getenv("GITPOD_WORKSPACE_URL"), "://", "://"+serverPort+"-", 1)
+
 	protocol := "http"
 	if tls {
 		protocol = "https"
@@ -101,10 +105,16 @@ TLS:%v
 %v://localhost:%v/schema
 %v://localhost:%v/graphql
 
+local test
+http://localhost:5000/?url=%v://localhost:4400
+
+GitPod URL
+%v
+
 ━━━━━━━━━━ URLS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 `
-	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort)
+	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort, protocol, gitpodurl)
 	fmt.Println("Admin Url - >", app.Params.AdminUrl)
 	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
 	fmt.Printf("\n\n")

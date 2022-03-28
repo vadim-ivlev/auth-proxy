@@ -26,7 +26,7 @@ var userFields = gq.Fields{
 	},
 	"description": &gq.Field{
 		Type:        gq.String,
-		Description: "Дополнительная информация",
+		Description: "Описание пользователя",
 	},
 	"disabled": &gq.Field{
 		Type:        gq.Int,
@@ -55,9 +55,13 @@ var userFields = gq.Fields{
 }
 
 var appFields = gq.Fields{
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Уникальный атогенерируемый идентификатор",
+	},
 	"appname": &gq.Field{
 		Type:        gq.String,
-		Description: "Уникальный идентификатор приложения",
+		Description: "Уникальное имя приложения",
 	},
 	"description": &gq.Field{
 		Type:        gq.String,
@@ -81,14 +85,107 @@ var appFields = gq.Fields{
 	},
 }
 
+var groupFields = gq.Fields{
+	"id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Уникальный идентификатор группы",
+	},
+	"groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Уникальное  имя группы",
+	},
+	"description": &gq.Field{
+		Type:        gq.String,
+		Description: "Дополнительная информация",
+	},
+}
+
+var groupUserRoleFields = gq.Fields{
+	"group_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор группы",
+	},
+	"user_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор пользователя",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль пользователя в группе",
+	},
+
+	"group_groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя группы",
+	},
+	"group_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание группы",
+	},
+
+	"user_email": &gq.Field{
+		Type:        gq.String,
+		Description: "Email пользователя",
+	},
+	"user_fullname": &gq.Field{
+		Type:        gq.String,
+		Description: "Фамилия Имя пользователя",
+	},
+	"user_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание пользователя",
+	},
+	"user_disabled": &gq.Field{
+		Type:        gq.Int,
+		Description: "Если не равно 0, пользователь отключен",
+	},
+}
+
+var groupAppRoleFields = gq.Fields{
+	"group_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор группы",
+	},
+	"app_id": &gq.Field{
+		Type:        gq.Int,
+		Description: "Идентификатор приложения",
+	},
+	"rolename": &gq.Field{
+		Type:        gq.String,
+		Description: "Роль группы в приложении",
+	},
+
+	"group_groupname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя группы",
+	},
+	"group_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание группы",
+	},
+
+	"app_appname": &gq.Field{
+		Type:        gq.String,
+		Description: "Имя приложения",
+	},
+	"app_description": &gq.Field{
+		Type:        gq.String,
+		Description: "Описание приложения",
+	},
+	"app_url": &gq.Field{
+		Type:        gq.String,
+		Description: "URL приложения",
+	},
+}
+
 var appUserRoleFields = gq.Fields{
 	"appname": &gq.Field{
 		Type:        gq.String,
-		Description: "Идентификатор приложения",
+		Description: "Имя приложения",
 	},
 	"username": &gq.Field{
 		Type:        gq.String,
-		Description: "Идентификатор пользователя",
+		Description: "Имя пользователя",
 	},
 	"rolename": &gq.Field{
 		Type:        gq.String,
@@ -160,6 +257,17 @@ var listAppFields = gq.Fields{
 	},
 }
 
+var listGroupFields = gq.Fields{
+	"length": &gq.Field{
+		Type:        gq.Int,
+		Description: "Количество элементов в списке",
+	},
+	"list": &gq.Field{
+		Type:        gq.NewList(groupObject),
+		Description: "Список групп",
+	},
+}
+
 // TYPES ****************************************************
 
 var userObject = gq.NewObject(gq.ObjectConfig{
@@ -172,6 +280,24 @@ var appObject = gq.NewObject(gq.ObjectConfig{
 	Name:        "App",
 	Description: "Приложение к которому требуется авторизация",
 	Fields:      appFields,
+})
+
+var groupObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "Group",
+	Description: "Группа пользователей",
+	Fields:      groupFields,
+})
+
+var groupUserRoleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "GroupUserRole",
+	Description: "Роль пользователя в группе",
+	Fields:      groupUserRoleFields,
+})
+
+var groupAppRoleObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "GroupAppRole",
+	Description: "Роль группы в приложении",
+	Fields:      groupAppRoleFields,
 })
 
 var appUserRoleObject = gq.NewObject(gq.ObjectConfig{
@@ -198,6 +324,12 @@ var listAppGQType = gq.NewObject(gq.ObjectConfig{
 	Name:        "ListApp",
 	Description: "Список приложений и их количество",
 	Fields:      listAppFields,
+})
+
+var listGroupGQType = gq.NewObject(gq.ObjectConfig{
+	Name:        "ListGroup",
+	Description: "Список групп и их количество",
+	Fields:      listGroupFields,
 })
 
 // AUTH messages
@@ -330,6 +462,17 @@ var oauthProviderObject = gq.NewObject(gq.ObjectConfig{
 		"logout_endpoint": &gq.Field{
 			Type:        gq.String,
 			Description: "URI точки выхода в систему аутентификации",
+		},
+	},
+})
+
+var insertResultObject = gq.NewObject(gq.ObjectConfig{
+	Name:        "InsertResult",
+	Description: "Результаты вставки записи",
+	Fields: gq.Fields{
+		"RowsAffected": &gq.Field{
+			Type:        gq.Int,
+			Description: "Количество порожденных записей",
 		},
 	},
 })

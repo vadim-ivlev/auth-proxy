@@ -11,12 +11,13 @@
             "mode": "auto",
             // "program": "${fileDirname}",
             "program": "${workspaceRoot}",
-            "env": {},
-            "envFile": "${workspaceFolder}/.env",
+            "env": {"admin_url":"http://localhost:5000/?url=http://localhost:4400"},
+            // "envFile": "${workspaceFolder}/.env",
             "args": [
                 "-port",
                 "4400",
-                "-env=dev"
+                "-config=./configs/app.env.dev",
+                "-pgconfig=./configs/db.env.dev"
             ]
         }
     ]

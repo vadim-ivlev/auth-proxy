@@ -372,3 +372,256 @@ func clearAppCache(params graphql.ResolveParams) {
 	auth.Cache.Delete("is-" + app + "-public")
 	auth.Cache.Delete("is-request-to-" + app + "-signed")
 }
+
+func clearCache() {
+	auth.Cache.Flush()
+}
+
+//----------------------------------------------------------------
+func create_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Создать группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"groupname": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя группы (уникальное)",
+			},
+			"description": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Описание",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			panicIfEmpty(params.Args["groupname"], "Имя группы не должно быть пустым")
+			res, err := createRecord("groupname", params, "group", "group")
+			if err == nil {
+				// clearGroupCache(params)
+				clearCache()
+			}
+			return res, err
+		},
+	}
+}
+
+func update_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Обновить группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"groupname": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Имя группы (уникальное)",
+			},
+			"description": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Описание",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			id, _ := params.Args["id"].(int)
+			res, err := updateRecord(id, "id", params, "group", "group")
+			if err == nil {
+				// clearGroupCache(params)
+				clearCache()
+			}
+			return res, err
+		},
+	}
+}
+
+func delete_group() *graphql.Field {
+	return &graphql.Field{
+		Description: "Удалить группу",
+		Type:        groupObject,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			res, err := deleteRecord("id", params, "group", "group")
+			if err == nil {
+				// clearGroupCache(params)
+				clearCache()
+			}
+			return res, err
+		},
+	}
+}
+
+func create_group_app_role() *graphql.Field {
+	return &graphql.Field{
+		Description: "Создать роль группы для приложения",
+		Type:        groupAppRoleObject,
+		// Type: insertResultObject,
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"app_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор приложения",
+			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя роли",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			_, err := db.CreateRow("group_app_role", params.Args)
+			if err != nil {
+				return nil, err
+			}
+			// clearGroupAppRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
+			return map[string]interface{}{
+				"app_id":   params.Args["app_id"],
+				"group_id": params.Args["group_id"],
+				"rolename": params.Args["rolename"],
+			}, nil
+
+		},
+	}
+}
+
+func delete_group_app_role() *graphql.Field {
+	return &graphql.Field{
+		Description: "Удалить роль пользователя для приложения",
+		Type:        groupAppRoleObject,
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"app_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор приложения",
+			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя роли",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			app_id, group_id, rolename := params.Args["app_id"], params.Args["group_id"], params.Args["rolename"]
+
+			res, err := db.QueryExec(
+				`DELETE FROM group_app_role WHERE app_id = $1 AND group_id = $2 AND rolename = $3 ;`, app_id, group_id, rolename)
+			if err != nil {
+				return nil, err
+			}
+			rowsAffected, _ := res.RowsAffected()
+			if rowsAffected == 0 {
+				return nil, errors.New("no records to delete")
+			}
+			// clearGroupAppRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
+			return map[string]interface{}{"app_id": app_id, "group_id": group_id, "rolename": rolename}, nil
+		},
+	}
+}
+
+func create_group_user_role() *graphql.Field {
+	return &graphql.Field{
+		Description: "Добавить пользователя в группу",
+		Type:        groupUserRoleObject,
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"user_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор пользователя",
+			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Имя роли",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			_, err := db.CreateRow("group_user_role", params.Args)
+			if err != nil {
+				return nil, err
+			}
+			// clearGroupUserRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
+			return map[string]interface{}{
+				"user_id":  params.Args["user_id"],
+				"group_id": params.Args["group_id"],
+				"rolename": params.Args["rolename"],
+			}, nil
+
+		},
+	}
+}
+
+func delete_group_user_role() *graphql.Field {
+	return &graphql.Field{
+		Description: "Удалить пользователя из группы",
+		Type:        groupUserRoleObject,
+		Args: graphql.FieldConfigArgument{
+			"group_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор группы",
+			},
+			"user_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.Int),
+				Description: "Идентификатор пользователя",
+			},
+			"rolename": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Имя роли",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			panicIfNotAdmin(params)
+			user_id, group_id, rolename := params.Args["user_id"], params.Args["group_id"], params.Args["rolename"]
+			res, err := db.QueryExec(`DELETE FROM group_user_role WHERE user_id = $1 AND group_id = $2 AND rolename = $3;`, user_id, group_id, rolename)
+			if err != nil {
+				return nil, err
+			}
+			rowsAffected, _ := res.RowsAffected()
+			if rowsAffected == 0 {
+				return nil, errors.New("no records to delete")
+			}
+			// clearGroupUserRolesCache(params)
+			// clearGroupCache(params)
+			clearCache()
+			return map[string]interface{}{"user_id": user_id, "group_id": group_id, "rolename": rolename}, nil
+		},
+	}
+}
+
+// func clearGroupAppRolesCache(params graphql.ResolveParams) {
+// 	cacheKey := fmt.Sprintf("group%d-app%d-roles", params.Args["group_id"].(int), params.Args["app_id"].(int))
+// 	auth.Cache.Delete(cacheKey)
+// }
+
+// func clearGroupCache(params graphql.ResolveParams) {
+// 	group_id, _ := params.Args["group_id"].(int)
+// 	k := fmt.Sprintf("group-%d", group_id)
+// 	auth.Cache.Delete(k + "-info")
+// 	auth.Cache.Delete(k + "-enabled")
+// }
+
+// func clearGroupUserRolesCache(params graphql.ResolveParams) {
+// 	cacheKey := fmt.Sprintf("group%d-user%d-roles", params.Args["group_id"].(int), params.Args["user_id"].(int))
+// 	auth.Cache.Delete(cacheKey)
+// }
