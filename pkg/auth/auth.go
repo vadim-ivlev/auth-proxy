@@ -119,19 +119,28 @@ func GetUserRoles(user, app string) (roles []string) {
 	return
 }
 
-// GetUserGroups возвращает массив групп пользователя.
-func GetUserGroups(username string) (groups []string) {
+// GetUserGroupsString возвращает строковое представление групп пользователя.
+func GetUserGroupsString(username string) (groupsString string) {
+	groupsString = "[]"
 	if username == "" {
 		return
 	}
-	records, err := db.QuerySliceMap(`SELECT group_groupname FROM group_user_role_extended WHERE  user_username  = $1 ;`, username)
+	records, err := db.QuerySliceMap(`SELECT DISTINCT group_groupname FROM group_user_role_extended WHERE  user_username  = $1 ;`, username)
 	if err != nil {
 		return
 	}
+
+	groups := make([]string, 0, len(records))
 	for _, rec := range records {
 		groupname, _ := rec["group_groupname"].(string)
 		groups = append(groups, groupname)
 	}
+
+	if len(groups) > 0 {
+		bytes, _ := json.Marshal(groups)
+		groupsString = string(bytes)
+	}
+
 	return
 }
 
@@ -159,18 +168,12 @@ func GetUserRolesString(user, app string) (rolesString string) {
 
 // addRolesToUserInfoString Добавляет поле со списком ролей пользователя к информации о пользователе.
 func addRolesToUserInfoString(userInfoString, rolesString string) string {
-	// FIXME: string replacement is faster
 	return strings.Replace(userInfoString, "}", `, "roles":`+rolesString+"}", 1)
+}
 
-	// info := make(map[string]interface{})
-	// roles := make([]string, 0)
-
-	// _ = json.UnmarshalFromString(userInfoString, &info)
-	// _ = json.UnmarshalFromString(rolesString, &roles)
-
-	// info["roles"] = roles
-	// s, _ := json.MarshalToString(info)
-	// return s
+// addGroupsToUserInfoString Добавляет поле со списком групп пользователя к информации о пользователе.
+func addGroupsToUserInfoString(userInfoString, groupsString string) string {
+	return strings.Replace(userInfoString, "}", `, "groups":`+groupsString+"}", 1)
 }
 
 // GetUserInfoString возвращает сериализованную информацию о пользователе, включая его роли в приложении.
@@ -180,7 +183,7 @@ func GetUserInfoString(user, app string) string {
 	}
 
 	userInfoString := ""
-	rolesString := ""
+	// rolesString := ""
 	userInfoStringWithRoles := ""
 
 	// читаем из кэша
@@ -202,10 +205,12 @@ func GetUserInfoString(user, app string) string {
 		Cache.Set(cacheKey, userInfoString, cache.DefaultExpiration)
 	}
 
-	// FIXME: из соображений производительности нужно возвращать информацию без ролей
+	// FIXME: move it up
 	// возвращаем информацию о пользователе
-	rolesString = GetUserRolesString(user, app)
+	rolesString := GetUserRolesString(user, app)
 	userInfoStringWithRoles = addRolesToUserInfoString(userInfoString, rolesString)
+	groupsString := GetUserGroupsString(user)
+	userInfoStringWithRoles = addGroupsToUserInfoString(userInfoStringWithRoles, groupsString)
 	fmt.Println("userInfoStringWithRoles=", userInfoStringWithRoles)
 	fmt.Println("------------------------------------------------------")
 	return userInfoStringWithRoles
