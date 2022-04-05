@@ -152,7 +152,8 @@
         <tr>
             <th>группа</th>
             <th>описание</th>
-            <th>роли пользователя в группах</th>
+            <!-- <th>роли пользователя в группах</th> -->
+            <th></th>
         </tr>
         {{#user.groups}}
         <tr class="filtered-row">
@@ -170,7 +171,7 @@
                     {{rolename}}
                 </button>
                 {{/items}} 
-
+<!--                 
                 <span class="button button-outline role-nocross">
                     <input id="newUserGroupRoleName-{{user_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
                     <button class="button button-outline role-add" 
@@ -178,7 +179,7 @@
                         >
                     +
                     </button>
-                </span>
+                </span> -->
                 {{/isAdmin}}
             </td>
         </tr>
