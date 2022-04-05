@@ -119,6 +119,22 @@ func GetUserRoles(user, app string) (roles []string) {
 	return
 }
 
+// GetUserGroups возвращает массив групп пользователя.
+func GetUserGroups(username string) (groups []string) {
+	if username == "" {
+		return
+	}
+	records, err := db.QuerySliceMap(`SELECT group_groupname FROM group_user_role_extended WHERE  user_username  = $1 ;`, username)
+	if err != nil {
+		return
+	}
+	for _, rec := range records {
+		groupname, _ := rec["group_groupname"].(string)
+		groups = append(groups, groupname)
+	}
+	return
+}
+
 // GetUserRolesString возвращает строку с сериализованным масссивом ролей пользователя в заданном приложении.
 func GetUserRolesString(user, app string) (rolesString string) {
 	rolesString = "[]"
