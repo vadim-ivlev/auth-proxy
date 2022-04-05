@@ -1,0 +1,8 @@
+{
+    "google": "/oauthlogin/google",
+    "github": "/oauthlogin/github",
+    "facebook": "/oauthlogin/facebook",
+    "vk": "/oauthlogin/vk",
+    "mailru": "/oauthlogin/mailru",
+    "yandex": "/oauthlogin/yandex"
+}

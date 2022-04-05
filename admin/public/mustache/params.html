@@ -1,0 +1,61 @@
+<div style="text-align: center; color: #555; font-size: 50px;"> <b>{{appurl}}</b></div>
+
+<div id="gauges" class="gauges">
+        <div id="divDay" class="gauge"></div>
+        <div id="divHour" class="gauge"></div>
+        <div id="divMinute" class="gauge"></div>
+        <div id="divSecond" class="gauge"></div>
+        <div>
+            <span>Total system memory: </span>
+            <span id="divSys"  class=""></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span id="divAlloc" class=""></span>
+            &nbsp;&nbsp;
+            <span id="divTotalAlloc" class="hidden"></span>
+            <br>
+        </div>
+</div>
+
+
+<div class="flexed max-width-600">        
+    <h2 style="text-align: center;">Настройки авторизации</h2>
+
+    <form id="formParams" onsubmit="event.preventDefault();">
+        <div>
+            <label  style="display:inline">selfreg</label>&nbsp;&nbsp;<span>Саморегистрация разрешена</span>
+            <br><input name="selfreg" type="checkbox"  {{#params.selfreg}}checked{{/params.selfreg}}>
+        </div>
+
+        <div>
+            <label  style="display:inline">use_captcha</label>&nbsp;&nbsp;<span>Использовать каптчу</span>
+            <br><input name="use_captcha" type="checkbox"  {{#params.use_captcha}}checked{{/params.use_captcha}}>
+        </div>
+
+        <div>
+            <label  style="display:inline">use_pin</label>&nbsp;&nbsp;<span>Использовать PIN google authenticator</span>
+            <br><input name="use_pin" type="checkbox"  {{#params.use_pin}}checked{{/params.use_pin}}>
+        </div>
+
+        <div>
+            <label style="display:inline">max_attempts</label>&nbsp;&nbsp;<span>Максимальное число ошибок ввода пароля</span>
+            <input name="max_attempts" type="number" title="Максимальное число ошибок ввода пароля"  value="{{params.max_attempts}}">
+        </div>
+
+        <div>
+            <label style="display:inline">reset_time</label>&nbsp;&nbsp;<span>Время сброса счетчика ошибок в минутах</span>
+            <input name="reset_time" type="number" title="Время сброса счетчика ошибок в минутах"  value="{{params.reset_time}}">
+        </div>
+        
+        <div style="text-align: right;">
+            <label></label>
+            <button type="button" class="button button-outline" onclick="setParams(event)">сохранить изменения</button>
+            <div id="paramsError" class="error"></div>
+        </div>
+    </form>
+    
+</div>
+
+
+  
+
+  

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AUTH-ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/milligram.min.css">
+
+    <link rel="stylesheet" type="text/css" href="css/themes/graphql.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/themes/dark2.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/themes/silver.css" /> -->
+    <link id="theme" rel="stylesheet" type="text/css" href="" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</head>
+
+<body>
+
+    <div id="page-container">
+        <div id="header" class="header" >
+            <div class="title">
+                <a href="" onclick="pd(event); showPage('login',true)" >
+                    <img src="images/graphql-logo.svg" class="graphql-logo">
+                    Авторизация
+                </a>
+            </div>
+            <div style="position: absolute; top:-5px; right:3px; white-space: nowrap;">
+                <span id="appName"></span>
+                <span id="appVersion">001</span>
+                <span id="appUrl" class="smallinfo"></span>
+            </div>
+            <span class="right0" style="vertical-align: top0;">
+                <span id="menu" class="menu">
+                    <a href="" id="appsTab" class="button button-clear tab"
+                        onclick="pd(event); searchApps();  showPage('apps') ;">Приложения</a>
+                    <a href="" id="usersTab" class="button button-clear tab"
+                        onclick="pd(event); searchUsers(); showPage('users');">Пользователи</a>
+                    <a href="" id="groupsTab" class="button button-clear tab"
+                        onclick="pd(event); searchGroups(); showPage('groups');">Группы</a>
+                    <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
+                        onclick="pd(event); getUser(model.loginedUser.username); showPage('user');">профиль</a>
+                    <a href="" id="logoutButton" class="button button-clear tab" onclick="pd(event); logout()">Выход </a>
+                    <a href="" id="settingsButton" class="button button-clear tab settings hidden" title="настройки"
+                        onclick="pd(event); getParams(); getAppstatRest(); showPage('params',true)">
+                        <!--&#9776;&vellip; -->&#x2699;
+                    </a>
+                </span>
+                <span id="menuUnlogined" class="menu">
+                    <a href="" id="loginButton" class="button button-clear tab"
+                        onclick="pd(event); showPage('login',true)">Вход</a>
+                </span>
+            </span>
+        </div>
+        <div id="content">
+
+            <div id="paramsPage" class="page">params page</div>
+            <div id="userPage" class="page"></div>
+            <div id="appPage" class="page"></div>
+            <div id="groupPage" class="page"></div>
+
+
+            <div id="loginPage" class="page">
+
+                <div class="flexed max-width-400">
+                    <h2>Вход</h2>
+                    <form id="formLoginGraphQL" onsubmit="pd(event); loginGraphQLFormSubmit(event)">
+                        <div>
+                            <input type="submit" class="micro" value=".">
+                            <input id="loginUsername" name="username" type="text" placeholder="email"
+                                onchange="checkUserRequirements(event)">
+                        </div>
+                        <div>
+                            <input id="loginPassword" name="password" type="password" placeholder="пароль">
+                        </div>
+
+                        <div id="pin" class="pinclass hidden">
+                            <input id="loginPin" name="pin" type="text" autocomplete="off"
+                                placeholder="PIN из Google аутентификатора">
+                        </div>
+
+                        <div id="captcha">
+                            <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
+                                <img id="captchaImg" src="" class="captcha-image">
+                                <button class="button-outline" tabindex="-1" onclick="pd(event); getNewCaptcha()"
+                                    style="font-size: 26px; font-weight:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
+                            </div>
+                        </div>
+
+
+
+
+                        <div style="text-align: right;">
+                            <input type="submit" class="button button-outline" value="Вход">
+                            <div id="loginError" class="error"></div>
+                        </div>
+                    </form>
+                    <button class="button button-clear tab" onclick="resetPasswordRest()">поменять пароль</button>
+                    <button class="button button-clear tab pinclass hidden"
+                        onclick="resetAuthenticator()">(пере)установить аутентификатор</button>
+                    <div id="resetError" class="error"></div>
+                    <br>
+
+
+                    <div id="socialIcons" class="transparent"></div>
+                    <div id="socialLoginError" class="error"></div>
+
+                    <br>
+                    <button id="selfRegButton" class="button button-clear tab hidden"
+                        onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span
+                            id="oauth2email"></span></button>
+                </div>
+                <div id="selfRegHelp" class="hidden" style="text-align: center;">
+                    <span id="selfRegHelpText">
+                        Чтобы зарегистрировать пользователя
+                        иcпользуя учетную запись социальной сети,
+                        сначала войдите в эту сеть.
+                    </span>
+                </div>
+            </div>
+            
+
+            <div class="page" id="appsPage">
+                <div class="flexed max-width-600">
+                    <h2 class="centered">
+                        Приложения
+                    </h2>
+                    <form id="formListApp" class="grided0" onsubmit="pd(event); searchApps()">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchApps()" value="">
+                        </div>
+                    </form>
+                    <button id="btnNewApp" class="button button-clear tab"
+                        onclick="model.app  = null; showPage('app',true)  ;">Проксировать новое приложение</button>
+                    <br>
+                </div>
+                <div class="app-search-results"></div>
+            </div>
+
+
+            <div class="page" id="usersPage">
+                <div class="flexed max-width-600">
+                    <h2 class="centered">Пользователи</h2>
+                    <form id="formListUser" class="grided0" onsubmit="pd(event); searchUsers()">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchUsers()"  value="">
+                        </div>
+                    </form>
+                    <button class="button button-clear tab"
+                        onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового пользователя</button>
+                    <br>
+                </div>
+                <div class="user-search-results"></div>
+            </div>
+
+
+            <div class="page" id="groupsPage">
+                <div class="flexed max-width-600">
+                    <h2 class="centered">Группы пользователй</h2>
+                    <p>
+                        Группа объединяет несколько пользователей и определяет набор ролей, 
+                        которые будут назначаться пользователи группы, при обращении к конкретному приложению. 
+                    </p>
+                    <form id="formListGroup" class="grided0" onsubmit="pd(event); searchGroups()">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchGroups()"  value="">
+                        </div>
+                    </form>
+                    <button class="button button-clear tab"
+                        onclick="model.group = null; showPage('group',true) ;">создать  группу</button>
+                    <br>
+                </div>
+                <div class="group-search-results"></div>
+            </div>
+
+
+        </div>
+        <div id="footer" class="footer">
+            <input id="chkLocalSearch" type="checkbox" checked>
+            <span>local search</span>
+            &nbsp;&nbsp;
+            <a id="graphqlTestLink" target="_blank" href="https://graphql-test.vercel.app/">&nbsp;&nbsp;&nbsp;GraphQL
+                API &#x25B6;</a>
+        </div>
+    </div>
+
+    <!-- <script src="js/bundle.js"></script> -->
+    <script src="js/index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+
+<table>
+    <thead>
+        <tr>
+            <th><a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
+            <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description')">description</a></th>
+            {{#isAdmin}}
+            <th><a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public')">public</a></th>
+            <th><a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign')">sign</a></th>
+            <th></th>
+            {{/isAdmin}}
+        <tr>
+    </thead>
+    <tbody>
+        {{#apps}}
+        <tr>
+            <td>
+                <a href="" title="редактировать" onclick="pd(event); showPage('app/{{appname}}');"><b>{{appname}}</b></a>
+                <br>
+                &#x21E2;&nbsp;&nbsp;
+                <a href="{{appurl}}/apps/{{appname}}/" target="_blank" title="показать приложение" >{{url}}</a>
+            </td>
+            <td>
+                {{description}}
+            </td>
+            {{#isAdmin}}
+            <td>
+                    {{public}}
+            </td>
+            <td>
+                    {{sign}}
+            </td>
+            <td style="white-space: nowrap;">
+                <button class="button button-clear" onclick="showPage('app/{{appname}}');">edit</button>
+                <button class="button button-clear delete" onclick="deleteApp('{{appname}}');">✕</button>
+            </td>
+            {{/isAdmin}}
+        <tr>
+        {{/apps}}
+    </tbody>
+<table>
+

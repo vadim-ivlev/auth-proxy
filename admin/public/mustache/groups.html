@@ -1,0 +1,35 @@
+<table>
+    <thead>
+        <tr>
+            <th><a href="" class="sortable" title="sort by id" onclick="pd(event); sortGroupsBy('id', false)">#</a></th>
+            <th><a href="" class="sortable" title="sort by groupname" onclick="pd(event); sortGroupsBy('groupname')">groupname</a></th>
+            <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortGroupsBy('description')">description</a></th>
+            <th></th>
+        <tr>
+    </thead>
+    <tbody>
+        {{#groups}}
+        <tr
+        {{#disabled}}
+        style="text-decoration: line-through; " 
+        {{/disabled}}            
+        >
+            <td>
+                    {{id}}
+            </td>
+            <td>
+                <a href="" title="Редактировать" onclick="pd(event); showPage('group/{{id}}');">
+                    <b>{{groupname}}</b>
+                </a>
+            </td>
+            <td>
+                    {{description}}
+            </td>
+            <td style="white-space: nowrap;">
+                <button class="button button-clear" title="редактировать группу" onclick="pd(event); showPage('group/{{id}}');" >edit</button>
+                <button class="button button-clear delete" title="удалить группу"  onclick="deleteGroup('{{id}}');" >✕</button>
+            </td>
+        <tr>
+        {{/groups}}
+    </tbody>
+<table>

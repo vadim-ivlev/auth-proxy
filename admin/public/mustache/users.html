@@ -1,0 +1,44 @@
+    <table>
+        <thead>
+            <tr>
+                <th><a href="" class="sortable" title="sort by id" onclick="pd(event); sortUsersBy('id', false)">#</a></th>
+                <th><a href="" class="sortable" title="sort by username" onclick="pd(event); sortUsersBy('username')">username / email</a></th>
+                <th><a href="" class="sortable" title="sort by fullname" onclick="pd(event); sortUsersBy('fullname')">fullname</a></th>
+                <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortUsersBy('description')">description</a></th>
+                <th></th>
+            <tr>
+        </thead>
+        <tbody>
+            {{#users}}
+            <tr
+            {{#disabled}}
+            style="text-decoration: line-through; " 
+            {{/disabled}}            
+            >
+                <td>
+                        {{id}}
+                </td>
+                <td>
+                    <a href="" title="Редактировать" onclick="pd(event); showPage('user/{{username}}');">
+                        <b>{{username}}</b>
+                        &nbsp;/&nbsp;{{email}}
+                    </a>
+                </td>
+                <td>
+                        {{fullname}}
+                        {{#disabled}}
+                        (отключен)
+                        {{/disabled}}
+                </td>
+                <td>
+                        {{description}}
+                </td>
+                <td style="white-space: nowrap;">
+                    <button class="button button-clear" title="редактировать" onclick="pd(event); showPage('user/{{username}}');" >edit</button>
+                    <button class="button button-clear delete" title="Удалить"  onclick="deleteUser('{{username}}');" >✕</button>
+                </td>
+            <tr>
+            {{/users}}
+        </tbody>
+    <table>
+

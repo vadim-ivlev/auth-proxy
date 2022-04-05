@@ -1,0 +1,312 @@
+<div class="flexed max-width-600">
+    <div>
+        <a href="" class="button button-clear" style="padding: 0;"  onclick="pd(event); searchUsers(); showPage('users');">&lt; пользователи</a>
+    </div>
+
+
+    {{^user}}
+        {{#oauth2id}}
+        <div>
+            Используется учетная запись социальной сети. 
+            Не меняйте email если вы хотите входить в систему через эту социальную сеть.
+        </div>
+        {{/oauth2id}}
+    <h3>Новый пользователь <b id="newUserEmail">{{oauth2email}}</b></h3>
+    {{/user}}
+    {{#user}}
+    <h2>Пользователь &nbsp;(&nbsp;<span id="user-id"  title="id">{{user.id}}</span>&nbsp;) &nbsp;<b id="newUserEmail">{{user.email}}</b></h2>
+    {{/user}}
+
+    <form id="formUser" onsubmit="event.preventDefault();">
+        <!-- <label></label> -->
+        <div class="hidden">
+            <input name="old_username" type="hidden" disabled value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
+            <label>username *</label>
+            <input name="username" disabled type="text" autocomplete="off" placeholder="уникальный идентификатор пользователя"
+            oninput="document.getElementById('newUserName').innerText = event.target.value; "
+            value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
+        </div>
+
+
+        <div>
+            <label>Email</label>
+            <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
+            <input name="email" placeholder="емайл" {{#user}}disabled{{/user}}
+            oninput="document.getElementById('newUserEmail').innerText = event.target.value; "
+            value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
+        </div>
+        <div>
+            <input name="emailconfirmed" type="checkbox" disabled title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
+            <span>Email подтвержден</span>
+        </div>
+
+        <div>
+            <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
+            <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input name="password" type="password" autocomplete="new-password" placeholder="новый пароль" value="{{user.password}}">
+                <!-- <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button> -->
+            </span>
+            {{#user}}
+            <div>
+                Если поле пусто пароль не меняется.<br><br>
+            </div>
+            {{/user}}
+        </div>
+
+        <div>
+            <label>fullname</label>
+            <!-- <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}"> -->
+            <input name="fullname"  placeholder="фамилия имя" value="{{#user}}{{user.fullname}}{{/user}}{{^user}}{{oauth2name}}{{/user}}">
+        </div>
+        <div>
+            <label>description </label>
+            <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
+        </div>
+        
+        <div class="{{^isAdmin}}hidden{{/isAdmin}}">
+            <label>disabled</label>
+            <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">
+            <span>Если не равно 0, пользователь отключен</span>
+        </div>
+        <br>
+        <!-- скрываем поля PIN от рядовых пользователей -->
+        <div class="{{^isAdmin}}hidden{{/isAdmin}}">
+            <div>
+                <label>pinrequired</label>
+                <input name="pinrequired" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
+                <span> требовать PIN google authenticator</span>
+            </div>
+            <div>
+                <label>Затребована установка Google Authenticator</label>
+                <input name="pinset" type="checkbox" disabled title="Затребована установка Google Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
+                <span>Пользователь потребовал установки Google Authenticator</span>
+            </div>
+<!-- 
+            <div>
+                <label><a href="" onclick="toggleElements('#pinhashfields'); return false;" style="opacity:0.3;">pinhash поля ▷</a></label>
+                <div id="pinhashfields" class="hidden">
+                    <div>
+                        <label>pinhash</label>
+                        <input name="pinhash" type="text" disabled title="pinhash" value="{{user.pinhash}}" >
+                    </div> 
+                    <div>       
+                        <label>pinhash_temp</label>
+                        <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                            <input name="pinhash_temp" disabled type="text" placeholder="" value="{{user.pinhash_temp}}" oninput="setPinUrl()">
+                            <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать временный PIN хэш</button>
+                        </div>
+                        <div>
+                            <b>pinhash_temp</b> служит для установки Google Authenticator. 
+                            Если вы изменили его, после сохранения изменений ниже будет показана
+                            ссылка на страницу установки аутентификатора, которую необходимо переслать пользователю. 
+                            Возможность ручной генерации  pinhash_temp оставлена на случай отказа почтовых серверов.
+                        </div>
+                    </div>
+                    <div id="pinUrlContainer" {{^user.pinhash_temp}}style="display:none;"{{/user.pinhash_temp}}>
+                        <a id="newPinUrl" href="/set-authenticator.html#username={{user.username}}&hash={{user.pinhash_temp}}&authurl={{appurl}}" target="_blank">
+                            URL установки аутентификатора</a>
+                    </div>
+                </div>
+            </div> 
+-->
+
+
+        </div>
+        
+        <br>
+        <div style="text-align: right;">
+            <label></label>
+            {{^user}}
+            <button type="button" class="button button-outline" style="max-width: 1000px;" onclick="createUser(event)" >создать пользователя</button>
+            {{/user}}
+            {{#user}}
+            {{#isAdmin}}
+            <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
+            {{/isAdmin}}
+            <button type="button" class="button button-outline" onclick="updateUser(event)">сохранить изменения</button>
+            {{/user}}
+            <div id="userError" class="error"></div>
+        </div>
+        
+    </form>
+
+    
+</div>
+
+{{#user}}
+
+
+<!-- группы связанные с записью -->
+<div class="flexed">
+    <div>
+        Пользователь {{user.email}} может входить в несколько групп.
+    </div>
+    <div class="max-max-auto">
+        <h3><b>Группы</b> пользователя <b>{{user.email}}</b></h3> 
+        <span></span>
+        <span></span>
+        <input placeholder="Фильтр"  oninput="filterRows('#UserGroups .filtered-row', this.value )">
+    </div>
+    <!-- таблица групп-->    
+    <table id="UserGroups">
+        <tr>
+            <th>группа</th>
+            <th>описание</th>
+            <th>роли пользователя в группах</th>
+        </tr>
+        {{#user.groups}}
+        <tr class="filtered-row">
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">({{group_id}}) {{group_groupname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">{{group_description}}</a></td>
+            <td>
+
+                <!-- кнопки добавления удаления ролей -->
+                {{#isAdmin}}
+
+                {{#items}}
+                <button class="button button-outline role" 
+                    onclick="modifyUserGroupRole('delete','{{user_id}}', '{{group_id}}', '{{rolename}}',()=>{ getUser('{{user.username}}') } )"
+                >
+                    {{rolename}}
+                </button>
+                {{/items}} 
+
+                <span class="button button-outline role-nocross">
+                    <input id="newUserGroupRoleName-{{user_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyUserGroupRole('create', '{{user_id}}','{{group_id}}', document.getElementById('newUserGroupRoleName-{{user_id}}-{{group_id}}').value, ()=>{ getUser('{{user.username}}') }  )"
+                        >
+                    +
+                    </button>
+                </span>
+                {{/isAdmin}}
+            </td>
+        </tr>
+        {{/user.groups}}
+
+        <!-- добавление удаление групп -->
+        {{#isAdmin}}
+        <tr>
+            <td>
+                <input id="userGroupsSelector" 
+                    list="userGroupsDataList" 
+                    placeholder="Добавить группу" 
+                    onchange="
+                        document.getElementById('newUserGroupDescription').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).innerText;
+                        document.getElementById('newUserGroupID').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).id;
+                    ">
+                <datalist id="userGroupsDataList">
+                    {{{all_groups_options}}}
+                </datalist>
+
+            </td>
+            <td >
+                <span id="newUserGroupID"></span>
+                <span id="newUserGroupDescription"></span>
+            </td>
+            <td>
+                <span class="button button-outline role-nocross">
+                        <input id="newUserGroupRoleName" class="role-input" placeholder="новая роль в группе" value="member" readonly>
+                        <button class="button button-outline role-add" 
+                            onclick="modifyUserGroupRole('create', '{{id}}',  
+                                document.getElementById('newUserGroupID').innerText, 
+                                document.getElementById('newUserGroupRoleName').value, 
+                                ()=>{ getUser('{{user.username}}') }); "
+                        >+</button>
+                </span>
+            </td>
+        </tr>
+        {{/isAdmin}}
+
+    </table>
+</div>
+
+<br><br>
+
+
+<!-- приложения связанные с записью -->
+<div class="flexed">
+    <div>
+        Пользователь {{user.email}} может иметь имеет набор ролей в различных приложениях.<br> 
+        Если {{user.email}} является членом группы то роли группы добавляются к его ролям определенным ниже.
+    </div>
+
+    <div class="max-max-auto">
+        <h3><b>Приложения</b> пользователя <b>{{user.email}}</b>:</h3> 
+        <span></span>
+        <span></span>
+        <input placeholder="Фильтр" oninput="filterRows('#UserApps .filtered-row', this.value )">
+    </div>
+        
+    <table id="UserApps">
+        <tr>
+            <th>приложение</th>
+            <th>описание</th>
+            <th>роли пользователя в приложениях</th>
+        </tr>
+        {{#user.apps}}
+        <tr class="filtered-row">
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('app/{{appname}}');">{{appname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('app/{{appname}}');">{{app_description}}</a></td>
+            <td>
+
+
+                {{#items}}
+                <button class="button button-outline role" 
+                    onclick="modifyRole('delete', '{{appname}}', '{{user.username}}','{{rolename}}',()=>{ getUser('{{user.username}}') } )"
+                    >
+                    {{rolename}}
+                </button>
+                {{/items}} 
+
+                {{#isAdmin}}
+                <span class="button button-outline role-nocross">
+                    <input id="newRoleName-{{appname}}" class="role-input" placeholder="новая роль">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyRole('create', '{{appname}}', '{{user.username}}', document.getElementById('newRoleName-{{appname}}').value, ()=>{ getUser('{{user.username}}') }  )"
+                        >
+                    +
+                    </button>
+                </span>
+                {{/isAdmin}}
+            </td>
+        </tr>
+        {{/user.apps}}
+
+        {{#isAdmin}}
+        <tr>
+            <td>
+                <input id="newUserAppname" 
+                    list="appsDataList" 
+                    placeholder="+ приложение" 
+                    onchange="document.getElementById('newUserAppDescription').innerText = document.querySelector(`#appsDataList>option[value='${this.value}'`).innerText;"
+                >
+                <datalist id="appsDataList">
+                    {{{all_app_options}}}
+                </datalist>
+
+            </td>
+            <td id="newUserAppDescription">
+           </td>
+            <td>
+                <span class="button button-outline role-nocross">
+                        <input id="newUserRolename" class="role-input" placeholder="новая роль">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyRole('create', document.getElementById('newUserAppname').value, '{{user.username}}',  document.getElementById('newUserRolename').value, ()=>{ getUser('{{user.username}}') }  )"
+                            >
+                        +
+                        </button>
+                </span>
+            </td>
+        </tr>
+        {{/isAdmin}}
+
+    </table>
+</div>
+
+
+
+{{/user}}
+
+
+

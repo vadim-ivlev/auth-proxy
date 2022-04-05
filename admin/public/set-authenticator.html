@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Установка аутентификатора</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/milligram.min.css"> 
+    <link rel="stylesheet" type="text/css" href="css/themes/graphql.css" />
+    <style>
+        #content {
+            display: grid;
+        }
+        .authenticator {
+            max-width: 500px;
+            margin-left: auto;
+            margin-right:auto;
+            margin-top: 30px;
+        }
+        #setAuthenticatorImg {
+            width:300px;
+            height:300px;
+        }
+        #message {
+            color: red;
+            min-height: 30px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="content">
+    <div class="authenticator">
+        <h3 style="text-align: center">Установка Google Authenticator для <span id="usernameSpan"></span></h3>
+
+        <form id="form" style="display:none;">
+            <p>
+                Убедитесь что за вашей спиной никого нет.<br> 
+                Откройте Google Authenticator на вашем телефоне,<br> 
+                нажмите ⨁ и отсканируйте или скопируйте баркод
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input id="manualcode" type="text" placeholder="код" autocomplete="off">
+                <button id="copyManualCodeBtn" type="button"  class="button button-outline" >Копировать</button>
+            </div>
+
+
+
+            <div style="text-align: center;">
+                <img id="setAuthenticatorImg" src="" 
+                onerror="this.style.display='none'"
+                onload="this.style.display=''"
+                >
+            </div>
+ 
+            <p>Введите появившийся на телефоне пин, и нажмите [ установить ]</p>
+            <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
+                <button id="setAuthenticatorBtn" type="button"  class="button" >Установить</button>
+            </div>
+        </form>
+
+        <div id="message"> </div>
+        <br>
+        <a id="authlink" href="/">Вернуться к странице входа</a>
+    </div>
+
+</div>
+<script>
+    var usernameSpan = document.getElementById('usernameSpan')
+    var img = document.getElementById('setAuthenticatorImg')
+    var form = document.getElementById('form')
+    var manualcode = document.getElementById('manualcode')
+    var setButton = document.getElementById('setAuthenticatorBtn')
+    var copyButton = document.getElementById('copyManualCodeBtn')
+    var pincode = document.getElementById('pincode')
+    var message = document.getElementById('message')
+    var authlink = document.getElementById('authlink')
+
+    window.addEventListener('hashchange', getParams)
+    window.addEventListener('load', getParams)
+    img.addEventListener('error', onImgError)
+    img.addEventListener('load', onImgLoad)
+    setButton.addEventListener('click', setAuthenticator)
+    copyButton.addEventListener('click', copyToClipboard)
+    form.addEventListener('submit', setAuthenticator)
+    
+
+    var username = ""
+    var hash = ""
+    var authurl = ""
+
+    function onImgError(event) {
+        // message.innerHTML = `Аутентификатор уже установлен.`
+        form.style.display = 'none'
+    }
+    function onImgLoad(event) {
+        message.innerHTML = ' '
+        form.style.display = 'block'
+        pincode.focus()
+    }
+
+    function getParams(){
+        let locationHash = location.hash.replace(/^#/,"")
+        let params = new URLSearchParams(locationHash)
+        username = params.get('username') || "nouser"
+        hash = params.get('hash') || "nohash"
+        authurl = params.get('authurl') || "nourl"
+        console.debug(`authurl=${authurl} username=${username} hash=${hash}`)
+        usernameSpan.innerText = username
+        let authpath = location.pathname.replace("set-authenticator.html","")
+        authlink.href=`${authpath}?url=${authurl}`
+        
+        img.src = `${authurl}/authenticator_barcode?username=${username}&hash=${hash}`
+        getManualCode()
+    }
+
+    function copyToClipboard(event) {
+        if (event) event.preventDefault()
+
+        navigator.permissions.query({name: "clipboard-write"}).then(result => {
+            if (result.state == "granted" || result.state == "prompt") {
+                /* write to the clipboard now */
+                navigator.clipboard.writeText(manualcode.value)
+                .then(()=> console.debug('Copied'), (err) => console.debug('Failed copying '+err) );
+            } else {
+                console.debug('No permitions to Copy to clipboard. result=', result)
+            }
+        })
+
+        return false
+    }
+
+    
+    function getManualCode(event) {
+        if (event) event.preventDefault()
+        message.innerHTML = '...'
+        let u = `${authurl}/authenticator_manualcode?username=${username}&hash=${hash}`
+        fetch(u).then(x => x.json())
+        .then( onSuccess ) 
+        .catch( err => message.innerHTML=err.message )  
+
+        function onSuccess(r){
+            console.debug(`getManualCode r= `,r) 
+            if (r.error) {
+                message.innerHTML = r.error 
+                // form.style.display = "block"
+            } else {
+                manualcode.value = r.result 
+                form.style.display = "block"
+            }
+        } 
+
+        return false       
+    }
+
+
+    function setAuthenticator(event) {
+        if (event) event.preventDefault()
+        message.innerHTML = '...'
+        let u = `${authurl}/set_authenticator?username=${username}&pin=${pincode.value}`
+        fetch(u).then(x => x.json())
+        .then( onSuccess ) 
+        .catch( err => message.innerHTML=err.message )  
+
+        function onSuccess(r){
+            console.debug(`result=${r.result} error=${r.error}`) 
+            if (r.error) {
+                message.innerHTML = r.error 
+                form.style.display = "block"
+            } else {
+                message.innerHTML = r.error || "Аутентификатор установлен." 
+                form.style.display = "none"
+            }
+        } 
+
+        return false       
+    }
+
+
+
+</script>
+</body>
+</html>

@@ -60,6 +60,7 @@ func setup(build string) *gin.Engine {
 	go keepCreatingProxies()
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
+	r.Static("/admin", "./admin/public")
 
 	r.Use(prometeo.CountersMiddleware())
 	r.Use(CountersMiddleware())
@@ -80,6 +81,7 @@ func setup(build string) *gin.Engine {
 	})
 	r.Use(sessions.Sessions(app.Params.CookieName, Store))
 
+	// r.GET("/admin", redirectToAdminURL)
 	r.GET("/admin", redirectToAdminURL)
 	r.GET("/graphql_test", redirectToGraphqlTestURL)
 
