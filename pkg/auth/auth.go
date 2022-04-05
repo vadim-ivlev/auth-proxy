@@ -183,8 +183,6 @@ func GetUserInfoString(user, app string) string {
 	}
 
 	userInfoString := ""
-	// rolesString := ""
-	userInfoStringWithRoles := ""
 
 	// читаем из кэша
 	cacheKey := user + "-info"
@@ -202,18 +200,20 @@ func GetUserInfoString(user, app string) string {
 		}
 		jsonBytes, _ := json.Marshal(record)
 		userInfoString = string(jsonBytes)
+
+		// FIXME: move it up
+		// возвращаем информацию о пользователе
+		rolesString := GetUserRolesString(user, app)
+		userInfoString = addRolesToUserInfoString(userInfoString, rolesString)
+		groupsString := GetUserGroupsString(user)
+		userInfoString = addGroupsToUserInfoString(userInfoString, groupsString)
+		fmt.Println(" set userInfoStringWithRoles=", userInfoString)
+		fmt.Println("------------------------------------------------------")
+
 		Cache.Set(cacheKey, userInfoString, cache.DefaultExpiration)
 	}
 
-	// FIXME: move it up
-	// возвращаем информацию о пользователе
-	rolesString := GetUserRolesString(user, app)
-	userInfoStringWithRoles = addRolesToUserInfoString(userInfoString, rolesString)
-	groupsString := GetUserGroupsString(user)
-	userInfoStringWithRoles = addGroupsToUserInfoString(userInfoStringWithRoles, groupsString)
-	fmt.Println("userInfoStringWithRoles=", userInfoStringWithRoles)
-	fmt.Println("------------------------------------------------------")
-	return userInfoStringWithRoles
+	return userInfoString
 }
 
 // AppUserRoleExist проверят наличие связки appname-username-rolename в таблице app_user_role.
