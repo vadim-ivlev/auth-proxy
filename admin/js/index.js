@@ -183,7 +183,8 @@ var model = {
     _allUsers: null,
     set allUsers(v) {
         this._allUsers = v
-        this.all_user_options = createOptions(v, "username", "fullname", "email")
+        // this.all_user_options = createOptions(v, "username", "fullname", "email")
+        this.all_user_options = createOptions(v, "username", "fullname")
     },
     get allUsers() {
         return this._allUsers
@@ -1541,29 +1542,31 @@ function getGroup(group_id) {
             rolename
            }          
                 
-        }
+
+
+
+
+        list_group_user_role(
+        group_id: ${group_id}
+        ) {
+            group_description
+            group_groupname
+            group_id
+            rolename
+            user_description
+            user_disabled
+            user_email
+            user_fullname
+            user_id                                
+          }
+    }          
 
     `
-
-    // list_group_user_role(
-    //     group_id: ${group_id}
-    //     ) {
-    //         group_description
-    //         group_groupname
-    //         group_id
-    //         rolename
-    //         user_description
-    //         user_disabled
-    //         user_email
-    //         user_fullname
-    //         user_id
-    //       }
-
-
 
     function onSuccess(res){
         var group = res.data.get_group
         group.apps = appsOfTheGroup(res.data.list_group_app_role)
+        group.users = usersOfTheGroup(res.data.list_group_user_role)
         // render
         model.group = group
     } 
@@ -1600,6 +1603,25 @@ function appsOfTheGroup(list_group_app_role) {
         rec.app_appname = value[0].app_appname
         rec.app_description = value[0].app_description
         rec.app_url = value[0].app_url
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
+
+function usersOfTheGroup(list_group_user_role) {
+    let users = groupByField(list_group_user_role, 'user_id')
+
+    // преобразуем хэш в массив для отображения в mustache
+    let arr = []
+
+    for (let [key, value] of Object.entries(users)) {
+        let rec = {}
+        rec.user_id =value[0].user_id
+        rec.group_id = value[0].group_id
+        rec.user_email = value[0].user_email
+        rec.user_description = value[0].user_description
+        rec.user_fullname = value[0].user_fullname
         rec.items = value
         arr.push(rec)
     }
@@ -2140,8 +2162,10 @@ function setAppParams(){
 
 function init() {
     renderTemplateFile('mustache/params.html', model, '#paramsPage')
-    google.charts.load('current', {'packages':['gauge']})
-    google.charts.setOnLoadCallback(getAppstatRest)
+    if (google && google.charts) {
+        google.charts.load('current', {'packages':['gauge']})
+        google.charts.setOnLoadCallback(getAppstatRest)
+    }
     setAppParams()
     getLoginedUser()
     refreshApp()   

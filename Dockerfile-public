@@ -17,6 +17,8 @@ COPY migrations     /app/migrations
 COPY templates      /app/templates
 COPY etc            /app/etc
 COPY certificates   /app/certificates
+COPY admin          /app/admin
+
 
 WORKDIR /app
 CMD ./auth-proxy -port=4400 -config=./configs/app.env.public -pgconfig=./configs/db.env.public

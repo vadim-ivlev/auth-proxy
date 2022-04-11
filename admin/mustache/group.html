@@ -130,6 +130,104 @@
     </div>
 
 </div>
+
+
+
+<!-- пользователи связанные с записью -->
+
+<div class="flexed">
+<!--     
+    <div>
+        Отдельные пользователи также могут иметь имеет набор ролей в приложении {{group.groupname}}.<br> 
+        Если пользователь входит в группу то роли группы добавляются к его ролям определенным ниже.
+    </div> 
+-->
+    
+    <div class="max-max-auto">
+        <h3><b>Пользователи</b> группы  <b>{{group.groupname}}</b></h3>
+        <span></span>
+        <input placeholder="Фильтр" oninput="filterRows('#GroupUsers .filtered-row', this.value )">
+    </div>
+
+
+    <table id="GroupUsers">
+        <tr>
+            <th>email</th>
+            <th>полное имя</th>
+            <th>действия</th>
+        </tr>
+            {{#group.users}}
+            <tr class="filtered-row">
+                <td><a href="" title="Редактировать" onclick="pd(event); showPage('user/{{user_email}}');">{{user_id}} {{user_email}}</a></td>
+                <td><a href="" title="Редактировать" onclick="pd(event); showPage('user/{{user_email}}');">{{user_fullname}}</a></td>
+                <td style="text-align:right">
+
+
+                    {{#items}}
+                    <button class="button button-outline role" 
+                        onclick="modifyUserGroupRole('delete', '{{user_id}}', '{{group.id}}', '{{rolename}}',()=>{ getGroup('{{group.id}}') } )"
+                        >
+                        <!-- {{rolename}} -->
+                    </button>
+                    {{/items}}
+                    
+                    <!--
+                    <span class="button button-outline role-nocross">
+                        <input id="newRoleName-{{user_id}}-{{group.id}}" class="role-input">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyUserGroupRole('create', '{{user_id}}', '{{group.id}}', document.getElementById('newRoleName-{{user_id}}-{{group.id}}').value, ()=>{ getGroup('{{group.id}}') }  )"
+                            >
+                        +
+                        </button>
+                    </span>
+                    -->
+                </td>
+            </tr>
+            {{/group.users}}
+
+
+            <!-- добавление удаление пользователей -->
+            <tr>
+                <td>                
+                    <input id="newGroupUsername" 
+                        list="groupUsersDataList" 
+                        placeholder="Добавить пользователя. Поиск." 
+                        onchange="
+                                var opt = document.querySelector(`#groupUsersDataList>option[value='${this.value}'`);
+                                document.getElementById('newGroupUserFullName').innerText = opt? opt.innerText: '';
+                                document.getElementById('newGroupUserID').innerText = opt? opt.id : '';
+                            ">
+                    <datalist id="groupUsersDataList">
+                        {{{all_user_options}}}
+                    </datalist>
+                </td>
+                <td >
+                    <span id="newGroupUserID"></span>
+                    <span id="newGroupUserFullName"></span>
+                </td>
+                <td style="text-align:right;">
+                    <span class="button button-outline role-nocross" style="border:none;">
+                        <input id="newGroupUserRolename" class="role-input hidden"  placeholder="новая роль" value="member" readonly>
+                        <button class="button button-outline role-add" 
+                            onclick="modifyUserGroupRole('create', 
+                                document.getElementById('newGroupUserID').innerText, 
+                                '{{group.id}}', 
+                                document.getElementById('newGroupUserRolename').value, 
+                                ()=>{ getGroup('{{group.id}}') }); 
+                            "
+                        >+</button>
+                    </span>
+                </td>
+            </tr>
+
+        
+
+    </table>
+</div>
+
+
+
+
 {{/group}}
 
 

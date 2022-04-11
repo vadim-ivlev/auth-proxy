@@ -3,7 +3,7 @@
 # Компиляция приложения с публичной частью. Т.е может зарегистрироваться любой пользователь.
 
 echo "Кросскомпиляция на компьютере разработчика auth-proxy:public"
-env GOOS=linux GOARCH=amd64 go build -tags=jsoniter .
+env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags=jsoniter .
 
 
 echo "build a docker image auth-proxy:public"

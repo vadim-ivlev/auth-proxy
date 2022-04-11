@@ -196,7 +196,7 @@
 
 <!-- пользователи связанные с записью -->
 
-    <div class="flexed">
+<div class="flexed">
     <div>
         Отдельные пользователи также могут иметь имеет набор ролей в приложении {{app.appname}}.<br> 
         Если пользователь входит в группу то роли группы добавляются к его ролям определенным ниже.
@@ -248,11 +248,11 @@
         <tr>
             <td>                
                 <input id="newAppUsername" 
-                    list="usersDataList" 
+                    list="appUsersDataList" 
                     placeholder="Добавить пользователя. Поиск." 
-                    onchange="document.getElementById('newAppUserFullName').innerText = document.querySelector(`#usersDataList>option[value='${this.value}'`).innerText;"
+                    onchange="document.getElementById('newAppUserFullName').innerText = document.querySelector(`#appUsersDataList>option[value='${this.value}'`).innerText;"
                 >
-                <datalist id="usersDataList">
+                <datalist id="appUsersDataList">
                     {{{all_user_options}}}
                 </datalist>
             </td>

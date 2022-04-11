@@ -140,7 +140,7 @@ ol ol, ol ul, ul ol, ul ul {
     border: 1px solid /*#9b4dca*/;
     border-radius: 20px;
     padding: 1px;
-    padding-left:9px;
+    padding-left:8px;
     padding-right:7px;
     position:relative;
     height:26px;
@@ -150,7 +150,7 @@ ol ol, ol ul, ul ol, ul ul {
 
 .role::after {
     content: "✕";
-    padding-left: 10px;
+    /* padding-left: 10px; */
 }
 
 .plus {
@@ -169,9 +169,9 @@ ol ol, ol ul, ul ol, ul ul {
 .role-add {
     padding: 0; margin:0;
     line-height: 0;
-    height: 20px;
-    width: 20px;
-    border-radius: 19px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 20px;
 }
 
 input.role-input {

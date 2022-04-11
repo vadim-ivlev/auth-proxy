@@ -159,7 +159,7 @@
         <tr class="filtered-row">
             <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">({{group_id}}) {{group_groupname}}</a></td>
             <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">{{group_description}}</a></td>
-            <td>
+            <td style="text-align:right">
 
                 <!-- кнопки добавления удаления ролей -->
                 {{#isAdmin}}
@@ -168,10 +168,10 @@
                 <button class="button button-outline role" 
                     onclick="modifyUserGroupRole('delete','{{user_id}}', '{{group_id}}', '{{rolename}}',()=>{ getUser('{{user.username}}') } )"
                 >
-                    {{rolename}}
+                    <!-- {{rolename}} -->
                 </button>
                 {{/items}} 
-<!--                 
+                <!--                 
                 <span class="button button-outline role-nocross">
                     <input id="newUserGroupRoleName-{{user_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
                     <button class="button button-outline role-add" 
@@ -179,7 +179,8 @@
                         >
                     +
                     </button>
-                </span> -->
+                </span> 
+                -->
                 {{/isAdmin}}
             </td>
         </tr>
@@ -193,8 +194,9 @@
                     list="userGroupsDataList" 
                     placeholder="Добавить группу" 
                     onchange="
-                        document.getElementById('newUserGroupDescription').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).innerText;
-                        document.getElementById('newUserGroupID').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).id;
+                        var opt=document.querySelector(`#userGroupsDataList>option[value='${this.value}'`);
+                        document.getElementById('newUserGroupDescription').innerText = opt? opt.innerText : '';
+                        document.getElementById('newUserGroupID').innerText = opt? opt.id : '';
                     ">
                 <datalist id="userGroupsDataList">
                     {{{all_groups_options}}}
@@ -205,15 +207,16 @@
                 <span id="newUserGroupID"></span>
                 <span id="newUserGroupDescription"></span>
             </td>
-            <td>
-                <span class="button button-outline role-nocross">
-                        <input id="newUserGroupRoleName" class="role-input" placeholder="новая роль в группе" value="member" readonly>
-                        <button class="button button-outline role-add" 
-                            onclick="modifyUserGroupRole('create', '{{id}}',  
-                                document.getElementById('newUserGroupID').innerText, 
-                                document.getElementById('newUserGroupRoleName').value, 
-                                ()=>{ getUser('{{user.username}}') }); "
-                        >+</button>
+            <td style="text-align:right;">
+                <span class="button button-outline role-nocross" style="border:none;">
+                    <input id="newUserGroupRoleName" class="role-input hidden" placeholder="новая роль в группе" value="member" readonly>
+                    <button class="button button-outline role-add" 
+                        onclick="modifyUserGroupRole('create',
+                            '{{id}}',  
+                            document.getElementById('newUserGroupID').innerText, 
+                            document.getElementById('newUserGroupRoleName').value, 
+                            ()=>{ getUser('{{user.username}}') }); "
+                    >+</button>
                 </span>
             </td>
         </tr>

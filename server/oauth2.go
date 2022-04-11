@@ -112,7 +112,7 @@ func OauthLogoutProvider(c *gin.Context, provider string) {
 }
 
 // OauthCallback заканчивает процесс входа/выхода для данного провайдера.
-// Перенаправляет браузер на auth-admin.vercel.app в параметрах запроса передавая информацию
+// Перенаправляет браузер на auth-admin в параметрах запроса передавая информацию
 // о пользователе и ошибке
 func OauthCallback(c *gin.Context) {
 	provider := c.Param("provider")
