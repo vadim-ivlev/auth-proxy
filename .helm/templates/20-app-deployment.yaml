@@ -5,6 +5,10 @@ metadata:
   name: {{ .Chart.Name }}
   labels:
     app: {{ .Chart.Name }}
+  annotations:
+{{- if eq .Values.werf.env "production" }}
+    werf.io/replicas-on-creation: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default | quote }}
+{{- end }}
 spec:
   revisionHistoryLimit: 3
 {{- if ne .Values.werf.env "production" }}
@@ -15,10 +19,6 @@ spec:
       app: {{ .Chart.Name }}
   template:
     metadata:
-{{- if eq .Values.werf.env "production" }}
-      annotations:
-        werf.io/replicas-on-creation: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default | quote }}
-{{- end }}
       labels:
         app: {{ .Chart.Name }}
     spec:
