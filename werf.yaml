@@ -1,0 +1,62 @@
+configVersion: 1
+project: {{ env "CI_PROJECT_NAME" }}
+deploy:
+  helmRelease: "[[ project ]]-[[ env ]]"
+  namespace: "[[ env ]]"
+---
+artifact: build-artifact
+from: golang:1.17.2-alpine3.14
+git:
+  - add: /
+    to: /app
+    excludePaths:
+    - .helm
+    - .gitlab-ci.yml
+    - .gitignore
+    - .dockerignore
+    - docker*
+    - Docker*
+    - werf.yml
+    - werf-giterminism.yaml
+    - dump/
+    - gitlab-ci/
+    - sh/
+    stageDependencies:
+      install:
+        - "**/*"
+shell:
+  beforeInstall:
+  - TZ=Europe/Moscow; ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  - apk update
+  - apk add -q --no-progress --no-cache tzdata curl unzip musl-locales musl-locales-lang ca-certificates
+  install:
+  - cd /app
+  - go build -tags=jsoniter
+
+---
+image: app
+from: alpine:3.14
+git:
+  - add: /migrations
+    to: /app/migrations
+    owner: app
+    group: app
+  - add: /certificates
+    to: /app/certificates
+    owner: app
+    group: app
+import:
+  - artifact: build-artifact
+    add: /app/{{ env "CI_PROJECT_NAME" }}
+    to: /app/app
+    owner: app
+    group: app
+    after: install
+docker:
+  WORKDIR: /app
+shell:
+  beforeInstall:
+  - TZ=Europe/Moscow; ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  - apk update
+  - apk add -q --no-progress --no-cache tzdata curl ca-certificates
+  - adduser -u 7000 -s /bin/bash -D -h /app app
