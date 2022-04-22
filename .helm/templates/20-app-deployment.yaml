@@ -7,18 +7,25 @@ metadata:
     app: {{ .Chart.Name }}
 spec:
   revisionHistoryLimit: 3
+{{- if ne .Values.werf.env "production" }}
   replicas: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
   template:
     metadata:
+{{- if eq .Values.werf.env "production" }}
+      annotations:
+        werf.io/replicas-on-creation: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default | quote }}
+{{- end }}
       labels:
         app: {{ .Chart.Name }}
     spec:
 {{- include "affinity" . | indent 6 }}
       imagePullSecrets:
       - name: registrysecret
+      priorityClassName: {{ pluck .Values.werf.env .Values.priorityclass | first | default .Values.priorityclass._default }}
       containers:
       - name: app
         image: {{ .Values.werf.image.app }}
@@ -26,7 +33,7 @@ spec:
 {{- include "app_probes" . | indent 8 }}
 {{- include "app_resources" . | indent 8 }}
         env:
-{{ include "app_envs" $ | indent 8 }}
+{{ include "app_envs" . | indent 8 }}
         ports:
         - name: http
           containerPort: {{ pluck .Values.werf.env .Values.app.port | first | default .Values.app.port._default }}
@@ -40,6 +47,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 4400
+      port: 8080
+      targetPort: {{ pluck .Values.werf.env .Values.app.port | first | default .Values.app.port._default }}
   selector:
     app: {{ .Chart.Name }}

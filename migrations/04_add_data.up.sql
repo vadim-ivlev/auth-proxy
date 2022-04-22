@@ -1,8 +1,7 @@
 
--- DO 
--- $$
--- BEGIN;
--- -- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
+-- DO $$;
+-- BEGIN
+-- чтобы не заботиться о порядке вставки данных из за ограничений внешних ключей
 
 -- SET CONSTRAINTS app_user_role_fk_u DEFERRED;
 -- SET CONSTRAINTS app_user_role_fk_a DEFERRED;
@@ -168,6 +167,5 @@ END $$;
 
 -- EXCEPTION WHEN OTHERS THEN 
 --     RAISE EXCEPTION 'Тестовые данные уже существуют.';
--- END;
--- $$;
+-- END$$;
 -- COMMIT;

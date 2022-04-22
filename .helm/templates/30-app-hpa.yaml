@@ -9,14 +9,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Chart.Name }}
-  minReplicas: {{ pluck .Values.werf.env $.Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default }}
-  maxReplicas: {{ pluck .Values.werf.env $.Values.replicas.app.hpa.max_replicas | first | default .Values.replicas.app.hpa.max_replicas._default }}
+  minReplicas: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default }}
+  maxReplicas: {{ pluck .Values.werf.env .Values.replicas.app.hpa.max_replicas | first | default .Values.replicas.app.hpa.max_replicas._default }}
   metrics:
-  - type: Pods
-    pods:
-      metric:
-        name: {{ .Chart.Name }}
+  - type: Resource
+    resource:
+      name: cpu
       target:
-        type: AverageValue
-        averageValue: 80
+        type: Utilization
+        averageUtilization: {{ pluck .Values.werf.env .Values.replicas.app.hpa.averageUtilization | first | default .Values.replicas.app.hpa.averageUtilization._default }}
 {{- end }}

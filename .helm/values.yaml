@@ -1,3 +1,8 @@
+priorityclass:
+  _default: "develop"
+  stage: "staging"
+  production: "production-medium"
+
 app:
   port:
     _default: 4400
@@ -11,7 +16,7 @@ app:
         _default: "128Mi"
   domain:
     _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
-
+    production: "api.k8s.rg.ru"
   tls:
     _default: false
   secure:
@@ -31,16 +36,19 @@ app:
     _default: 60
   confirm_email_url:
     _default: "https://api-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
+    production: "https://api.k8s.rg.ru/confirm-email/"
   entry_point:
-    _default: "https://api-{{ .Values.werf.env }}.k8s.rg.ru/"
+    _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/"
+    production: "https://frontend.k8s.rg.ru/"
   smtp_address:
     _default: localhost:25
   mail_from:
     _default: "noreply@rg.ru"
   admin_url:
-    _default: "https://auth-admin.vercel.app/?url=https://api-{{ .Values.werf.env }}.k8s.rg.ru/"
+    _default: "http://admin-core.{{ .Values.werf.env }}.svc.cluster.local."
   graphql_test_url:
     _default: "https://graphql-test.vercel.app/?end_point=https://api-{{ .Values.werf.env }}.k8s.rg.ru/schema&tab_name=auth-proxy4400"
+    production: "https://graphql-test.vercel.app/?end_point=https://api.k8s.rg.ru/schema&tab_name=auth-proxy4400"
 replicas:
   app:
     hpa:
@@ -48,11 +56,14 @@ replicas:
         _default: 2 
       max_replicas:
         _default: 3
+      averageUtilization:
+        _default: 80
 
 infra:
     pg:
       host:
         _default: 'postgres-common.infra-{{ .Values.werf.env }}.svc.cluster.local'
+        production: 'postgres-common-master.infra-{{ .Values.werf.env }}.svc.cluster.local'
       user:
         _default: 'rg-{{ .Values.werf.env }}'
       port:

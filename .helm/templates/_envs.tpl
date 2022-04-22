@@ -13,7 +13,6 @@
   value: {{ pluck .Values.werf.env .Values.infra.pg.sslmode | first | default .Values.infra.pg.sslmode._default | quote }}
 - name: PG_SEARCH_PATH
   value: {{ pluck .Values.werf.env .Values.infra.pg.searchpath | first | default .Values.infra.pg.searchpath._default | quote }}
-
 - name: cookie_name
   value: {{ .Chart.Name }}-{{ .Values.werf.env }}
 - name: app_name
@@ -44,4 +43,6 @@
   value: {{  tpl (pluck .Values.werf.env .Values.app.admin_url | first | default .Values.app.admin_url._default) . | squote }}
 - name: graphql_test_url
   value: {{  tpl (pluck .Values.werf.env .Values.app.graphql_test_url | first | default .Values.app.graphql_test_url._default) . | squote }}
+- name: GIN_MODE
+  value: "release"
 {{- end }}

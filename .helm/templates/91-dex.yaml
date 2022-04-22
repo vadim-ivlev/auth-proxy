@@ -7,7 +7,4 @@ spec:
   applicationDomain: {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default ) . }}
   applicationIngressCertificateSecretName: {{ .Chart.Name }}-tls
   applicationIngressClassName: nginx
-  sendAuthorizationHeader: true
-  allowedGroups:
-  - flant
-  - admins
+  sendAuthorizationHeader: false
