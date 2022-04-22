@@ -8,12 +8,15 @@ app:
     _default: 4400
   resources:
     cpu:
-      _default: "100m"
+      _default: "10m"
+      production: "50m"
     memory:
       requests:
-        _default: "128Mi"
+        _default: "16Mi"
+        production: "32Mi"
       limits:
-        _default: "128Mi"
+        _default: "16Mi"
+        production: "32Mi"
   domain:
     _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
   tls:
