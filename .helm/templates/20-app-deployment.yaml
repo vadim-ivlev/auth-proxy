@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+{{- include "affinity" . | indent 6 }}
+      imagePullSecrets:
+      - name: registrysecret
+      containers:
+      - name: app
+        image: {{ .Values.werf.image.app }}
+        command: ["./app"] 
+{{- include "app_probes" . | indent 8 }}
+{{- include "app_resources" . | indent 8 }}
+        env:
+{{ include "app_envs" $ | indent 8 }}
+        ports:
+        - name: http
+          containerPort: {{ pluck .Values.werf.env .Values.app.port | first | default .Values.app.port._default }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  ports:
+    - name: http
+      port: 4400
+  selector:
+    app: {{ .Chart.Name }}
