@@ -20,8 +20,10 @@ stages:
   - deploypreprod
   - deploy
   - deploy2
+  - deployk8s
   - message_on_success
   - message_on_failure
+  - cleanup_registry
 
 variables:
   GROUP: ${CI_PROJECT_NAMESPACE}
@@ -50,7 +52,7 @@ include:
   - local: /gitlab-ci/gl-staging-tmpl.yml
   - local: /gitlab-ci/gl-production-tmpl.yml
   - project: 'flant/pipeline'
-    file: '/.gitlab-ci-app.yml'
+    file: '/.gitlab-ci-k8sf.yml'
     
 message_on_success:
   stage: message_on_success
@@ -81,26 +83,6 @@ message_on_failure:
     - production-gl
 
 #Flant ci/cd
-
-.base_deploy:
-  variables:
-    GIT_CLONE_PATH: ''
-
-#only for test
-Build image:
-  extends: .base_deploy
-  script:
-      - werf build
-  when: manual
-
-Deploy to dev:
-  extends: .base_deploy
-  environment:
-    name: dev
-  # when: manual
-
-Deploy to stage:
-  extends: .base_deploy
-  environment:
-    name: stage
-  when: manual
+#
+# included from flant/pipeline
+#

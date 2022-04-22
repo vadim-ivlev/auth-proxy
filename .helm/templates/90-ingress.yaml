@@ -34,6 +34,5 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
-  commonName: {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
   dnsNames:
-  - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
+    - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
