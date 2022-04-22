@@ -16,7 +16,6 @@ app:
         _default: "128Mi"
   domain:
     _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
-    production: "api.k8s.rg.ru"
   tls:
     _default: false
   secure:
@@ -36,10 +35,8 @@ app:
     _default: 60
   confirm_email_url:
     _default: "https://api-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
-    production: "https://api.k8s.rg.ru/confirm-email/"
   entry_point:
     _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/"
-    production: "https://frontend.k8s.rg.ru/"
   smtp_address:
     _default: localhost:25
   mail_from:
