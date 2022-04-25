@@ -25,6 +25,8 @@ WORKDIR /
 COPY --from=builder /go/src/${CI_PROJECT_NAME}/${CI_PROJECT_NAME} .
 COPY --from=builder /go/src/${CI_PROJECT_NAME}/configs/${PRJ}-${NODE_ENV}/* ./configs/
 COPY --from=builder /go/src/${CI_PROJECT_NAME}/migrations/* ./migrations/
+COPY --from=builder /go/src/${CI_PROJECT_NAME}/templates/* ./templates/
+COPY --from=builder /go/src/${CI_PROJECT_NAME}/etc/* ./etc/
 COPY --from=builder /go/src/${CI_PROJECT_NAME}/certificates/* ./certificates/
 COPY --from=builder /go/src/${CI_PROJECT_NAME}/admin/* ./admin/
 # ADD db_conf/${CI_PROJECT_NAME}-${NODE_ENV}/configs/* ./configs/
