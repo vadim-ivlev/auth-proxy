@@ -119,9 +119,21 @@ func CreateRow(tableName string, fieldValues map[string]interface{}) (map[string
 // Возвращает map[string]interface{}, error обновленной записи таблицы.
 func UpdateRowByID(keyFieldName string, tableName string, id interface{}, fieldValues map[string]interface{}) (map[string]interface{}, error) {
 	keys, values, dollars := getKeysAndValues(fieldValues)
+	// sanitizing
+	tableNameString := RemoveDoubleQuotes(tableName)
+	fieldsString := strings.Join(keys, ", ")
+	dollarsString := strings.Join(dollars, ", ")
+	idString := RemoveSingleQuotesIntf(id)
 
-	sqlText := fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`,
-		RemoveDoubleQuotes(tableName), strings.Join(keys, ", "), strings.Join(dollars, ", "), RemoveSingleQuotesIntf(id))
+	sqlText := ""
+	// Синтаксис запроса зависит от количества обновляемых параметров.
+	// Недоработка postgresql? Или поробовать другой синтксис?
+	if len(values) > 1 {
+		sqlText = fmt.Sprintf(`UPDATE "%s" SET ( %s ) = ( %s ) WHERE `+keyFieldName+` = '%v';`, tableNameString, fieldsString, dollarsString, idString)
+	} else {
+		sqlText = fmt.Sprintf(`UPDATE "%s" SET   %s   =   %s   WHERE `+keyFieldName+` = '%v';`, tableNameString, fieldsString, dollarsString, idString)
+	}
+
 	res, err := QueryExec(sqlText, values...)
 	if err != nil {
 		return nil, err
