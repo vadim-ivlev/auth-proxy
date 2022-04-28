@@ -19,6 +19,8 @@ app:
         production: "32Mi"
   domain:
     _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
+  proxy_body_size:
+    _default: 2048m
   tls:
     _default: false
   secure:
