@@ -21,7 +21,8 @@ VALUES
 (6,'video'                 ,'http://host.docker.internal:7700'   , 'Видео GraphQL API админки'                                         ,NULL   ,NULL),
 (7,'admin-comment'         ,'http://host.docker.internal:8095'   , 'GraphQL API комментарией'                                          ,NULL   ,NULL),
 (8,'admin-core'            ,'http://host.docker.internal:8076'   , 'GraphQL API редакторского интерфейса'                              ,NULL   ,NULL),
-(9,'file-uploader'         ,'http://host.docker.internal:8077'   , 'GraphQL API загрузки файлов'                                       ,NULL   ,NULL);
+(9,'file-uploader'         ,'http://host.docker.internal:8077'   , 'GraphQL API загрузки файлов'                                       ,NULL   ,NULL),
+(10,'import'               ,'http://host.docker.internal:9099'   , 'GraphQL API импорт материалов в редактуру'                         ,NULL   ,NULL);
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app уже существуют.';
 END $$;
@@ -41,7 +42,6 @@ VALUES
 ('boev'      , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'boev@rg.ru'       , 'Александр Боев'   , 'Администратор auth-proxy'),
 ('kondratiev', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kondratiev@rg.ru' , 'Антон Кондратьев' , 'Администратор auth-proxy'),
 ('ivlev'     , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'ivlev@rg.ru'      , 'Вадим Ивлев'      , 'Администратор auth-proxy'),
-('barsuk'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'barsuk@rg.ru'     , 'Сергей Барсук'    , 'Администратор auth-proxy'),
 ('nsinetskiy', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'nsinetskiy@rg.ru' , 'Никита Синецкий'  , 'Администратор auth-proxy'),
 ('pologov'   , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'pologov@rg.ru'    , 'Глеб Пологов'     , 'Администратор auth-proxy'),
 ('kataev'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kataev@rg.ru'     , 'Антон Катаев'     , 'Администратор auth-proxy');
@@ -73,7 +73,6 @@ VALUES
 ('admin-core'                , 'boev'      , 'admin'),
 ('admin-core'                , 'kondratiev', 'admin'),
 ('admin-core'                , 'ivlev'     , 'admin'),
-('admin-core'                , 'barsuk'    , 'admin'),
 ('admin-core'                , 'nsinetskiy', 'admin'),
 ('admin-core'                , 'kataev'    , 'admin'),
 ('admin-core'                , 'pologov'   , 'admin'),
@@ -85,7 +84,6 @@ VALUES
 ('file-uploader'    , 'boev'      , 'admin'),
 ('file-uploader'    , 'kondratiev', 'admin'),
 ('file-uploader'    , 'ivlev'     , 'admin'),
-('file-uploader'    , 'barsuk'    , 'admin'),
 ('file-uploader'    , 'nsinetskiy', 'admin'),
 ('file-uploader'    , 'kataev'    , 'admin'),
 ('file-uploader'    , 'pologov'   , 'admin'),
@@ -97,10 +95,20 @@ VALUES
 ('video'                 , 'boev'      , 'admin'),
 ('video'                 , 'kondratiev', 'admin'),
 ('video'                 , 'ivlev'     , 'admin'),
-('video'                 , 'barsuk'    , 'admin'),
 ('video'                 , 'nsinetskiy', 'admin'),
 ('video'                 , 'kataev'    , 'admin'),
 ('video'                 , 'pologov'   , 'admin'),
+
+('import'                 , 'admin'     , 'admin'),
+('import'                 , 'test'      , 'editor'),
+('import'                 , 'chagin'    , 'admin'),
+('import'                 , 'chernyshev', 'admin'),
+('import'                 , 'boev'      , 'admin'),
+('import'                 , 'kondratiev', 'admin'),
+('import'                 , 'ivlev'     , 'admin'),
+('import'                 , 'nsinetskiy', 'admin'),
+('import'                 , 'kataev'    , 'admin'),
+('import'                 , 'pologov'   , 'admin'),
 
 ('admin-comment'         , 'admin'     , 'admin'),
 ('admin-comment'         , 'test'      , 'editor'),
@@ -109,7 +117,6 @@ VALUES
 ('admin-comment'         , 'boev'      , 'admin'),
 ('admin-comment'         , 'kondratiev', 'admin'),
 ('admin-comment'         , 'ivlev'     , 'admin'),
-('admin-comment'         , 'barsuk'    , 'admin'),
 ('admin-comment'         , 'nsinetskiy', 'admin'),
 ('admin-comment'         , 'kataev'    , 'admin'),
 ('admin-comment'         , 'pologov'   , 'admin');
