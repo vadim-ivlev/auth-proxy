@@ -407,10 +407,15 @@ function searchAppsInModel() {
 }
 
 
-function sortAppsBy(prop) {
+function sortAppsBy(prop,asStings = true) {
     if (!model._allApps) return false
-    model._allApps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1)
-    model._apps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 )
+    if (asStings){
+        model._allApps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1)
+        model._apps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 )
+    }else {
+        model._allApps.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+        model._apps.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+    }
     model.apps = model._apps
     return false
 }
@@ -1180,6 +1185,7 @@ function formListAppSubmit(event) {
         ) {
             length
             list {
+              id  
               appname
               description
               url

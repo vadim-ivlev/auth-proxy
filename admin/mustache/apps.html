@@ -2,6 +2,7 @@
 <table>
     <thead>
         <tr>
+            <th><a href="" class="sortable" title="sort by id" onclick="pd(event); sortAppsBy('id', false)">#</a></th>
             <th><a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
             <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description')">description</a></th>
             {{#isAdmin}}
@@ -14,6 +15,9 @@
     <tbody>
         {{#apps}}
         <tr>
+            <td>
+                {{id}}
+            </td>         
             <td>
                 <a href="" title="редактировать" onclick="pd(event); showPage('app/{{appname}}');"><b>{{appname}}</b></a>
                 <br>
