@@ -54,3 +54,29 @@ create view uga as
   join group_app_role_extended as ga on ga.group_id = gu.group_id
  ;
 ```
+
+
+# Working with git via RG
+
+1. Pull the latest changes to rg
+
+```
+ssh rg 'cd auth-proxy && git pull origin master'
+
+```
+
+
+2. 
+On the local computer copy from rg
+
+```
+rsync -avh --delete rg:/home/ivlev/auth-proxy ~/projects/
+```
+
+3. Do the work and commit the changes.
+
+Copy to rg
+```
+rsync -avh --delete  ~/projects/auth-proxy rg:/home/ivlev/
+```
+
