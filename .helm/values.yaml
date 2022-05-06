@@ -19,7 +19,6 @@ app:
         production: "32Mi"
   domain:
     _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
-    production: "api.k8s.rg.ru"
   proxy_body_size:
     _default: 2048m
   tls:
@@ -41,7 +40,6 @@ app:
     _default: 60
   confirm_email_url:
     _default: "https://api-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
-    production: "https://api.k8s.rg.ru/confirm-email/"
   entry_point:
     _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/"
   smtp_address:
