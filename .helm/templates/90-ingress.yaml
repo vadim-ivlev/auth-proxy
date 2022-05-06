@@ -6,9 +6,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: {{ pluck .Values.werf.env .Values.app.proxy_body_size | first | default .Values.app.proxy_body_size._default }}
-    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Request-User,X-Auth-Request-Email
-    nginx.ingress.kubernetes.io/auth-signin: https://$host/dex-authenticator/sign_in
-    nginx.ingress.kubernetes.io/auth-url: https://{{ .Chart.Name }}-dex-authenticator.{{ .Release.Namespace }}.svc.cluster.local/dex-authenticator/auth
 spec:
   rules:
   - host: {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
