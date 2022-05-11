@@ -303,3 +303,7 @@ func ListPublicApps() []map[string]interface{} {
 func GetUser(nameOrEmail string) (user map[string]interface{}, err error) {
 	return db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, nameOrEmail)
 }
+
+func GetApp(id int) (user map[string]interface{}, err error) {
+	return db.QueryRowMap(`SELECT * FROM "app" WHERE id=$1 `, id)
+}
