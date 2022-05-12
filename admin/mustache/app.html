@@ -15,6 +15,7 @@
     <form id="formApp" onsubmit="event.preventDefault();">
         <div>
             <input name="old_appname" type="hidden" value="{{app.appname}}">   
+            <input name="app_id" type="hidden" value="{{app.id}}">   
             <label >appname *</label>
             <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
             oninput="
@@ -88,7 +89,7 @@
             <button type="button" class="button button-outline" onclick="createApp(event)" >создать</button>
             {{/app}}
             {{#app}}
-            <button type="button" class="button button-outline" onclick="deleteApp('{{app.appname}}'); showPage('apps');">удалить</button>
+            <button type="button" class="button button-outline" onclick="deleteApp('{{app.id}}'); showPage('apps');">удалить</button>
             <button type="button" class="button button-outline" onclick="updateApp(event)">сохранить</button>
             {{/app}}
         </div>

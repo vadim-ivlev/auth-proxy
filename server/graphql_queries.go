@@ -55,7 +55,8 @@ func login() *graphql.Field {
 				fmt.Println("UsePin!!!!!!")
 				pinRequired, _, _, err := authenticator.GetUserPinFields(username)
 				if err != nil {
-					return "", err
+					// return "", err
+					return nil, errors.New("email или пароль введен неверно")
 				}
 				fmt.Println("pin required!!!!!!")
 				if pinRequired {
@@ -85,10 +86,12 @@ func login() *graphql.Field {
 
 			r, dbUsername := auth.CheckUserPassword2(username, password)
 			if r == auth.NO_USER {
-				return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
+				// return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
+				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
-				return nil, errors.New("Неверный пароль")
+				// return nil, errors.New("Неверный пароль")
+				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			}
@@ -179,10 +182,12 @@ func login_by_email() *graphql.Field {
 
 			r, dbUsername := auth.CheckUserPassword2(username, password)
 			if r == auth.NO_USER {
-				return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
+				// return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
+				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
-				return nil, errors.New("Неверный пароль")
+				// return nil, errors.New("Неверный пароль")
+				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			}

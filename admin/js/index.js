@@ -1249,7 +1249,8 @@ function createApp(event) {
 
 function updateApp(event, appOperationName = 'create_app') {
     if (event) event.preventDefault()
-    let old_appname = document.querySelector("#formApp input[name='old_appname']"    ).value
+    let app_id =      document.querySelector("#formApp input[name='app_id']"    ).value
+    // let old_appname = document.querySelector("#formApp input[name='old_appname']"    ).value
     let appname =     document.querySelector("#formApp input[name='appname']"    ).value
     let url =         document.querySelector("#formApp input[name='url']"        ).value
     let description = document.querySelector("#formApp input[name='description']").value
@@ -1257,10 +1258,11 @@ function updateApp(event, appOperationName = 'create_app') {
     let _public =     document.querySelector("#formApp input[name='public']"     ).value
     let sign =        document.querySelector("#formApp input[name='sign']"       ).value
     
+    // old_appname: "${old_appname}",
     var query =`
     mutation {
         update_app(
-        old_appname: "${old_appname}",
+        id: ${app_id},
         appname: "${appname}",
         url: "${url}",
         description: "${description}",
@@ -1355,11 +1357,11 @@ function usersOfTheApp(list_app_user_role) {
 }
 
 
-function deleteApp(appname) {
+function deleteApp(id) {
     var query =`
     mutation {
         delete_app(
-        appname: "${appname}"
+        id: ${id}
         ) {
             appname
           }
