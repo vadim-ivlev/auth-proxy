@@ -121,7 +121,7 @@
             {{/user}}
             {{#user}}
             {{#isAdmin}}
-            <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
+            <button type="button" class="button button-outline" onclick="deleteUser('{{user.id}}'); showPage('users');">удалить</button>
             {{/isAdmin}}
             <button type="button" class="button button-outline" onclick="updateUser(event)">сохранить изменения</button>
             {{/user}}

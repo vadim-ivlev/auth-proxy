@@ -1099,11 +1099,11 @@ function appsOfTheUser(list_app_user_role) {
 
 
 
-function deleteUser(username) {
+function deleteUser(id) {
     var query =`
     mutation {
         delete_user(
-        username: "${username}"
+        id: ${id}
         ) {
             username
           }
