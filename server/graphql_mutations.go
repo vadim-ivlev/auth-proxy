@@ -181,91 +181,91 @@ func create_app() *graphql.Field {
 	}
 }
 
-func update_app0() *graphql.Field {
-	return &graphql.Field{
-		Description: "Обновить приложение",
-		Type:        appObject,
-		Args: graphql.FieldConfigArgument{
-			"old_appname": &graphql.ArgumentConfig{
-				Type:         graphql.NewNonNull(graphql.String),
-				Description:  "Имя приложения до обновления (уникальное)",
-				DefaultValue: "",
-			},
-			"appname": &graphql.ArgumentConfig{
-				Type:         graphql.NewNonNull(graphql.String),
-				Description:  "Имя приложения (уникальное)",
-				DefaultValue: "",
-			},
-			"description": &graphql.ArgumentConfig{
-				Type:        graphql.String,
-				Description: "Описание",
-			},
-			"url": &graphql.ArgumentConfig{
-				Type:        graphql.String,
-				Description: "url проксируемого приложения",
-			},
-			"rebase": &graphql.ArgumentConfig{
-				Type:        graphql.String,
-				Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
-			},
-			"public": &graphql.ArgumentConfig{
-				Type:        graphql.String,
-				Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
-			},
-			"sign": &graphql.ArgumentConfig{
-				Type:        graphql.String,
-				Description: "Y - для цифровой подписи запросов к приложению",
-			},
-		},
-		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			panicIfNotAdmin(params)
+// func update_app0() *graphql.Field {
+// 	return &graphql.Field{
+// 		Description: "Обновить приложение",
+// 		Type:        appObject,
+// 		Args: graphql.FieldConfigArgument{
+// 			"old_appname": &graphql.ArgumentConfig{
+// 				Type:         graphql.NewNonNull(graphql.String),
+// 				Description:  "Имя приложения до обновления (уникальное)",
+// 				DefaultValue: "",
+// 			},
+// 			"appname": &graphql.ArgumentConfig{
+// 				Type:         graphql.NewNonNull(graphql.String),
+// 				Description:  "Имя приложения (уникальное)",
+// 				DefaultValue: "",
+// 			},
+// 			"description": &graphql.ArgumentConfig{
+// 				Type:        graphql.String,
+// 				Description: "Описание",
+// 			},
+// 			"url": &graphql.ArgumentConfig{
+// 				Type:        graphql.String,
+// 				Description: "url проксируемого приложения",
+// 			},
+// 			"rebase": &graphql.ArgumentConfig{
+// 				Type:        graphql.String,
+// 				Description: "Y - чтобы иправить ссылки на относительные на HTML страницах",
+// 			},
+// 			"public": &graphql.ArgumentConfig{
+// 				Type:        graphql.String,
+// 				Description: "Y - чтобы сделать приложение доступным для пользователей без роли",
+// 			},
+// 			"sign": &graphql.ArgumentConfig{
+// 				Type:        graphql.String,
+// 				Description: "Y - для цифровой подписи запросов к приложению",
+// 			},
+// 		},
+// 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+// 			panicIfNotAdmin(params)
 
-			oldAppname, _ := params.Args["old_appname"].(string)
-			if oldAppname == "" {
-				oldAppname, _ = params.Args["appname"].(string)
-			}
-			if oldAppname == "" {
-				return nil, errors.New("appname is blank")
-			}
+// 			oldAppname, _ := params.Args["old_appname"].(string)
+// 			if oldAppname == "" {
+// 				oldAppname, _ = params.Args["appname"].(string)
+// 			}
+// 			if oldAppname == "" {
+// 				return nil, errors.New("appname is blank")
+// 			}
 
-			delete(params.Args, "old_appname")
-			res, err := updateRecord(oldAppname, "appname", params, "app", "app")
+// 			delete(params.Args, "old_appname")
+// 			res, err := updateRecord(oldAppname, "appname", params, "app", "app")
 
-			// изменяем массив прокси
-			if err == nil {
-				appname, _ := params.Args["appname"].(string)
+// 			// изменяем массив прокси
+// 			if err == nil {
+// 				appname, _ := params.Args["appname"].(string)
 
-				// если appname изменилось перепорождаем прокси со старыми Url, Rebase
-				if appname != oldAppname {
-					oldProxy := *proxies[oldAppname]
-					log.Println("renaming old_url, old_appname, old_rebase", oldProxy.Url, oldAppname, oldProxy.Rebase)
-					delete(proxies, oldAppname)
-					proxies[appname] = createProxy(oldProxy.Url, appname, oldProxy.Rebase)
-					// clear old_appname cache
-					auth.Cache.Delete("is-" + oldAppname + "-public")
-					auth.Cache.Delete("is-request-to-" + oldAppname + "-signed")
-				}
+// 				// если appname изменилось перепорождаем прокси со старыми Url, Rebase
+// 				if appname != oldAppname {
+// 					oldProxy := *proxies[oldAppname]
+// 					log.Println("renaming old_url, old_appname, old_rebase", oldProxy.Url, oldAppname, oldProxy.Rebase)
+// 					delete(proxies, oldAppname)
+// 					proxies[appname] = createProxy(oldProxy.Url, appname, oldProxy.Rebase)
+// 					// clear old_appname cache
+// 					auth.Cache.Delete("is-" + oldAppname + "-public")
+// 					auth.Cache.Delete("is-request-to-" + oldAppname + "-signed")
+// 				}
 
-				// Если обновляется Url, Rebase перепорождаем прокси
-				r, okRebase := params.Args["rebase"]
-				u, okURL := params.Args["url"]
-				if okRebase || okURL {
-					rebase, _ := r.(string)
-					url, _ := u.(string)
-					if url == "" {
-						delete(proxies, appname)
-						log.Printf("Proxy deleted appname=%s", appname)
-					} else {
-						proxies[appname] = createProxy(url, appname, rebase)
-						log.Printf("Proxy created appname=%v target=%v", appname, url)
-					}
-				}
-				clearAppCache(params)
-			}
-			return res, err
-		},
-	}
-}
+// 				// Если обновляется Url, Rebase перепорождаем прокси
+// 				r, okRebase := params.Args["rebase"]
+// 				u, okURL := params.Args["url"]
+// 				if okRebase || okURL {
+// 					rebase, _ := r.(string)
+// 					url, _ := u.(string)
+// 					if url == "" {
+// 						delete(proxies, appname)
+// 						log.Printf("Proxy deleted appname=%s", appname)
+// 					} else {
+// 						proxies[appname] = createProxy(url, appname, rebase)
+// 						log.Printf("Proxy created appname=%v target=%v", appname, url)
+// 					}
+// 				}
+// 				clearAppCache(params)
+// 			}
+// 			return res, err
+// 		},
+// 	}
+// }
 
 func update_app() *graphql.Field {
 	return &graphql.Field{
@@ -358,29 +358,29 @@ func update_app() *graphql.Field {
 	}
 }
 
-func delete_app0() *graphql.Field {
-	return &graphql.Field{
-		Description: "Удалить приложение",
-		Type:        appObject,
-		Args: graphql.FieldConfigArgument{
-			"appname": &graphql.ArgumentConfig{
-				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Имя пользователя (уникальное)",
-			},
-		},
-		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			panicIfNotAdmin(params)
-			res, err := deleteRecord("appname", params, "app", "app")
-			if err == nil {
-				app, _ := params.Args["appname"].(string)
-				delete(proxies, app)
-				log.Printf("Proxy deleted appname=%s", app)
-				clearAppCache(params)
-			}
-			return res, err
-		},
-	}
-}
+// func delete_app0() *graphql.Field {
+// 	return &graphql.Field{
+// 		Description: "Удалить приложение",
+// 		Type:        appObject,
+// 		Args: graphql.FieldConfigArgument{
+// 			"appname": &graphql.ArgumentConfig{
+// 				Type:        graphql.NewNonNull(graphql.String),
+// 				Description: "Имя пользователя (уникальное)",
+// 			},
+// 		},
+// 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+// 			panicIfNotAdmin(params)
+// 			res, err := deleteRecord("appname", params, "app", "app")
+// 			if err == nil {
+// 				app, _ := params.Args["appname"].(string)
+// 				delete(proxies, app)
+// 				log.Printf("Proxy deleted appname=%s", app)
+// 				clearAppCache(params)
+// 			}
+// 			return res, err
+// 		},
+// 	}
+// }
 
 func delete_app() *graphql.Field {
 	return &graphql.Field{
