@@ -28,23 +28,23 @@ EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app уже существ
 END $$;
 
 
-
 DO $$
 BEGIN
 
 INSERT INTO "user" 
-(username    , password                                                          , email              , fullname           , description)
+(id, username    , password                                                          , email              , fullname           , description)
 VALUES 
-('admin'     , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'admin@rg.ru'      , 'Админ Админов'    , 'Администратор auth-proxy'),
-('test'      , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'dev@rg.ru'        , 'Иван Иванов'      , 'Tест auth-proxy'         ),
-('chagin'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'chagin@rg.ru'     , 'Максим Чагин'     , 'Администратор auth-proxy'),
-('chernyshev', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'chernyshev@rg.ru' , 'Алексей Чернышев' , 'Администратор auth-proxy'),
-('boev'      , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'boev@rg.ru'       , 'Александр Боев'   , 'Администратор auth-proxy'),
-('kondratiev', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kondratiev@rg.ru' , 'Антон Кондратьев' , 'Администратор auth-proxy'),
-('ivlev'     , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'ivlev@rg.ru'      , 'Вадим Ивлев'      , 'Администратор auth-proxy'),
-('nsinetskiy', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'nsinetskiy@rg.ru' , 'Никита Синецкий'  , 'Администратор auth-proxy'),
-('pologov'   , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'pologov@rg.ru'    , 'Глеб Пологов'     , 'Администратор auth-proxy'),
-('kataev'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kataev@rg.ru'     , 'Антон Катаев'     , 'Администратор auth-proxy');
+(1, 'admin'     , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'admin@rg.ru'      , 'Админ Админов'    , 'Администратор auth-proxy'),
+(2, 'regdfo'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'dev1@rg.ru'       , 'Иван Иванов'     , 'Региональный редактор ДФО'         ),
+(3, 'regcfo'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'dev2@rg.ru'       , 'Иван Иванов'     , 'Региональный редактор ЦФО'         ),
+(4, 'chagin'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'chagin@rg.ru'     , 'Максим Чагин'     , 'Администратор auth-proxy'),
+(5, 'chernyshev', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'chernyshev@rg.ru' , 'Алексей Чернышев' , 'Администратор auth-proxy'),
+(6, 'boev'      , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'boev@rg.ru'       , 'Александр Боев'   , 'Администратор auth-proxy'),
+(7, 'kondratiev', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kondratiev@rg.ru' , 'Антон Кондратьев' , 'Администратор auth-proxy'),
+(8, 'ivlev'     , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'ivlev@rg.ru'      , 'Вадим Ивлев'      , 'Администратор auth-proxy'),
+(9, 'nsinetskiy', '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'nsinetskiy@rg.ru' , 'Никита Синецкий'  , 'Администратор auth-proxy'),
+(10, 'pologov'   , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'pologov@rg.ru'    , 'Глеб Пологов'     , 'Администратор auth-proxy'),
+(11, 'kataev'    , '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f', 'kataev@rg.ru'     , 'Антон Катаев'     , 'Администратор auth-proxy');
 
 -- rosgas2011 => '07dd3b6bf9336d7232f7c43fcfcab2c5ae63b7425408c0a7f12b57e638dc6f0f'
 -- 1 => '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
@@ -64,62 +64,7 @@ VALUES
 
 ('echo'                  , 'admin'     , 'manager'),
 ('echo'                  , 'admin'     , 'worker'),
-('echo'                  , 'admin'     , 'boss'),
-
-('admin-core'                , 'admin'     , 'admin'),
-('admin-core'                , 'test'      , 'editor'),
-('admin-core'                , 'chagin'    , 'admin'),
-('admin-core'                , 'chernyshev', 'admin'),
-('admin-core'                , 'boev'      , 'admin'),
-('admin-core'                , 'kondratiev', 'admin'),
-('admin-core'                , 'ivlev'     , 'admin'),
-('admin-core'                , 'nsinetskiy', 'admin'),
-('admin-core'                , 'kataev'    , 'admin'),
-('admin-core'                , 'pologov'   , 'admin'),
-
-('file-uploader'    , 'admin'     , 'admin'),
-('file-uploader'    , 'test'      , 'editor'),
-('file-uploader'    , 'chagin'    , 'admin'),
-('file-uploader'    , 'chernyshev', 'admin'),
-('file-uploader'    , 'boev'      , 'admin'),
-('file-uploader'    , 'kondratiev', 'admin'),
-('file-uploader'    , 'ivlev'     , 'admin'),
-('file-uploader'    , 'nsinetskiy', 'admin'),
-('file-uploader'    , 'kataev'    , 'admin'),
-('file-uploader'    , 'pologov'   , 'admin'),
-
-('video'                 , 'admin'     , 'admin'),
-('video'                 , 'test'      , 'editor'),
-('video'                 , 'chagin'    , 'admin'),
-('video'                 , 'chernyshev', 'admin'),
-('video'                 , 'boev'      , 'admin'),
-('video'                 , 'kondratiev', 'admin'),
-('video'                 , 'ivlev'     , 'admin'),
-('video'                 , 'nsinetskiy', 'admin'),
-('video'                 , 'kataev'    , 'admin'),
-('video'                 , 'pologov'   , 'admin'),
-
-('import'                 , 'admin'     , 'admin'),
-('import'                 , 'test'      , 'editor'),
-('import'                 , 'chagin'    , 'admin'),
-('import'                 , 'chernyshev', 'admin'),
-('import'                 , 'boev'      , 'admin'),
-('import'                 , 'kondratiev', 'admin'),
-('import'                 , 'ivlev'     , 'admin'),
-('import'                 , 'nsinetskiy', 'admin'),
-('import'                 , 'kataev'    , 'admin'),
-('import'                 , 'pologov'   , 'admin'),
-
-('admin-comment'         , 'admin'     , 'admin'),
-('admin-comment'         , 'test'      , 'editor'),
-('admin-comment'         , 'chagin'    , 'admin'),
-('admin-comment'         , 'chernyshev', 'admin'),
-('admin-comment'         , 'boev'      , 'admin'),
-('admin-comment'         , 'kondratiev', 'admin'),
-('admin-comment'         , 'ivlev'     , 'admin'),
-('admin-comment'         , 'nsinetskiy', 'admin'),
-('admin-comment'         , 'kataev'    , 'admin'),
-('admin-comment'         , 'pologov'   , 'admin');
+('echo'                  , 'admin'     , 'boss');
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app_user_role уже существуют.';
 END $$;
@@ -132,9 +77,14 @@ BEGIN
 INSERT INTO "group"
 (id, groupname       , description)
 VALUES 
-(1 ,'administrators' , 'Группа администраторов'),
+(1 ,'admins'         , 'Группа администраторов'),
 (2 ,'guests'         , 'Посетители')            ,
-(3 ,'developers'     , 'Разработчики');
+(3 ,'developers'     , 'Разработчики'),
+(4 ,'editors'        , 'Редакторы'),
+(5 ,'comeditors'     , 'Выпускающие редакторы'),
+(6 ,'regeditorsdfo'  , 'Региональные редакторы ДФО'),
+(7 ,'regeditorscfo'  , 'Региональные редакторы ЦФО'),
+(8 ,'bildeditors'    , 'Разработчики');
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group уже существуют.';
 END $$;
@@ -148,9 +98,18 @@ BEGIN
 INSERT INTO group_app_role 
 (group_id, app_id, rolename)
 VALUES 
-(1, 0, 'authadmin'),
-(2, 1, 'guestrole1'),
-(2, 1, 'guestrole2');
+(1, 6, 'admin'),
+(1, 8, 'admin'),
+(1, 10, 'admin'),
+(4, 6, 'editor'),
+(4, 8, 'editor'),
+(4, 10, 'editor'),
+(6, 6, 'viewer'),
+(6, 8, 'regeditor'),
+(6, 8, 'dfo'),
+(7, 6, 'viewer'),
+(7, 8, 'regeditor'),
+(7, 8, 'cfo');
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group_app_role уже существуют.';
 END $$;
@@ -163,10 +122,16 @@ INSERT INTO group_user_role
 (group_id, user_id)
 VALUES 
 (1, 1),
-(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
 (1, 7),
-(2, 3),
-(2, 7);
+(1, 8),
+(1, 9),
+(1, 10),
+(1, 11),
+(6, 2),
+(7, 3);
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group_user_role уже существуют.';
 END $$;

@@ -11,7 +11,7 @@ RUN apk --no-cache add ca-certificates
 # set local date to Europe/Moscow
 RUN apk add --no-cache tzdata
 RUN cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
-RUN apk add curl
+# RUN apk add curl
 # RUN apk add iputils-ping
 
 COPY auth-proxy     /app/auth-proxy
