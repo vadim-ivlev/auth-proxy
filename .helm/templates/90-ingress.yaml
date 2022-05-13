@@ -21,7 +21,13 @@ spec:
   tls:
   - hosts:
       - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
+{{- if ne .Values.werf.env "production" }}
     secretName: {{ .Chart.Name }}-tls
+{{- else }}
+    secretName: rg-tls
+{{- end }}
+
+{{- if ne .Values.werf.env "production" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -34,3 +40,4 @@ spec:
     name: letsencrypt
   dnsNames:
     - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
+{{- end }}
