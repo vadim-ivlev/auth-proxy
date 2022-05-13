@@ -98,18 +98,18 @@ BEGIN
 INSERT INTO group_app_role 
 (group_id, app_id, rolename)
 VALUES 
-(1, 6, 'admin'),
-(1, 8, 'admin'),
+(1, 6,  'admin'),
+(1, 8,  'admin'),
 (1, 10, 'admin'),
-(4, 6, 'editor'),
-(4, 8, 'editor'),
+(4, 6,  'editor'),
+(4, 8,  'editor'),
 (4, 10, 'editor'),
-(6, 6, 'viewer'),
-(6, 8, 'regeditor'),
-(6, 8, 'dfo'),
-(7, 6, 'viewer'),
-(7, 8, 'regeditor'),
-(7, 8, 'cfo');
+(6, 6,  'viewer'),
+(6, 8,  'regeditor'),
+(6, 8,  'reg-dfo'),
+(7, 6,  'viewer'),
+(7, 8,  'regeditor'),
+(7, 8,  'reg-cfo');
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные group_app_role уже существуют.';
 END $$;
