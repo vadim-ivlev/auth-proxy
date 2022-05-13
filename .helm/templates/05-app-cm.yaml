@@ -20,7 +20,7 @@ data:
     new_user: |
         From: %s
         To: %s
-        Subject: New user Email confirmation
+        Subject: New user Email confirmation for RG Editor
 
         Вы зарегистрированы в системе редакторского интерфейса RG.RU.
         Чтобы подтвердить Ваш Email перейдите по ссылке:
@@ -37,7 +37,7 @@ data:
     reset_authenticator: |
         From: %s
         To: %s
-        Subject: Reset authenticator
+        Subject: Reset authenticator for RG Editor
 
         Если не вы инициировали это письмо, игнорируйте его.
 
@@ -55,7 +55,7 @@ data:
     reset_password: |
         From: %s
         To: %s
-        Subject: Reset password
+        Subject: Reset password for RG Editor
 
         Если не вы инициировали это письмо, игнорируйте его.
 
