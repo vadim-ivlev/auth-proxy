@@ -17,10 +17,12 @@
 new_user: |
   From: %s
   To: %s
-  Subject: New user Email confirmation for RG Editor
+  Subject: New user Email confirmation for RG.RU Editor
 
-  Вы зарегистрированы в системе редакторского интерфейса RG.RU.
-  Чтобы подтвердить Ваш Email перейдите по ссылке:
+  Вы зарегистрированы в редакторском интерфейсе RG.RU (editor.rg.ru)
+  Инструкция для входа в систему доступна по ссылке <a href="https://alpha.rg.ru/manual_help/rgru/manual.rgru.editor.pdf">https://alpha.rg.ru/manual_help/rgru/manual.rgru.editor.pdf</a> 
+
+  Внимание! Для подтверждения вашей электроной почты перейдите по ссылке ниже (обязательно)
 
   %s?%s
 
@@ -34,7 +36,7 @@ new_user: |
 reset_authenticator: |
   From: %s
   To: %s
-  Subject: Reset authenticator for RG Editor
+  Subject: Reset authenticator for RG.RU Editor
 
   Если не вы инициировали это письмо, игнорируйте его.
 
@@ -52,11 +54,11 @@ reset_authenticator: |
 reset_password: |
   From: %s
   To: %s
-  Subject: Reset password for RG Editor
+  Subject: Reset password for RG.RU Editor
 
   Если не вы инициировали это письмо, игнорируйте его.
 
-  Для установки пароля перейдите по следующей ссылке.
+  Для установки пароля перейдите по ссылке ниже
 
   %s
  
