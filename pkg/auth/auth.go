@@ -25,6 +25,14 @@ const (
 	WRONG_PASSWORD = 3
 )
 
+// CacheSet Обертка над библиотечной функцией для управления кэшированием через переменную окружения.
+func CacheSet(k string, x interface{}, d time.Duration) {
+	// if true {
+	// 	return
+	// }
+	Cache.Set(k, x, d)
+}
+
 // CheckUserPassword2 проверяет пароль пользователя.
 // Возвращает:
 // OK 			 - проверка прошла успешно.
@@ -162,7 +170,7 @@ func GetUserRolesString(user, app string) (rolesString string) {
 		rolesString = string(bytes)
 	}
 
-	Cache.Set(cacheKey, rolesString, cache.DefaultExpiration)
+	CacheSet(cacheKey, rolesString, cache.DefaultExpiration)
 	return rolesString
 }
 
@@ -185,14 +193,13 @@ func GetUserInfoString(user, app string) string {
 	userInfoString := ""
 
 	// читаем из кэша
-	cacheKey := user + "-info"
+	cacheKey := user + "-" + app + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
-		fmt.Println("Cached:", cacheKey, "=", cachedValue)
-		// return cachedValue.(string)
+		fmt.Println("CACHED:", cacheKey, "=", cachedValue)
 		userInfoString = cachedValue.(string)
 	} else {
-		fmt.Println("NOT cached:", cacheKey)
+		fmt.Println("!!! VALUE IS NOT CACHED FOR KEY:", cacheKey)
 		// обновляем кэш
 		record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description FROM "user" WHERE username = $1 OR email = $1 ;`, user)
 		if err != nil {
@@ -210,7 +217,7 @@ func GetUserInfoString(user, app string) string {
 		fmt.Println(" set userInfoStringWithRoles=", userInfoString)
 		fmt.Println("------------------------------------------------------")
 
-		Cache.Set(cacheKey, userInfoString, cache.DefaultExpiration)
+		CacheSet(cacheKey, userInfoString, cache.DefaultExpiration)
 	}
 
 	return userInfoString
@@ -235,10 +242,10 @@ func IsUserEnabled(user string) bool {
 
 	_, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username = $1 AND disabled = 0 ;`, user)
 	if err == nil {
-		Cache.Set(cacheKey, true, cache.DefaultExpiration)
+		CacheSet(cacheKey, true, cache.DefaultExpiration)
 		return true
 	}
-	Cache.Set(cacheKey, false, cache.DefaultExpiration)
+	CacheSet(cacheKey, false, cache.DefaultExpiration)
 	return false
 }
 
@@ -253,10 +260,10 @@ func IsAppPublic(appName string) bool {
 
 	_, err := db.QueryRowMap(`SELECT * FROM "app" WHERE appname = $1 AND public = 'Y' ;`, appName)
 	if err == nil {
-		Cache.Set(cacheKey, true, cache.DefaultExpiration)
+		CacheSet(cacheKey, true, cache.DefaultExpiration)
 		return true
 	}
-	Cache.Set(cacheKey, false, cache.DefaultExpiration)
+	CacheSet(cacheKey, false, cache.DefaultExpiration)
 	return false
 }
 
@@ -271,10 +278,10 @@ func IsRequestToAppSigned(appName string) bool {
 
 	_, err := db.QueryRowMap(`SELECT * FROM "app" WHERE appname = $1 AND sign = 'Y' ;`, appName)
 	if err == nil {
-		Cache.Set(cacheKey, true, cache.DefaultExpiration)
+		CacheSet(cacheKey, true, cache.DefaultExpiration)
 		return true
 	}
-	Cache.Set(cacheKey, false, cache.DefaultExpiration)
+	CacheSet(cacheKey, false, cache.DefaultExpiration)
 	return false
 }
 
