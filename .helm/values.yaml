@@ -80,3 +80,20 @@ infra:
         _default: 'rg-{{ .Values.werf.env }}'
       searchpath:
         _default: 'auth,extensions'
+
+tolerations:
+  _default: []
+  production:
+    - effect: "NoSchedule"
+      key: dedicated.flant.com
+      operator: "Equal"
+      value: "production"
+
+nodeaffinity:
+  _default: {}
+#  production:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: node-role.kubernetes.io/production
+#         operator: Exists
