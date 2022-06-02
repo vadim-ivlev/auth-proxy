@@ -24,6 +24,7 @@ spec:
         app: {{ .Chart.Name }}
     spec:
 {{- include "affinity" . | indent 6 }}
+{{- include "tolerations" . | indent 6 }}
       imagePullSecrets:
       - name: registrysecret
       priorityClassName: {{ pluck .Values.werf.env .Values.priorityclass | first | default .Values.priorityclass._default }}
