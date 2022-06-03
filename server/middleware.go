@@ -82,10 +82,11 @@ func CheckUserMiddleware() gin.HandlerFunc {
 		// публичное ли это приложение? (доступно ли для неавторизованных пользователей?)
 		isAppPublic := auth.IsAppPublic(appName)
 		if isAppPublic {
-			fmt.Println("Публичное приложение:", appName)
+			fmt.Println("Запрос к публичному приложению:", appName)
 			c.Next()
 			return
 		}
+		fmt.Println("Запрос к не публичному приложению:", appName)
 
 		// !!! Если пользователь не залогинен ПРЕРЫВАЕМ ЗАПРОС
 		if userName == "" {

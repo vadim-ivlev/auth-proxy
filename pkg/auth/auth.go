@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/db"
 	"crypto/sha256"
 	"errors"
@@ -27,10 +28,10 @@ const (
 
 // CacheSet Обертка над библиотечной функцией для управления кэшированием через переменную окружения.
 func CacheSet(k string, x interface{}, d time.Duration) {
-	// if true {
-	// 	return
-	// }
-	Cache.Set(k, x, d)
+	if app.Params.UseCache {
+		Cache.Set(k, x, d)
+		fmt.Println("CACHE IS SET. KEY: ", k)
+	}
 }
 
 // CheckUserPassword2 проверяет пароль пользователя.
@@ -196,10 +197,10 @@ func GetUserInfoString(user, app string) string {
 	cacheKey := user + "-" + app + "-info"
 	cachedValue, found := Cache.Get(cacheKey)
 	if found {
-		fmt.Println("CACHED:", cacheKey, "=", cachedValue)
+		fmt.Println("\nVALUE IS FOUND IN THE CACHE FOR THE KEY: ", cacheKey, "=", cachedValue)
 		userInfoString = cachedValue.(string)
 	} else {
-		fmt.Println("!!! VALUE IS NOT CACHED FOR KEY:", cacheKey)
+		fmt.Println("\nVALUE WAS NOT CACHED FOR KEY:", cacheKey)
 		// обновляем кэш
 		record, err := db.QueryRowMap(`SELECT id, username, email, fullname, description FROM "user" WHERE username = $1 OR email = $1 ;`, user)
 		if err != nil {

@@ -9,6 +9,8 @@ import (
 )
 
 type appParams struct {
+	// Использовать кэш для ускорения запросов
+	UseCache bool `json:"use_cache" env:"use_cache" envDefault:"true"`
 	// Имя Cookie хранимых на компьютере  пользователя
 	CookieName string `json:"cookie_name" env:"cookie_name" envDefault:"auth-proxy"`
 	// Имя приложения. Используется для генерации PIN Google authenticator
