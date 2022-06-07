@@ -50,6 +50,7 @@ func create_user() *graphql.Field {
 					delete(params.Args, "pinrequired")
 				}
 				ArgToLowerCase(params, "email")
+				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
 				convertPasswordToHash(params)
 				emailhash := uuid.New().String()
@@ -165,6 +166,7 @@ func create_app() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
 			panicIfEmpty(params.Args["appname"], "Имя приложения не должно быть пустым")
+			TrimParamValue(params, "appname")
 			res, err := createRecord("appname", params, "app", "app")
 			if err == nil {
 				app, _ := params.Args["appname"].(string)
@@ -238,6 +240,7 @@ func update_app() *graphql.Field {
 
 			// изменяем массив прокси
 			if err == nil {
+				TrimParamValue(params, "appname")
 				appname, _ := params.Args["appname"].(string)
 
 				// если appname изменилось перепорождаем прокси со старыми Url, Rebase
@@ -271,30 +274,6 @@ func update_app() *graphql.Field {
 		},
 	}
 }
-
-// func delete_app0() *graphql.Field {
-// 	return &graphql.Field{
-// 		Description: "Удалить приложение",
-// 		Type:        appObject,
-// 		Args: graphql.FieldConfigArgument{
-// 			"appname": &graphql.ArgumentConfig{
-// 				Type:        graphql.NewNonNull(graphql.String),
-// 				Description: "Имя пользователя (уникальное)",
-// 			},
-// 		},
-// 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-// 			panicIfNotAdmin(params)
-// 			res, err := deleteRecord("appname", params, "app", "app")
-// 			if err == nil {
-// 				app, _ := params.Args["appname"].(string)
-// 				delete(proxies, app)
-// 				log.Printf("Proxy deleted appname=%s", app)
-// 				clearAppCache(params)
-// 			}
-// 			return res, err
-// 		},
-// 	}
-// }
 
 func delete_app() *graphql.Field {
 	return &graphql.Field{
@@ -343,6 +322,9 @@ func create_app_user_role() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
 			ArgToLowerCase(params, "username")
+			TrimParamValue(params, "username")
+			TrimParamValue(params, "appname")
+			TrimParamValue(params, "rolename")
 			clearCache()
 			return db.CreateRow("app_user_role", params.Args)
 		},
@@ -406,9 +388,9 @@ func create_group() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
 			panicIfEmpty(params.Args["groupname"], "Имя группы не должно быть пустым")
+			TrimParamValue(params, "groupname")
 			res, err := createRecord("groupname", params, "group", "group")
 			if err == nil {
-				// clearGroupCache(params)
 				clearCache()
 			}
 			return res, err
@@ -436,10 +418,10 @@ func update_group() *graphql.Field {
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
+			TrimParamValue(params, "groupname")
 			id, _ := params.Args["id"].(int)
 			res, err := updateRecord(id, "id", params, "group", "group")
 			if err == nil {
-				// clearGroupCache(params)
 				clearCache()
 			}
 			return res, err
@@ -461,7 +443,6 @@ func delete_group() *graphql.Field {
 			panicIfNotAdmin(params)
 			res, err := deleteRecord("id", params, "group", "group")
 			if err == nil {
-				// clearGroupCache(params)
 				clearCache()
 			}
 			return res, err
@@ -490,12 +471,11 @@ func create_group_app_role() *graphql.Field {
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
+			TrimParamValue(params, "rolename")
 			_, err := db.CreateRow("group_app_role", params.Args)
 			if err != nil {
 				return nil, err
 			}
-			// clearGroupAppRolesCache(params)
-			// clearGroupCache(params)
 			clearCache()
 			return map[string]interface{}{
 				"app_id":   params.Args["app_id"],
@@ -538,8 +518,6 @@ func delete_group_app_role() *graphql.Field {
 			if rowsAffected == 0 {
 				return nil, errors.New("no records to delete")
 			}
-			// clearGroupAppRolesCache(params)
-			// clearGroupCache(params)
 			clearCache()
 			return map[string]interface{}{"app_id": app_id, "group_id": group_id, "rolename": rolename}, nil
 		},
@@ -566,12 +544,11 @@ func create_group_user_role() *graphql.Field {
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
+			TrimParamValue(params, "rolename")
 			_, err := db.CreateRow("group_user_role", params.Args)
 			if err != nil {
 				return nil, err
 			}
-			// clearGroupUserRolesCache(params)
-			// clearGroupCache(params)
 			clearCache()
 			return map[string]interface{}{
 				"user_id":  params.Args["user_id"],
@@ -612,27 +589,8 @@ func delete_group_user_role() *graphql.Field {
 			if rowsAffected == 0 {
 				return nil, errors.New("no records to delete")
 			}
-			// clearGroupUserRolesCache(params)
-			// clearGroupCache(params)
 			clearCache()
 			return map[string]interface{}{"user_id": user_id, "group_id": group_id, "rolename": rolename}, nil
 		},
 	}
 }
-
-// func clearGroupAppRolesCache(params graphql.ResolveParams) {
-// 	cacheKey := fmt.Sprintf("group%d-app%d-roles", params.Args["group_id"].(int), params.Args["app_id"].(int))
-// 	auth.Cache.Delete(cacheKey)
-// }
-
-// func clearGroupCache(params graphql.ResolveParams) {
-// 	group_id, _ := params.Args["group_id"].(int)
-// 	k := fmt.Sprintf("group-%d", group_id)
-// 	auth.Cache.Delete(k + "-info")
-// 	auth.Cache.Delete(k + "-enabled")
-// }
-
-// func clearGroupUserRolesCache(params graphql.ResolveParams) {
-// 	cacheKey := fmt.Sprintf("group%d-user%d-roles", params.Args["group_id"].(int), params.Args["user_id"].(int))
-// 	auth.Cache.Delete(cacheKey)
-// }

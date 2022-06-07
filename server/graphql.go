@@ -286,7 +286,7 @@ func panicIfNotUser(params graphql.ResolveParams) {
 
 func panicIfEmpty(v interface{}, message string) {
 	username, _ := v.(string)
-	username = strings.Trim(username, " ")
+	username = strings.TrimSpace(username)
 	if len(username) == 0 {
 		panic(errors.New("Внимание: " + message))
 	}
@@ -323,4 +323,22 @@ func ArgToLowerCase(params graphql.ResolveParams, argName string) {
 		return
 	}
 	params.Args[argName] = strings.ToLower(s)
+}
+
+// TrimParamValue удаляет ведущие и последние пробелы
+// из значения параметра с именем argName.
+func TrimParamValue(params graphql.ResolveParams, argName string) {
+	v, ok := params.Args[argName]
+	if !ok {
+		return
+	}
+	s, ok := v.(string)
+	if !ok {
+		return
+	}
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		panic(errors.New("пустое значение недопустимо."))
+	}
+	params.Args[argName] = s
 }
