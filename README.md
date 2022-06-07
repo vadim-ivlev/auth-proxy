@@ -601,6 +601,7 @@ GET https://auth-proxy.rg.ru/oauthproviders
 - production-gl, staging-gl - для деплоя на Год Литературы
 
 
+
 ## Деплой в ветку staging-gl
 
     git push origin master:staging-gl
