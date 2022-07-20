@@ -22,7 +22,8 @@ VALUES
 (7,'admin-comment'         ,'http://host.docker.internal:8095'   , 'GraphQL API комментарией'                                          ,NULL   ,NULL),
 (8,'admin-core'            ,'http://host.docker.internal:8076'   , 'GraphQL API редакторского интерфейса'                              ,NULL   ,NULL),
 (9,'file-uploader'         ,'http://host.docker.internal:8077'   , 'GraphQL API загрузки файлов'                                       ,NULL   ,NULL),
-(10,'import'               ,'http://host.docker.internal:9099'   , 'GraphQL API импорт материалов в редактуру'                         ,NULL   ,NULL);
+(10,'import'               ,'http://host.docker.internal:9099'   , 'GraphQL API импорт материалов в редактуру'                         ,NULL   ,NULL),
+(11,'materials-stats'      ,'http://host.docker.internal:8066'   , 'GraphQL API статистики по материалам'                              ,NULL   ,NULL);
 
 EXCEPTION WHEN OTHERS THEN RAISE WARNING 'Данные app уже существуют.';
 END $$;
@@ -102,6 +103,7 @@ VALUES
 (1, 8,  'admin'),
 (1, 9,  'admin'),
 (1, 10, 'admin'),
+(1, 11, 'admin'),
 (4, 6,  'editor'),
 (4, 8,  'editor'),
 (4, 9,  'editor'),
