@@ -25,22 +25,7 @@ spec:
   - hosts:
       - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
 {{- if ne .Values.werf.env "production" }}
-    secretName: {{ .Chart.Name }}-tls
+    secretName: k8s-tls
 {{- else }}
     secretName: rg-tls
-{{- end }}
-
-{{- if ne .Values.werf.env "production" }}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: {{ .Chart.Name }}
-spec:
-  secretName: {{ .Chart.Name }}-tls
-  issuerRef:
-    kind: ClusterIssuer
-    name: letsencrypt
-  dnsNames:
-    - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
 {{- end }}
