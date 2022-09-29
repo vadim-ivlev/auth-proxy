@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.5'
 
 services:
 
@@ -12,7 +12,7 @@ services:
       - 4400:4400
     depends_on:
       - postgres
-      
+
     # Параметры приложения и базы данных можно установить в переменных окружения.
     # Текущие параметры показаны в логе при старте приложения.
     # Полный список параметров в репозитории  configs/app.env.front и configs/db.env.front
@@ -40,13 +40,13 @@ services:
       # - from=noreply@rg.ru
       # - admin_url=http://localhost:4400/admin/?url=https://localhost:4400
       # - graphql_test_url=https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
-    
-    # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки 
-    # command: bash -c "cd /app && ./auth -port 4400  -config=shared_dir/myapp.env -pgconfig=shared_dir/mydb.env" 
-  
+
+    # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки
+    # command: bash -c "cd /app && ./auth -port 4400  -config=shared_dir/myapp.env -pgconfig=shared_dir/mydb.env"
 
 
-  # база данных Postgres 
+
+  # база данных Postgres
   postgres:
     image: postgres:10.9-alpine
     container_name: postgres
@@ -56,9 +56,9 @@ services:
     environment:
       POSTGRES_USER: pgadmin
       POSTGRES_PASSWORD: 159753
-      POSTGRES_DB: rgru 
+      POSTGRES_DB: rgru
       PGDATA: /var/lib/postgresql/data/pgdata
-  
+
   # сервис тестирования отправки почты
   # Письма смотреть по адресу: http://localhost:8025/
   auth-mail:
@@ -70,11 +70,11 @@ services:
 
 
 # внешняя сеть добавлена, чтобы можно было проксировать или обращаться к приложениям по именам служб,
-# прописанных в файлах docker-compose.yml этих приложений, если конечно эти приложения так же 
+# прописанных в файлах docker-compose.yml этих приложений, если конечно эти приложения так же
 # входят в подсеть auth_proxy_network.
-#  В противном случае придётся прописывать IP адреса приложений, 
-# что неудобно при переносе приложений или их перезапуске. 
+#  В противном случае придётся прописывать IP адреса приложений,
+# что неудобно при переносе приложений или их перезапуске.
 networks:
   default:
     external: true
-    name: auth_proxy_network    
+    name: auth_proxy_network
