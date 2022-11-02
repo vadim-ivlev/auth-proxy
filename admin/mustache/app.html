@@ -14,10 +14,10 @@
 
     <form id="formApp" onsubmit="event.preventDefault();">
         <div>
-            <input name="old_appname" type="hidden" value="{{app.appname}}">   
-            <input name="app_id" type="hidden" value="{{app.id}}">   
+            <input name="old_appname" type="hidden" value="{{app.appname}}">
+            <input name="app_id" type="hidden" value="{{app.id}}">
             <label >appname *</label>
-            <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
+            <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"
             oninput="
             document.getElementById('newAppName').innerText = event.target.value;
             document.getElementById('newAppUrl').innerText = (model.appurl+'/apps/'+event.target.value);
@@ -33,7 +33,21 @@
         <div>
             <label >url</label>
             <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
+			<p>
             Проксированное приложение: <a id="newAppUrl" href="{{appurl}}/apps/{{app.appname}}/" target="_blank">{{appurl}}/apps/{{app.appname}}</a>
+			</p>
+
+			<p>
+			При локальном запуске auth-proxy URL c <em>localhost</em> не будет работать. Вместо этого используйте <em>host.docker.internal</em>,
+			например <em title="">http://host.docker.internal:7879</em>.
+			</p>
+			<p>
+			В docker-compose используйте секцию <a target="_blank" href="https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts">extra_hosts</a>:
+			</p>
+			<pre style="resize: none; margin-top:-20px; margin-bottom:15px">
+extra_hosts:
+  - "host.docker.internal:host-gateway"
+			</pre>
         </div>
 
 
@@ -44,8 +58,8 @@
                 "Y" чтобы сделать приложение доступным для пользователей без роли.
             </p>
          </div>
-    
-    
+
+
 
         <div>
             <label >rebase</label>
@@ -53,15 +67,15 @@
             <p>
                 Поле имеет смысл только для проксирования HTML web приложений.
                 <br><br>
-                Если значение поля равно "Y" приложение пытается "подправить" ссылки, изображения, фреймы в HTML и CSS так, 
-                чтобы URI начинающиеся с /, начинались с /apps/appname/. 
-                
+                Если значение поля равно "Y" приложение пытается "подправить" ссылки, изображения, фреймы в HTML и CSS так,
+                чтобы URI начинающиеся с /, начинались с /apps/appname/.
+
                 Это делается для того, чтобы браузер не запрашивал ресурсы там, где их нет, то есть в корне auth-proxy.
                 <br><br>
-                Эта операция влечет за собой увеличение потребления памяти и загрузки процессора сервера. 
-                
+                Эта операция влечет за собой увеличение потребления памяти и загрузки процессора сервера.
+
                 Поэтому в приложениях предназначенных для проксирования рекомендуется использовать относительные ссылки и оставлять это поле пустым.
-                
+
             </p>
         </div>
 
@@ -70,14 +84,14 @@
             <input name="sign" placeholder="Y - для цифровой подписи запросов к приложению"  value="{{app.sign}}">
             <p>
                 "Y" для подписей запросов к приложению в соответствии со спецификацией RFC
-                <a target="_blank" href="https://tools.ietf.org/html/draft-cavage-http-signatures-06">RFC Signing HTTP Messages</a>.               
+                <a target="_blank" href="https://tools.ietf.org/html/draft-cavage-http-signatures-06">RFC Signing HTTP Messages</a>.
                 <br><br>
                 Это один из способов контроля источников запросов наряду с ограничениями по IP адресу.
                 Позволяет конечному приложению удостовериться, что запрос поступил от auth-proxy.
                 Имеет значение для публично доступных в Интернет приложений, которые хотели бы принимать запросы через
-                auth-proxy. 
+                auth-proxy.
                 <br><br>
-                Операция подписи ресурсоемкая. Пользуйтесь разумно. Например не имеет смысла подписывать 
+                Операция подписи ресурсоемкая. Пользуйтесь разумно. Например не имеет смысла подписывать
                 публично доступные приложения или HTML приложения.
             </p>
         </div>
@@ -107,16 +121,16 @@
     <div>
         Пользователи приложения объединены в группы. <br>
         Каждая группа имеет набор ролей, которые назначаются пользователям группы,
-        когда они обращаются к {{app.appname}}.  
+        когда они обращаются к {{app.appname}}.
     </div>
 
     <div class="max-max-auto">
-        <h3><b>Группы пользователей</b> приложения <b>{{app.appname}}</b></h3> 
+        <h3><b>Группы пользователей</b> приложения <b>{{app.appname}}</b></h3>
         <span></span>
         <span></span>
         <input placeholder="Фильтр"  oninput="filterRows('#AppGroups .filtered-row', this.value )">
     </div>
-    <!-- таблица групп-->    
+    <!-- таблица групп-->
     <table id="AppGroups">
         <tr>
             <th>группа</th>
@@ -133,16 +147,16 @@
                 {{#isAdmin}}
 
                 {{#items}}
-                <button class="button button-outline role" 
+                <button class="button button-outline role"
                     onclick="modifyAppGroupRole('delete','{{app_id}}', '{{group_id}}', '{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
                 >
                     {{rolename}}
                 </button>
-                {{/items}} 
+                {{/items}}
 
                 <span class="button button-outline role-nocross">
                     <input id="newAppGroupRoleName-{{app_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
-                    <button class="button button-outline role-add" 
+                    <button class="button button-outline role-add"
                         onclick="modifyAppGroupRole('create', '{{app_id}}','{{group_id}}', document.getElementById('newAppGroupRoleName-{{app_id}}-{{group_id}}').value, ()=>{ getApp('{{app.appname}}') }  )"
                         >
                     +
@@ -157,9 +171,9 @@
         {{#isAdmin}}
         <tr>
             <td>
-                <input id="appGroupsSelector" 
-                    list="appGroupsDataList" 
-                    placeholder="Добавить группу" 
+                <input id="appGroupsSelector"
+                    list="appGroupsDataList"
+                    placeholder="Добавить группу"
                     onchange="
                         document.getElementById('newAppGroupDescription').innerText = document.querySelector(`#appGroupsDataList>option[value='${this.value}'`).innerText;
                         document.getElementById('newAppGroupID').innerText = document.querySelector(`#appGroupsDataList>option[value='${this.value}'`).id;
@@ -176,10 +190,10 @@
             <td>
                 <span class="button button-outline role-nocross">
                         <input id="newAppGroupRoleName" class="role-input" placeholder="новая роль">
-                        <button class="button button-outline role-add" 
-                            onclick="modifyAppGroupRole('create', '{{id}}',  
-                                document.getElementById('newAppGroupID').innerText, 
-                                document.getElementById('newAppGroupRoleName').value, 
+                        <button class="button button-outline role-add"
+                            onclick="modifyAppGroupRole('create', '{{id}}',
+                                document.getElementById('newAppGroupID').innerText,
+                                document.getElementById('newAppGroupRoleName').value,
                                 ()=>{ getApp('{{app.appname}}') }); "
                         >+</button>
                 </span>
@@ -199,10 +213,10 @@
 
 <div class="flexed">
     <div>
-        Отдельные пользователи также могут иметь имеет набор ролей в приложении {{app.appname}}.<br> 
+        Отдельные пользователи также могут иметь имеет набор ролей в приложении {{app.appname}}.<br>
         Если пользователь входит в группу то роли группы добавляются к его ролям определенным ниже.
     </div>
-    
+
     <div class="max-max-auto">
         <h3><b>Пользователи</b> приложения  <b>{{app.appname}}</b></h3>
         <span></span>
@@ -224,15 +238,15 @@
 
 
                     {{#items}}
-                    <button class="button button-outline role" 
+                    <button class="button button-outline role"
                         onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getApp('{{app.appname}}') } )"
                         >
                         {{rolename}}
                     </button>
-                    {{/items}} 
+                    {{/items}}
                     <span class="button button-outline role-nocross">
                         <input id="newRoleName-{{username}}" class="role-input">
-                        <button class="button button-outline role-add" 
+                        <button class="button button-outline role-add"
                             onclick="modifyRole('create', '{{app.appname}}', '{{username}}', document.getElementById('newRoleName-{{username}}').value, ()=>{ getApp('{{app.appname}}') }  )"
                             >
                         +
@@ -247,10 +261,10 @@
             {{/app.users}}
 
         <tr>
-            <td>                
-                <input id="newAppUsername" 
-                    list="appUsersDataList" 
-                    placeholder="Добавить пользователя. Поиск." 
+            <td>
+                <input id="newAppUsername"
+                    list="appUsersDataList"
+                    placeholder="Добавить пользователя. Поиск."
                     onchange="document.getElementById('newAppUserFullName').innerText = document.querySelector(`#appUsersDataList>option[value='${this.value}'`).innerText;"
                 >
                 <datalist id="appUsersDataList">
@@ -262,7 +276,7 @@
             <td>
                 <span class="button button-outline role-nocross">
                         <input id="newAppRolename" class="role-input"  placeholder="новая роль">
-                        <button class="button button-outline role-add" 
+                        <button class="button button-outline role-add"
                             onclick="modifyRole('create', '{{app.appname}}', document.getElementById('newAppUsername').value, document.getElementById('newAppRolename').value, ()=>{ getApp('{{app.appname}}') }  )"
                             >
                         +
@@ -271,7 +285,7 @@
             </td>
         </tr>
 
-        
+
 
     </table>
 </div>
