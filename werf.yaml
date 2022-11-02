@@ -2,6 +2,7 @@ configVersion: 1
 project: auth-proxy
 ---
 image: build-artifact
+fromCacheVersion: {{ div .Commit.Date.Unix (mul 60 60 24 30) }}
 from: golang:1.17.2-alpine3.14
 git:
   - add: /
@@ -38,6 +39,7 @@ shell:
 
 ---
 image: app
+fromCacheVersion: {{ div .Commit.Date.Unix (mul 60 60 24 30) }}
 from: alpine:3.14
 git:
   - add: /migrations
