@@ -523,11 +523,6 @@ GET https://auth-proxy.rg.ru/oauthproviders
     chrome://flags/#allow-insecure-localhost
 
 
-## Браузер Firefox и localhost
-
-Если разработчик использует Firefox, то проксирование localhost может не работать. Чтобы включить проксирование localhost для Firefox выше 66-ой версии зайдите в about:config и установите значение `network.proxy.allow_hijacking_localhost` в положение `true`.
-
-
 
 -------------------------------------------------------
 
