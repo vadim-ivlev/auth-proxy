@@ -91,9 +91,9 @@ tolerations:
 
 nodeaffinity:
   _default: {}
-#  production:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#     nodeSelectorTerms:
-#     - matchExpressions:
-#       - key: node-role.kubernetes.io/production
-#         operator: Exists
+  production:
+   requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: node-role.kubernetes.io/production
+        operator: Exists
