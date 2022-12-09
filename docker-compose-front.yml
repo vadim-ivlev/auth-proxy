@@ -5,7 +5,7 @@ services:
   # сервер, где запущено приложение
   auth-proxy-front:
     # image: rgru/auth-proxy:latest
-    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:front
+    image: registry.rgwork.ru:5050/masterback/auth-proxy/auth-proxy:dev
     container_name: auth-proxy-front
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ services:
   # Письма смотреть по адресу: http://localhost:8025/
   auth-mail:
     image: mailhog/mailhog
-    container_name: auth-mail-dev
+    container_name: auth-mail-front
     ports:
       - 1025:1025
       - 8025:8025
@@ -76,5 +76,4 @@ services:
 # что неудобно при переносе приложений или их перезапуске.
 networks:
   default:
-    external: true
     name: auth_proxy_network

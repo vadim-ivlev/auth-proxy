@@ -4,19 +4,33 @@ go 1.15
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
-	github.com/caarlos0/env/v6 v6.6.2
-	github.com/gin-contrib/sessions v0.0.3
-	github.com/gin-gonic/gin v1.6.3
+	github.com/caarlos0/env/v6 v6.10.1
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/gin-contrib/sessions v0.0.5
+	github.com/gin-gonic/gin v1.8.1
+	github.com/go-kit/kit v0.10.0 // indirect
+	github.com/go-playground/validator/v10 v10.11.1 // indirect
+	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/google/uuid v1.3.0
-	github.com/graphql-go/graphql v0.7.9
-	github.com/jmoiron/sqlx v1.2.0
-	github.com/joho/godotenv v1.3.0
-	github.com/json-iterator/go v1.1.10
-	github.com/lib/pq v1.9.0
+	github.com/graphql-go/graphql v0.8.0
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/joho/godotenv v1.4.0
+	github.com/json-iterator/go v1.1.12
+	github.com/lib/pq v1.10.7
+	github.com/matryer/is v1.4.0 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.8.0
-	github.com/steambap/captcha v1.3.1
-	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
+	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/prometheus/client_golang v1.14.0
+	github.com/prometheus/common v0.38.0 // indirect
+	github.com/steambap/captcha v1.4.1
+	golang.org/x/crypto v0.4.0 // indirect
+	golang.org/x/image v0.2.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/oauth2 v0.3.0
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
+	gopkg.in/go-playground/validator.v9 v9.29.1 // indirect
 	gopkg.in/spacemonkeygo/httpsig.v0 v0.0.0-20170228231032-6732593ec966
 	gopkg.in/yaml.v2 v2.4.0
 )

@@ -1,5 +1,18 @@
 ## TODO:
 
+
+ .dockerignore                      |   3 +-
+ .helm/templates/90-ingress.yaml    |  17 +-------
+ .helm/values.yaml                  |  12 +++---
+ README.md                          | 145 +++++++++++++++++++++++++++++++++---------------------------------
+ admin/mustache/app.html            |  90 +++++++++++++++++++++++------------------
+ docker-compose-dev.yml             |  12 +++---
+ docker-compose-front.yml           |  26 ++++++------
+ migrations/01_create_tables.up.sql |  78 +++++++++++++++---------------------
+ migrations/04_add_data.up.sql      | 153 ++++++++++++++++++++++++++++++++----------------------------------
+
+
+
 - Заменить @ на %40 в урле ссылки в письмах
 
 QUERY

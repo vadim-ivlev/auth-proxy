@@ -38,5 +38,4 @@ services:
 # что неудобно при переносе приложений или их перезапуске.
 networks:
   default:
-    external: true
     name: auth_proxy_network

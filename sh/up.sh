@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo 'порождаем auth_proxy_network'
-docker network create auth_proxy_network
+# echo 'порождаем auth_proxy_network'
+# docker network create auth_proxy_network
 
 echo 'поднимаем бд'
 docker-compose -f docker-compose-dev.yml up -d

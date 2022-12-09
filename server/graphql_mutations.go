@@ -40,6 +40,11 @@ func create_user() *graphql.Field {
 				Type:        graphql.Boolean,
 				Description: "требуется ли PIN Google Authenticator",
 			},
+			"noemail": &graphql.ArgumentConfig{
+				Type:         graphql.Boolean,
+				Description:  "Не посылать пользователю письмо о регистрации.",
+				DefaultValue: false,
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			if SelfRegistrationAllowed || isAuthAdmin(params) {
@@ -49,6 +54,9 @@ func create_user() *graphql.Field {
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
 				}
+				noemail, _ := params.Args["noemail"].(bool)
+				delete(params.Args, "noemail")
+
 				ArgToLowerCase(params, "email")
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
@@ -57,7 +65,7 @@ func create_user() *graphql.Field {
 				params.Args["emailhash"] = emailhash
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
-				if err == nil {
+				if err == nil && !noemail {
 					err := mail.SendNewUserEmail(params.Args["email"].(string), emailhash)
 					if err != nil {
 						log.Println("create_user SendNewUserEmail error:", err)
@@ -370,7 +378,7 @@ func clearCache() {
 	auth.Cache.Flush()
 }
 
-//----------------------------------------------------------------
+// ----------------------------------------------------------------
 func create_group() *graphql.Field {
 	return &graphql.Field{
 		Description: "Создать группу",
