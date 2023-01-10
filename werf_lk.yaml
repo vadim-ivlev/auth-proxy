@@ -1,0 +1,73 @@
+configVersion: 1
+project: lk
+deploy:
+    helmChartDir: .helm_lk
+---
+image: build-artifact
+fromCacheVersion: {{ div .Commit.Date.Unix (mul 60 60 24 30) }}
+from: golang:1.17.2-alpine3.14
+git:
+  - add: /
+    to: /app
+    excludePaths:
+    - .helm
+    - .gitlab-ci.yml
+    - .gitignore
+    - .dockerignore
+    - docker*
+    - Docker*
+    - werf.yml
+    - werf-giterminism.yaml
+    - dump/
+    - gitlab-ci/
+    - sh/
+    stageDependencies:
+      install:
+        - "pkg/*"
+        - "configs/*"
+        - "migrations/*"
+        - "server/*"
+        - "*.go"
+        - "*.mod"
+        - "*.sum"
+shell:
+  beforeInstall:
+  - TZ=Europe/Moscow; ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  - apk update
+  - apk add -q --no-progress --no-cache tzdata curl unzip musl-locales musl-locales-lang ca-certificates
+  install:
+  - cd /app
+  - go build -tags=jsoniter
+
+---
+image: app
+fromCacheVersion: {{ div .Commit.Date.Unix (mul 60 60 24 30) }}
+from: alpine:3.14
+git:
+  - add: /migrations
+    to: /app/migrations
+    owner: app
+    group: app
+  - add: /certificates
+    to: /app/certificates
+    owner: app
+    group: app
+  - add: /admin
+    to: /app/admin
+    owner: app
+    group: app
+import:
+  - image: build-artifact
+    add: /app/auth-proxy
+    to: /app/lk
+    owner: app
+    group: app
+    after: install
+docker:
+  WORKDIR: /app
+shell:
+  beforeInstall:
+  - TZ=Europe/Moscow; ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  - apk update
+  - apk add -q --no-progress --no-cache tzdata curl ca-certificates
+  - adduser -u 7000 -s /bin/bash -D -h /app app

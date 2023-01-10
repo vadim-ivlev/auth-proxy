@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+  annotations:
+    pod-reloader.deckhouse.io/configmap-reload: {{ .Chart.Name }}-mail-templates
+{{- if eq .Values.werf.env "production" }}
+    werf.io/replicas-on-creation: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default | quote }}
+{{- end }}
+spec:
+  revisionHistoryLimit: 3
+{{- if ne .Values.werf.env "production" }}
+  replicas: {{ pluck .Values.werf.env .Values.replicas.app.hpa.min_replicas | first | default .Values.replicas.app.hpa.min_replicas._default }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+{{- include "affinity" . | indent 6 }}
+{{- include "tolerations" . | indent 6 }}
+      imagePullSecrets:
+      - name: registrysecret
+      priorityClassName: {{ pluck .Values.werf.env .Values.priorityclass | first | default .Values.priorityclass._default }}
+      containers:
+      - name: app
+        image: {{ .Values.werf.image.app }}
+        command: ["./lk"] 
+{{- include "app_probes" . | indent 8 }}
+{{- include "app_resources" . | indent 8 }}
+        env:
+{{ include "app_envs" . | indent 8 }}
+        ports:
+        - name: http
+          containerPort: {{ pluck .Values.werf.env .Values.app.port | first | default .Values.app.port._default }}
+        volumeMounts:
+          - name: {{ .Chart.Name }}-mail-templates
+            mountPath: /app/configs/mail-templates.yaml
+            subPath: mail-templates.yaml
+      volumes:
+        - name: {{ .Chart.Name }}-mail-templates
+          configMap:
+            name: {{ .Chart.Name }}-mail-templates
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: {{ pluck .Values.werf.env .Values.app.port | first | default .Values.app.port._default }}
+  selector:
+    app: {{ .Chart.Name }}
