@@ -92,35 +92,6 @@ Deploy LK to Production:
     - if: '$CI_COMMIT_TAG =~ /^prod_.*$/'
       when: manual
 
-
-message_on_success:
-  stage: message_on_success
-  <<: *curl_install
-  allow_failure: true
-  dependencies:
-    - deployprod gl node5
-  when: on_success
-  script:
-    # send to telegram proxy
-    - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9C%85%20Success.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
-  only:
-    - production
-    - production-gl
-
-message_on_failure:
-  stage: message_on_failure
-  <<: *curl_install
-  allow_failure: true
-  dependencies:
-    - deployprod gl node5
-  when: on_failure
-  script:
-    # send to telegram proxy
-    - curl --insecure -X POST "https://api.telegram.org/$TELEGRAM_KEY/sendMessage" -d "chat_id=-1001054475860&parse_mode=markdown&text=%E2%9D%8C%20Error.%20Auto%20deploy%20on%20*${CI_PROJECT_NAME}*%20is%20completed,%20Pipeline:%20${CI_PIPELINE_URL}%20by%20*${GITLAB_USER_LOGIN}*"
-  only:
-    - production
-    - production-gl
-
 #Flant ci/cd
 #
 # included from flant/pipeline
