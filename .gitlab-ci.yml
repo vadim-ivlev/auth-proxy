@@ -53,7 +53,46 @@ include:
   - local: /gitlab-ci/gl-production-tmpl.yml
   - project: 'flant/pipeline'
     file: '/.gitlab-ci-k8sf.yml'
-    
+
+Deploy LK to Develop:
+  extends: .base_deploy
+  environment:
+    name: dev
+  variables:
+    WERF_KUBE_CONTEXT: prod
+    WERF_CONFIG: werf_lk.yaml
+  rules:
+    - !reference [.default_rules, rules]
+    - if: '$CI_COMMIT_BRANCH =~ /^.*$/ && $CI_COMMIT_BRANCH != "master" && $CI_COMMIT_REF_NAME == $CI_COMMIT_BRANCH'
+      when: manual
+
+Deploy LK to Stage:
+  extends: .base_deploy
+  environment:
+    name: stage
+  variables:
+    WERF_KUBE_CONTEXT: prod
+    WERF_CONFIG: werf_lk.yaml
+  rules:
+    - !reference [.default_rules, rules]
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+    - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+Deploy LK to Production:
+  extends: .base_deploy
+  environment:
+    name: production
+  variables:
+    WERF_KUBE_CONTEXT: prod
+    WERF_CONFIG: werf_lk.yaml
+  rules:
+    - !reference [.default_rules, rules]
+    - if: '$CI_COMMIT_TAG =~ /^prod_.*$/'
+      when: manual
+
+
 message_on_success:
   stage: message_on_success
   <<: *curl_install
