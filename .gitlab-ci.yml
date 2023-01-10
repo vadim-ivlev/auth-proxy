@@ -21,8 +21,6 @@ stages:
   - deploy
   - deploy2
   - deployk8s
-  - message_on_success
-  - message_on_failure
   - cleanup_registry
 
 variables:
@@ -47,8 +45,6 @@ variables:
 #     NODE_ENV: staging
 
 include:
-  - local: /gitlab-ci/rg-staging-tmpl.yml
-  - local: /gitlab-ci/rg-production-tmpl.yml
   - local: /gitlab-ci/gl-staging-tmpl.yml
   - local: /gitlab-ci/gl-production-tmpl.yml
   - project: 'flant/pipeline'
