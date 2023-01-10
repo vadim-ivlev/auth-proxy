@@ -27,7 +27,7 @@ app:
   secure:
     _default: true
   selfreg:
-    production: true
+    production: false
     _default: false
   use_captcha:
     production: true
