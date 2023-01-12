@@ -496,7 +496,7 @@ func list_group() *graphql.Field {
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			panicIfNotUser(params)
+			panicIfNotAdminOrAuditor(params)
 
 			wherePart, orderAndLimits := QueryEnd(params, "groupname,description")
 			fields := getSelectedFields([]string{"list_group", "list"}, params)
