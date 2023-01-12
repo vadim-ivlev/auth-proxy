@@ -81,12 +81,14 @@ var model = {
         if (this.isAdmin){
             showElements('#usersTab')
             showElements('#rolesTab')
+            showElements('#groupsTab')
             showElements('#graphqlTest')
             showElements('#btnNewApp')
             showElements('#settingsButton')
         } else {
             hideElements('#usersTab')
             hideElements('#rolesTab')
+            hideElements('#groupsTab')
             hideElements('#graphqlTest')
             hideElements('#btnNewApp')
             hideElements('#settingsButton')

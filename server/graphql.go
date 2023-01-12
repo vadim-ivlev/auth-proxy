@@ -63,7 +63,7 @@ func getParamsFromBody(c *gin.Context) (map[string]interface{}, error) {
 		errBodyDecode := json.NewDecoder(r.Body).Decode(&mb)
 		return mb, errBodyDecode
 	}
-	return mb, errors.New("No body")
+	return mb, errors.New("no body")
 }
 
 // getPayload3 извлекает "query", "variables", "operationName".
@@ -338,7 +338,7 @@ func TrimParamValue(params graphql.ResolveParams, argName string) {
 	}
 	s = strings.TrimSpace(s)
 	if len(s) == 0 {
-		panic(errors.New("пустое значение недопустимо."))
+		panic(errors.New("пустое значение недопустимо"))
 	}
 	params.Args[argName] = s
 }
