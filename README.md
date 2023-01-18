@@ -438,9 +438,9 @@ GET https://auth-proxy.rg.ru/oauthproviders
 ---------------------
 
 - посылки почты http://localhost:8025/
-- Admin Url  
+- Admin Url
     http://localhost:4400/admin/?url=http://localhost:4400
-    
+
 
 - Test  Url - > https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
@@ -459,7 +459,10 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
     pgcli -D auth
 
+Пример подключения приложения к auth-proxy
+---------------------
 
+ *   [Пример подключения приложения к auth-proxy](./README.newapps.md)
 
 
 
