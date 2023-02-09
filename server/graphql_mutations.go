@@ -66,9 +66,15 @@ func create_user() *graphql.Field {
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
 				if err == nil && !noemail {
+					// Отправляем письмо пользователю
 					err := mail.SendNewUserEmail(params.Args["email"].(string), emailhash)
 					if err != nil {
 						log.Println("create_user SendNewUserEmail error:", err)
+					}
+					// Добавляем пользователя в группу по умолчанию
+					err = addUserToDefaultGroup(res.(map[string]interface{})["id"].(int))
+					if err != nil {
+						log.Println("create_user addUserToGroup error:", err)
 					}
 				}
 				return res, err
