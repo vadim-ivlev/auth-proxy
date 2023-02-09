@@ -354,25 +354,28 @@ func getGroupByName(groupName string) (interface{}, error) {
 // c именем groupName и описанием groupDescription.
 // Возвращает созданную группу и ошибку, если группа с таким именем уже существует.
 func createNewGroup(groupName, groupDescription string) (interface{}, error) {
-	params := graphql.ResolveParams{}
-	params.Args = make(map[string]interface{})
-	params.Args["name"] = groupName
-	ArgToLowerCase(params, "name")
-	TrimParamValue(params, "name")
-	params.Args["description"] = groupDescription
-	return createRecord("name", params, "group", "group")
+	_, err := db.CreateRow("group", map[string]interface{}{
+		"groupname":   groupName,
+		"description": groupDescription,
+	})
+	if err != nil {
+		fmt.Println("createNewGroup: err=", err)
+		return nil, err
+	}
+	return getGroupByName(groupName)
 }
 
 // createGroupUserRole добавляет пользователя в группу,
 // создавая запись в таблице group_user_role.
 // Возвращает ошибку, если пользователь уже состоит в группе.
-func createGroupUserRole(groupID, userID int, rolename string) error {
+func createGroupUserRole(groupID, userID int64, rolename string) error {
 	_, err := db.CreateRow("group_user_role", map[string]interface{}{
 		"group_id": groupID,
 		"user_id":  userID,
 		"rolename": rolename,
 	})
 	if err != nil {
+		fmt.Println("createGroupUserRole: err=", err)
 		return err
 	}
 	clearCache()
@@ -381,7 +384,7 @@ func createGroupUserRole(groupID, userID int, rolename string) error {
 
 // addUserToDefaultGroup добавляет пользователя с идеинтификатором userID
 // в группу для пользователей по умолчанию.
-func addUserToDefaultGroup(userID int) error {
+func addUserToDefaultGroup(userID int64) error {
 	groupName := "users"
 	groupDescription := "Группа для новых пользователей"
 
@@ -394,7 +397,11 @@ func addUserToDefaultGroup(userID int) error {
 			fmt.Println(`Не удалось создать новую группу "users".`, err)
 			return err
 		}
+		clearCache()
 	}
-	groupID, _ := group.(map[string]interface{})["id"].(int)
+	groupID, ok := group.(map[string]interface{})["id"].(int64)
+	if !ok {
+		fmt.Println(`Не удалось получить идентификатор группы "users".`)
+	}
 	return createGroupUserRole(groupID, userID, "new_user")
 }

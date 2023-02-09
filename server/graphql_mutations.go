@@ -72,7 +72,11 @@ func create_user() *graphql.Field {
 						log.Println("create_user SendNewUserEmail error:", err)
 					}
 					// Добавляем пользователя в группу по умолчанию
-					err = addUserToDefaultGroup(res.(map[string]interface{})["id"].(int))
+					userID, ok := res.(map[string]interface{})["id"].(int64)
+					if !ok {
+						log.Println("create_user addUserToGroup error: can't get user id")
+					}
+					err = addUserToDefaultGroup(userID)
 					if err != nil {
 						log.Println("create_user addUserToGroup error:", err)
 					}
