@@ -575,6 +575,10 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
 	docker-compose exec db psql -U root auth
 
+## Деплой на dev
+
+   sh/deploy-dev.sh
+    
 
 ## Деплой
 
