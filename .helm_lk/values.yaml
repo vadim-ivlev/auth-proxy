@@ -40,16 +40,20 @@ app:
   reset_time:
     _default: 60
   confirm_email_url:
+    production: "https://lk.rg.ru/confirm-email/"
     _default: "https://lk-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
   entry_point:
-    _default: "https://lk-{{ .Values.werf.env }}.k8s.rg.ru/auth/login#email_success"
+    production: "https://rg.ru/account/profile#email_success"
+    _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/account/profile#email_success"
   smtp_address:
     _default: mail4.rg.ru:25
   mail_from:
     _default: "noreply@rg.ru"
   admin_url:
+    production: ""
     _default: "https://auth-admin.vercel.app/?url=https://lk-{{ .Values.werf.env }}.k8s.rg.ru"
   graphql_test_url:
+    production: ""
     _default: "https://graphql-test.vercel.app/?end_point=https://lk-{{ .Values.werf.env }}.k8s.rg.ru/schema&tab_name=auth-proxy4400"
 replicas:
   app:
