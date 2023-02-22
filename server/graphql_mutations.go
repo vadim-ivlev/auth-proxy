@@ -151,12 +151,12 @@ func delete_user() *graphql.Field {
 			res, err := deleteRecord("id", params, "user", "user")
 			// Если пользователь самоудалился разлогиниваем его
 			if err == nil {
-				deletingUserID := fmt.Sprintf("%v", params.Args["id"])
+				deletedUserID := fmt.Sprintf("%v", params.Args["id"])
 				loginedUserID := getLoginedUserID(params)
-				if loginedUserID == deletingUserID {
+				if loginedUserID == deletedUserID {
 					c, _ := params.Context.Value("ginContext").(*gin.Context)
 					DeleteSession(c)
-					log.Printf("USER LOGGED OUT")
+					log.Printf("USER %v LOGGED OUT \n", deletedUserID)
 				}
 			}
 			return res, err
