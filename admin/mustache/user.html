@@ -120,9 +120,9 @@
             <button type="button" class="button button-outline" style="max-width: 1000px;" onclick="createUser(event)" >создать пользователя</button>
             {{/user}}
             {{#user}}
-            {{#isAdmin}}
+            {{! #isAdmin}}
             <button type="button" class="button button-outline" onclick="deleteUser('{{user.id}}'); showPage('users');">удалить</button>
-            {{/isAdmin}}
+            {{! /isAdmin}}
             <button type="button" class="button button-outline" onclick="updateUser(event)">сохранить изменения</button>
             {{/user}}
             <div id="userError" class="error"></div>

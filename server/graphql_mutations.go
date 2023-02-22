@@ -5,8 +5,10 @@ import (
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
 	"errors"
+	"fmt"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 )
@@ -146,7 +148,18 @@ func delete_user() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotOwnerOrAdmin(params)
 			clearCache()
-			return deleteRecord("id", params, "user", "user")
+			res, err := deleteRecord("id", params, "user", "user")
+			// Если пользователь самоудалился разлогиниваем его
+			if err == nil {
+				deletingUserID := fmt.Sprintf("%v", params.Args["id"])
+				loginedUserID := getLoginedUserID(params)
+				if loginedUserID == deletingUserID {
+					c, _ := params.Context.Value("ginContext").(*gin.Context)
+					DeleteSession(c)
+					log.Printf("USER LOGGED OUT")
+				}
+			}
+			return res, err
 		},
 	}
 }
