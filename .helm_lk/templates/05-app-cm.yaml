@@ -133,7 +133,7 @@ data:
                       </td>
                       <td>
                         <a
-                          href="{{unsubscribe}}"
+                          href="#unsubscribe"
                           target="_blank"
                           style="color: #3377cc"
                         >
