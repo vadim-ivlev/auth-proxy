@@ -94,18 +94,7 @@ data:
                         >
                           rg.ru.
                         </a>
-                        Для подтверждения регистрации перейдите по ссылке:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="center">
-                        <a
-                          href="{{link}}"
-                          target="_blank"
-                          style="color: #3377cc; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px;"
-                        >
-                          %s?%s
-                        </a>
+                        Для подтверждения регистрации перейдите <a href="%s?%s" target="_blank" style="color: #3377cc; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px;">по ссылке</a>
                       </td>
                     </tr>
                   </tbody>
