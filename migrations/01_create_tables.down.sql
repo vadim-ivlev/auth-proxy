@@ -10,6 +10,7 @@ DROP INDEX IF EXISTS app_id_unique_idx;
 DROP TABLE IF EXISTS app_user_role;
 DROP TABLE IF EXISTS app;
 DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "user_deleted";
 
 DROP TABLE IF EXISTS group_user_role;
 DROP TABLE IF EXISTS group_app_role;

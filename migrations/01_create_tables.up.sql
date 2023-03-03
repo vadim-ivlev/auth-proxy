@@ -34,7 +34,24 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 CREATE INDEX IF NOT EXISTS user_pashash_idx ON "user" (pashash);
 
-
+-- Таблица для удаленных пользователей
+CREATE TABLE IF NOT EXISTS "user_deleted" (
+    id integer,
+    username text NOT NULL,
+    password text NOT NULL,
+    email text NOT NULL,
+    fullname text,
+    description text,
+    disabled integer NOT NULL DEFAULT 0,
+    pashash text,                               -- временный хэш для смены пароля
+    pinrequired boolean NOT NULL DEFAULT FALSE, -- требуется ли вводить PIN Google Authenticator для входа в систему
+    pinhash_temp text,                          -- Новое значение хэша, которое заменит старое при установке аутентификатора.
+	pinhash text,                               -- хэш для первоначальной настройки Google Authenticator
+    emailhash text,                             -- хэш для проверки email
+    emailconfirmed boolean NOT NULL DEFAULT FALSE, -- подтвержеден ли email пользователя
+    deleted_at timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- время удаления
+    deleted_by text -- кто удалил
+);
 
 
 -- Справочная таблица.

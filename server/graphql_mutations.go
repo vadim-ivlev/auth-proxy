@@ -148,9 +148,23 @@ func delete_user() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotOwnerOrAdmin(params)
 			clearCache()
+
+			// Получаем данные удаляемого пользователя
+			id := params.Args["id"]
+			deletingRecord, _ := db.QueryRowMap(`SELECT * FROM "user" WHERE id = $1`, id)
+			deletingRecord["deleted_by"] = getLoginedUserEmail(params)
+
+			// Удаляем пользователя
 			res, err := deleteRecord("id", params, "user", "user")
-			// Если пользователь самоудалился разлогиниваем его
+
 			if err == nil {
+				// Записываем в таблицу удаленных пользователей
+				_, createErr := db.CreateRow("user_deleted", deletingRecord)
+				if createErr != nil {
+					log.Println(`db.CreateRow("user_deleted") error:`, createErr)
+				}
+
+				// Если пользователь удаляет сам себя, то разлогиниваем его
 				deletedUserID := fmt.Sprintf("%v", params.Args["id"])
 				loginedUserID := getLoginedUserID(params)
 				if loginedUserID == deletedUserID {
