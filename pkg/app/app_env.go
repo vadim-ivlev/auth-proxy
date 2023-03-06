@@ -33,7 +33,7 @@ type appParams struct {
 	// url страницы подтверждения email
 	ConfirmEmailUrl string `json:"confirm_email_url" env:"confirm_email_url" envDefault:"https://localhost:4400/confirm-email/" env`
 	// url куда пренаправляется браузер после подтвержедения email
-	EntryPoint string `json:"entry_point" env:"entry_point" envDefault:"https://www.rg.ru"`
+	EntryPoint string `json:"entry_point" env:"entry_point" envDefault:"https://rg.ru/account/profile?email_success=true"`
 	// адрес почтового сервера SMTP
 	SmtpAddress string `json:"smtp_address" env:"smtp_address" envDefault:"localhost:1025"`
 	// email от которого посылаются письма пользователям
@@ -42,6 +42,7 @@ type appParams struct {
 	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://auth-admin.vercel.app/?url=https://localhost:4400"`
 	// тестовая страница сервиса
 	GraphqlTestUrl string `json:"graphql_test_url" env:"graphql_test_url" envDefault:"https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400"`
+	MailTmplPath   string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
 }
 
 // var EnvParams AppEnvParams

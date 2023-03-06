@@ -56,6 +56,10 @@ git:
     to: /app/admin
     owner: app
     group: app
+  - add: /templates
+    to: /app/templates
+    owner: app
+    group: app
 import:
   - image: build-artifact
     add: /app/auth-proxy

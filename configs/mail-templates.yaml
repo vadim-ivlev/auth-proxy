@@ -14,24 +14,6 @@
 # Параметр redirect указывает на страницу куда перейдет пользователь
 # после подтверждения email. 
 # Меняйте только текст и значение redirect=
-new_user: |
-  From: %s
-  To: %s
-  Subject: New user Email confirmation for RG.RU Editor
-
-  Вы зарегистрированы в редакторском интерфейсе RG.RU (editor.rg.ru)
-  Инструкция для входа в систему доступна по ссылке <a href="https://alpha.rg.ru/manual_help/rgru/manual.rgru.editor.pdf">https://alpha.rg.ru/manual_help/rgru/manual.rgru.editor.pdf</a> 
-
-  Внимание! Для подтверждения вашей электроной почты перейдите по ссылке ниже (обязательно)
-
-  %s?%s
-
-  С уважением,
-  RG.RU
-
-  Вопросы: dev@rg.ru
-
-
 
 reset_authenticator: |
   From: %s

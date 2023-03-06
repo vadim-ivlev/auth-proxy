@@ -19,7 +19,7 @@ func create_user() *graphql.Field {
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
 			"password": &graphql.ArgumentConfig{
-				Type:        graphql.String,
+				Type:        graphql.NewNonNull(graphql.String),
 				Description: "Пароль",
 			},
 			"email": &graphql.ArgumentConfig{
@@ -27,7 +27,7 @@ func create_user() *graphql.Field {
 				Description: "Email пользователя",
 			},
 			"fullname": &graphql.ArgumentConfig{
-				Type:        graphql.String,
+				Type:        graphql.NewNonNull(graphql.String),
 				Description: "Полное имя (Фамилия Имя)",
 			},
 			"description": &graphql.ArgumentConfig{
@@ -52,6 +52,7 @@ func create_user() *graphql.Field {
 			if SelfRegistrationAllowed || isAuthAdmin(params) {
 				panicIfEmpty(params.Args["password"], "Введите пароль")
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
+				panicIfEmpty(params.Args["fullname"], "Заполните имя")
 				// Только админ может включить/отключить проверку пина
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
@@ -69,7 +70,7 @@ func create_user() *graphql.Field {
 				res, err := createRecord("username", params, "user", "user")
 				if err == nil && !noemail {
 					// Отправляем письмо пользователю
-					err := mail.SendNewUserEmail(params.Args["email"].(string), emailhash)
+					err := mail.SendNewUserEmail(params.Args["email"].(string), params.Args["fullname"].(string), emailhash)
 					if err != nil {
 						log.Println("create_user SendNewUserEmail error:", err)
 					}

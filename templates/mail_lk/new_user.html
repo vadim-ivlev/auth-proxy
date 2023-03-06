@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Отчет по авторам департамента</title>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+      table {
+        border-spacing: 0;
+        font-size: 14px;
+        font-family: 'Lato', sans-serif, Arial, Helvetica !important;
+      }
+      td {
+        padding: 0;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; min-width: 100%; padding-top: 24px;">
+    <table
+          width="100%"
+          border="0"
+          cellpadding="0"
+          cellspacing="0"
+          style="font-family: 'Inter', Arial, Helvetica, sans-serif; margin: 0; padding: 0;">
+          <tbody>
+            <!-- Шапка -->
+            <tr bgcolor="#506C7F" align="center" style="height: 90px">
+              <td>
+                <table
+                  width="100%"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="padding-left: 30px; padding-right: 33px; max-width: 870px">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a href="https://rg.ru" target="_blank">
+                          <img
+                            border="0"
+                            width="96"
+                            height="29"
+                            style="display: block; color: #cccccc; text-align: center; line-height: 23px;"
+                            alt="RG.RU"
+                            src="https://cdnstatic.rg.ru/images/rg_logo.png"
+                          />
+                        </a>
+                      </td>
+                      <td
+                        align="right"
+                        style="font-style: normal; font-weight: 700; font-size: 13px; line-height: 20px; color: #cccccc;"
+                      >
+                        16+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <!-- Основная информация письма -->
+            <tr bgcolor="#F8F8F8" align="center">
+              <td>
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="margin: 0; padding-top: 160px; padding-bottom: 210px; max-width: 617px;"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        align="center"
+                        style="color: #f26922; font-style: normal; line-height: 48px; font-weight: 600; font-size: 40px;"
+                      >
+                        Регистрация на RG.RU
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        align="center"
+                        style="color: #000000; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px; padding-top: 40px; padding-bottom: 30px;"
+                      >
+                        Здравствуйте, {{ .UserName}}! Благодарим Вас за регистрацию на сайте
+                        <a
+                          href="https://rg.ru"
+                          target="_blank"
+                          style="color: #000000; text-decoration: none"
+                        >
+                          rg.ru.
+                        </a>
+                        Для подтверждения регистрации перейдите <a href="{{ .Link}}" target="_blank" style="color: #3377cc; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px;">по ссылке</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <!-- Ссылки -->
+            <tr align="center">
+              <td>
+                <table
+                  width="713"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="padding-top: 50px; font-style: normal; font-weight: 400; font-size: 14px; line-height: 28px;"
+                >
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a
+                          href="mailto:dev@rg.ru"
+                          target="_blank"
+                          style="color: #3377cc"
+                        >
+                          Техподдержка
+                        </a>
+                      </td>
+                      <td>
+                        <a
+                          href="https://rg.ru/account/profile&#35;letter"
+                          target="_blank"
+                          style="color: #3377cc"
+                        >
+                          Личный кабинет
+                        </a>
+                      </td>
+                      <td>
+                        <a
+                          href="#unsubscribe"
+                          target="_blank"
+                          style="color: #3377cc"
+                        >
+                          Отписаться от рассылки
+                        </a>
+                      </td>
+                      <td align="right">
+                        <a
+                          style="display: inline-block"
+                          title="telegram"
+                          target="_blank"
+                          href="https://ttttt.me/rgrunews"
+                        >
+                          <img
+                            src="https://cdnstatic.rg.ru/images/socials/telegram.png"
+                            width="24"
+                            height="24"
+                            alt="telegram"
+                            style="border: none"
+                          />
+                        </a>
+                      </td>
+                      <td align="right">
+                        <a
+                          style="display: inline-block"
+                          title="vk"
+                          target="_blank"
+                          href="https://vk.com/rgru"
+                        >
+                          <img
+                            src="https://cdnstatic.rg.ru/images/socials/vk.png"
+                            width="24"
+                            height="24"
+                            alt="vk"
+                            style="border: none"
+                          />
+                        </a>
+                      </td>
+                      <td align="right">
+                        <a
+                          style="display: inline-block"
+                          title="ok"
+                          target="_blank"
+                          href="https://www.odnoklassniki.ru/rg.ru"
+                        >
+                          <img
+                            src="https://cdnstatic.rg.ru/images/socials/ok.png"
+                            width="24"
+                            height="24"
+                            alt="ok"
+                            style="border: none"
+                          />
+                        </a>
+                      </td>
+                      <td align="right">
+                        <a
+                          style="display: inline-block"
+                          title="rutube"
+                          target="_blank"
+                          href="https://rutube.ru/channel/23649990/videos/"
+                        >
+                          <img
+                            src="https://cdnstatic.rg.ru/images/socials/rutube.png"
+                            width="24"
+                            height="24"
+                            alt="rutube"
+                            style="border: none"
+                          />
+                        </a>
+                      </td>
+                      <td align="right">
+                        <a
+                          style="display: inline-block"
+                          title="dzen"
+                          target="_blank"
+                          href="https://dzen.ru/news/?favid=1116&from=rubric&issue_tld=ru"
+                        >
+                          <img
+                            src="https://cdnstatic.rg.ru/images/socials/dzen.png"
+                            width="24"
+                            height="24"
+                            alt="dzen"
+                            style="border: none"
+                          />
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr align="center">
+              <td>
+                <table
+                  width="585"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="padding-top: 34px; padding-bottom: 50px"
+                >
+                  <tbody>
+                    <tr>
+                      <td style="text-align: center">
+                        <a
+                          href="https://apps.apple.com/app/id399188282"
+                          target="_blank"
+                          style="display: inline-block"
+                        >
+                          <img
+                            border="0"
+                            width="135"
+                            height="40"
+                            style="display: block; color: #000000; text-align: center; line-height: 30px;"
+                            alt="AppStore"
+                            src="https://cdnstatic.rg.ru/images/app-store.png"
+                          />
+                        </a>
+                      </td>
+                      <td style="text-align: center">
+                        <a
+                          href="https://play.google.com/store/apps/details?id=com.rg.android.newspaper.main"
+                          target="_blank"
+                          style="display: inline-block"
+                        >
+                          <img
+                            border="0"
+                            width="135"
+                            height="40"
+                            style="display: block; color: #000000; text-align: center; line-height: 30px;"
+                            alt="GooglePlay"
+                            src="https://cdnstatic.rg.ru/images/google-play.png"
+                          />
+                        </a>
+                      </td>
+                      <td style="text-align: center">
+                        <a
+                          href="https://appgallery.huawei.com/#/app/C101120233?appId=C101120233&source=appshare&subsource=C101120233"
+                          target="_blank"
+                          style="display: inline-block"
+                        >
+                          <img
+                            border="0"
+                            width="135"
+                            height="40"
+                            style="display: block; color: #000000; text-align: center; line-height: 30px;"
+                            alt="AppGallery"
+                            src="https://cdnstatic.rg.ru/images/app-gallery.png"
+                          />
+                        </a>
+                      </td>
+                      <td style="text-align: center">
+                        <a
+                          href="https://apps.rustore.ru/app/com.rg.android.newspaper.main"
+                          target="_blank"
+                          style="display: inline-block"
+                        >
+                          <img
+                            border="0"
+                            width="135"
+                            height="40"
+                            style="display: block; color: #000000; text-align: center; line-height: 30px;"
+                            alt="RuStore"
+                            src="https://cdnstatic.rg.ru/images/ru-store.png"
+                          />
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <!-- Подвал -->
+            <tr>
+              <td align="center" style="border-top: 1px solid #eeeeee">
+                <table
+                  width="100%"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="padding-top: 30px; padding-bottom: 104px; max-width: 870px; font-style: normal; font-weight: 400; font-size: 12px; line-height: 15px; color: #999999;"
+                >
+                  <tbody>
+                    <tr>
+                      <td align="center">
+                        Интернет-портал «Российской газеты» зарегистрирован в
+                        Роскомнадзоре 21.06.2012 г.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center">Номер свидетельства ЭЛ № ФС 77 - 50379.</td>
+                    </tr>
+                    <tr>
+                      <td align="center">
+                        Редакция не несет ответственности за мнения, высказанные в
+                        комментариях читателей.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="padding-top: 15px">
+                        © 1998-2023 ФГБУ «Редакция «Российской газеты»
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </body>
+</html>

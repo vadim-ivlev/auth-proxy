@@ -17,25 +17,6 @@ data:
     # после подтверждения email. 
     # Меняйте только текст и значение redirect=
 
-    new_user: |
-        From: %s
-        To: %s
-        Subject: New user Email confirmation for RG.RU Editor
-
-        Вы зарегистрированы в редакторском интерфейсе RG.RU (editor.rg.ru)
-        Инструкция для входа в систему доступна по ссылке https://alpha.rg.ru/manual_help/rgru/manual.rgru.editor.pdf
-
-        Внимание! Для подтверждения вашей электроной почты перейдите по ссылке ниже (обязательно)
-
-        %s?%s
-
-        С уважением,
-        RG.RU
-
-        Вопросы: dev@rg.ru
-
-
-
     reset_authenticator: |
         From: %s
         To: %s
