@@ -2,18 +2,40 @@ package mail
 
 import (
 	"auth-proxy/pkg/app"
+	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/smtp"
 	"net/url"
+	"text/template"
 
 	"gopkg.in/yaml.v2"
 )
 
+type Header struct {
+	From    string
+	To      string
+	Subject string
+}
+
+type MailData struct {
+	Header Header
+	TMPL   *template.Template
+	Data   interface{}
+}
+
+type NewUserData struct {
+	UserName string
+	Link     string
+}
+
 // var Params connectionParams
 var mailTemplates map[string]string
+
+var mailHtmlTemplates = make(map[string]*template.Template)
 
 // ReadMailTemplate reads YAML file with mail templates
 func ReadMailTemplate(fileName string) {
@@ -28,11 +50,77 @@ func ReadMailTemplate(fileName string) {
 	if err != nil {
 		log.Println("mail.ReadMailTemplate() Unmarshal error:", err)
 	}
+	// переопределяем получение шаблонов писем из файлов
+	mailHtmlTemplates["new_user"] = getMailTmpl(app.Params.MailTmplPath + "/new_user.html")
 }
 
-func SendNewUserEmail(toEmail, emailhash string) error {
-	urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, url.QueryEscape(toEmail), app.Params.EntryPoint)
-	msg := fmt.Sprintf(mailTemplates["new_user"], app.Params.From, toEmail, app.Params.ConfirmEmailUrl, urlParams)
+func (m *MailData) ComposeTmpl() (string, error) {
+
+	var buffer bytes.Buffer
+
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+
+	buffer.WriteString(fmt.Sprintf(
+		"Subject: %s\nFrom: %s\nTo: %s\n%s",
+		m.Header.Subject,
+		m.Header.From,
+		m.Header.To,
+		mime,
+	))
+	err := m.TMPL.Execute(&buffer, m.Data)
+	if err != nil {
+		fmt.Printf("Failed execute template: %s\n", err)
+		return "", err
+	}
+	return buffer.String(), nil
+}
+
+func getMailTmpl(mailTemplateFilePath string) *template.Template {
+
+	mailTemplate, err := ioutil.ReadFile(mailTemplateFilePath)
+	if err != nil {
+		fmt.Printf("Failed read template file: %s\n", err)
+	}
+
+	tmpl, err := template.New("NewUser").Parse(string(mailTemplate))
+	if err != nil {
+		fmt.Printf("Failed parsing template %s\n", err)
+	}
+
+	return tmpl
+}
+
+func SendNewUserEmail(toEmail, userName, emailhash string) error {
+	if tmpl, ok := mailHtmlTemplates["new_user"]; ok {
+		return sendNewUserEmail(toEmail, userName, emailhash, tmpl)
+	}
+	return errors.New("tmpl for new user not found")
+}
+
+func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Template) error {
+	entryPoint := fmt.Sprintf("%s&email=%s", app.Params.EntryPoint, toEmail)
+	urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, url.QueryEscape(toEmail), entryPoint)
+
+	mailData := MailData{
+		Header: Header{
+			Subject: convertSubject("Регистрация нового пользователя на портале \"Российской газеты\""),
+			From:    app.Params.From,
+			To:      toEmail,
+		},
+		TMPL: tmpl,
+		Data: NewUserData{
+			Link:     app.Params.ConfirmEmailUrl + "?" + urlParams,
+			UserName: userName,
+		},
+	}
+	msg, err := mailData.ComposeTmpl()
+	if err != nil {
+		return err
+	}
+
+	if msg == "" {
+		return errors.New("new user registration: failed to send mail, message is empty")
+	}
 	return sendMail(app.Params.From, toEmail, msg)
 }
 
@@ -44,6 +132,13 @@ func SendResetPasswordEmail(toEmail, pageAddress string) error {
 func SendAuthenticatorEmail(toEmail, pageAddress string) error {
 	msg := fmt.Sprintf(mailTemplates["reset_authenticator"], app.Params.From, toEmail, pageAddress)
 	return sendMail(app.Params.From, toEmail, msg)
+}
+
+// Так как наши почторые сервера не поддерживают кириллицу, после обновления go 1.16 отправка по-умолчанию не работает
+// https://go.dev/doc/go1.16#net/smtp
+// https://ncona.com/2011/06/using-utf-8-characters-on-an-e-mail-subject/
+func convertSubject(subject string) string {
+	return "=?utf-8?B?" + base64.StdEncoding.EncodeToString([]byte(subject)) + "?="
 }
 
 // sendMail toEmail может содержать несколько адресов через запятую.
@@ -75,8 +170,12 @@ func sendMail(fromEmail, toEmail, msg string) error {
 	}
 	defer wc.Close()
 
-	_, err = fmt.Fprint(wc, msg)
-	if err != nil {
+	// _, err = fmt.Fprint(wc, msg)
+	// if err != nil {
+	// 	return err
+	// }
+
+	if _, err = wc.Write([]byte(msg)); err != nil {
 		return err
 	}
 

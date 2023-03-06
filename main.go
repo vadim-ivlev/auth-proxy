@@ -51,8 +51,6 @@ func readConfigsAndSetParams( /*env,*/ config, pgconfig string) {
 	// конфиг базы данных
 	db.ReadEnvConfig(pgconfig)
 	fmt.Printf("\npgconfig=%v \n\ndb.Params: %s\n\n", pgconfig, app.Serialize(db.Params))
-	// шаблоны писем
-	mail.ReadMailTemplate("./configs/mail-templates.yaml")
 	// конфиг Oauth2
 	server.ReadOauth2Config("./configs/oauth2.yaml", "front")
 	// конфиг signature
@@ -60,6 +58,8 @@ func readConfigsAndSetParams( /*env,*/ config, pgconfig string) {
 	// конфиг общих параметров приложения.
 	app.ReadEnvConfig(config)
 	fmt.Printf("\nconfig=%v \n\napp.Params: %+v\n\n", config, app.Serialize(app.Params))
+	// шаблоны писем (важно запустить после ReadEnvConfig)
+	mail.ReadMailTemplate("./configs/mail-templates.yaml")
 	// устанавливаем параметры пакетов
 	server.SelfRegistrationAllowed = app.Params.Selfreg
 	server.SecureCookie = app.Params.Secure
@@ -89,16 +89,7 @@ func printGreetings(serverPort string, tls bool) {
 		protocol = "https"
 	}
 
-	msg := `
-	
- █████  ██    ██ ████████ ██   ██
-██   ██ ██    ██    ██    ██   ██
-███████ ██    ██    ██    ███████
-██   ██ ██    ██    ██    ██   ██
-██   ██  ██████     ██    ██   ██
-
-
-TLS:%v
+	msg := `TLS:%v
 
 ━━━━━━━━━━ GraphQL endpoints ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

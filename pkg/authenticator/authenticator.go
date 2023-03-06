@@ -71,7 +71,7 @@ func SetAuthenticator(c *gin.Context) {
 	c.JSON(200, gin.H{"result": true, "error": nil})
 }
 
-// SetPassword если hash из запроса правильный устанавливает поле pashash='' и пароль для пользователя в базе данных
+// SetPassword если hash из запроса правильный устанавливает поле pashash=” и пароль для пользователя в базе данных
 func SetPassword(c *gin.Context) {
 	username := c.Query("username")
 	hash := c.Query("hash")
@@ -106,7 +106,7 @@ func SetPassword(c *gin.Context) {
 
 // ConfirmEmail HTTP handler.
 // Еесли hash из запроса правильный устанавливает поля
-// emailhash='' и emailconfirmed=TRU для пользователя в базе данных
+// emailhash=” и emailconfirmed=TRU для пользователя в базе данных
 // и перенаправляет браузер по адресу указанному в mail.yaml
 func ConfirmEmail(c *gin.Context) {
 	email := c.Query("email")
@@ -129,7 +129,10 @@ func ConfirmEmail(c *gin.Context) {
 		return
 	}
 	// url куда перенаправить браузер если email подтвержден
-	entryPoint := app.Params.EntryPoint
+	entryPoint := c.Query("entry_point")
+	if entryPoint == "" {
+		entryPoint = app.Params.EntryPoint
+	}
 	// если в  mail.yaml не указано куда перенаправлять браузер возвращаем json
 	if entryPoint == "" {
 		c.JSON(200, gin.H{"result": true, "error": nil})

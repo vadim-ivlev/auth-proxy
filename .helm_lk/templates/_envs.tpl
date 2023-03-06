@@ -41,6 +41,8 @@
   value: {{ pluck .Values.werf.env .Values.app.mail_from | first | default .Values.app.mail_from._default | squote }}
 - name: admin_url
   value: {{  tpl (pluck .Values.werf.env .Values.app.admin_url | first | default .Values.app.admin_url._default) . | squote }}
+- name: mail_tmpl_path
+  value: {{  tpl (pluck .Values.werf.env .Values.app.mail_tmpl_path | first | default .Values.app.mail_tmpl_path._default) . | squote }}
 - name: graphql_test_url
   value: {{  tpl (pluck .Values.werf.env .Values.app.graphql_test_url | first | default .Values.app.graphql_test_url._default) . | squote }}
 - name: GIN_MODE

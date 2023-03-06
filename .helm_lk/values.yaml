@@ -43,8 +43,8 @@ app:
     production: "https://lk.rg.ru/confirm-email/"
     _default: "https://lk-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
   entry_point:
-    production: "https://rg.ru/account/profile#email_success"
-    _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/account/profile#email_success"
+    production: "https://rg.ru/account/profile?email_success=true"
+    _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/account/profile?email_success=true"
   smtp_address:
     _default: mail4.rg.ru:25
   mail_from:
@@ -52,6 +52,8 @@ app:
   admin_url:
     production: ""
     _default: "https://auth-admin.vercel.app/?url=https://lk-{{ .Values.werf.env }}.k8s.rg.ru"
+  mail_tmpl_path:
+    _default: "./templates/mail_lk"
   graphql_test_url:
     production: ""
     _default: "https://graphql-test.vercel.app/?end_point=https://lk-{{ .Values.werf.env }}.k8s.rg.ru/schema&tab_name=auth-proxy4400"
