@@ -90,10 +90,11 @@ func login() *graphql.Field {
 				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
-				// return nil, errors.New("Неверный пароль")
 				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
+			} else if r == auth.EMAIL_NOT_CONFIRMED {
+				return nil, errors.New("email not confirmed")
 			}
 
 			// Все проверки пройдены. Устанавливаем переменные сессии
@@ -186,10 +187,11 @@ func login_by_email() *graphql.Field {
 				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
-				// return nil, errors.New("Неверный пароль")
 				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
+			} else if r == auth.EMAIL_NOT_CONFIRMED {
+				return nil, errors.New("email not confirmed")
 			}
 
 			// Все проверки пройдены. Устанавливаем переменные сессии

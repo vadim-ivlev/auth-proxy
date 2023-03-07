@@ -91,6 +91,52 @@ func create_user() *graphql.Field {
 	}
 }
 
+func send_confirm_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю письмо для подтверждения регистрации",
+		Type:        userObject,
+		Args: graphql.FieldConfigArgument{
+			"password": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Пароль",
+			},
+			"email": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email пользователя",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			// if SelfRegistrationAllowed || isAuthAdmin(params) {
+			// TODO: проверить пароль
+			// panicIfEmpty(params.Args["password"], "Введите пароль")
+			panicIfEmpty(params.Args["email"], "Заполните поле Email")
+
+			ArgToLowerCase(params, "email")
+			TrimParamValue(params, "email")
+
+			// params.Args["username"] = params.Args["email"]
+			// convertPasswordToHash(params)
+			emailhash := uuid.New().String()
+			params.Args["emailhash"] = emailhash
+			clearCache()
+			res, err := updateRecord(params.Args["email"], "email", params, "user", "user")
+			if err == nil {
+
+				// TODO: получить полное имя
+				fullName := "full name" //res.(map[string]interface{})["fullname"].(string)
+				// Отправляем письмо пользователю
+				err := mail.SendNewUserEmail(params.Args["email"].(string), fullName, emailhash)
+				if err != nil {
+					log.Println("create_user SendNewUserEmail error:", err)
+				}
+			}
+			return res, err
+			// }
+			// return nil, errors.New("self registration is not allowed. Please ask administrators")
+		},
+	}
+}
+
 func update_user() *graphql.Field {
 	return &graphql.Field{
 		Description: "Обновить пользователя",
