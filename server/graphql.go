@@ -115,15 +115,18 @@ func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpda
 func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
-	fmt.Printf("updateRecord fieldValues: %#v err=%v ", fieldValues, err)
+	fmt.Printf("updateRecord fieldValues: %#v err=%v \n", fieldValues, err)
 	if err != nil {
 		return fieldValues, err
 	}
 
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
+	if fields == "" {
+		fields = "*"
+	}
 	selectQuery := "SELECT " + fields + " FROM \"" + tableToSelectFrom + "\" WHERE \"" + db.RemoveDoubleQuotes(keyFieldName) + "\" = $1 ;"
-	fmt.Println("updateRecord selectQuery:", selectQuery)
+	fmt.Printf("updateRecord selectQuery: %s ,  $1=%v \n", selectQuery, id)
 	return db.QueryRowMap(selectQuery, id)
 
 }
@@ -416,6 +419,7 @@ func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error)
 	emailhash := uuid.New().String()
 	params := graphql.ResolveParams{
 		Args: map[string]interface{}{
+			"email":          email,
 			"emailhash":      emailhash,
 			"emailconfirmed": false,
 		},
