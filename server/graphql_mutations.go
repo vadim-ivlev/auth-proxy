@@ -62,8 +62,6 @@ func create_user() *graphql.Field {
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
 				convertPasswordToHash(params)
-				// emailhash := uuid.New().String()
-				// params.Args["emailhash"] = emailhash
 				if noemail {
 					params.Args["emailconfirmed"] = true
 				}
@@ -72,10 +70,6 @@ func create_user() *graphql.Field {
 				if err == nil {
 					// Отправляем письмо пользователю
 					if !noemail {
-						// err := mail.SendNewUserEmail(params.Args["email"].(string), params.Args["fullname"].(string), emailhash)
-						// if err != nil {
-						// 	log.Println("create_user SendNewUserEmail error:", err)
-						// }
 						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string))
 					}
 					// Добавляем пользователя в группу по умолчанию
@@ -110,7 +104,6 @@ func send_confirm_email() *graphql.Field {
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			// if SelfRegistrationAllowed || isAuthAdmin(params) {
 
 			panicIfEmpty(params.Args["email"], "Заполните поле Email")
 			panicIfEmpty(params.Args["password"], "Введите пароль")
@@ -132,32 +125,9 @@ func send_confirm_email() *graphql.Field {
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(email + " деактивирован.")
 			}
-			// } else if r == auth.EMAIL_NOT_CONFIRMED {
-			// 	return nil, errors.New("email not confirmed")
-			// }
-
-			// params.Args["username"] = params.Args["email"]
-			// convertPasswordToHash(params)
-
-			// emailhash := uuid.New().String()
-			// params.Args["emailhash"] = emailhash
-			// res, err := updateRecord(params.Args["email"], "email", params, "user", "user")
-			// if err == nil {
-			// 	clearCache()
-			// 	// TODO: получить полное имя
-			// 	fullName := email //res.(map[string]interface{})["fullname"].(string)
-			// 	// Отправляем письмо пользователю
-			// 	err := mail.SendNewUserEmail(email, fullName, emailhash)
-			// 	if err != nil {
-			// 		log.Println("create_user SendNewUserEmail error:", err)
-			// 	}
-			// }
-			// return res, err
 
 			return UpdateHashAndSendEmail(email, dbUsername)
 
-			// }
-			// return nil, errors.New("self registration is not allowed. Please ask administrators")
 		},
 	}
 }
