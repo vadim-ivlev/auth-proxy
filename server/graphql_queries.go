@@ -86,7 +86,6 @@ func login() *graphql.Field {
 
 			r, dbUsername := auth.CheckUserPassword2(username, password)
 			if r == auth.NO_USER {
-				// return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
 				return nil, errors.New("email или пароль введен неверно")
 			} else if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
@@ -94,6 +93,7 @@ func login() *graphql.Field {
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			} else if r == auth.EMAIL_NOT_CONFIRMED {
+				UpdateHashAndSendEmail(username, username)
 				return nil, errors.New("email not confirmed")
 			}
 

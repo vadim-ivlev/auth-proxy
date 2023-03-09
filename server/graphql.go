@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/mail"
 	"errors"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"auth-proxy/pkg/db"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 	gq "github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
@@ -113,12 +115,16 @@ func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpda
 func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
+	fmt.Printf("updateRecord fieldValues: %#v err=%v ", fieldValues, err)
 	if err != nil {
 		return fieldValues, err
 	}
+
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE \""+db.RemoveDoubleQuotes(keyFieldName)+"\" = $1 ;", id)
+	selectQuery := "SELECT " + fields + " FROM \"" + tableToSelectFrom + "\" WHERE \"" + db.RemoveDoubleQuotes(keyFieldName) + "\" = $1 ;"
+	fmt.Println("updateRecord selectQuery:", selectQuery)
+	return db.QueryRowMap(selectQuery, id)
 
 }
 
@@ -405,3 +411,35 @@ func addUserToDefaultGroup(userID int64) error {
 	}
 	return createGroupUserRole(groupID, userID, "new_user")
 }
+
+func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error) {
+	emailhash := uuid.New().String()
+	params := graphql.ResolveParams{
+		Args: map[string]interface{}{
+			"emailhash":      emailhash,
+			"emailconfirmed": false,
+		},
+	}
+	res, err = updateRecord(email, "email", params, "user", "user")
+	if err == nil {
+		clearCache()
+		sendError := mail.SendNewUserEmail(email, fullName, emailhash)
+		if sendError != nil {
+			log.Println("UpdateHashAndSendEmail SendNewUserEmail error:", sendError)
+		}
+	}
+
+	fmt.Printf("UpdateHashAndSendEmail: emailhash=%v res=%#v err=%v \n", emailhash, res, err)
+	return res, err
+}
+
+// func UpdateHashAndSendEmail(email, fullName string) (interface{}, error) {
+// 	emailhash, res, err := UpdateEmailHash(email)
+// 	if err == nil {
+// 		err := mail.SendNewUserEmail(email, fullName, emailhash)
+// 		if err != nil {
+// 			log.Println("create_user SendNewUserEmail error:", err)
+// 		}
+// 	}
+// 	return res, err
+// }
