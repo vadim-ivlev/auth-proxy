@@ -29,6 +29,8 @@ type appParams struct {
 	MaxAttempts int64 `json:"max_attempts" env:"max_attempts" envDefault:"5"`
 	// Время сброса счетчика ошибок пароля в минутах
 	ResetTime int64 `json:"reset_time" env:"reset_time" envDefault:"60"`
+	// Разрешить авторизацию пользователей не подтвердивших email
+	LoginNotConfirmedEmail bool `json:"login_not_confirmed_email" env:"login_not_confirmed_email" envDefault:"true"`
 
 	// url страницы подтверждения email
 	ConfirmEmailUrl string `json:"confirm_email_url" env:"confirm_email_url" envDefault:"https://localhost:4400/confirm-email/" env`

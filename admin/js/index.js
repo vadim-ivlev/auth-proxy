@@ -1,5 +1,9 @@
 // M O D E L  ******************************************************************************************
 var model = {
+    checkEmailMessage: `На ваш email выслано сообщение от noreply@rg.ru. 
+        Откройте его и перейдите по ссылке 
+        для подтверждения вашего электронного адреса.`,
+
     //---------------------------
     oauth2email: "",
     oauth2name: "",
@@ -494,7 +498,11 @@ function errorMessage(errorElementID, errMsg) {
     if (errorElementID) {
         document.getElementById(errorElementID).innerText = errMsg
     }
+    if (errMsg=="email not confirmed") {
+        alert(model.checkEmailMessage)
+    }
 }
+
 
 // R E Q U E S T S  *******************************************************
 
@@ -1021,7 +1029,7 @@ function createUser(event) {
         refreshData()
         model.user = res.data["create_user"]
         if (!model.logined) {
-            alert(`"${model.user.username}" is created.` )
+            alert(`"${model.user.username}" is created.` + "\n\n" + model.checkEmailMessage )
             showPage('login',true)
         } else {
             getUser(model.user.username)

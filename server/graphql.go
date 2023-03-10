@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/mail"
 	"errors"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"auth-proxy/pkg/db"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 	gq "github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
@@ -113,12 +115,19 @@ func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpda
 func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
+	// fmt.Printf("updateRecord fieldValues: %#v err=%v \n", fieldValues, err)
 	if err != nil {
 		return fieldValues, err
 	}
+
 	path := params.Info.FieldName
 	fields := getSelectedFields([]string{path}, params)
-	return db.QueryRowMap("SELECT "+fields+" FROM \""+tableToSelectFrom+"\" WHERE \""+db.RemoveDoubleQuotes(keyFieldName)+"\" = $1 ;", id)
+	if fields == "" {
+		fields = "*"
+	}
+	selectQuery := "SELECT " + fields + " FROM \"" + tableToSelectFrom + "\" WHERE \"" + db.RemoveDoubleQuotes(keyFieldName) + "\" = $1 ;"
+	// fmt.Printf("updateRecord selectQuery: %s ,  $1=%v \n", selectQuery, id)
+	return db.QueryRowMap(selectQuery, id)
 
 }
 
@@ -404,4 +413,26 @@ func addUserToDefaultGroup(userID int64) error {
 		fmt.Println(`Не удалось получить идентификатор группы "users".`)
 	}
 	return createGroupUserRole(groupID, userID, "new_user")
+}
+
+func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error) {
+	emailhash := uuid.New().String()
+	params := graphql.ResolveParams{
+		Args: map[string]interface{}{
+			"email":          email,
+			"emailhash":      emailhash,
+			"emailconfirmed": false,
+		},
+	}
+	res, err = updateRecord(email, "email", params, "user", "user")
+	if err == nil {
+		clearCache()
+		sendError := mail.SendNewUserEmail(email, fullName, emailhash)
+		if sendError != nil {
+			log.Println("UpdateHashAndSendEmail SendNewUserEmail error:", sendError)
+		}
+	}
+
+	// fmt.Printf("UpdateHashAndSendEmail: emailhash=%v res=%#v err=%v \n", emailhash, res, err)
+	return res, err
 }

@@ -16,8 +16,8 @@
             "args": [
                 "-port",
                 "4400",
-                "-config=./configs/app.env.dev",
-                "-pgconfig=./configs/db.env.dev"
+                "-config=./configs/app.env",
+                "-pgconfig=./configs/db.env"
             ]
         }
     ]

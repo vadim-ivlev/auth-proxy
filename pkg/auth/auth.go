@@ -20,10 +20,11 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var Cache = cache.New(5*time.Minute, 10*time.Minute)
 
 const (
-	OK             = 0
-	NO_USER        = 1
-	USER_DISABLED  = 2
-	WRONG_PASSWORD = 3
+	OK                  = 0 // проверка прошла успешно
+	NO_USER             = 1 // пользователя нет
+	USER_DISABLED       = 2 // пользователь заблокирован
+	WRONG_PASSWORD      = 3 // пароль не подходит
+	EMAIL_NOT_CONFIRMED = 4 // пользователь не подтвердил свой email
 )
 
 // CacheSet Обертка над библиотечной функцией для управления кэшированием через переменную окружения.
@@ -40,6 +41,7 @@ func CacheSet(k string, x interface{}, d time.Duration) {
 // NO_USER 		 - пользователя нет.
 // USER_DISABLED - пользователь заблокирован.
 // WRONG_PASSWORD - пароль не подходит.
+// NOT_VERIFIED  - пользователь не подтвердил свой email.
 func CheckUserPassword2(username, password string) (int, string) {
 	rec, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
@@ -53,6 +55,10 @@ func CheckUserPassword2(username, password string) (int, string) {
 	hashedPassword := rec["password"].(string)
 	if hashedPassword != GetHash(password) {
 		return WRONG_PASSWORD, dbUsername
+	}
+	emailConfirmed := rec["emailconfirmed"].(bool)
+	if !emailConfirmed {
+		return EMAIL_NOT_CONFIRMED, dbUsername
 	}
 	return OK, dbUsername
 }

@@ -45,6 +45,7 @@ var mutationObject = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
 		"create_user":            create_user(),
+		"send_confirm_email":     send_confirm_email(),
 		"update_user":            update_user(),
 		"delete_user":            delete_user(),
 		"create_app":             create_app(),

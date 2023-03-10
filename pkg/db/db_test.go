@@ -8,7 +8,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	ReadEnvConfig("../../configs/db.env.dev")
+	ReadEnvConfig("../../configs/db.env")
 
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())
@@ -22,7 +22,7 @@ func Test_dbAvailable(t *testing.T) {
 
 // Локальная БД
 func Benchmark_local_DB(b *testing.B) {
-	ReadEnvConfig("../../configs/db.env.dev")
+	ReadEnvConfig("../../configs/db.env")
 	for i := 0; i < b.N; i++ {
 		_, _ = QueryRowMap("select $1", i)
 	}

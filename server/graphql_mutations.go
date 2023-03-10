@@ -3,13 +3,11 @@ package server
 import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
-	"auth-proxy/pkg/mail"
 	"errors"
 	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 )
 
@@ -64,15 +62,15 @@ func create_user() *graphql.Field {
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
 				convertPasswordToHash(params)
-				emailhash := uuid.New().String()
-				params.Args["emailhash"] = emailhash
+				if noemail {
+					params.Args["emailconfirmed"] = true
+				}
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
-				if err == nil && !noemail {
+				if err == nil {
 					// Отправляем письмо пользователю
-					err := mail.SendNewUserEmail(params.Args["email"].(string), params.Args["fullname"].(string), emailhash)
-					if err != nil {
-						log.Println("create_user SendNewUserEmail error:", err)
+					if !noemail {
+						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string))
 					}
 					// Добавляем пользователя в группу по умолчанию
 					userID, ok := res.(map[string]interface{})["id"].(int64)
@@ -87,6 +85,49 @@ func create_user() *graphql.Field {
 				return res, err
 			}
 			return nil, errors.New("self registration is not allowed. Please ask administrators")
+		},
+	}
+}
+
+func send_confirm_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю письмо для подтверждения регистрации",
+		Type:        userObject,
+		Args: graphql.FieldConfigArgument{
+			"password": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Пароль",
+			},
+			"email": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email пользователя",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+
+			panicIfEmpty(params.Args["email"], "Заполните поле Email")
+			panicIfEmpty(params.Args["password"], "Введите пароль")
+
+			ArgToLowerCase(params, "email")
+			TrimParamValue(params, "email")
+
+			email, _ := params.Args["email"].(string)
+			password, _ := params.Args["password"].(string)
+
+			// проверить пароль
+			r, dbUsername := auth.CheckUserPassword2(email, password)
+			fmt.Println("r=", r, "dbUsername=", dbUsername)
+			if r == auth.NO_USER {
+				return nil, errors.New("email или пароль введен неверно")
+			} else if r == auth.WRONG_PASSWORD {
+				// counter.IncrementCounter(email)
+				return nil, errors.New("email или пароль введен неверно")
+			} else if r == auth.USER_DISABLED {
+				return nil, errors.New(email + " деактивирован.")
+			}
+
+			return UpdateHashAndSendEmail(email, dbUsername)
+
 		},
 	}
 }
