@@ -94,13 +94,13 @@ func send_confirm_email() *graphql.Field {
 		Description: "Послать пользователю письмо для подтверждения регистрации",
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
-			"password": &graphql.ArgumentConfig{
-				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Пароль",
-			},
 			"email": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.String),
 				Description: "Email пользователя",
+			},
+			"password": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Пароль",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
