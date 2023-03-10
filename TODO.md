@@ -9,7 +9,7 @@ other
 - restore changing passwords by users in auth-admin 
 - add go templates for changing password
 
-
+- restore admin
 
 
 QUERY
