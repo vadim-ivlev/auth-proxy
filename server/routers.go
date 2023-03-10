@@ -59,9 +59,9 @@ func setup(build string) *gin.Engine {
 	go keepCreatingProxies()
 
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
-	r.Static("/admin/", "./admin")
-	r.Static("/admn/", "./admin")
-	r.Static("/nimda/", "./admin")
+	// r.Static("/admin/", "./admin")
+	// r.Static("/admn/", "./admin")
+	// r.Static("/nimda/", "./admin")
 
 	r.Use(prometeo.CountersMiddleware())
 	r.Use(CountersMiddleware())

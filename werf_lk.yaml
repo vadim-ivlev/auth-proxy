@@ -52,10 +52,10 @@ git:
     to: /app/certificates
     owner: app
     group: app
-  - add: /admin
-    to: /app/admin
-    owner: app
-    group: app
+  # - add: /admin
+  #   to: /app/admin
+  #   owner: app
+  #   group: app
   - add: /templates
     to: /app/templates
     owner: app
