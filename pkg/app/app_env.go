@@ -42,6 +42,10 @@ type appParams struct {
 	From string `json:"from" env:"from" envDefault:"noreply@rg.ru"`
 	// админка сервиса
 	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://auth-admin.vercel.app/?url=https://localhost:4400"`
+	// логин админки сервиса
+	AdminUrlLogin string `json:"admin_url_login" env:"admin_url_login" envDefault:"admin"`
+	// пароль админки сервиса
+	AdminUrlPassword string `json:"admin_url_password" env:"admin_url_password" envDefault:"rosgas2011"`
 	// тестовая страница сервиса
 	GraphqlTestUrl string `json:"graphql_test_url" env:"graphql_test_url" envDefault:"https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400"`
 	MailTmplPath   string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`

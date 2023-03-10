@@ -58,10 +58,13 @@ func setup(build string) *gin.Engine {
 	// на случай если БД была изменена извне.
 	go keepCreatingProxies()
 
+	// админка защищена базовой авторизации из за атаки 8-го марта 2023
+	basicAuthGroup := r.Group("/admin", gin.BasicAuth(gin.Accounts{
+		app.Params.AdminUrlLogin: app.Params.AdminUrlPassword,
+	}))
+	basicAuthGroup.Static("/", "./admin")
+
 	r.StaticFile("/favicon.ico", "./templates/favicon.ico")
-	// r.Static("/admin/", "./admin")
-	// r.Static("/admn/", "./admin")
-	// r.Static("/nimda/", "./admin")
 
 	r.Use(prometeo.CountersMiddleware())
 	r.Use(CountersMiddleware())
@@ -96,7 +99,7 @@ func setup(build string) *gin.Engine {
 	r.POST("/schema", graphqlResult)
 
 	r.GET("/publickey", publicKeyHandler)
-	// r.GET("/stat", app.Stat)
+	r.GET("/stat", app.Stat)
 	r.GET("/logmessage/:message", app.LogMessage)
 	r.GET("/publicapps", listPublicApps)
 	r.GET("/oauthproviders", ListOauthProviders)
