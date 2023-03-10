@@ -132,6 +132,49 @@ func send_confirm_email() *graphql.Field {
 	}
 }
 
+func send_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю письмо с произвольным текстом",
+		Type:        userObject,
+		Args: graphql.FieldConfigArgument{
+			"email": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email пользователя",
+			},
+			"password": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Пароль",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+
+			panicIfEmpty(params.Args["email"], "Заполните поле Email")
+			panicIfEmpty(params.Args["password"], "Введите пароль")
+
+			ArgToLowerCase(params, "email")
+			TrimParamValue(params, "email")
+
+			email, _ := params.Args["email"].(string)
+			password, _ := params.Args["password"].(string)
+
+			// проверить пароль
+			r, dbUsername := auth.CheckUserPassword2(email, password)
+			fmt.Println("r=", r, "dbUsername=", dbUsername)
+			if r == auth.NO_USER {
+				return nil, errors.New("email или пароль введен неверно")
+			} else if r == auth.WRONG_PASSWORD {
+				// counter.IncrementCounter(email)
+				return nil, errors.New("email или пароль введен неверно")
+			} else if r == auth.USER_DISABLED {
+				return nil, errors.New(email + " деактивирован.")
+			}
+
+			return UpdateHashAndSendEmail(email, dbUsername)
+
+		},
+	}
+}
+
 func update_user() *graphql.Field {
 	return &graphql.Field{
 		Description: "Обновить пользователя",
