@@ -52,14 +52,13 @@ func login() *graphql.Field {
 			// проверить PIN если установлен глобальный флаг
 			if app.Params.UsePin {
 				// нужен ли PIN для данного пользователя?
-				fmt.Println("UsePin!!!!!!")
+				fmt.Println("Auth-proxy uses PIN !!!!!!")
 				pinRequired, _, _, err := authenticator.GetUserPinFields(username)
 				if err != nil {
-					// return "", err
 					return nil, errors.New("email или пароль введен неверно")
 				}
-				fmt.Println("pin required!!!!!!")
 				if pinRequired {
+					fmt.Printf("PIN is required for user %s !!! \n", username)
 					pin, _ := params.Args["pin"].(string)
 					fmt.Println("pin = ", pin)
 					// правильный ли пин?
@@ -93,8 +92,10 @@ func login() *graphql.Field {
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			} else if r == auth.EMAIL_NOT_CONFIRMED {
-				UpdateHashAndSendEmail(username, username)
-				return nil, errors.New("email not confirmed")
+				if !app.Params.LoginNotConfirmedEmail {
+					UpdateHashAndSendEmail(username, username)
+					return nil, errors.New("email not confirmed")
+				}
 			}
 
 			// Все проверки пройдены. Устанавливаем переменные сессии
@@ -191,7 +192,10 @@ func login_by_email() *graphql.Field {
 			} else if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
 			} else if r == auth.EMAIL_NOT_CONFIRMED {
-				return nil, errors.New("email not confirmed")
+				if !app.Params.LoginNotConfirmedEmail {
+					UpdateHashAndSendEmail(username, username)
+					return nil, errors.New("email not confirmed")
+				}
 			}
 
 			// Все проверки пройдены. Устанавливаем переменные сессии

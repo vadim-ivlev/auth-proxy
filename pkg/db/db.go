@@ -54,7 +54,7 @@ func DbAvailable() bool {
 func QueryExec(sqlText string, args ...interface{}) (sql.Result, error) {
 	conn, err := getDBFromPool()
 	panicIf(err)
-	log.Println("QueryExec SQL=", sqlText, args)
+	// log.Println("QueryExec SQL=", sqlText, args)
 	return conn.Exec(sqlText, args...)
 }
 

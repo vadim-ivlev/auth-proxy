@@ -115,7 +115,7 @@ func createRecord(keyFieldName string, params graphql.ResolveParams, tableToUpda
 func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.ResolveParams, tableToUpdate string, tableToSelectFrom string) (interface{}, error) {
 	id := params.Args[keyFieldName]
 	fieldValues, err := db.UpdateRowByID(keyFieldName, tableToUpdate, oldKeyValue, params.Args)
-	fmt.Printf("updateRecord fieldValues: %#v err=%v \n", fieldValues, err)
+	// fmt.Printf("updateRecord fieldValues: %#v err=%v \n", fieldValues, err)
 	if err != nil {
 		return fieldValues, err
 	}
@@ -126,7 +126,7 @@ func updateRecord(oldKeyValue interface{}, keyFieldName string, params graphql.R
 		fields = "*"
 	}
 	selectQuery := "SELECT " + fields + " FROM \"" + tableToSelectFrom + "\" WHERE \"" + db.RemoveDoubleQuotes(keyFieldName) + "\" = $1 ;"
-	fmt.Printf("updateRecord selectQuery: %s ,  $1=%v \n", selectQuery, id)
+	// fmt.Printf("updateRecord selectQuery: %s ,  $1=%v \n", selectQuery, id)
 	return db.QueryRowMap(selectQuery, id)
 
 }
@@ -433,17 +433,6 @@ func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error)
 		}
 	}
 
-	fmt.Printf("UpdateHashAndSendEmail: emailhash=%v res=%#v err=%v \n", emailhash, res, err)
+	// fmt.Printf("UpdateHashAndSendEmail: emailhash=%v res=%#v err=%v \n", emailhash, res, err)
 	return res, err
 }
-
-// func UpdateHashAndSendEmail(email, fullName string) (interface{}, error) {
-// 	emailhash, res, err := UpdateEmailHash(email)
-// 	if err == nil {
-// 		err := mail.SendNewUserEmail(email, fullName, emailhash)
-// 		if err != nil {
-// 			log.Println("create_user SendNewUserEmail error:", err)
-// 		}
-// 	}
-// 	return res, err
-// }
