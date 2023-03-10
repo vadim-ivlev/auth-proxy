@@ -16,7 +16,6 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Build структура информации о сборке
@@ -84,11 +83,11 @@ func setup(build string) *gin.Engine {
 	r.Use(sessions.Sessions(app.Params.CookieName, Store))
 
 	// r.GET("/admin", redirectToAdminURL)
-	r.GET("/admin", redirectToAdminURL)
-	r.GET("/graphql_test", redirectToGraphqlTestURL)
+	// r.GET("/admin", redirectToAdminURL) // - удален 10.03.23 по соображениям безопасности
+	// r.GET("/graphql_test", redirectToGraphqlTestURL) // - удален 10.03.23 по соображениям безопасности
 
 	r.GET("/captcha", Captcha)
-	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	// r.GET("/metrics", gin.WrapH(promhttp.Handler())) // - удален 10.03.23 по соображениям безопасности
 
 	r.OPTIONS("/graphql", optionHandler)
 	r.OPTIONS("/schema", optionHandler)
@@ -97,7 +96,7 @@ func setup(build string) *gin.Engine {
 	r.POST("/schema", graphqlResult)
 
 	r.GET("/publickey", publicKeyHandler)
-	r.GET("/stat", app.Stat)
+	// r.GET("/stat", app.Stat)
 	r.GET("/logmessage/:message", app.LogMessage)
 	r.GET("/publicapps", listPublicApps)
 	r.GET("/oauthproviders", ListOauthProviders)
