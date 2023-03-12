@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/smtp"
 	"net/url"
+	"strings"
 	"text/template"
 
 	"gopkg.in/yaml.v2"
@@ -191,4 +192,23 @@ func sendMail(fromEmail, toEmail, msg string) error {
 	}
 
 	return nil
+}
+
+// SendEmailTo отправляет письмо
+// от имени fromEmail на адрес toEmail, c указанным темой и телом.
+func SendEmailTo(fromEmail, toEmail, subject, body string) error {
+
+	from := removeBreaks(fromEmail)
+	to := removeBreaks(toEmail)
+	subj := removeBreaks(subject)
+
+	msg := fmt.Sprintf("From: %s \nTo: %s \nSubject: %s \n\n%s\n",
+		from, to, subj, body)
+
+	return sendMail(from, to, msg)
+}
+
+// removeBreaks очищает строку от переводов строк и пробелов в начале и конце
+func removeBreaks(email string) string {
+	return strings.TrimSpace(strings.ReplaceAll(email, "\n", ""))
 }

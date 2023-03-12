@@ -55,5 +55,11 @@ func TestSendNewUserEmail(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
+}
 
+func TestSendEmailTo(t *testing.T) {
+	err := SendEmailTo("from@rg.ru", "to@mail.com", "subject", "one\ntwo\nthree")
+	if err != nil {
+		t.Errorf("%s", err)
+	}
 }

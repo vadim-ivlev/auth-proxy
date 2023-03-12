@@ -3,6 +3,7 @@ package server
 import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
+	"auth-proxy/pkg/mail"
 	"errors"
 	"fmt"
 	"log"
@@ -134,43 +135,44 @@ func send_confirm_email() *graphql.Field {
 
 func send_email() *graphql.Field {
 	return &graphql.Field{
-		Description: "Послать пользователю письмо с произвольным текстом",
-		Type:        userObject,
+		Description: "Послать пользователю email с произвольным текстом",
+		Type:        graphql.String,
 		Args: graphql.FieldConfigArgument{
-			"email": &graphql.ArgumentConfig{
+			"email_from": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Email пользователя",
+				Description: "Email от кого отправляется письмо",
 			},
-			"password": &graphql.ArgumentConfig{
+			"email_to": &graphql.ArgumentConfig{
 				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Пароль",
+				Description: "Email кому отправляется письмо",
+			},
+			"subject": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "тема письма",
+			},
+			"text": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "текст письма",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			if !isAuthAdmin(params) {
+				return nil, errors.New("access denied")
+			}
+			panicIfEmpty(params.Args["email_from"], "Заполните поле email_from")
+			panicIfEmpty(params.Args["email_to"], "Заполните поле email_to")
 
-			panicIfEmpty(params.Args["email"], "Заполните поле Email")
-			panicIfEmpty(params.Args["password"], "Введите пароль")
+			email_from, _ := params.Args["email_from"].(string)
+			email_to, _ := params.Args["email_to"].(string)
+			subject, _ := params.Args["subject"].(string)
+			text, _ := params.Args["text"].(string)
 
-			ArgToLowerCase(params, "email")
-			TrimParamValue(params, "email")
-
-			email, _ := params.Args["email"].(string)
-			password, _ := params.Args["password"].(string)
-
-			// проверить пароль
-			r, dbUsername := auth.CheckUserPassword2(email, password)
-			fmt.Println("r=", r, "dbUsername=", dbUsername)
-			if r == auth.NO_USER {
-				return nil, errors.New("email или пароль введен неверно")
-			} else if r == auth.WRONG_PASSWORD {
-				// counter.IncrementCounter(email)
-				return nil, errors.New("email или пароль введен неверно")
-			} else if r == auth.USER_DISABLED {
-				return nil, errors.New(email + " деактивирован.")
+			err := mail.SendEmailTo(email_from, email_to, subject, text)
+			if err != nil {
+				return nil, err
 			}
 
-			return UpdateHashAndSendEmail(email, dbUsername)
-
+			return fmt.Sprintf("the letter to %s is sent", email_to), nil
 		},
 	}
 }
