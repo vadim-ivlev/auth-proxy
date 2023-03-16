@@ -107,7 +107,6 @@ GitPod URL
 `
 	fmt.Printf(msg, tls, protocol, serverPort, protocol, serverPort, protocol, gitpodurl)
 	fmt.Println("Admin Url - >", app.Params.AdminUrl)
-	fmt.Println("Test  Url - >", app.Params.GraphqlTestUrl)
 	fmt.Println("Test Mail - > http://localhost:8025/")
 	fmt.Printf("\n\n")
 }

@@ -19,17 +19,17 @@ https://gl-auth-staging.rg.ru
 Админки
 
 - RG production
-https://auth-admin-classic.vercel.app/?url=https://auth-proxy.rg.ru
+https://auth-proxy.rg.ru/admin/?url=https://auth-proxy.rg.ru
 
 - RG staging
-https://auth-admin.vercel.app/?url=https://rg-auth-staging.rg.ru
+https://rg-auth-staging.rg.ru/admin/?url=https://rg-auth-staging.rg.ru
 
 
 - GL production
-https://auth-admin-classic.vercel.app/?url=https://gl-auth.rg.ru
+https://gl-auth.rg.ru/admin/?url=https://gl-auth.rg.ru
 
 - GL staging
-https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru
+https://gl-auth-staging.rg.ru/admin/?url=https://gl-auth-staging.rg.ru
 
 
 <br>
@@ -381,9 +381,8 @@ https://auth-proxy.rg.ru/
 
 __Тестовое GUI приложение__ - админка для контроля пользователей, приложений и ролей.
 
-https://auth-proxy.rg.ru/admin
+https://auth-proxy.rg.ru/admin/?url=https://auth-proxy.rg.ru
 
-https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru#apps
 
 ## Конечные точки
 
@@ -447,7 +446,6 @@ GET https://auth-proxy.rg.ru/oauthproviders
     http://localhost:4400/admin/?url=http://localhost:4400
 
 
-- Test  Url - > https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
 
 доступ к базе данных pgcli
@@ -497,7 +495,8 @@ GET https://auth-proxy.rg.ru/oauthproviders
     go test -v ./...
 
 
-Функциональные тесты (End to End) проводятся с помощью <https://auth-admin.vercel.app/?url=https://auth-proxy.rg.ru#apps>
+Функциональные тесты (End to End) проводятся с помощью  
+<https://auth-proxy.rg.ru/admin/?url=https://auth-proxy.rg.ru>
 
 
 Бенчмарки соединений с БД с пулом и без
@@ -625,5 +624,5 @@ GET https://auth-proxy.rg.ru/oauthproviders
 
 Контроль программы из GUI
 
-https://auth-admin.vercel.app/?url=https://gl-auth-staging.rg.ru#apps
+https://gl-auth-staging.rg.ru/admin/?url=https://gl-auth-staging.rg.ru#apps
 

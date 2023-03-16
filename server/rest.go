@@ -103,8 +103,3 @@ func listPublicApps(c *gin.Context) {
 func redirectToAdminURL(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, app.Params.AdminUrl)
 }
-
-// redirectToGraphqlTestURL - направляет браузер на тестовую страницу
-func redirectToGraphqlTestURL(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, app.Params.GraphqlTestUrl)
-}

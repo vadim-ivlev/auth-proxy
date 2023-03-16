@@ -38,7 +38,6 @@ services:
       # - smtp_address=auth-mail:1025
       # - from=noreply@rg.ru
       # - admin_url=http://localhost:4400/admin/?url=https://localhost:4400
-      # - graphql_test_url=https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400
 
     # Конфигурационные  файлы приложения и Postgres могут быть быть заданы в аргументах командной строки
     # command: bash -c "cd /app && ./auth -port 4400  -config=shared_dir/myapp.env -pgconfig=shared_dir/mydb.env"

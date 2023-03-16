@@ -41,9 +41,8 @@ type appParams struct {
 	From string `json:"from" env:"from" envDefault:"noreply@rg.ru"`
 	// админка сервиса
 	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://auth-admin.vercel.app/?url=https://localhost:4400"`
-	// тестовая страница сервиса
-	GraphqlTestUrl string `json:"graphql_test_url" env:"graphql_test_url" envDefault:"https://graphql-test.vercel.app/?end_point=https://localhost:4400/schema&tab_name=auth-proxy4400"`
-	MailTmplPath   string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
+
+	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
 }
 
 // var EnvParams AppEnvParams
@@ -65,10 +64,8 @@ func ReadEnvConfig(fileName string) {
 	if Params.Tls {
 		// Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s0, s1, -1)
 		Params.AdminUrl = strings.Replace(Params.AdminUrl, s0, s1, -1)
-		Params.GraphqlTestUrl = strings.Replace(Params.GraphqlTestUrl, s0, s1, -1)
 	} else {
 		// Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s1, s0, -1)
 		Params.AdminUrl = strings.Replace(Params.AdminUrl, s1, s0, -1)
-		Params.GraphqlTestUrl = strings.Replace(Params.GraphqlTestUrl, s1, s0, -1)
 	}
 }
