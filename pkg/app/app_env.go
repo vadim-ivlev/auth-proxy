@@ -40,7 +40,7 @@ type appParams struct {
 	// email от которого посылаются письма пользователям
 	From string `json:"from" env:"from" envDefault:"noreply@rg.ru"`
 	// админка сервиса
-	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://auth-admin.vercel.app/?url=https://localhost:4400"`
+	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://localhost:4400/admin/?url=https://localhost:4400"`
 
 	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
 }
