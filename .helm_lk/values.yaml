@@ -39,9 +39,6 @@ app:
     _default: 5
   reset_time:
     _default: 60
-  confirm_email_url:
-    production: "https://lk.rg.ru/confirm-email/"
-    _default: "https://lk-{{ .Values.werf.env }}.k8s.rg.ru/confirm-email/"
   entry_point:
     production: "https://rg.ru/account/profile?email_success=true"
     _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru/account/profile?email_success=true"

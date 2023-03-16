@@ -39,9 +39,9 @@ app:
     _default: 5
   reset_time:
     _default: 60
-  confirm_email_url:
-    _default: "https://editor-{{ .Values.werf.env }}.k8s.rg.ru/apiauth/confirm-email"
-    production: "https://editor.rg.ru/apiauth/confirm-email"
+  admin_api:
+    _default: "https://editor-{{ .Values.werf.env }}.k8s.rg.ru/apiauth"
+    production: "https://editor.rg.ru/apiauth"
   entry_point:
     _default: "https://editor-{{ .Values.werf.env }}.k8s.rg.ru/auth/login?email_success=true"
     production: "https://editor.rg.ru/auth/login?email_success=true"

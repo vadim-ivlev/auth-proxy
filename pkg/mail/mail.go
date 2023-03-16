@@ -110,7 +110,7 @@ func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Templa
 		},
 		TMPL: tmpl,
 		Data: NewUserData{
-			Link:     app.Params.ConfirmEmailUrl + "?" + urlParams,
+			Link:     app.Params.AdminAPI + "/confirm-email" + "?" + urlParams,
 			UserName: userName,
 		},
 	}

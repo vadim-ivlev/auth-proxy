@@ -31,9 +31,8 @@ type appParams struct {
 	ResetTime int64 `json:"reset_time" env:"reset_time" envDefault:"60"`
 	// Разрешить авторизацию пользователей не подтвердивших email
 	LoginNotConfirmedEmail bool `json:"login_not_confirmed_email" env:"login_not_confirmed_email" envDefault:"true"`
-
-	// url страницы подтверждения email
-	ConfirmEmailUrl string `json:"confirm_email_url" env:"confirm_email_url" envDefault:"https://localhost:4400/confirm-email/" env`
+	// Адрес API
+	AdminAPI string `json:"admin_api" env:"admin_api" envDefault:"https://localhost:4400"`
 	// url куда пренаправляется браузер после подтвержедения email
 	EntryPoint string `json:"entry_point" env:"entry_point" envDefault:"https://rg.ru/account/profile?email_success=true"`
 	// адрес почтового сервера SMTP
@@ -64,11 +63,11 @@ func ReadEnvConfig(fileName string) {
 	s0 := "http://localhost"
 	s1 := "https://localhost"
 	if Params.Tls {
-		Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s0, s1, -1)
+		// Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s0, s1, -1)
 		Params.AdminUrl = strings.Replace(Params.AdminUrl, s0, s1, -1)
 		Params.GraphqlTestUrl = strings.Replace(Params.GraphqlTestUrl, s0, s1, -1)
 	} else {
-		Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s1, s0, -1)
+		// Params.ConfirmEmailUrl = strings.Replace(Params.ConfirmEmailUrl, s1, s0, -1)
 		Params.AdminUrl = strings.Replace(Params.AdminUrl, s1, s0, -1)
 		Params.GraphqlTestUrl = strings.Replace(Params.GraphqlTestUrl, s1, s0, -1)
 	}

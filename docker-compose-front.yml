@@ -34,7 +34,6 @@ services:
       - use_pin=true
       # - max_attempts=5
       # - reset_time=60
-      # - confirm_email_url=https://localhost:4400/confirm-email/
       # - entry_point=https://www.rg.ru
       # - smtp_address=auth-mail:1025
       # - from=noreply@rg.ru
