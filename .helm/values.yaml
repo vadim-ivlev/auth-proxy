@@ -18,10 +18,8 @@ app:
         _default: "16Mi"
         production: "32Mi"
   domain:
-    _default: "editor-{{ .Values.werf.env }}.k8s.rg.ru/apiauth"
-    production: "editor.rg.ru/apiauth"
-    # _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
-    # production: apiauth.rg.ru
+    _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
+    production: apiauth.rg.ru
   proxy_body_size:
     _default: 2048m
   tls:
