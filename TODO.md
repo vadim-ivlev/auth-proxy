@@ -3,9 +3,7 @@
 finish issue 91
 
   - finish and test send_confirm_email()
-
-other
-
+HTTP(err) - HTTPS
 - restore changing passwords by users in auth-admin 
 - add go templates for changing password
 
