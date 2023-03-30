@@ -786,6 +786,7 @@ function getParams() {
             selfreg
             use_captcha
             use_pin
+            login_not_confirmed_email
           }
         }
     `
@@ -802,26 +803,29 @@ function getParams() {
 
 function setParams(event) {
     if (event) event.preventDefault()
-    let selfreg =       document.querySelector("#formParams input[name='selfreg']").checked
-    let use_captcha =   document.querySelector("#formParams input[name='use_captcha']").checked
-    let use_pin =       document.querySelector("#formParams input[name='use_pin']").checked
-    let max_attempts =  document.querySelector("#formParams input[name='max_attempts']").value
-    let reset_time =    document.querySelector("#formParams input[name='reset_time']").value
+    let selfreg =                    document.querySelector("#formParams input[name='selfreg']").checked
+    let use_captcha =                document.querySelector("#formParams input[name='use_captcha']").checked
+    let use_pin =                    document.querySelector("#formParams input[name='use_pin']").checked
+    let login_not_confirmed_email =  document.querySelector("#formParams input[name='login_not_confirmed_email']").checked
+    let max_attempts =               document.querySelector("#formParams input[name='max_attempts']").value
+    let reset_time =                 document.querySelector("#formParams input[name='reset_time']").value
     
     var query =`
     query {
         set_params(
-        selfreg:      ${selfreg},
-        use_captcha:  ${use_captcha},
-        use_pin:      ${use_pin},
-        max_attempts: ${max_attempts},
-        reset_time:   ${reset_time}
+            selfreg:                   ${selfreg},
+            use_captcha:               ${use_captcha},
+            use_pin:                   ${use_pin},
+            login_not_confirmed_email: ${login_not_confirmed_email},
+            max_attempts:              ${max_attempts},
+            reset_time:                ${reset_time}
         ) {
             max_attempts
             reset_time
             selfreg
             use_captcha
             use_pin
+            login_not_confirmed_email
           }
         }
     `

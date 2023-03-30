@@ -84,17 +84,33 @@ func login() *graphql.Field {
 			}
 
 			r, dbUsername := auth.CheckUserPassword2(username, password)
+			// Пользователь не найден
 			if r == auth.NO_USER {
 				return nil, errors.New("email или пароль введен неверно")
-			} else if r == auth.WRONG_PASSWORD {
+			} else
+			// Пользователь найден, но пароль неверный
+			if r == auth.WRONG_PASSWORD {
 				counter.IncrementCounter(username)
 				return nil, errors.New("email или пароль введен неверно")
-			} else if r == auth.USER_DISABLED {
+			} else
+			// Пользователь найден, но неактивирован
+			if r == auth.USER_DISABLED {
 				return nil, errors.New(username + " деактивирован.")
-			} else if r == auth.EMAIL_NOT_CONFIRMED {
+			} else
+			// Пользователь найден, но не подтвержден email
+			if r == auth.EMAIL_NOT_CONFIRMED {
+				// Если включена проверка подтверждения email, то
 				if !app.Params.LoginNotConfirmedEmail {
-					UpdateHashAndSendEmail(username, username)
-					return nil, errors.New("email not confirmed")
+					// получаем имя пользователя по email на случай, если введен email
+					username1 := auth.GetUserNameByEmail(username)
+					// проверяем, является ли пользователь админом
+					isAdmin := auth.AppUserRoleExist("auth", username, "authadmin") || auth.AppUserRoleExist("auth", username1, "authadmin")
+					fmt.Printf("User %s is admin: %v \n", username, isAdmin)
+					// Если пользователь не админ, то возвращаем ошибку и посылаем письмо для подтверждения email
+					if !isAdmin {
+						UpdateHashAndSendEmail(username, username)
+						return nil, errors.New("email not confirmed")
+					}
 				}
 			}
 
@@ -310,6 +326,11 @@ func set_params() *graphql.Field {
 				Description:  "Нужно ли вводить PIN при входе в систему",
 				DefaultValue: false,
 			},
+			"login_not_confirmed_email": &graphql.ArgumentConfig{
+				Type:         graphql.Boolean,
+				Description:  "Разрешить авторизацию пользователей не подтвердивших email",
+				DefaultValue: true,
+			},
 			"max_attempts": &graphql.ArgumentConfig{
 				Type:         graphql.Int,
 				Description:  "Максимально допустимое число ошибок ввода пароля",
@@ -323,12 +344,13 @@ func set_params() *graphql.Field {
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			if !isAuthAdmin(params) {
-				return nil, errors.New("Sorry. You have no admin rights")
+				return nil, errors.New("sorry. you have no admin rights")
 			}
 
 			app.Params.Selfreg = params.Args["selfreg"].(bool)
 			app.Params.UseCaptcha = params.Args["use_captcha"].(bool)
 			app.Params.UsePin = params.Args["use_pin"].(bool)
+			app.Params.LoginNotConfirmedEmail = params.Args["login_not_confirmed_email"].(bool)
 			app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))
 			app.Params.ResetTime = int64(params.Args["reset_time"].(int))
 

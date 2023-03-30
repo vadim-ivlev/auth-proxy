@@ -18,12 +18,13 @@ import (
 // GetParams returns some app parameters
 func GetParams() map[string]interface{} {
 	return map[string]interface{}{
-		"app_name":     Params.AppName,
-		"selfreg":      Params.Selfreg,
-		"use_captcha":  Params.UseCaptcha,
-		"use_pin":      Params.UsePin,
-		"max_attempts": Params.MaxAttempts,
-		"reset_time":   Params.ResetTime,
+		"app_name":                  Params.AppName,
+		"selfreg":                   Params.Selfreg,
+		"use_captcha":               Params.UseCaptcha,
+		"use_pin":                   Params.UsePin,
+		"login_not_confirmed_email": Params.LoginNotConfirmedEmail,
+		"max_attempts":              Params.MaxAttempts,
+		"reset_time":                Params.ResetTime,
 	}
 }
 

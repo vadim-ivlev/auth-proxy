@@ -436,6 +436,10 @@ var appParamsObject = gq.NewObject(gq.ObjectConfig{
 			Type:        gq.Boolean,
 			Description: "Нужно ли вводить PIN при входе в систему",
 		},
+		"login_not_confirmed_email": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "Разрешить авторизацию пользователей не подтвердивших email",
+		},
 		"max_attempts": &gq.Field{
 			Type:        gq.Int,
 			Description: "Максимально допустимое число ошибок ввода пароля",

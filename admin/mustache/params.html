@@ -22,6 +22,11 @@
 
     <form id="formParams" onsubmit="event.preventDefault();">
         <div>
+            <label  style="display:inline">login_not_confirmed_email</label>&nbsp;&nbsp;<br><span>Разрешить авторизацию пользователей не подтвердивших email</span>
+            <br><input name="login_not_confirmed_email" type="checkbox"  {{#params.login_not_confirmed_email}}checked{{/params.login_not_confirmed_email}}>
+        </div>
+
+        <div>
             <label  style="display:inline">selfreg</label>&nbsp;&nbsp;<span>Саморегистрация разрешена</span>
             <br><input name="selfreg" type="checkbox"  {{#params.selfreg}}checked{{/params.selfreg}}>
         </div>
