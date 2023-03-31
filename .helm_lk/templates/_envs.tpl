@@ -31,8 +31,8 @@
   value: {{ pluck .Values.werf.env .Values.app.max_attempts | first | default .Values.app.max_attempts._default | squote }}
 - name: reset_time
   value: {{ pluck .Values.werf.env .Values.app.reset_time | first | default .Values.app.reset_time._default | squote }}
-- name: confirm_email_url
-  value: {{ tpl (pluck .Values.werf.env .Values.app.confirm_email_url | first | default .Values.app.confirm_email_url._default) . | squote }}
+- name: login_not_confirmed_email
+  value: {{ tpl (pluck .Values.werf.env .Values.app.login_not_confirmed_email | first | default .Values.app.login_not_confirmed_email._default) . | squote }}
 - name: entry_point
   value: {{ tpl (pluck .Values.werf.env .Values.app.entry_point | first | default .Values.app.entry_point._default) . | squote }}
 - name: smtp_address
