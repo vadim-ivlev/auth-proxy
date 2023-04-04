@@ -36,7 +36,7 @@
             value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
         </div>
         <div>
-            <input name="emailconfirmed" type="checkbox" disabled title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
+            <input name="emailconfirmed" type="checkbox" {{^isAdmin}}disabled{{/isAdmin}} title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
             <span>Email подтвержден</span>
         </div>
 

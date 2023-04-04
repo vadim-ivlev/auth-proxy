@@ -953,6 +953,7 @@ function updateUser(event) {
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
+    let emailconfirmed =   document.querySelector("#formUser input[name='emailconfirmed']").checked
     
     var query =`
     mutation {
@@ -962,7 +963,8 @@ function updateUser(event) {
         fullname: "${fullname}",
         description: "${description}",
         disabled: ${disabled},
-        pinrequired: ${pinrequired}
+        pinrequired: ${pinrequired},
+        emailconfirmed: ${emailconfirmed},
         ) {
             description
             email
@@ -1001,6 +1003,7 @@ function createUser(event) {
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
+    let emailconfirmed =   document.querySelector("#formUser input[name='emailconfirmed']").checked
     
     var query =`
     mutation {
@@ -1011,6 +1014,7 @@ function createUser(event) {
         description: "${description}",
         disabled: ${disabled},        
         pinrequired: ${pinrequired},
+        emailconfirmed: ${emailconfirmed},
         ) {
             description
             email

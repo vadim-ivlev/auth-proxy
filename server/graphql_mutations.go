@@ -46,15 +46,21 @@ func create_user() *graphql.Field {
 				Description:  "Не посылать пользователю письмо о регистрации.",
 				DefaultValue: false,
 			},
+			"emailconfirmed": &graphql.ArgumentConfig{
+				Type:         graphql.Boolean,
+				Description:  "подтвержеден ли email пользователя",
+				DefaultValue: false,
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			if SelfRegistrationAllowed || isAuthAdmin(params) {
 				panicIfEmpty(params.Args["password"], "Введите пароль")
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
 				panicIfEmpty(params.Args["fullname"], "Заполните имя")
-				// Только админ может включить/отключить проверку пина
+				// Только админ может включить/отключить проверку пина и установить emailconfirmed
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
+					delete(params.Args, "emailconfirmed")
 				}
 				noemail, _ := params.Args["noemail"].(bool)
 				delete(params.Args, "noemail")
@@ -206,12 +212,18 @@ func update_user() *graphql.Field {
 				Type:        graphql.Boolean,
 				Description: "требуется ли PIN Google Authenticator",
 			},
+			"emailconfirmed": &graphql.ArgumentConfig{
+				Type:         graphql.Boolean,
+				Description:  "подтвержеден ли email пользователя",
+				DefaultValue: false,
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotOwnerOrAdmin(params)
-			// Только админ может включить/отключить проверку пина
+			// Только админ может включить/отключить проверку пина и установить emailconfirmed
 			if !isAuthAdmin(params) {
 				delete(params.Args, "pinrequired")
+				delete(params.Args, "emailconfirmed")
 			}
 			convertPasswordToHash(params)
 			clearCache()
