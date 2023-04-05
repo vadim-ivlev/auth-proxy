@@ -35,10 +35,6 @@
             oninput="document.getElementById('newUserEmail').innerText = event.target.value; "
             value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
         </div>
-        <div>
-            <input name="emailconfirmed" type="checkbox" {{^isAdmin}}disabled{{/isAdmin}} title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
-            <span>Email подтвержден</span>
-        </div>
 
         <div>
             <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
@@ -62,7 +58,27 @@
             <label>description </label>
             <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
         </div>
+
+
+
+
+
+        <div class="button button-clear" style="border-bottom: 1px solid #E10098; width: 100%;" >Флаги</div>
+        <br>
         
+        <div class="{{^isAdmin}}hidden{{/isAdmin}} {{#user}}hidden{{/user}}">
+            <label>noemail</label>
+            <input name="noemail" type="checkbox" {{^isAdmin}}disabled{{/isAdmin}} title="Не посылать пользователю Email с требованием подтверждения"  >
+            <span>Не посылать пользователю Email с требованием подтверждения</span>
+        </div>
+
+        <div>
+            <label>emailconfirmed</label>
+            <input name="emailconfirmed" type="checkbox" {{^isAdmin}}disabled{{/isAdmin}} title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
+            <span>Email подтвержден</span>
+        </div>
+        
+
         <div class="{{^isAdmin}}hidden{{/isAdmin}}">
             <label>disabled</label>
             <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">

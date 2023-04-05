@@ -69,9 +69,6 @@ func create_user() *graphql.Field {
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
 				convertPasswordToHash(params)
-				if noemail {
-					params.Args["emailconfirmed"] = true
-				}
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
 				if err == nil {

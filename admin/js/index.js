@@ -1004,6 +1004,7 @@ function createUser(event) {
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
     let emailconfirmed =   document.querySelector("#formUser input[name='emailconfirmed']").checked
+    let noemail =   document.querySelector("#formUser input[name='noemail']").checked
     
     var query =`
     mutation {
@@ -1015,6 +1016,7 @@ function createUser(event) {
         disabled: ${disabled},        
         pinrequired: ${pinrequired},
         emailconfirmed: ${emailconfirmed},
+        noemail: ${noemail},
         ) {
             description
             email
