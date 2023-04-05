@@ -47,9 +47,8 @@ func create_user() *graphql.Field {
 				DefaultValue: false,
 			},
 			"emailconfirmed": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "подтвержеден ли email пользователя",
-				DefaultValue: false,
+				Type:        graphql.Boolean,
+				Description: "подтвержеден ли email пользователя",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
@@ -210,9 +209,8 @@ func update_user() *graphql.Field {
 				Description: "требуется ли PIN Google Authenticator",
 			},
 			"emailconfirmed": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "подтвержеден ли email пользователя",
-				DefaultValue: false,
+				Type:        graphql.Boolean,
+				Description: "подтвержеден ли email пользователя",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
