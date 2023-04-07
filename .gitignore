@@ -21,7 +21,7 @@ deploy/etc
 deploy/certificates
 .env
 
-secret
+secret*
 requests*
 
 
