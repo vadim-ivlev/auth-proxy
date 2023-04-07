@@ -6,19 +6,25 @@
         <div id="divMinute" class="gauge"></div>
         <div id="divSecond" class="gauge"></div>
         <div>
-            <span>Total system memory: </span>
+            <span>Total system: </span>
             <span id="divSys"  class=""></span>
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span id="divAlloc" class=""></span>
             &nbsp;&nbsp;
-            <span id="divTotalAlloc" class="hidden"></span>
+            <span id="divTotalAlloc" class="hidden1"></span>
             <br>
+        </div>
+        <div>
+            <label>refresh interval ms</label>
+            <input type="range" id="slider" value="3000" min="100" max="3000" step="100" style="width:200px;" onchange="setRefreshInterval(event)">
+            <br>
+            <span id="sliderValue">3000</span>
         </div>
 </div>
 
 
 <div class="flexed max-width-600">        
-    <h2 style="text-align: center;">Настройки авторизации</h2>
+    <h2 style="text-align: center;">Настройки авторизации000</h2>
 
     <form id="formParams" onsubmit="event.preventDefault();">
         <div>

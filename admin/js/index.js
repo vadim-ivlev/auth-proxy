@@ -263,6 +263,8 @@ var model = {
         drawGauge("req / hour", v.requests_per_hour, 0, "divHour")       // 1000
         drawGauge("req / min", v.requests_per_minute, 0, "divMinute")     // 100
         drawGauge("req / sec", v.requests_per_second, 0, "divSecond")      // 10
+
+        redrawMemoryChart()
     },
     get appstat() {
         return this._appstat
@@ -890,14 +892,40 @@ model.statInterval = null
 function startGettingAppstat(){
     clearInterval(model.statInterval)
     getAppstatRest()
-    model.statInterval = setInterval(getAppstatRest, 3000)
+    model.statInterval = setInterval(getAppstatRest, getRefreshInterval())
     console.log('startGettingAppstat')
 }
 
 function stopGettingAppstat(){
     clearInterval(model.statInterval)
-    // console.log('stopGettingAppstat')
+    console.log('stopGettingAppstat')
 }
+
+function setRefreshInterval(event) {
+    if (event) event.preventDefault()
+    el = document.querySelector("#sliderValue")
+    el.innerText = getRefreshInterval()   
+    stopGettingAppstat()
+    startGettingAppstat()
+    return false       
+}
+
+function getRefreshInterval() {
+    return document.querySelector("#slider")?.value || 3000
+}
+
+function initMemoryChart() {
+
+}
+
+function initMemoryDataTable() {
+    
+}
+
+function redrawMemoryChart() {
+     
+}
+
 
 // U S E R S  ***********************************************************************************************************************
 
