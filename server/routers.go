@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/gin-gonic/gin"
 )
@@ -85,7 +86,7 @@ func setup(build string) *gin.Engine {
 	// r.GET("/graphql_test", redirectToGraphqlTestURL) // - удален 10.03.23 по соображениям безопасности
 
 	r.GET("/captcha", Captcha)
-	// r.GET("/metrics", gin.WrapH(promhttp.Handler())) // - удален 10.03.23 по соображениям безопасности
+	r.GET("/metrics", gin.WrapH(promhttp.Handler())) // - удален 10.03.23 по соображениям безопасности
 
 	r.OPTIONS("/graphql", optionHandler)
 	r.OPTIONS("/schema", optionHandler)
