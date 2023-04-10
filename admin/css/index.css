@@ -456,19 +456,22 @@ input.role-input {
 
 #appUrl {
     opacity: 0.7;
-    font-size:10px;
+    font-weight: bold;
+    font-size:11px;
 }
 
 
 #appVersion {
     /* opacity: 0.7; */
-    font-size:10px;
+    font-size:11px;
+    font-weight: bold;
     color:#E10098 !important;
 }
 
 #appName {
     /* opacity: 0.7; */
-    font-size:10px;
+    font-weight: bold;
+    font-size:11px;
     color:#E10098 !important;
 }
 
