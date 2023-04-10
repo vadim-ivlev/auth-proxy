@@ -341,7 +341,7 @@ sequenceDiagram
 - -port default=4400, Запустить приложение на порту 4400
 - -config - Конфигурационный файл приложения (default configs/app.env).
 - -pgconfig - Конфигурационный файл Postgres (default configs/db.env).
-- -no-introspection default=false, Подавлять интроспекцию GraphQL объектов.
+
 
 
 ## Конфигурационный файл  app.env

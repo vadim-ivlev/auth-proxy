@@ -68,13 +68,7 @@ var schema graphql.Schema
 
 func SchemaInit(noIntrospection bool) {
 	if noIntrospection {
-		fmt.Println("!!!!!!!!!!!!!!! SUPPRESSING GraphQL INTROSPECTION !!!!!!!!!!!!!!!!!!")
-		graphql.SchemaMetaFieldDef.Resolve = func(p graphql.ResolveParams) (interface{}, error) {
-			return nil, nil
-		}
-		graphql.TypeMetaFieldDef.Resolve = func(p graphql.ResolveParams) (interface{}, error) {
-			return nil, nil
-		}
+		disableSchemaIntrospection()
 	}
 	var err error
 	schema, err = graphql.NewSchema(graphql.SchemaConfig{
@@ -85,6 +79,39 @@ func SchemaInit(noIntrospection bool) {
 	if err != nil {
 		log.Println("SchemaInit ERROR:", err)
 	}
+}
+
+// schema introspection resolvers
+var schemaMetaResolve graphql.FieldResolveFn
+var typeMetaResolve graphql.FieldResolveFn
+
+// disable schema introspection
+func disableSchemaIntrospection() {
+	fmt.Println("!!!!!!!!!!!!!!! DISABLING GraphQL SCHEMA INTROSPECTION !!!!!!!!!!!!!!!!!!")
+
+	// save original schema introspection resolvers
+	schemaMetaResolve = graphql.SchemaMetaFieldDef.Resolve
+	typeMetaResolve = graphql.TypeMetaFieldDef.Resolve
+
+	graphql.SchemaMetaFieldDef.Resolve = func(p graphql.ResolveParams) (interface{}, error) {
+		return nil, nil
+	}
+	graphql.TypeMetaFieldDef.Resolve = func(p graphql.ResolveParams) (interface{}, error) {
+		return nil, nil
+	}
+}
+
+// enable schema introspection
+func enableSchemaIntrospection() {
+	fmt.Println("!!!!!!!!!!!!!!! ENABLING GraphQL SCHEMA INTROSPECTION !!!!!!!!!!!!!!!!!!")
+	// restore original schema introspection resolvers
+	if schemaMetaResolve != nil {
+		graphql.SchemaMetaFieldDef.Resolve = schemaMetaResolve
+	}
+	if typeMetaResolve != nil {
+		graphql.TypeMetaFieldDef.Resolve = typeMetaResolve
+	}
+
 }
 
 // graphqlResult HTTP handler. исполняет graphql запрос

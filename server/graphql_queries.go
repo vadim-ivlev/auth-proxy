@@ -367,6 +367,11 @@ func set_params() *graphql.Field {
 			}
 			if _, ok := params.Args["no_schema"]; ok {
 				app.Params.NoSchema = params.Args["no_schema"].(bool)
+				if app.Params.NoSchema {
+					disableSchemaIntrospection()
+				} else {
+					enableSchemaIntrospection()
+				}
 			}
 			if _, ok := params.Args["max_attempts"]; ok {
 				app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))

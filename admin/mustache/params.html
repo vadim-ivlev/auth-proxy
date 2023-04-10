@@ -24,12 +24,24 @@
 
 
 <div class="flexed max-width-600">        
-    <h2 style="text-align: center;">Настройки авторизации000</h2>
-
+    <h2 style="text-align: center;">Настройки</h2>
+    <div style="border-bottom: 1px solid silver; ">
+        Определены в переменных окружения компьютера где запущена auth-proxy. <br>
+        Во время разработки определены в файле configs/app.env, <br>
+        При деплое определены в .helm_lk/templates/_envs.tpl, .helm_lk/values.yaml 
+        <br>
+        <br>
+    </div>
+    <br>
     <form id="formParams" onsubmit="event.preventDefault();">
         <div>
             <label  style="display:inline">login_not_confirmed_email</label>&nbsp;&nbsp;<br><span>Разрешить авторизацию пользователей не подтвердивших email</span>
             <br><input name="login_not_confirmed_email" type="checkbox"  {{#params.login_not_confirmed_email}}checked{{/params.login_not_confirmed_email}}>
+        </div>
+
+        <div>
+            <label  style="display:inline">no_schema</label>&nbsp;&nbsp;<br><span>подавлять чтение схемы GraphQL</span>
+            <br><input name="no_schema" type="checkbox"  {{#params.no_schema}}checked{{/params.no_schema}}>
         </div>
 
         <div>

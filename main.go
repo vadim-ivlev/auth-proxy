@@ -22,11 +22,11 @@ var Build = "env variables"
 func main() {
 	fmt.Println("Build number:\t", Build)
 	// считать параметры командной строки
-	servePort, config, pgconfig, noIntrospection := readCommandLineParams()
-	// Скрываем описания GraphQL если нужно
-	server.SchemaInit(noIntrospection)
+	servePort, config, pgconfig := readCommandLineParams()
 	// Считать конфиги и установить параметры
 	readConfigsAndSetParams(config, pgconfig)
+	// Скрываем показ схемы GraphQL если нужно
+	server.SchemaInit(app.Params.NoSchema)
 	// ждем готовности базы данных
 	db.WaitForDbConnection()
 	// порождаем базу данных если ее нет
@@ -69,11 +69,10 @@ func readConfigsAndSetParams( /*env,*/ config, pgconfig string) {
 }
 
 // readCommandLineParams читает параметры командной строки
-func readCommandLineParams() (serverPort, config, pgconfig string, noIntrospection bool) {
+func readCommandLineParams() (serverPort, config, pgconfig string) {
 	flag.StringVar(&serverPort, "port", "4400", "Запустить приложение на указанном порту.")
 	flag.StringVar(&config, "config", "./configs/app.env", "Конфигурационный файл приложения.")
 	flag.StringVar(&pgconfig, "pgconfig", "./configs/db.env", "Конфигурационный файл Postgres.")
-	flag.BoolVar(&noIntrospection, "no-introspection", false, "Подавлять интроспекцию GraphQL объектов.")
 
 	flag.Parse()
 	flag.Usage()

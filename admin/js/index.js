@@ -789,6 +789,7 @@ function getParams() {
             use_captcha
             use_pin
             login_not_confirmed_email
+            no_schema
           }
         }
     `
@@ -809,6 +810,7 @@ function setParams(event) {
     let use_captcha =                document.querySelector("#formParams input[name='use_captcha']").checked
     let use_pin =                    document.querySelector("#formParams input[name='use_pin']").checked
     let login_not_confirmed_email =  document.querySelector("#formParams input[name='login_not_confirmed_email']").checked
+    let no_schema =                  document.querySelector("#formParams input[name='no_schema']").checked
     let max_attempts =               document.querySelector("#formParams input[name='max_attempts']").value
     let reset_time =                 document.querySelector("#formParams input[name='reset_time']").value
     
@@ -819,6 +821,7 @@ function setParams(event) {
             use_captcha:               ${use_captcha},
             use_pin:                   ${use_pin},
             login_not_confirmed_email: ${login_not_confirmed_email},
+            no_schema:                 ${no_schema},
             max_attempts:              ${max_attempts},
             reset_time:                ${reset_time}
         ) {
@@ -828,6 +831,7 @@ function setParams(event) {
             use_captcha
             use_pin
             login_not_confirmed_email
+            no_schema
           }
         }
     `
