@@ -25,6 +25,7 @@ func GetParams() map[string]interface{} {
 		"login_not_confirmed_email": Params.LoginNotConfirmedEmail,
 		"max_attempts":              Params.MaxAttempts,
 		"reset_time":                Params.ResetTime,
+		"no_schema":                 Params.NoSchema,
 	}
 }
 

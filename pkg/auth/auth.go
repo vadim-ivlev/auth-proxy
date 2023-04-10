@@ -215,7 +215,6 @@ func GetUserInfoString(user, app string) string {
 		jsonBytes, _ := json.Marshal(record)
 		userInfoString = string(jsonBytes)
 
-		// FIXME: move it up
 		// возвращаем информацию о пользователе
 		rolesString := GetUserRolesString(user, app)
 		userInfoString = addRolesToUserInfoString(userInfoString, rolesString)

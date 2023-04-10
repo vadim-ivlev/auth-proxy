@@ -440,6 +440,10 @@ var appParamsObject = gq.NewObject(gq.ObjectConfig{
 			Type:        gq.Boolean,
 			Description: "Разрешить авторизацию пользователей не подтвердивших email",
 		},
+		"no_schema": &gq.Field{
+			Type:        gq.Boolean,
+			Description: "подавлять чтение схемы GraphQL",
+		},
 		"max_attempts": &gq.Field{
 			Type:        gq.Int,
 			Description: "Максимально допустимое число ошибок ввода пароля",

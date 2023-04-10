@@ -312,34 +312,39 @@ func set_params() *graphql.Field {
 		Args: graphql.FieldConfigArgument{
 
 			"selfreg": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "Могут ли пользователи регистрироваться самостоятельно",
-				DefaultValue: false,
+				Type:        graphql.Boolean,
+				Description: "Могут ли пользователи регистрироваться самостоятельно",
+				// DefaultValue: false,
 			},
 			"use_captcha": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "Нужно ли вводить капчу при входе в систему",
-				DefaultValue: true,
+				Type:        graphql.Boolean,
+				Description: "Нужно ли вводить капчу при входе в систему",
+				// DefaultValue: true,
 			},
 			"use_pin": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "Нужно ли вводить PIN при входе в систему",
-				DefaultValue: false,
+				Type:        graphql.Boolean,
+				Description: "Нужно ли вводить PIN при входе в систему",
+				// DefaultValue: false,
 			},
 			"login_not_confirmed_email": &graphql.ArgumentConfig{
-				Type:         graphql.Boolean,
-				Description:  "Разрешить авторизацию пользователей не подтвердивших email",
-				DefaultValue: true,
+				Type:        graphql.Boolean,
+				Description: "Разрешить авторизацию пользователей не подтвердивших email",
+				// DefaultValue: true,
+			},
+			"no_schema": &graphql.ArgumentConfig{
+				Type:        graphql.Boolean,
+				Description: "подавлять чтение схемы GraphQL",
+				// DefaultValue: false,
 			},
 			"max_attempts": &graphql.ArgumentConfig{
-				Type:         graphql.Int,
-				Description:  "Максимально допустимое число ошибок ввода пароля",
-				DefaultValue: 5,
+				Type:        graphql.Int,
+				Description: "Максимально допустимое число ошибок ввода пароля",
+				// DefaultValue: 5,
 			},
 			"reset_time": &graphql.ArgumentConfig{
-				Type:         graphql.Int,
-				Description:  "Время сброса счетчика ошибок пароля в минутах",
-				DefaultValue: 60,
+				Type:        graphql.Int,
+				Description: "Время сброса счетчика ошибок пароля в минутах",
+				// DefaultValue: 60,
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
@@ -347,15 +352,33 @@ func set_params() *graphql.Field {
 				return nil, errors.New("sorry. you have no admin rights")
 			}
 
-			app.Params.Selfreg = params.Args["selfreg"].(bool)
-			app.Params.UseCaptcha = params.Args["use_captcha"].(bool)
-			app.Params.UsePin = params.Args["use_pin"].(bool)
-			app.Params.LoginNotConfirmedEmail = params.Args["login_not_confirmed_email"].(bool)
-			app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))
-			app.Params.ResetTime = int64(params.Args["reset_time"].(int))
+			// перед установкой параметров проверяем, что они переданы
+			if _, ok := params.Args["selfreg"]; ok {
+				app.Params.Selfreg = params.Args["selfreg"].(bool)
+			}
+			if _, ok := params.Args["use_captcha"]; ok {
+				app.Params.UseCaptcha = params.Args["use_captcha"].(bool)
+			}
+			if _, ok := params.Args["use_pin"]; ok {
+				app.Params.UsePin = params.Args["use_pin"].(bool)
+			}
+			if _, ok := params.Args["login_not_confirmed_email"]; ok {
+				app.Params.LoginNotConfirmedEmail = params.Args["login_not_confirmed_email"].(bool)
+			}
+			if _, ok := params.Args["no_schema"]; ok {
+				app.Params.NoSchema = params.Args["no_schema"].(bool)
+			}
+			if _, ok := params.Args["max_attempts"]; ok {
+				app.Params.MaxAttempts = int64(params.Args["max_attempts"].(int))
+			}
+			if _, ok := params.Args["reset_time"]; ok {
+				app.Params.ResetTime = int64(params.Args["reset_time"].(int))
+			}
 
+			// TODO: удалить эти глобальные переменные
 			SelfRegistrationAllowed = app.Params.Selfreg
 			UseCaptcha = app.Params.UseCaptcha
+
 			counter.MAX_ATTEMPTS = app.Params.MaxAttempts
 			counter.RESET_TIME = time.Duration(app.Params.ResetTime)
 

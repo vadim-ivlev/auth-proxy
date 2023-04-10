@@ -43,6 +43,8 @@ type appParams struct {
 	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://localhost:4400/admin/?url=https://localhost:4400"`
 
 	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
+	// подавлять чтение схемы GraphQL
+	NoSchema bool `json:"no_schema" env:"no_schema" envDefault:"false"`
 }
 
 // var EnvParams AppEnvParams
