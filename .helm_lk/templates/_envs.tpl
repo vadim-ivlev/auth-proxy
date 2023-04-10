@@ -27,6 +27,10 @@
   value: {{ pluck .Values.werf.env .Values.app.use_captcha | first | default .Values.app.use_captcha._default | squote }}
 - name: use_pin
   value: {{ pluck .Values.werf.env .Values.app.use_pin | first | default .Values.app.use_pin._default | squote }}
+- name: login_not_confirmed_email
+  value: {{ pluck .Values.werf.env .Values.app.login_not_confirmed_email | first | default .Values.app.login_not_confirmed_email._default | squote }}
+- name: no_schema
+  value: {{ pluck .Values.werf.env .Values.app.no_schema | first | default .Values.app.no_schema._default | squote }}
 - name: max_attempts
   value: {{ pluck .Values.werf.env .Values.app.max_attempts | first | default .Values.app.max_attempts._default | squote }}
 - name: reset_time

@@ -29,6 +29,12 @@ app:
   selfreg:
     production: true
     _default: true
+  login_not_confirmed_email:
+    production: true
+    _default: true
+  no_schema:
+    production: true
+    _default: false
   use_captcha:
     production: true
     _default: false
