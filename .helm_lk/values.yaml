@@ -30,8 +30,7 @@ app:
     production: true
     _default: true
   login_not_confirmed_email:
-    production: true
-    _default: true
+    _default: false
   no_schema:
     production: true
     _default: false
