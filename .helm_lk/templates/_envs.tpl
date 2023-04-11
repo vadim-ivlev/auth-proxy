@@ -35,6 +35,8 @@
   value: {{ pluck .Values.werf.env .Values.app.max_attempts | first | default .Values.app.max_attempts._default | squote }}
 - name: reset_time
   value: {{ pluck .Values.werf.env .Values.app.reset_time | first | default .Values.app.reset_time._default | squote }}
+- name: admin_api
+  value: {{ tpl (pluck .Values.werf.env .Values.app.admin_api | first | default .Values.app.admin_api._default) . | squote }}
 - name: entry_point
   value: {{ tpl (pluck .Values.werf.env .Values.app.entry_point | first | default .Values.app.entry_point._default) . | squote }}
 - name: smtp_address
