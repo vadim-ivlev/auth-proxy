@@ -33,6 +33,13 @@ type NewUserData struct {
 	Link     string
 }
 
+type ResetPassData struct {
+	SiteHost string
+	AdminAPI string
+	UserName string
+	Hash     string
+}
+
 // var Params connectionParams
 var mailTemplates map[string]string
 
@@ -126,14 +133,14 @@ func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Templa
 	return sendMail(app.Params.From, toEmail, msg)
 }
 
-func SendResetPasswordEmail(toEmail, pageAddress string) error {
+func SendResetPasswordEmail(toEmail, username, hash string) error {
 	if tmpl, ok := mailHtmlTemplates["reset_password"]; ok {
-		return sendResetPasswordEmail(toEmail, pageAddress, tmpl)
+		return sendResetPasswordEmail(toEmail, username, hash, tmpl)
 	}
 	return errors.New("tmpl for reset password not found")
 }
 
-func sendResetPasswordEmail(toEmail, pageAddress string, tmpl *template.Template) error {
+func sendResetPasswordEmail(toEmail, username, hash string, tmpl *template.Template) error {
 	// msg := fmt.Sprintf(mailTemplates["reset_password"], app.Params.From, toEmail, pageAddress)
 
 	// entryPoint := fmt.Sprintf("%s&email=%s", app.Params.EntryPoint, toEmail)
@@ -146,9 +153,11 @@ func sendResetPasswordEmail(toEmail, pageAddress string, tmpl *template.Template
 			To:      toEmail,
 		},
 		TMPL: tmpl,
-		Data: NewUserData{
-			Link: pageAddress,
-			// UserName: userName,
+		Data: ResetPassData{
+			UserName: url.QueryEscape(username),
+			Hash:     hash,
+			SiteHost: app.Params.SiteHost, // используется в ЛК
+			AdminAPI: app.Params.AdminAPI, // используется в адмике
 		},
 	}
 	msg, err := mailData.ComposeTmpl()

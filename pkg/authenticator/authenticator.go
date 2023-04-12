@@ -145,8 +145,6 @@ func ConfirmEmail(c *gin.Context) {
 // и посылает ему письмо по email с адресом страницы установки пароля.
 func ResetPassword(c *gin.Context) {
 	username := c.Query("username")
-	// adminurl := c.Query("adminurl")
-	// authurl := c.Query("authurl")
 
 	if username == "" {
 		c.JSON(200, gin.H{"result": false, "error": "username is required"})
@@ -154,7 +152,8 @@ func ResetPassword(c *gin.Context) {
 	}
 	// - устанавливаем поле pashash в для пользователя базе
 	hash := uuid.New().String()
-	log.Println("pashash=", hash)
+
+	log.Printf("User %s set reset password", username)
 
 	_, err := db.QueryExec(`UPDATE "user" SET  pashash  = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
 	if err != nil {
@@ -162,7 +161,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 	// - генерируем ссылку на страничку
-	link := fmt.Sprintf(`%v/set-password.html#username=%v&hash=%v&authurl=%v`, app.Params.AdminAPI+"/admin", url.QueryEscape(username), hash, app.Params.AdminAPI)
+	// link := fmt.Sprintf(`%v/admin/set-password.html#username=%v&hash=%v&authurl=%v`, app.Params.AdminAPI, url.QueryEscape(username), hash, app.Params.AdminAPI)
 	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
@@ -171,7 +170,7 @@ func ResetPassword(c *gin.Context) {
 	}
 	email, _ := user["email"].(string)
 	// посылаем письмо пользователю
-	err = mail.SendResetPasswordEmail(email, link)
+	err = mail.SendResetPasswordEmail(email, username, hash)
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return

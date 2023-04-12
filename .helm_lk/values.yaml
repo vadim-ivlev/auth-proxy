@@ -13,15 +13,18 @@ app:
     memory:
       requests:
         _default: "16Mi"
-        production: "32Mi"
+        production: "128Mi"
       limits:
         _default: "16Mi"
-        production: "32Mi"
+        production: "128Mi"
   domain:
     _default: "lk-{{ .Values.werf.env }}.k8s.rg.ru"
     production: lk.rg.ru
+  site_host:
+    _default: "https://rg.ru"
+    production: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru"
   proxy_body_size:
-    _default: 2048m
+    _default: 128m
   tls:
     _default: false
   secure:

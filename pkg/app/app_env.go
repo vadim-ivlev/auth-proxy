@@ -41,6 +41,8 @@ type appParams struct {
 	From string `json:"from" env:"from" envDefault:"noreply@rg.ru"`
 	// админка сервиса
 	AdminUrl string `json:"admin_url" env:"admin_url" envDefault:"https://localhost:4400/admin/?url=https://localhost:4400"`
+	// host сайта
+	SiteHost string `json:"site_host" env:"site_host"`
 
 	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
 	// подавлять чтение схемы GraphQL
