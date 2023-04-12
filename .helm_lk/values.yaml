@@ -21,8 +21,8 @@ app:
     _default: "lk-{{ .Values.werf.env }}.k8s.rg.ru"
     production: lk.rg.ru
   site_host:
-    _default: "https://rg.ru"
-    production: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru"
+    _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru"
+    production: "https://rg.ru"
   proxy_body_size:
     _default: 128m
   tls:
