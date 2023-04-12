@@ -33,20 +33,3 @@ data:
         RG.RU
 
         Вопросы: dev@rg.ru
-
-
-    reset_password: |
-        From: %s
-        To: %s
-        Subject: Reset password for RG.RU Editor
-
-        Если не вы инициировали это письмо, игнорируйте его.
-
-        Для установки пароля перейдите по ссылке ниже
-
-        %s
-        
-        С уважением,
-        RG.RU
-
-        Вопросы: dev@rg.ru

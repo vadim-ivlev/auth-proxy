@@ -53,6 +53,7 @@ func ReadMailTemplate(fileName string) {
 	}
 	// переопределяем получение шаблонов писем из файлов
 	mailHtmlTemplates["new_user"] = getMailTmpl(app.Params.MailTmplPath + "/new_user.html")
+	mailHtmlTemplates["reset_password"] = getMailTmpl(app.Params.MailTmplPath + "/reset_password.html")
 }
 
 func (m *MailData) ComposeTmpl() (string, error) {
@@ -126,7 +127,39 @@ func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Templa
 }
 
 func SendResetPasswordEmail(toEmail, pageAddress string) error {
-	msg := fmt.Sprintf(mailTemplates["reset_password"], app.Params.From, toEmail, pageAddress)
+	if tmpl, ok := mailHtmlTemplates["reset_password"]; ok {
+		return sendResetPasswordEmail(toEmail, pageAddress, tmpl)
+	}
+	return errors.New("tmpl for reset password not found")
+}
+
+func sendResetPasswordEmail(toEmail, pageAddress string, tmpl *template.Template) error {
+	// msg := fmt.Sprintf(mailTemplates["reset_password"], app.Params.From, toEmail, pageAddress)
+
+	// entryPoint := fmt.Sprintf("%s&email=%s", app.Params.EntryPoint, toEmail)
+	// urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, url.QueryEscape(toEmail), entryPoint)
+
+	mailData := MailData{
+		Header: Header{
+			Subject: convertSubject("Восстановление пароля на портале \"Российской газеты\""),
+			From:    app.Params.From,
+			To:      toEmail,
+		},
+		TMPL: tmpl,
+		Data: NewUserData{
+			Link: pageAddress,
+			// UserName: userName,
+		},
+	}
+	msg, err := mailData.ComposeTmpl()
+	if err != nil {
+		return err
+	}
+
+	if msg == "" {
+		return errors.New("reset password: failed to send mail, message is empty")
+	}
+
 	return sendMail(app.Params.From, toEmail, msg)
 }
 
