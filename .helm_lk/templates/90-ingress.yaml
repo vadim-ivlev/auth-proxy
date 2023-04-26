@@ -9,7 +9,7 @@ metadata:
       gzip off;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ pluck .Values.werf.env .Values.ingressClass | first| default .Values.ingressClass._default }}
   rules:
   - host: {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
     http:
@@ -28,37 +28,4 @@ spec:
     secretName: k8s-tls
 {{- else }}
     secretName: rg-tls
-{{- end }}
-{{- if eq .Values.werf.env "production" }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ .Chart.Name }}-qurator
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: {{ pluck .Values.werf.env .Values.app.proxy_body_size | first | default .Values.app.proxy_body_size._default }}
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      gzip off;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-spec:
-  ingressClassName: nginx-qurator
-  rules:
-  - host: {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Chart.Name }}
-            port:
-              name: http
-  tls:
-  - hosts:
-      - {{ tpl (pluck .Values.werf.env .Values.app.domain | first | default .Values.app.domain._default) . }}
-{{- if ne .Values.werf.env "production" }}
-    secretName: k8s-tls
-{{- else }}
-    secretName: rg-tls
-{{- end }}
 {{- end }}
