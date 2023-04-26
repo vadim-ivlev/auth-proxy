@@ -107,3 +107,7 @@ nodeaffinity:
     - matchExpressions:
       - key: node-role.kubernetes.io/production
         operator: Exists
+
+ingressClass:
+  _default: nginx
+  production: nginx-qurator
