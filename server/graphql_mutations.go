@@ -52,6 +52,9 @@ func create_user() *graphql.Field {
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			// пишем в лог запросы на создание пользователя
+			logCreateUser(params)
+
 			if SelfRegistrationAllowed || isAuthAdmin(params) {
 				panicIfEmpty(params.Args["password"], "Введите пароль")
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
@@ -62,6 +65,8 @@ func create_user() *graphql.Field {
 					delete(params.Args, "pinrequired")
 					delete(params.Args, "emailconfirmed")
 				}
+
+				// проверяем нужно ли отправлять письмо о регистрации пользователю
 				noemail, _ := params.Args["noemail"].(bool)
 				delete(params.Args, "noemail")
 
