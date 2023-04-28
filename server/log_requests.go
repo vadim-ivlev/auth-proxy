@@ -3,6 +3,7 @@ package server
 
 import (
 	"auth-proxy/pkg/app"
+	"auth-proxy/pkg/db"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -20,11 +21,20 @@ func logCreateUser(params graphql.ResolveParams) {
 
 	fullPath := c.FullPath()
 	headers := app.Serialize(c.Request.Header)
-	// request := app.Serialize(c.Request)
+	ip := c.ClientIP()
+	userAgent := c.Request.UserAgent()
+	referer := c.Request.Referer()
 
 	log.Printf("email=%s, password=%s fullname=%s description=%s \n", email, password, fullname, description)
-	log.Printf("ip=%s, user_agent=%s\n", c.ClientIP(), c.Request.UserAgent())
+	log.Printf("ip=%s, user_agent=%s\n", ip, userAgent)
 	log.Printf(" FullPath: %v\n", fullPath)
 	log.Printf(" Headers: %v\n", headers)
+	log.Printf(" Referer: %v\n", referer)
+
+	_, err := db.QueryExec("INSERT INTO create_user_log (email, password, fullname, description, ip, user_agent, full_path, referer, headers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+		email, password, fullname, description, ip, userAgent, fullPath, referer, headers)
+	if err != nil {
+		log.Println("logCreateUser err=", err)
+	}
 
 }
