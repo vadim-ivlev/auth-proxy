@@ -4,6 +4,8 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
@@ -60,6 +62,9 @@ func create_user() *graphql.Field {
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
 				panicIfEmpty(params.Args["fullname"], "Заполните имя")
 				fullNameValidate(params.Args["fullname"], "Не корректно заполнено поле имя или фамилия")
+				// валидация заголовка (после валидации полей)
+				validateXReqID(params.Context.Value("ginContext").(*gin.Context), params.Args)
+
 				// Только админ может включить/отключить проверку пина и установить emailconfirmed
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
@@ -95,6 +100,29 @@ func create_user() *graphql.Field {
 			}
 			return nil, errors.New("self registration is not allowed. Please ask administrators")
 		},
+	}
+}
+
+// Валидация защищенного токена который приходит с фронта
+func validateXReqID(c *gin.Context, args map[string]interface{}) {
+	reqID := c.Request.Header.Get("x-req-id")
+	fullname := args["fullname"].(string)
+	email := args["email"].(string)
+	password := args["password"].(string)
+	// fullname + email + password
+	str := fullname + email + password
+
+	h := sha256.New()
+	h.Write([]byte(str))
+
+	checkReqID := hex.EncodeToString(h.Sum(nil))
+
+	// log.Printf("validateXReqID: fullname: %s, email: %s, password: %s", fullname, email, password)
+	log.Printf("create_user validateXReqID: email: %s, x-req-id: %s", email, reqID)
+	log.Printf("create_user validateXReqID: email: %s, checkReqID: %s", email, checkReqID)
+
+	if checkReqID != reqID {
+		panic(errors.New("не корректный запрос"))
 	}
 }
 

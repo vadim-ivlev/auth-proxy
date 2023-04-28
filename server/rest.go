@@ -72,7 +72,7 @@ func CreateProxies() {
 
 // optionHandler По просьбе Леши. Appolo требует этого
 func optionHandler(c *gin.Context) {
-	c.Header("Access-Control-Allow-Headers", "origin, content-type, accept, cookie")
+	c.Header("Access-Control-Allow-Headers", "origin, content-type, accept, cookie, x-req-id")
 	c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, PATCH, OPTIONS")
 	c.JSON(http.StatusOK, "")
 }
