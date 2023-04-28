@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"unicode/utf8"
 
 	// "go/ast"
 
@@ -298,6 +299,15 @@ func panicIfEmpty(v interface{}, message string) {
 	username, _ := v.(string)
 	username = strings.TrimSpace(username)
 	if len(username) == 0 {
+		panic(errors.New("Внимание: " + message))
+	}
+}
+
+func fullNameValidate(v interface{}, message string) {
+	username, _ := v.(string)
+	username = strings.TrimSpace(username)
+	fmt.Println(utf8.RuneCountInString(username), strings.Count(username, " "))
+	if utf8.RuneCountInString(username) > 40 || strings.Count(username, " ") > 5 {
 		panic(errors.New("Внимание: " + message))
 	}
 }

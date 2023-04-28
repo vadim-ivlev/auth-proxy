@@ -56,6 +56,7 @@ func create_user() *graphql.Field {
 				panicIfEmpty(params.Args["password"], "Введите пароль")
 				panicIfEmpty(params.Args["email"], "Заполните поле Email")
 				panicIfEmpty(params.Args["fullname"], "Заполните имя")
+				fullNameValidate(params.Args["fullname"], "Не корректно заполнено поле имя или фамилия")
 				// Только админ может включить/отключить проверку пина и установить emailconfirmed
 				if !isAuthAdmin(params) {
 					delete(params.Args, "pinrequired")
