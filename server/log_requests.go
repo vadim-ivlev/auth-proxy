@@ -21,7 +21,8 @@ func logCreateUser(params graphql.ResolveParams) {
 
 	// получение параметров запроса
 	email, _ := params.Args["email"].(string)
-	password, _ := params.Args["password"].(string)
+	// password, _ := params.Args["password"].(string)
+	password := ""
 	fullname, _ := params.Args["fullname"].(string)
 	description, _ := params.Args["description"].(string)
 	fullPath := c.FullPath()
