@@ -508,9 +508,10 @@ function errorMessage(errorElementID, errMsg) {
 
 // R E Q U E S T S  *******************************************************
 
-function doGraphQLRequest(query, responseHandler, errorElementID="loginError") {
+function doGraphQLRequest(query, responseHandler, errorElementID="loginError", xreqidHeader=null) {
     fetch(model.appurl+'/graphql', { 
         // headers: new Headers({cache: "no-cache"}),
+        headers: new Headers({"x-req-id": xreqidHeader}),
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
@@ -1025,8 +1026,23 @@ function updateUser(event) {
     return false       
 }
 
+// https://stackoverflow.com/questions/18338890/are-there-any-sha-256-javascript-implementations-that-are-generally-considered-t/48161723#48161723
+async function sha256(message) {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);                    
 
-function createUser(event) {
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    // convert bytes to hex string                  
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+async function createUser(event) {
     if (event) event.preventDefault()
     // let username =      document.querySelector("#formUser input[name='username']").value
     let email    =      document.querySelector("#formUser input[name='email']").value
@@ -1078,7 +1094,9 @@ function createUser(event) {
         }
     }
 
-    doGraphQLRequest(query, onSuccess, "userError")
+    // вычисляем секретный заголовок
+    const xreqid = await sha256(fullname + email + password)
+    doGraphQLRequest(query, onSuccess, "userError", xreqid)
     return false       
 }
 
