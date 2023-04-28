@@ -4,7 +4,6 @@
 CREATE TABLE IF NOT EXISTS "create_user_log" (
     id serial NOT NULL PRIMARY KEY,
     email text,
-    password text,
     fullname text,
     description text,
     ip text,

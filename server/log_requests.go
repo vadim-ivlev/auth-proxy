@@ -21,8 +21,6 @@ func logCreateUser(params graphql.ResolveParams) {
 
 	// получение параметров запроса
 	email, _ := params.Args["email"].(string)
-	// password, _ := params.Args["password"].(string)
-	password := ""
 	fullname, _ := params.Args["fullname"].(string)
 	description, _ := params.Args["description"].(string)
 	fullPath := c.FullPath()
@@ -32,8 +30,8 @@ func logCreateUser(params graphql.ResolveParams) {
 	referer := c.Request.Referer()
 
 	// запись в лог
-	_, err := db.QueryExec("INSERT INTO create_user_log (email, password, fullname, description, ip, user_agent, full_path, referer, headers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-		email, password, fullname, description, ip, userAgent, fullPath, referer, headers)
+	_, err := db.QueryExec("INSERT INTO create_user_log (email, fullname, description, ip, user_agent, full_path, referer, headers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+		email, fullname, description, ip, userAgent, fullPath, referer, headers)
 	if err != nil {
 		log.Println("logCreateUser err=", err)
 	}
