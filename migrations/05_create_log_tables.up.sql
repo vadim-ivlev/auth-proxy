@@ -14,5 +14,3 @@ CREATE TABLE IF NOT EXISTS "create_user_log" (
     created_at timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
