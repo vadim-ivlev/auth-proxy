@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"unicode/utf8"
 
@@ -307,8 +308,13 @@ func fullNameValidate(v interface{}, message string) {
 	username, _ := v.(string)
 	username = strings.TrimSpace(username)
 	// fmt.Println(utf8.RuneCountInString(username), strings.Count(username, " "))
-	if utf8.RuneCountInString(username) > 40 || strings.Count(username, " ") > 5 || strings.Contains(username, "http") {
-		panic(errors.New("Внимание: " + message))
+	if utf8.RuneCountInString(username) > 40 || strings.Count(username, " ") > 5 {
+		panic(errors.New("Ошибка 107: " + message))
+	}
+	// вхождение доменного имени
+	matched, err := regexp.MatchString(`([\da-z\.-]+)\.([a-z\.]{2,10})`, username)
+	if err != nil || matched {
+		panic(errors.New("Ошибка: 108: " + message))
 	}
 }
 

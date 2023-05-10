@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"html"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -78,6 +79,7 @@ func create_user() *graphql.Field {
 				ArgToLowerCase(params, "email")
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
+				params.Args["fullname"] = html.EscapeString(params.Args["fullname"].(string))
 				convertPasswordToHash(params)
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
