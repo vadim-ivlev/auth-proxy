@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime"
 	"net/smtp"
 	"net/url"
 	"strings"
@@ -70,8 +71,10 @@ func (m *MailData) ComposeTmpl() (string, error) {
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 	buffer.WriteString(fmt.Sprintf(
-		"Subject: %s\nFrom: %s\nTo: %s\n%s",
+		// "Subject: %s\nFrom: %s\nTo: %s\n%s",
+		"Subject: %s\nFrom: %s <%s>\nTo: %s\n%s",
 		m.Header.Subject,
+		convertFrom("Российская Газета"),
 		m.Header.From,
 		m.Header.To,
 		mime,
@@ -182,6 +185,10 @@ func SendAuthenticatorEmail(toEmail, pageAddress string) error {
 // https://ncona.com/2011/06/using-utf-8-characters-on-an-e-mail-subject/
 func convertSubject(subject string) string {
 	return "=?utf-8?B?" + base64.StdEncoding.EncodeToString([]byte(subject)) + "?="
+}
+
+func convertFrom(subject string) string {
+	return mime.QEncoding.Encode("utf-8", subject)
 }
 
 // sendMail toEmail может содержать несколько адресов через запятую.
