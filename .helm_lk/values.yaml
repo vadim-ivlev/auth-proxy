@@ -39,7 +39,7 @@ app:
     _default: false
   use_captcha:
     production: true
-    _default: false
+    _default: true
   use_pin:
     production: true
     _default: false
