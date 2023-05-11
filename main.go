@@ -90,7 +90,7 @@ func printGreetings(serverPort string, tls bool) {
 
 	msg := `TLS:%v
 
-━━━━━━━━━━ GraphQL endpoints ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━ - GraphQL endpoints - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 %v://localhost:%v/schema
 %v://localhost:%v/graphql
