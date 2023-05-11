@@ -447,15 +447,32 @@ function searchUsersInModel() {
     return false   
 }
 
-
-function sortUsersBy(prop, asStings = true) {
+/**
+ * Сортирует массив пользователей 
+ * 
+ * @param {string} prop имя поля
+ * @param {boolean} asStings сортировать лексикографически
+ * @param {boolean} reverse сортировать в обратном порядке
+ * @returns 
+ */
+function sortUsersBy(prop, asStings, reverse) {
     if (!model._allUsers) return false
     if (asStings){
-        model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
-        model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
+        if (reverse){
+            model._allUsers.sort( (a,b) => (a[prop]+a.username)<(b[prop]+b.username)? 1: -1)
+            model._users.sort( (a,b) => (a[prop]+a.username)<(b[prop]+b.username)? 1: -1 )
+        } else {
+            model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
+            model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
+        }
     } else {
-        model._allUsers.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
-        model._users.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+        if (reverse){
+            model._allUsers.sort( (a,b) => (a[prop])<(b[prop])? 1: -1)
+            model._users.sort( (a,b) => (a[prop])<(b[prop])? 1: -1 )
+        } else {
+            model._allUsers.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+            model._users.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+        }
     }
     model.users = model._users
     return false
@@ -1792,6 +1809,7 @@ function getAllUsers(event) {
 
     function onSuccess(res){
         model.allUsers = res.data.list_user.list
+        sortUsersBy('id'         , false, true)
     } 
 
     doGraphQLRequest(query, onSuccess)

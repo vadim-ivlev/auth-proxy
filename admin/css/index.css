@@ -259,7 +259,7 @@ input.role-input {
 }
 
 .sortable {
-    /* text-decoration: underline; */
+    padding-right: 3px;
 }
 
 .header {
