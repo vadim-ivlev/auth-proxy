@@ -71,10 +71,10 @@ func (m *MailData) ComposeTmpl() (string, error) {
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 	buffer.WriteString(fmt.Sprintf(
-		"Subject: %s\nFrom: %s\nTo: %s\n%s",
-		// "Subject: %s\nFrom: %s <%s>\nTo: %s\n%s",
+		// "Subject: %s\nFrom: %s\nTo: %s\n%s",
+		"Subject: %s\nFrom: %s <%s>\nTo: %s\n%s",
 		m.Header.Subject,
-		// convertFrom("Российская Газета"),
+		convertFrom("Российская Газета"),
 		m.Header.From,
 		m.Header.To,
 		mime,
@@ -163,6 +163,7 @@ func sendResetPasswordEmail(toEmail, username, hash string, tmpl *template.Templ
 			AdminAPI: app.Params.AdminAPI, // используется в адмике
 		},
 	}
+	fmt.Println("[sendResetPasswordEmail] mailData:", mailData)
 	msg, err := mailData.ComposeTmpl()
 	if err != nil {
 		return err
