@@ -60,8 +60,8 @@ func ReadMailTemplate(fileName string) {
 		log.Println("mail.ReadMailTemplate() Unmarshal error:", err)
 	}
 	// переопределяем получение шаблонов писем из файлов
-	mailHtmlTemplates["new_user"] = getMailTmpl(app.Params.MailTmplPath + "/new_user.html")
-	mailHtmlTemplates["reset_password"] = getMailTmpl(app.Params.MailTmplPath + "/reset_password.html")
+	mailHtmlTemplates["new_user"] = getMailTmpl(app.Params.MailTmplPath+"/new_user.html", "NewUser")
+	mailHtmlTemplates["reset_password"] = getMailTmpl(app.Params.MailTmplPath+"/reset_password.html", "ResetPass")
 }
 
 func (m *MailData) ComposeTmpl() (string, error) {
@@ -87,14 +87,14 @@ func (m *MailData) ComposeTmpl() (string, error) {
 	return buffer.String(), nil
 }
 
-func getMailTmpl(mailTemplateFilePath string) *template.Template {
+func getMailTmpl(mailTemplateFilePath, name string) *template.Template {
 
 	mailTemplate, err := ioutil.ReadFile(mailTemplateFilePath)
 	if err != nil {
 		fmt.Printf("Failed read template file: %s\n", err)
 	}
 
-	tmpl, err := template.New("NewUser").Parse(string(mailTemplate))
+	tmpl, err := template.New(name).Parse(string(mailTemplate))
 	if err != nil {
 		fmt.Printf("Failed parsing template %s\n", err)
 	}
@@ -163,6 +163,7 @@ func sendResetPasswordEmail(toEmail, username, hash string, tmpl *template.Templ
 			AdminAPI: app.Params.AdminAPI, // используется в адмике
 		},
 	}
+	// log.Printf("[sendResetPasswordEmail] mailData: %+v", mailData)
 	msg, err := mailData.ComposeTmpl()
 	if err != nil {
 		return err
