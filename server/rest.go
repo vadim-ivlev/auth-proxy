@@ -49,8 +49,14 @@ func Captcha(c *gin.Context) {
 
 	SetSessionVariable(c, "captcha", data.Text)
 	// log.Println("Captcha text=", data.Text)
-	// send image data to client
-	data.WriteImage(c.Writer)
+
+	if UseCaptcha {
+		// send image data to client
+		data.WriteImage(c.Writer)
+	} else {
+		// send empty image data to client
+		c.Data(http.StatusOK, "image/png", []byte{})
+	}
 }
 
 // createProxy создает прокси сервер для конкретного URL
