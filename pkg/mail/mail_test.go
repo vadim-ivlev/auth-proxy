@@ -25,7 +25,7 @@ func Test_url_scaping(t *testing.T) {
 
 func TestComposeTmpl(t *testing.T) {
 
-	tmpl := getMailTmpl("../../templates/mail_lk/new_user.html")
+	tmpl := getMailTmpl("../../templates/mail_lk/new_user.html", "NewUser")
 
 	data := NewUserData{
 		Link: "https://rg.ru/login?test",
@@ -49,9 +49,19 @@ func TestComposeTmpl(t *testing.T) {
 
 func TestSendNewUserEmail(t *testing.T) {
 
-	tmpl := getMailTmpl("../../templates/mail/new_user.html")
+	tmpl := getMailTmpl("../../templates/mail/new_user.html", "NewUser")
 
 	err := sendNewUserEmail("dev@rg.ru", "Иван Иванов", "test", tmpl)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
+func TestSendResetPassword(t *testing.T) {
+
+	tmpl := getMailTmpl("../../templates/mail/reset_password.html", "ResetPass")
+
+	err := sendResetPasswordEmail("dev@rg.ru", "Иван Иванов", "test", tmpl)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
