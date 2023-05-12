@@ -1198,6 +1198,8 @@ function appsOfTheUser(list_app_user_role) {
 
 
 function deleteUser(id) {
+    if (!confirm(`Удалить пользователя ${id}?`)) return false
+
     var query =`
     mutation {
         delete_user(
@@ -1456,6 +1458,8 @@ function usersOfTheApp(list_app_user_role) {
 
 
 function deleteApp(id) {
+    if (!confirm(`Удалить приложение ${id}?`)) return false
+
     var query =`
     mutation {
         delete_app(
@@ -1737,6 +1741,8 @@ function usersOfTheGroup(list_group_user_role) {
 
 
 function deleteGroup(id) {
+    if (!confirm(`Удалить группу ${id}?`)) return false
+
     var query =`
     mutation {
         delete_group(

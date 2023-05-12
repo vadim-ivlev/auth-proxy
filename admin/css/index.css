@@ -499,3 +499,8 @@ padding: 0.6rem 0.5rem !important;
 th {
     white-space: nowrap;
 }
+
+.action-buttons {
+    white-space: nowrap !important;    
+}
+

@@ -50,9 +50,11 @@
                         {{description}}
                 </td>
                 <td>
-                        {{emailconfirmed}}
+                        {{#emailconfirmed}}
+                        ✕
+                        {{/emailconfirmed}}
                 </td>
-                <td style="white-space: nowrap;">
+                <td class="action-buttons">
                     <button class="button button-clear" title="редактировать" onclick="pd(event); showPage('user/{{username}}');" >edit</button>
                     <button class="button button-clear delete" title="Удалить"  onclick="deleteUser('{{id}}');" >✕</button>
                 </td>
