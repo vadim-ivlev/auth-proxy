@@ -2,12 +2,27 @@
 <table>
     <thead>
         <tr>
-            <th><a href="" class="sortable" title="sort by id" onclick="pd(event); sortAppsBy('id', false)">#</a></th>
-            <th><a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
-            <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description')">description</a></th>
+            <th>id
+                <a href="" class="sortable" title="sort by id" onclick="pd(event); sortAppsBy('id', false, false)">▲</a>
+                <a href="" class="sortable" title="sort by id" onclick="pd(event); sortAppsBy('id', false, true)">▼</a>
+            </th>
+            <th>appname <span style="font-weight: normal;">&#x21E2;</span> url
+                <a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname', true, false)">▲</a>
+                <a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname', true, true)">▼</a>
+            </th>
+            <th>description
+                <a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description', true, false)">▲</a>
+                <a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description', true, true)">▼</a>
+            </th>
             {{#isAdmin}}
-            <th><a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public')">public</a></th>
-            <th><a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign')">sign</a></th>
+            <th>public
+                <a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public', true, false)">▲</a>
+                <a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public', true, true)">▼</a>
+            </th>
+            <th>sign
+                <a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign', true, false)">▲</a>
+                <a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign', true, true)">▼</a>
+            </th>
             <th></th>
             {{/isAdmin}}
         <tr>

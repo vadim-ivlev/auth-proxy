@@ -6,6 +6,7 @@ body {
     padding: 0;
 }
 
+
 #page-container {
     position: relative;
     min-height: 100vh;
@@ -259,7 +260,7 @@ input.role-input {
 }
 
 .sortable {
-    padding-right: 3px;
+    padding-right: 0px;
 }
 
 .header {
@@ -493,4 +494,8 @@ td,th {
 /* milligram */    
 /* padding: 1.2rem 1.5rem; */
 padding: 0.6rem 0.5rem !important;
+}
+
+th {
+    white-space: nowrap;
 }

@@ -1,7 +1,7 @@
     <table>
         <thead>
             <tr>
-                <th># &nbsp;
+                <th>id
                     <a href="" class="sortable" title="sort by id" onclick="pd(event);          sortUsersBy('id'         , false, false)">▲</a>
                     <a href="" class="sortable" title="sort by id" onclick="pd(event);          sortUsersBy('id'         , false, true)">▼</a>
                 </th>
@@ -9,13 +9,17 @@
                     <a href="" class="sortable" title="sort by username" onclick="pd(event);    sortUsersBy('username'   , true,  false)">▲</a>
                     <a href="" class="sortable" title="sort by username" onclick="pd(event);    sortUsersBy('username'   , true,  true)">▼</a>
                 </th>
-                <th>fullname &nbsp;
+                <th>fullname
                     <a href="" class="sortable" title="sort by fullname" onclick="pd(event);    sortUsersBy('fullname'   , true,  false)">▲</a>
                     <a href="" class="sortable" title="sort by fullname" onclick="pd(event);    sortUsersBy('fullname'   , true,  true)">▼</a>
                 </th>
-                <th>description &nbsp;
+                <th>description
                     <a href="" class="sortable" title="sort by description" onclick="pd(event); sortUsersBy('description', true,  false)">▲</a>
                     <a href="" class="sortable" title="sort by description" onclick="pd(event); sortUsersBy('description', true,  true)">▼</a>
+                </th>
+                <th>email confirmed
+                    <a href="" class="sortable" title="sort by description" onclick="pd(event); sortUsersBy('emailconfirmed', true,  false)">▲</a>
+                    <a href="" class="sortable" title="sort by description" onclick="pd(event); sortUsersBy('emailconfirmed', true,  true)">▼</a>
                 </th>
                 <th></th>
             <tr>
@@ -44,6 +48,9 @@
                 </td>
                 <td>
                         {{description}}
+                </td>
+                <td>
+                        {{emailconfirmed}}
                 </td>
                 <td style="white-space: nowrap;">
                     <button class="button button-clear" title="редактировать" onclick="pd(event); showPage('user/{{username}}');" >edit</button>

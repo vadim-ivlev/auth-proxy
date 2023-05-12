@@ -414,16 +414,25 @@ function searchAppsInModel() {
     return false   
 }
 
-
-function sortAppsBy(prop,asStings = true) {
-    if (!model._allApps) return false
+/**
+ * Сортирует массив приложений
+ * 
+ * @param {string} prop имя поля
+ * @param {boolean} asStings сортировать лексикографически
+ * @param {boolean} reverse сортировать в обратном порядке
+ */
+function sortAppsBy(prop, asStings, reverse) {
     if (asStings){
-        model._allApps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1)
-        model._apps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 )
+        model._allApps?.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1)
+        model._apps?.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 )
     }else {
-        model._allApps.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
-        model._apps.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+        model._allApps?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+        model._apps?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
     }
+    if (reverse){
+        model._allApps?.reverse()
+        model._apps?.reverse()
+     }
     model.apps = model._apps
     return false
 }
@@ -456,24 +465,17 @@ function searchUsersInModel() {
  * @returns 
  */
 function sortUsersBy(prop, asStings, reverse) {
-    if (!model._allUsers) return false
     if (asStings){
-        if (reverse){
-            model._allUsers.sort( (a,b) => (a[prop]+a.username)<(b[prop]+b.username)? 1: -1)
-            model._users.sort( (a,b) => (a[prop]+a.username)<(b[prop]+b.username)? 1: -1 )
-        } else {
-            model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
-            model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
-        }
+            model._allUsers?.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
+            model._users?.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
     } else {
-        if (reverse){
-            model._allUsers.sort( (a,b) => (a[prop])<(b[prop])? 1: -1)
-            model._users.sort( (a,b) => (a[prop])<(b[prop])? 1: -1 )
-        } else {
-            model._allUsers.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
-            model._users.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
-        }
+            model._allUsers?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+            model._users?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
     }
+    if (reverse){
+        model._allUsers?.reverse()
+        model._users?.reverse()
+     }
     model.users = model._users
     return false
 }
@@ -497,16 +499,25 @@ function searchGroupsInModel() {
     return false   
 }
 
-
-function sortGroupsBy(prop, asStings = true) {
-    if (!model._allGroups) return false
+/**
+ * Сортирует массив групп
+ * 
+ * @param {string} prop имя поля
+ * @param {boolean} asStings сортировать лексикографически
+ * @param {boolean} reverse сортировать в обратном порядке
+ */
+function sortGroupsBy(prop, asStings, reverse) {
     if (asStings){
-        model._allGroups.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1)
-        model._groups.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1 )
+        model._allGroups?.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1)
+        model._groups?.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1 )
     } else {
-        model._allGroups.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
-        model._groups.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+        model._allGroups?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+        model._groups?.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
     }
+    if (reverse){
+        model._allGroups?.reverse()
+        model._groups?.reverse()
+     }
     model.groups = model._groups
     return false
 }
