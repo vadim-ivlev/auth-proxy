@@ -25,10 +25,14 @@ func Test_url_scaping(t *testing.T) {
 
 func TestComposeTmpl(t *testing.T) {
 
+	// tmpl := getMailTmpl("../../templates/mail/new_user.html", "NewUser")
 	tmpl := getMailTmpl("../../templates/mail_lk/new_user.html", "NewUser")
 
 	data := NewUserData{
-		Link: "https://rg.ru/login?test",
+		Link:     "https://rg.ru/login?test",
+		UserName: "Иван Иванов",
+		UserPass: "123456",
+		SendPass: true,
 	}
 
 	mailData := MailData{
@@ -51,7 +55,7 @@ func TestSendNewUserEmail(t *testing.T) {
 
 	tmpl := getMailTmpl("../../templates/mail/new_user.html", "NewUser")
 
-	err := sendNewUserEmail("dev@rg.ru", "Иван Иванов", "test", tmpl)
+	err := sendNewUserEmail("dev@rg.ru", "Иван Иванов", "test", tmpl, "123456", true)
 	if err != nil {
 		t.Errorf("%s", err)
 	}

@@ -108,7 +108,7 @@ func login() *graphql.Field {
 					fmt.Printf("User %s is admin: %v \n", username, isAdmin)
 					// Если пользователь не админ, то возвращаем ошибку и посылаем письмо для подтверждения email
 					if !isAdmin {
-						UpdateHashAndSendEmail(username, username)
+						UpdateHashAndSendEmail(username, username, password, false)
 						return nil, errors.New("email not confirmed")
 					}
 				}
@@ -209,7 +209,7 @@ func login_by_email() *graphql.Field {
 				return nil, errors.New(username + " деактивирован.")
 			} else if r == auth.EMAIL_NOT_CONFIRMED {
 				if !app.Params.LoginNotConfirmedEmail {
-					UpdateHashAndSendEmail(username, username)
+					UpdateHashAndSendEmail(username, username, password, false)
 					return nil, errors.New("email not confirmed")
 				}
 			}

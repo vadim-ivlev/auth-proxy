@@ -431,7 +431,7 @@ func addUserToDefaultGroup(userID int64) error {
 	return createGroupUserRole(groupID, userID, "new_user")
 }
 
-func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error) {
+func UpdateHashAndSendEmail(email, fullName, password string, sendPass bool) (res interface{}, err error) {
 	emailhash := uuid.New().String()
 	params := graphql.ResolveParams{
 		Args: map[string]interface{}{
@@ -443,7 +443,7 @@ func UpdateHashAndSendEmail(email, fullName string) (res interface{}, err error)
 	res, err = updateRecord(email, "email", params, "user", "user")
 	if err == nil {
 		clearCache()
-		sendError := mail.SendNewUserEmail(email, fullName, emailhash)
+		sendError := mail.SendNewUserEmail(email, fullName, emailhash, password, sendPass)
 		if sendError != nil {
 			log.Println("UpdateHashAndSendEmail SendNewUserEmail error:", sendError)
 		}

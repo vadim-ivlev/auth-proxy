@@ -21,7 +21,7 @@ func create_user() *graphql.Field {
 		Type:        userObject,
 		Args: graphql.FieldConfigArgument{
 			"password": &graphql.ArgumentConfig{
-				Type:        graphql.NewNonNull(graphql.String),
+				Type:        graphql.String,
 				Description: "Пароль",
 			},
 			"email": &graphql.ArgumentConfig{
@@ -48,6 +48,10 @@ func create_user() *graphql.Field {
 				Type:         graphql.Boolean,
 				Description:  "Не посылать пользователю письмо о регистрации.",
 				DefaultValue: false,
+			},
+			"send_password": &graphql.ArgumentConfig{
+				Type:        graphql.Boolean,
+				Description: "Отправлять пароль в email при регистрации",
 			},
 			"emailconfirmed": &graphql.ArgumentConfig{
 				Type:        graphql.Boolean,
@@ -86,7 +90,11 @@ func create_user() *graphql.Field {
 				if err == nil {
 					// Отправляем письмо пользователю
 					if !noemail {
-						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string))
+						var sendPass bool
+						if val, ok := params.Args["email"]; ok {
+							sendPass = val.(bool)
+						}
+						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string), params.Args["password"].(string), sendPass)
 					}
 					// Добавляем пользователя в группу по умолчанию
 					userID, ok := res.(map[string]interface{})["id"].(int64)
@@ -104,6 +112,10 @@ func create_user() *graphql.Field {
 		},
 	}
 }
+
+// func isSendPassword(sendPassword interface{}) {
+// 	if
+// }
 
 // Валидация защищенного токена который приходит с фронта
 func validateXReqID(c *gin.Context, args map[string]interface{}) {
@@ -141,6 +153,10 @@ func send_confirm_email() *graphql.Field {
 				Type:        graphql.NewNonNull(graphql.String),
 				Description: "Пароль",
 			},
+			"send_password": &graphql.ArgumentConfig{
+				Type:        graphql.Boolean,
+				Description: "Отправлять пароль в email при регистрации",
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 
@@ -165,7 +181,11 @@ func send_confirm_email() *graphql.Field {
 				return nil, errors.New(email + " деактивирован.")
 			}
 
-			return UpdateHashAndSendEmail(email, dbUsername)
+			var sendPass bool
+			if val, ok := params.Args["email"]; ok {
+				sendPass = val.(bool)
+			}
+			return UpdateHashAndSendEmail(email, dbUsername, password, sendPass)
 
 		},
 	}

@@ -31,6 +31,8 @@ type MailData struct {
 
 type NewUserData struct {
 	UserName string
+	UserPass string
+	SendPass bool
 	Link     string
 }
 
@@ -102,14 +104,14 @@ func getMailTmpl(mailTemplateFilePath, name string) *template.Template {
 	return tmpl
 }
 
-func SendNewUserEmail(toEmail, userName, emailhash string) error {
+func SendNewUserEmail(toEmail, userName, emailhash, password string, sendPass bool) error {
 	if tmpl, ok := mailHtmlTemplates["new_user"]; ok {
-		return sendNewUserEmail(toEmail, userName, emailhash, tmpl)
+		return sendNewUserEmail(toEmail, userName, emailhash, tmpl, password, sendPass)
 	}
 	return errors.New("tmpl for new user not found")
 }
 
-func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Template) error {
+func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Template, password string, sendPass bool) error {
 	entryPoint := fmt.Sprintf("%s&email=%s", app.Params.EntryPoint, toEmail)
 	urlParams := fmt.Sprintf("emailhash=%s&email=%s&entry_point=%s", emailhash, url.QueryEscape(toEmail), entryPoint)
 
@@ -123,6 +125,8 @@ func sendNewUserEmail(toEmail, userName, emailhash string, tmpl *template.Templa
 		Data: NewUserData{
 			Link:     app.Params.AdminAPI + "/confirm-email" + "?" + urlParams,
 			UserName: userName,
+			UserPass: password,
+			SendPass: sendPass,
 		},
 	}
 	msg, err := mailData.ComposeTmpl()
