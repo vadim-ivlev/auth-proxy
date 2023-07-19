@@ -1073,14 +1073,15 @@ async function sha256(message) {
 async function createUser(event) {
     if (event) event.preventDefault()
     // let username =      document.querySelector("#formUser input[name='username']").value
-    let email    =      document.querySelector("#formUser input[name='email']").value
-    let password =      document.querySelector("#formUser input[name='password']").value
-    let fullname =      document.querySelector("#formUser input[name='fullname']").value
-    let description =   document.querySelector("#formUser *[name='description']").value
-    let disabled =      document.querySelector("#formUser input[name='disabled']").value
-    let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
+    let email    =         document.querySelector("#formUser input[name='email']").value
+    let password =         document.querySelector("#formUser input[name='password']").value
+    let fullname =         document.querySelector("#formUser input[name='fullname']").value
+    let description =      document.querySelector("#formUser *[name='description']").value
+    let disabled =         document.querySelector("#formUser input[name='disabled']").value
+    let pinrequired =      document.querySelector("#formUser input[name='pinrequired']").checked
     let emailconfirmed =   document.querySelector("#formUser input[name='emailconfirmed']").checked
-    let noemail =   document.querySelector("#formUser input[name='noemail']").checked
+    let noemail =          document.querySelector("#formUser input[name='noemail']").checked
+    let addgroup =         document.querySelector("#formUser select[name='addgroup']").value
     
     var query =`
     mutation {
@@ -1093,6 +1094,7 @@ async function createUser(event) {
         pinrequired: ${pinrequired},
         emailconfirmed: ${emailconfirmed},
         noemail: ${noemail},
+        addgroup: ${addgroup},
         ) {
             description
             email

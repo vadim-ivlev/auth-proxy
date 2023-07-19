@@ -57,6 +57,11 @@ func create_user() *graphql.Field {
 				Type:        graphql.Boolean,
 				Description: "подтвержеден ли email пользователя",
 			},
+			"addgroup": &graphql.ArgumentConfig{
+				Type:         enumAddGroupType,
+				Description:  "Добавить в группу, в дополнение к группе 'users'",
+				DefaultValue: "",
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			// пишем в лог запросы на создание пользователя
@@ -80,6 +85,10 @@ func create_user() *graphql.Field {
 				noemail, _ := params.Args["noemail"].(bool)
 				delete(params.Args, "noemail")
 
+				// дополнительная группа
+				addgroup, _ := params.Args["addgroup"].(string)
+				delete(params.Args, "addgroup")
+
 				ArgToLowerCase(params, "email")
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
@@ -92,7 +101,7 @@ func create_user() *graphql.Field {
 					if !noemail {
 						var sendPass bool
 						if val, ok := params.Args["email"]; ok {
-							sendPass = val.(bool)
+							sendPass, _ = val.(bool)
 						}
 						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string), params.Args["password"].(string), sendPass)
 					}
@@ -101,10 +110,8 @@ func create_user() *graphql.Field {
 					if !ok {
 						log.Println("create_user addUserToGroup error: can't get user id")
 					}
-					err = addUserToDefaultGroup(userID)
-					if err != nil {
-						log.Println("create_user addUserToGroup error:", err)
-					}
+					_ = addUserToGroup(userID, "users", "Группа для новых пользователей")
+					_ = addUserToGroup(userID, addgroup, "")
 				}
 				return res, err
 			}
@@ -120,9 +127,9 @@ func create_user() *graphql.Field {
 // Валидация защищенного токена который приходит с фронта
 func validateXReqID(c *gin.Context, args map[string]interface{}) {
 	reqID := c.Request.Header.Get("x-req-id")
-	fullname := args["fullname"].(string)
-	email := args["email"].(string)
-	password := args["password"].(string)
+	fullname, _ := args["fullname"].(string)
+	email, _ := args["email"].(string)
+	password, _ := args["password"].(string)
 	// fullname + email + password
 	str := fullname + email + password
 
@@ -183,7 +190,7 @@ func send_confirm_email() *graphql.Field {
 
 			var sendPass bool
 			if val, ok := params.Args["email"]; ok {
-				sendPass = val.(bool)
+				sendPass, _ = val.(bool)
 			}
 			return UpdateHashAndSendEmail(email, dbUsername, password, sendPass)
 
@@ -278,7 +285,7 @@ func update_user() *graphql.Field {
 			}
 			convertPasswordToHash(params)
 			clearCache()
-			id := params.Args["id"].(int)
+			id, _ := params.Args["id"].(int)
 			// return db.UpdateRowByID("id", "user", id, params.Args)
 			return updateRecord(id, "id", params, "user", "user")
 		},
@@ -416,12 +423,12 @@ func update_app() *graphql.Field {
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
 
-			appID := params.Args["id"].(int)
+			appID, _ := params.Args["id"].(int)
 			app, err := auth.GetApp(appID)
 			if err != nil {
 				return nil, err
 			}
-			oldAppname := app["appname"].(string)
+			oldAppname, _ := app["appname"].(string)
 			// oldAppname, _ := params.Args["old_appname"].(string)
 			if oldAppname == "" {
 				oldAppname, _ = params.Args["appname"].(string)

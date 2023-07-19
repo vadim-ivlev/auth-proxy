@@ -97,6 +97,20 @@
                 <input name="pinset" type="checkbox" disabled title="Затребована установка Google Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
                 <span>Пользователь потребовал установки Google Authenticator</span>
             </div>
+
+            {{^user}}
+            <div style="margin-top: 20px;" >
+                <label>addgroup</label>
+                <div style="display:flex; gap: 10px;">                    
+                    <span>Добавить в группу, в дополнение к группе 'users'</span>
+                    <select name="addgroup">
+                        <option value="" selected></option>                    
+                        <option value="subsmag">subsmag</option>
+                    </select>
+                </div>
+            </div>
+            {{/user}}
+            
 <!-- 
             <div>
                 <label><a href="" onclick="toggleElements('#pinhashfields'); return false;" style="opacity:0.3;">pinhash поля ▷</a></label>

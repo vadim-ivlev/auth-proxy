@@ -407,28 +407,45 @@ func createGroupUserRole(groupID, userID int64, rolename string) error {
 	return nil
 }
 
-// addUserToDefaultGroup добавляет пользователя с идеинтификатором userID
-// в группу для пользователей по умолчанию.
-func addUserToDefaultGroup(userID int64) error {
-	groupName := "users"
-	groupDescription := "Группа для новых пользователей"
+// addUserToGroup добавляет пользователя с идеинтификатором userID
+// в группу для пользователей.
+// Если groupName не указано, то используется группа "users".
+func addUserToGroup(userID int64, groupName, groupDescription string) (err error) {
+	// проверяем параметры
+	if groupName == "" {
+		errMessage := "addUserToGroup: не указано имя группы"
+		log.Println(errMessage)
+		return errors.New(errMessage)
+	}
 
+	// ищем группу
 	group, err := getGroupByName(groupName)
 	if err != nil {
-		fmt.Println("addUserToGroup getGroupByName() Не удалось найти группу users.: ", err)
-		fmt.Println(`Создаем новую группу "users".`)
+		fmt.Println("addUserToGroup getGroupByName() Не удалось найти группу: ", groupName, err)
+		fmt.Println(`Создаем новую группу:`, groupName)
+		// создаем группу если группа не найдена
 		group, err = createNewGroup(groupName, groupDescription)
 		if err != nil {
-			fmt.Println(`Не удалось создать новую группу "users".`, err)
+			fmt.Println(`Не удалось создать новую группу:`, groupName, err)
 			return err
 		}
 		clearCache()
 	}
+
+	// получаем идентификатор группы
 	groupID, ok := group.(map[string]interface{})["id"].(int64)
 	if !ok {
-		fmt.Println(`Не удалось получить идентификатор группы "users".`)
+		errMessage := fmt.Sprintf("Не удалось получить идентификатор группы: %v", groupName)
+		fmt.Println(errMessage)
+		return errors.New(errMessage)
 	}
-	return createGroupUserRole(groupID, userID, "new_user")
+
+	// добавляем пользователя в группу
+	err = createGroupUserRole(groupID, userID, "new_user")
+	if err != nil {
+		fmt.Println("addUserToGroup createGroupUserRole() Не удалось добавить пользователя в группу: ", groupName, err)
+	}
+	return err
 }
 
 func UpdateHashAndSendEmail(email, fullName, password string, sendPass bool) (res interface{}, err error) {
