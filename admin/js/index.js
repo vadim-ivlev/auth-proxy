@@ -1082,6 +1082,7 @@ async function createUser(event) {
     let emailconfirmed =   document.querySelector("#formUser input[name='emailconfirmed']").checked
     let noemail =          document.querySelector("#formUser input[name='noemail']").checked
     let addgroup =         document.querySelector("#formUser select[name='addgroup']").value
+    let addgroupParam = addgroup ? `addgroup: ${addgroup}` : ""
     
     var query =`
     mutation {
@@ -1094,7 +1095,7 @@ async function createUser(event) {
         pinrequired: ${pinrequired},
         emailconfirmed: ${emailconfirmed},
         noemail: ${noemail},
-        addgroup: ${addgroup},
+        ${addgroupParam}
         ) {
             description
             email

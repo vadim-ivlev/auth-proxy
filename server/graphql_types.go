@@ -490,8 +490,5 @@ var enumAddGroupType = graphql.NewEnum(graphql.EnumConfig{
 		"subsmag": &graphql.EnumValueConfig{
 			Value: "subsmag",
 		},
-		"": &graphql.EnumValueConfig{
-			Value: "",
-		},
 	},
 })

@@ -58,9 +58,8 @@ func create_user() *graphql.Field {
 				Description: "подтвержеден ли email пользователя",
 			},
 			"addgroup": &graphql.ArgumentConfig{
-				Type:         enumAddGroupType,
-				Description:  "Добавить в группу, в дополнение к группе 'users'",
-				DefaultValue: "",
+				Type:        enumAddGroupType,
+				Description: "Добавить в группу, в дополнение к группе 'users'",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
