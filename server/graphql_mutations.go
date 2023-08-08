@@ -94,18 +94,21 @@ func create_user() *graphql.Field {
 					sendPass, _ = val.(bool)
 				}
 				delete(params.Args, "send_password")
+				// пароль в не зашифрованном виде
+				pass := params.Args["password"].(string)
 
 				ArgToLowerCase(params, "email")
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
 				params.Args["fullname"] = html.EscapeString(params.Args["fullname"].(string))
+				// здесь пароль уже шифруется
 				convertPasswordToHash(params)
 				clearCache()
 				res, err := createRecord("username", params, "user", "user")
 				if err == nil {
 					// Отправляем письмо пользователю
 					if !noemail {
-						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string), params.Args["password"].(string), sendPass)
+						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string), pass, sendPass)
 					}
 					// Добавляем пользователя в группу по умолчанию
 					userID, ok := res.(map[string]interface{})["id"].(int64)
