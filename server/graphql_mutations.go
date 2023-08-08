@@ -88,6 +88,13 @@ func create_user() *graphql.Field {
 				addgroup, _ := params.Args["addgroup"].(string)
 				delete(params.Args, "addgroup")
 
+				// отправлять пароль в email при регистрации
+				var sendPass bool
+				if val, ok := params.Args["send_password"]; ok {
+					sendPass, _ = val.(bool)
+				}
+				delete(params.Args, "send_password")
+
 				ArgToLowerCase(params, "email")
 				TrimParamValue(params, "email")
 				params.Args["username"] = params.Args["email"]
@@ -98,10 +105,6 @@ func create_user() *graphql.Field {
 				if err == nil {
 					// Отправляем письмо пользователю
 					if !noemail {
-						var sendPass bool
-						if val, ok := params.Args["email"]; ok {
-							sendPass, _ = val.(bool)
-						}
 						UpdateHashAndSendEmail(params.Args["email"].(string), params.Args["fullname"].(string), params.Args["password"].(string), sendPass)
 					}
 					// Добавляем пользователя в группу по умолчанию
@@ -188,7 +191,7 @@ func send_confirm_email() *graphql.Field {
 			}
 
 			var sendPass bool
-			if val, ok := params.Args["email"]; ok {
+			if val, ok := params.Args["send_password"]; ok {
 				sendPass, _ = val.(bool)
 			}
 			return UpdateHashAndSendEmail(email, dbUsername, password, sendPass)
