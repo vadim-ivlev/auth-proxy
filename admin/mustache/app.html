@@ -96,6 +96,14 @@ extra_hosts:
             </p>
         </div>
 
+        <div>
+            <label >secret token</label>
+            <input name="xtoken" placeholder="X-AuthProxy-Token"  value="{{app.xtoken}}">
+            <p>
+                Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token
+            </p>
+        </div>
+
 
         <div style="text-align: right;">
             <label></label>

@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS app (
     rebase text,
     public text,
     sign text,
+    xtoken text,
 
     CONSTRAINT app_pkey PRIMARY KEY (appname),
 	CONSTRAINT app_id_unique_idx UNIQUE (id)

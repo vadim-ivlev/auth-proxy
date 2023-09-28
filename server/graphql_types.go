@@ -81,6 +81,10 @@ var appFields = graphql.Fields{
 		Type:        graphql.String,
 		Description: "Y - для цифровой подписи запросов к приложению",
 	},
+	"xtoken": &graphql.Field{
+		Type:        graphql.String,
+		Description: "Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token",
+	},
 }
 
 var groupFields = graphql.Fields{

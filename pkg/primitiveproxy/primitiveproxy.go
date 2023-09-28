@@ -22,11 +22,12 @@ type PrimitiveProxy struct {
 	// префикс проксирования и дновременно имя приложения в терминах auth-proxy
 	appname string
 	Rebase  string
+	XToken  string
 }
 
 // NewPrimitiveProxy Возвращает указатель на PrimitiveProxy
-func NewPrimitiveProxy(url, appname, rebase string) *PrimitiveProxy {
-	return &PrimitiveProxy{url, appname, rebase}
+func NewPrimitiveProxy(url, appname, rebase, xtoken string) *PrimitiveProxy {
+	return &PrimitiveProxy{url, appname, rebase, xtoken}
 }
 
 func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
@@ -54,6 +55,9 @@ func (p *PrimitiveProxy) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		req.Header.Set(name, value[0])
+		if strings.TrimSpace(p.XToken) != "" {
+			req.Header.Set("X-AuthProxy-Token", p.XToken)
+		}
 	}
 
 	// Подписываем запрос

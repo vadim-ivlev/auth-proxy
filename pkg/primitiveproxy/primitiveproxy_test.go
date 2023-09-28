@@ -18,7 +18,7 @@ func TestSetGetDelete(t *testing.T) {
 		log.Println("Open http://localhost:12345/")
 	}
 
-	proxy := NewPrimitiveProxy(url, "rg", "")
+	proxy := NewPrimitiveProxy(url, "rg", "", "xxx")
 	err := http.ListenAndServe(":12345", proxy)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())

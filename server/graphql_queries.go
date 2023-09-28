@@ -83,7 +83,7 @@ func login() *graphql.Field {
 				}
 			}
 
-			r, dbUsername := auth.CheckUserPassword2(username, password)
+			r, dbUsername := auth.CheckUserPassword(username, password)
 			// Пользователь не найден
 			if r == auth.NO_USER {
 				return nil, errors.New("email или пароль введен неверно")
@@ -198,7 +198,7 @@ func login_by_email() *graphql.Field {
 				}
 			}
 
-			r, dbUsername := auth.CheckUserPassword2(username, password)
+			r, dbUsername := auth.CheckUserPassword(username, password)
 			if r == auth.NO_USER {
 				// return nil, errors.New(username + " не зарегистрирован или БД не доступна. Обратитесь к администратору.")
 				return nil, errors.New("email или пароль введен неверно")

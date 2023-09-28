@@ -182,7 +182,7 @@ func send_confirm_email() *graphql.Field {
 			password, _ := params.Args["password"].(string)
 
 			// проверить пароль
-			r, dbUsername := auth.CheckUserPassword2(email, password)
+			r, dbUsername := auth.CheckUserPassword(email, password)
 			fmt.Println("r=", r, "dbUsername=", dbUsername)
 			if r == auth.NO_USER {
 				return nil, errors.New("email или пароль введен неверно")
@@ -369,6 +369,10 @@ func create_app() *graphql.Field {
 				Type:        graphql.String,
 				Description: "Y - для цифровой подписи запросов к приложению",
 			},
+			"xtoken": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token",
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
@@ -379,8 +383,9 @@ func create_app() *graphql.Field {
 				app, _ := params.Args["appname"].(string)
 				url, _ := params.Args["url"].(string)
 				rebase, _ := params.Args["rebase"].(string)
+				xtoken, _ := params.Args["xtoken"].(string)
 				if url != "" {
-					proxies[app] = createProxy(url, app, rebase)
+					proxies[app] = createProxy(url, app, rebase, xtoken)
 					log.Printf("Proxy created appname=%v target=%v rebase=%v", app, url, rebase)
 				}
 				clearCache()
@@ -424,6 +429,10 @@ func update_app() *graphql.Field {
 				Type:        graphql.String,
 				Description: "Y - для цифровой подписи запросов к приложению",
 			},
+			"xtoken": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token",
+			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			panicIfNotAdmin(params)
@@ -442,6 +451,11 @@ func update_app() *graphql.Field {
 				return nil, errors.New("appname is blank")
 			}
 
+			var xtoken string
+			if val, ok := params.Args["xtoken"]; ok {
+				xtoken = val.(string)
+			}
+
 			delete(params.Args, "old_appname")
 			res, err := updateRecord(oldAppname, "appname", params, "app", "app")
 
@@ -455,7 +469,7 @@ func update_app() *graphql.Field {
 					oldProxy := *proxies[oldAppname]
 					log.Println("renaming old_url, old_appname, old_rebase", oldProxy.Url, oldAppname, oldProxy.Rebase)
 					delete(proxies, oldAppname)
-					proxies[appname] = createProxy(oldProxy.Url, appname, oldProxy.Rebase)
+					proxies[appname] = createProxy(oldProxy.Url, appname, oldProxy.Rebase, xtoken)
 					// clear old_appname cache
 					auth.Cache.Delete("is-" + oldAppname + "-public")
 					auth.Cache.Delete("is-request-to-" + oldAppname + "-signed")
@@ -467,11 +481,12 @@ func update_app() *graphql.Field {
 				if okRebase || okURL {
 					rebase, _ := r.(string)
 					url, _ := u.(string)
+
 					if url == "" {
 						delete(proxies, appname)
 						log.Printf("Proxy deleted appname=%s", appname)
 					} else {
-						proxies[appname] = createProxy(url, appname, rebase)
+						proxies[appname] = createProxy(url, appname, rebase, xtoken)
 						log.Printf("Proxy created appname=%v target=%v", appname, url)
 					}
 				}

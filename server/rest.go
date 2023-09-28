@@ -60,8 +60,8 @@ func Captcha(c *gin.Context) {
 }
 
 // createProxy создает прокси сервер для конкретного URL
-func createProxy(target, appname, rebase string) *primitiveproxy.PrimitiveProxy {
-	return primitiveproxy.NewPrimitiveProxy(target, appname, rebase)
+func createProxy(target, appname, rebase, xtoken string) *primitiveproxy.PrimitiveProxy {
+	return primitiveproxy.NewPrimitiveProxy(target, appname, rebase, xtoken)
 }
 
 // CreateProxies создает глобальный массив proxies в соответствии с таблицей app
@@ -72,7 +72,7 @@ func CreateProxies() {
 		return
 	}
 	for app, urlRebase := range appUrls {
-		proxies[app] = createProxy(urlRebase[0], app, urlRebase[1])
+		proxies[app] = createProxy(urlRebase[0], app, urlRebase[1], urlRebase[2])
 	}
 }
 

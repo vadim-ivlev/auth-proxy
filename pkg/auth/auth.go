@@ -4,7 +4,6 @@ import (
 	"auth-proxy/pkg/app"
 	"auth-proxy/pkg/db"
 	"crypto/sha256"
-	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -42,7 +41,7 @@ func CacheSet(k string, x interface{}, d time.Duration) {
 // USER_DISABLED - пользователь заблокирован.
 // WRONG_PASSWORD - пароль не подходит.
 // NOT_VERIFIED  - пользователь не подтвердил свой email.
-func CheckUserPassword2(username, password string) (int, string) {
+func CheckUserPassword(username, password string) (int, string) {
 	rec, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
 		return NO_USER, ""
@@ -72,36 +71,36 @@ func UlidNum(min, max int) string {
 
 // GenerateNewPassword Генерирует новый пароль для пользователя,
 // Сохраняет его в базе данных.
-func GenerateNewPassword(usernameOrEmail string) (string, string, string, error) {
-	rec, err := db.QueryRowMap(`
-		SELECT * FROM "user" WHERE username=$1 AND disabled = 0
-		UNION
-		SELECT * FROM "user" WHERE email=$1    AND disabled = 0
-		`, usernameOrEmail)
+// func GenerateNewPassword(usernameOrEmail string) (string, string, string, error) {
+// 	rec, err := db.QueryRowMap(`
+// 		SELECT * FROM "user" WHERE username=$1 AND disabled = 0
+// 		UNION
+// 		SELECT * FROM "user" WHERE email=$1    AND disabled = 0
+// 		`, usernameOrEmail)
 
-	if err != nil {
-		return "", "", "", err
-	}
-	foundUsername := rec["username"].(string)
-	foundEmail := rec["email"].(string)
-	if foundEmail == "" {
-		return "", "", "", errors.New("No email address for user " + foundUsername)
-	}
-	// generate new password
-	newPassword := UlidNum(100000, 999999)
-	// newPassword := "123456"
-	newHash := GetHash(newPassword)
-	sqlText := `UPDATE "user" SET password = $1 WHERE username = $2;`
-	_, err = db.QueryExec(sqlText, newHash, foundUsername)
-	if err != nil {
-		return "", "", "", err
-	}
-	return foundUsername, foundEmail, newPassword, nil
-}
+// 	if err != nil {
+// 		return "", "", "", err
+// 	}
+// 	foundUsername := rec["username"].(string)
+// 	foundEmail := rec["email"].(string)
+// 	if foundEmail == "" {
+// 		return "", "", "", errors.New("No email address for user " + foundUsername)
+// 	}
+// 	// generate new password
+// 	newPassword := UlidNum(100000, 999999)
+// 	// newPassword := "123456"
+// 	newHash := GetHash(newPassword)
+// 	sqlText := `UPDATE "user" SET password = $1 WHERE username = $2;`
+// 	_, err = db.QueryExec(sqlText, newHash, foundUsername)
+// 	if err != nil {
+// 		return "", "", "", err
+// 	}
+// 	return foundUsername, foundEmail, newPassword, nil
+// }
 
 // GetAppURLs Возвращает url-ы приложений.
 func GetAppURLs() (map[string][]string, error) {
-	records, err := db.QuerySliceMap(`SELECT appname,url,rebase FROM app WHERE url IS NOT NULL;`)
+	records, err := db.QuerySliceMap(`SELECT appname, url, rebase, xtoken FROM app WHERE url IS NOT NULL;`)
 	if err != nil {
 		return nil, err
 	}
@@ -110,10 +109,11 @@ func GetAppURLs() (map[string][]string, error) {
 		app, _ := rec["appname"].(string)
 		url, _ := rec["url"].(string)
 		rebase, _ := rec["rebase"].(string)
+		xtoken, _ := rec["xtoken"].(string)
 		if url == "" || app == "" {
 			continue
 		}
-		m[app] = []string{url, rebase}
+		m[app] = []string{url, rebase, xtoken}
 	}
 	return m, nil
 }
