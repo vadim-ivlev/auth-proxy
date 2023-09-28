@@ -1295,6 +1295,7 @@ function formListAppSubmit(event) {
               rebase
               public
               sign
+              xtoken
             }
           }
         }    `
@@ -1317,6 +1318,7 @@ function createApp(event) {
     let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
     let _public =     document.querySelector("#formApp input[name='public']"     ).value
     let sign =        document.querySelector("#formApp input[name='sign']"       ).value
+    let xtoken =        document.querySelector("#formApp input[name='xtoken']"       ).value
     
     var query =`
     mutation {
@@ -1327,6 +1329,7 @@ function createApp(event) {
         rebase: "${rebase}",
         public: "${_public}",
         sign: "${sign}"
+        xtoken: "${xtoken}"
         ) {
             description
             appname
@@ -1334,6 +1337,7 @@ function createApp(event) {
             rebase
             public
             sign
+            xtoken
           }
 
         }
@@ -1360,6 +1364,7 @@ function updateApp(event, appOperationName = 'create_app') {
     let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
     let _public =     document.querySelector("#formApp input[name='public']"     ).value
     let sign =        document.querySelector("#formApp input[name='sign']"       ).value
+    let xtoken =        document.querySelector("#formApp input[name='xtoken']"       ).value
     
     // old_appname: "${old_appname}",
     var query =`
@@ -1372,6 +1377,7 @@ function updateApp(event, appOperationName = 'create_app') {
         rebase: "${rebase}",
         public: "${_public}",
         sign: "${sign}"
+        xtoken: "${xtoken}"
         ) {
             description
             appname
@@ -1379,6 +1385,7 @@ function updateApp(event, appOperationName = 'create_app') {
             rebase
             public
             sign
+            xtoken
           }
 
         }
@@ -1411,6 +1418,7 @@ function getApp(appname) {
             rebase
             sign
             url
+            xtoken
           }
         
         list_app_user_role(
@@ -1789,6 +1797,7 @@ function getAllApps(event) {
               rebase
               public 
               sign
+              xtoken
             }
           }
         }    `

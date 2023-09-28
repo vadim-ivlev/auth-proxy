@@ -53,7 +53,7 @@ extra_hosts:
 
         <div>
             <label >public</label>
-            <input name="public" placeholder="Y чтобы сделать приложение доступным для пользователей без роли."  value="{{app.public}}">
+            <input name="public" placeholder="Y чтобы сделать приложение доступным для пользователей без роли." value="{{app.public}}">
             <p>
                 "Y" чтобы сделать приложение доступным для пользователей без роли.
             </p>
@@ -63,7 +63,7 @@ extra_hosts:
 
         <div>
             <label >rebase</label>
-            <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные."  value="{{app.rebase}}">
+            <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные." value="{{app.rebase}}">
             <p>
                 Поле имеет смысл только для проксирования HTML web приложений.
                 <br><br>
@@ -76,6 +76,14 @@ extra_hosts:
 
                 Поэтому в приложениях предназначенных для проксирования рекомендуется использовать относительные ссылки и оставлять это поле пустым.
 
+            </p>
+        </div>
+
+        <div>
+            <label >secret token</label>
+            <input type="password" name="xtoken" placeholder="X-AuthProxy-Token" value="{{app.xtoken}}">
+            <p>
+                Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token
             </p>
         </div>
 
@@ -93,14 +101,6 @@ extra_hosts:
                 <br><br>
                 Операция подписи ресурсоемкая. Пользуйтесь разумно. Например не имеет смысла подписывать
                 публично доступные приложения или HTML приложения.
-            </p>
-        </div>
-
-        <div>
-            <label >secret token</label>
-            <input name="xtoken" placeholder="X-AuthProxy-Token"  value="{{app.xtoken}}">
-            <p>
-                Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token
             </p>
         </div>
 

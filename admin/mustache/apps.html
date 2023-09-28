@@ -19,10 +19,12 @@
                 <a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public', true, false)">▲</a>
                 <a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public', true, true)">▼</a>
             </th>
-            <th>sign
+            <th>xtoken
+            </th>
+            <!-- <th>sign
                 <a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign', true, false)">▲</a>
                 <a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign', true, true)">▼</a>
-            </th>
+            </th> -->
             <th></th>
             {{/isAdmin}}
         <tr>
@@ -47,8 +49,11 @@
                     {{public}}
             </td>
             <td>
-                    {{sign}}
+                    {{#xtoken}}Y{{/xtoken}}
             </td>
+            <!-- <td>
+                    {{sign}}
+            </td> -->
             <td class="action-buttons">
                 <button class="button button-clear" onclick="showPage('app/{{appname}}');">edit</button>
                 <button class="button button-clear delete" onclick="deleteApp('{{id}}');">✕</button>
