@@ -80,14 +80,6 @@ extra_hosts:
         </div>
 
         <div>
-            <label >secret token</label>
-            <input type="password" name="xtoken" placeholder="X-AuthProxy-Token" value="{{app.xtoken}}">
-            <p>
-                Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token
-            </p>
-        </div>
-
-        <div>
             <label >sign</label>
             <input name="sign" placeholder="Y - для цифровой подписи запросов к приложению"  value="{{app.sign}}">
             <p>
@@ -101,6 +93,14 @@ extra_hosts:
                 <br><br>
                 Операция подписи ресурсоемкая. Пользуйтесь разумно. Например не имеет смысла подписывать
                 публично доступные приложения или HTML приложения.
+            </p>
+        </div>
+
+        <div>
+            <label >secret token</label>
+            <input name="xtoken" placeholder="X-AuthProxy-Token" value="{{app.xtoken}}"/>
+            <p>
+                Используется для проверки доверенного источника. Отправляется вместе с запросом в HTTP-заголовке X-AuthProxy-Token
             </p>
         </div>
 
