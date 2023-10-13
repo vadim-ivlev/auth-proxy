@@ -120,6 +120,7 @@ func setup(build string) *gin.Engine {
 
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
+	apps.Use(FlusherMiddleware())
 	apps.Any("/:appname/*proxypath", Proxy)
 
 	return r
