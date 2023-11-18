@@ -262,6 +262,35 @@ func SendEmailTo(fromEmail, toEmail, subject, body string) error {
 	return sendMail(from, to, msg)
 }
 
+// SendHTMLEmailTo отправляет письмо
+// от имени fromEmail на адрес toEmail, c указанным темой и телом.
+// Тело письма должно быть в формате HTML.
+// Параметры:
+// fromEmailText - текстовое представление адреса отправителя
+// fromEmail - адрес отправителя
+// toEmail - адрес получателя
+// subject - тема письма
+// body - тело письма в формате HTML
+func SendHTMLEmailTo(fromEmailText, fromEmail, toEmail, subject, body string) error {
+
+	from_text := removeBreaks(fromEmailText)
+	from := removeBreaks(fromEmail)
+	to := removeBreaks(toEmail)
+	subj := removeBreaks(subject)
+
+	// отсутствие отсутствие отступов в начале первых 5-ти строк важно!
+	msg := fmt.Sprintf(`
+Subject: %s
+From: %s <%s>
+To: %s
+MIME-version: 1.0;
+Content-Type: text/html; charset=\"UTF-8\";
+
+	%s`, subj, convertFrom(from_text), from, to, body)
+
+	return sendMail(from, to, msg)
+}
+
 // removeBreaks очищает строку от переводов строк и пробелов в начале и конце
 func removeBreaks(email string) string {
 	return strings.TrimSpace(strings.ReplaceAll(email, "\n", ""))

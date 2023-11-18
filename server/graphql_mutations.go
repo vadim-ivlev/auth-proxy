@@ -247,6 +247,55 @@ func send_email() *graphql.Field {
 	}
 }
 
+func send_html_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю email с HTML текстом",
+		Type:        graphql.String,
+		Args: graphql.FieldConfigArgument{
+			"email_from": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email от кого отправляется письмо",
+			},
+			"email_from_text": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "Текст который будет показан пользователю в поле from:.",
+			},
+			"email_to": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email кому отправляется письмо",
+			},
+			"subject": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "тема письма",
+			},
+			"text": &graphql.ArgumentConfig{
+				Type:        graphql.String,
+				Description: "текст письма",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			if !isAuthAdmin(params) {
+				return nil, errors.New("access denied")
+			}
+			panicIfEmpty(params.Args["email_from"], "Заполните поле email_from")
+			panicIfEmpty(params.Args["email_to"], "Заполните поле email_to")
+
+			email_from, _ := params.Args["email_from"].(string)
+			email_from_text, _ := params.Args["email_from_text"].(string)
+			email_to, _ := params.Args["email_to"].(string)
+			subject, _ := params.Args["subject"].(string)
+			text, _ := params.Args["text"].(string)
+
+			err := mail.SendHTMLEmailTo(email_from_text, email_from, email_to, subject, text)
+			if err != nil {
+				return nil, err
+			}
+
+			return fmt.Sprintf("the letter to %s is sent", email_to), nil
+		},
+	}
+}
+
 func update_user() *graphql.Field {
 	return &graphql.Field{
 		Description: "Обновить пользователя",
