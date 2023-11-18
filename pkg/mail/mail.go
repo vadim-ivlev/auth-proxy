@@ -278,15 +278,10 @@ func SendHTMLEmailTo(fromEmailText, fromEmail, toEmail, subject, body string) er
 	to := removeBreaks(toEmail)
 	subj := removeBreaks(subject)
 
-	// отсутствие отсутствие отступов в начале первых 5-ти строк важно!
-	msg := fmt.Sprintf(`
-Subject: %s
-From: %s <%s>
-To: %s
-MIME-version: 1.0;
-Content-Type: text/html; charset=\"UTF-8\";
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";"
 
-	%s`, subj, convertFrom(from_text), from, to, body)
+	// отсутствие отсутствие отступов в начале первых 5-ти строк важно!
+	msg := fmt.Sprintf("Subject: %s\nFrom: %s <%s>\nTo: %s\n%s\n\n%s", convertSubject(subj), convertFrom(from_text), from, to, mime, body)
 
 	return sendMail(from, to, msg)
 }
