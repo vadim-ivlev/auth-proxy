@@ -14,13 +14,7 @@ import (
 	"time"
 )
 
-// Build версия сборки из gitlab-ci,
-// используется флаг со значением переменнай CI_PIPELINE_ID (-ldflags="-X 'main.Build=${CI_PIPELINE_ID}'")
-// если не установлено по умолчанию равно development
-var Build = "env variables"
-
 func main() {
-	fmt.Println("Build number:\t", Build)
 	// считать параметры командной строки
 	servePort, config, pgconfig := readCommandLineParams()
 	// Считать конфиги и установить параметры
@@ -34,7 +28,7 @@ func main() {
 	// печатаем приветствие
 	printGreetings(servePort, app.Params.Tls)
 	// запускаем сервер
-	server.Up(servePort, app.Params.Tls, Build)
+	server.Up(servePort, app.Params.Tls)
 
 	// Если server.Up запущено в горутине
 	// fmt.Println("Bye")

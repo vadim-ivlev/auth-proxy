@@ -95,11 +95,6 @@ func pingHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "pong")
 }
 
-// Вывод версии сборки, используется для проверки консистентности запущенных приложений
-func (b Build) buildHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, b.Number)
-}
-
 // listPublicApps - возвращает список публичных приложений не требующих авторизации пользователя.
 func listPublicApps(c *gin.Context) {
 	c.JSON(http.StatusOK, auth.ListPublicApps())

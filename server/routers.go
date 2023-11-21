@@ -19,11 +19,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Build структура информации о сборке
-type Build struct {
-	Number string
-}
-
 // SecureCookie флаг secure на куки браузера
 var SecureCookie = false
 
@@ -31,8 +26,8 @@ var SecureCookie = false
 var Store cookie.Store
 
 // Up запускает сервер на заданном порту
-func Up(port string, tls bool, build string) {
-	r := setup(build)
+func Up(port string, tls bool) {
+	r := setup()
 	if tls {
 		err := r.RunTLS(":"+port, "./certificates/cert.pem", "./certificates/key.pem")
 		if err != nil {
@@ -49,7 +44,7 @@ func Up(port string, tls bool, build string) {
 }
 
 // Setup определяет пути и присоединяет функции middleware.
-func setup(build string) *gin.Engine {
+func setup() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// r := gin.New()
@@ -113,10 +108,6 @@ func setup(build string) *gin.Engine {
 	r.GET("/confirm-email", authenticator.ConfirmEmail)
 
 	r.GET("/ping", pingHandler)
-	// вывод информации о сборке
-	r.GET("/build", Build{
-		Number: build,
-	}.buildHandler)
 
 	apps := r.Group("/apps")
 	apps.Use(CheckUserMiddleware())
