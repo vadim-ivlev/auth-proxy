@@ -85,9 +85,9 @@
                     <tr>
                       <td
                         align="center"
-                        style="color: #000000; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px; padding-top: 40px; padding-bottom: 30px;"
+                        style="color: #000000; font-style: normal; line-height: 30px; font-weight: 400; font-size: 22px; padding-top: 40px; padding-bottom: 0px;"
                       >
-                        Здравствуйте! Благодарим Вас за регистрацию на сайте
+                        Здравствуйте! Вы зарегистрированы на сайте
                         <a
                           href="https://rg.ru"
                           target="_blank"
@@ -95,8 +95,31 @@
                         >
                           rg.ru.
                         </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="color: #000000; font-style: normal; line-height: 30px; font-weight: 400; font-size: 22px; padding-top: 40px; padding-bottom: 0px;"
+                      >
+                        Теперь Вы можете:
+                        <div style="display: block;margin-top: 10px;margin-bottom: 10px;">
+                          <span style="color:  #f26922;font-weight: bold;">-</span><span style="padding-left: 4px;">Сохранять понравившиеся статьи (закладка Избранное)</span>
+                        </div>
+                        <div style="display: block;margin-bottom: 10px;">
+                          <span style="color:  #f26922;font-weight: bold;">-</span><span style="padding-left: 4px;">Подписаться на рассылки материалов свежего номера «Российской газеты» и опубликованных законов и нормативно-правовых актов (закладка Рассылки)</span>
+                        </div>
+                        <div style="display: block;margin-bottom: 10px;">
+                          <span style="color:  #f26922;font-weight: bold;">-</span><span style="padding-left: 4px;">Просматривать свою историю подписок на бумажную версию изданий (закладка Заказы)</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        align="center"
+                        style="color: #000000; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px; padding-top: 40px; padding-bottom: 30px;"
+                      >
                         {{if .SendPass}}
-                          Пароль для входа в систему: {{ .UserPass}}
+                          <span style="display: block;">Пароль для входа в систему: {{ .UserPass}}</span>
                         {{end}}
                         Для подтверждения регистрации перейдите <a href="{{ .Link}}" target="_blank" style="color: #3377cc; font-style: normal; line-height: 30px; font-weight: 400; font-size: 20px;">по ссылке</a>
                       </td>
