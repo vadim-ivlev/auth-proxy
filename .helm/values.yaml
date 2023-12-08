@@ -17,9 +17,9 @@ app:
       limits:
         _default: "16Mi"
         production: "32Mi"
-  domain:
-    _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
-    production: apiauth.rg.ru
+  # domain:
+  #   _default: "api-{{ .Values.werf.env }}.k8s.rg.ru"
+  #   production: apiauth.rg.ru
   site_host:
     _default: "https://frontend-{{ .Values.werf.env }}.k8s.rg.ru"
     production: "https://rg.ru"
