@@ -20,8 +20,8 @@ stages:
   - deploypreprod
   - deploy
   - deploy2
-  - deployk8s
   - deploy_new_cluster
+  - deployk8s
   - cleanup_registry
 
 variables:
