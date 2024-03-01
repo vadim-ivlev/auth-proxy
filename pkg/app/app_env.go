@@ -44,7 +44,7 @@ type appParams struct {
 	// host сайта
 	SiteHost string `json:"site_host" env:"site_host"`
 
-	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:""`
+	MailTmplPath string `json:"mail_tmpl_path" env:"mail_tmpl_path" envDefault:"./templates/mail"`
 	// подавлять чтение схемы GraphQL
 	NoSchema bool `json:"no_schema" env:"no_schema" envDefault:"false"`
 }
