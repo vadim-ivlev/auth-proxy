@@ -42,7 +42,7 @@ func create_user() *graphql.Field {
 			},
 			"pinrequired": &graphql.ArgumentConfig{
 				Type:        graphql.Boolean,
-				Description: "требуется ли PIN Google Authenticator",
+				Description: "требуется ли PIN Ya.Key Authenticator",
 			},
 			"noemail": &graphql.ArgumentConfig{
 				Type:         graphql.Boolean,
@@ -323,7 +323,7 @@ func update_user() *graphql.Field {
 			},
 			"pinrequired": &graphql.ArgumentConfig{
 				Type:        graphql.Boolean,
-				Description: "требуется ли PIN Google Authenticator",
+				Description: "требуется ли PIN Ya.Key Authenticator",
 			},
 			"emailconfirmed": &graphql.ArgumentConfig{
 				Type:        graphql.Boolean,

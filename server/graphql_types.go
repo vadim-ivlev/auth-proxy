@@ -32,15 +32,15 @@ var userFields = graphql.Fields{
 	},
 	"pinrequired": &graphql.Field{
 		Type:        graphql.Boolean,
-		Description: "требуется ли PIN Google Authenticator",
+		Description: "требуется ли PIN Ya.Key Authenticator",
 	},
 	"pinhash_temp": &graphql.Field{
 		Type:        graphql.String,
-		Description: "хэш для установки Google Authenticator",
+		Description: "хэш для установки Ya.Key Authenticator",
 	},
 	"pinhash": &graphql.Field{
 		Type:        graphql.String,
-		Description: "хэш для проверки PIN после установки Google Authenticator",
+		Description: "хэш для проверки PIN после установки Ya.Key Authenticator",
 	},
 	"emailhash": &graphql.Field{
 		Type:        graphql.String,
@@ -373,11 +373,11 @@ var isPinRequiredObject = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"use_pin": &graphql.Field{
 			Type:        graphql.Boolean,
-			Description: "Глобальный флаг нужно ли вводить PIN Google Authenticator при входе в систему",
+			Description: "Глобальный флаг нужно ли вводить PIN Ya.Key Authenticator при входе в систему",
 		},
 		"pinrequired": &graphql.Field{
 			Type:        graphql.Boolean,
-			Description: "требуется ли вводить PIN Google Authenticator для входа",
+			Description: "требуется ли вводить PIN Ya.Key Authenticator для входа",
 		},
 	},
 })
@@ -424,7 +424,7 @@ var appParamsObject = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"app_name": &graphql.Field{
 			Type:        graphql.String,
-			Description: "Имя приложения. Используется для генерации PIN Google Authenticator",
+			Description: "Имя приложения. Используется для генерации PIN Ya.Key Authenticator",
 		},
 		"selfreg": &graphql.Field{
 			Type:        graphql.Boolean,
