@@ -16,14 +16,14 @@ CREATE TABLE IF NOT EXISTS "user" (
     disabled integer NOT NULL DEFAULT 0,
 
     pashash text,                               -- временный хэш для смены пароля
-    pinrequired boolean NOT NULL DEFAULT FALSE, -- требуется ли вводить PIN Google Authenticator для входа в систему
+    pinrequired boolean NOT NULL DEFAULT FALSE, -- требуется ли вводить PIN Ya.Key Authenticator для входа в систему
 
     pinhash_temp text,                          -- Новое значение хэша, которое заменит старое при установке аутентификатора.
                                                 -- Наличие ненулевого значения в этом поле сигнализирует:
-                                                --   1. установил ли пользователь Google Authenticator на своем телефоне?
+                                                --   1. установил ли пользователь Ya.Key Authenticator на своем телефоне?
                                                 --   2. показывать ли ему страницу установки аутентификатора?
 
-	pinhash text,                               -- хэш для первоначальной настройки Google Authenticator
+	pinhash text,                               -- хэш для первоначальной настройки Ya.Key Authenticator
     emailhash text,                             -- хэш для проверки email
     emailconfirmed boolean NOT NULL DEFAULT FALSE, -- подтвержеден ли email пользователя
 
@@ -44,9 +44,9 @@ CREATE TABLE IF NOT EXISTS "user_deleted" (
     description text,
     disabled integer NOT NULL DEFAULT 0,
     pashash text,                               -- временный хэш для смены пароля
-    pinrequired boolean NOT NULL DEFAULT FALSE, -- требуется ли вводить PIN Google Authenticator для входа в систему
+    pinrequired boolean NOT NULL DEFAULT FALSE, -- требуется ли вводить PIN Ya.Key Authenticator для входа в систему
     pinhash_temp text,                          -- Новое значение хэша, которое заменит старое при установке аутентификатора.
-	pinhash text,                               -- хэш для первоначальной настройки Google Authenticator
+	pinhash text,                               -- хэш для первоначальной настройки Ya.Key Authenticator
     emailhash text,                             -- хэш для проверки email
     emailconfirmed boolean NOT NULL DEFAULT FALSE, -- подтвержеден ли email пользователя
     deleted_at timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- время удаления

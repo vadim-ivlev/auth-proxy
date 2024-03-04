@@ -252,7 +252,7 @@ sequenceDiagram
 * -reset_time (в минутах. По умолчанию 60).
 * -max_attempts (По умолчанию 5)
 
-## PIN Google Authenticator
+## PIN Ya.Key Authenticator
 Чтобы усложнить взлом методом автоматического перебора паролей, в систему встроен **PIN**.
 
 Узнать нужно ли пользователю вводить PIN можно с помощью метода `is_pin_required(username)`.
@@ -264,7 +264,7 @@ sequenceDiagram
 
     set_params(
         use_captcha   true  # Нужно ли вводить капчу при входе в систему
-        use_pin       false # Нужно ли вводить PIN Google Authenticator при входе в систему
+        use_pin       false # Нужно ли вводить PIN Ya.Key Authenticator при входе в систему
         max_attempts  5     # Максимально допустимое число ошибок ввода пароля
         reset_time    60    # Время сброса счетчика ошибок пароля в минутах
         selfreg       false # Могут ли пользователи регистрироваться самостоятельно
@@ -589,14 +589,6 @@ GET https://auth-proxy.rg.ru/oauthproviders
 сеть `auth_proxy_network`. Сеть порождается командой:
 
     sudo docker network create auth_proxy_network
-
-Запуск деплоя на продакшн сервере works
-
-    git push origin master:production
-
-или
-
-    sh/deploy.sh
 
 
 
