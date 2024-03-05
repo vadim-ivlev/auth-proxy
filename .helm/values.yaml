@@ -37,7 +37,7 @@ app:
     _default: false
   use_pin:
     production: true
-    _default: false
+    _default: true
   max_attempts:
     _default: 5
   reset_time:
