@@ -36,7 +36,7 @@ func login() *graphql.Field {
 			},
 			"pin": &graphql.ArgumentConfig{
 				Type:        graphql.String,
-				Description: "PIN by Google Authenticator",
+				Description: "PIN by Ya.Key Authenticator",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
@@ -151,7 +151,7 @@ func login_by_email() *graphql.Field {
 			},
 			"pin": &graphql.ArgumentConfig{
 				Type:        graphql.String,
-				Description: "PIN by Google Authenticator",
+				Description: "PIN by Ya.Key Authenticator",
 			},
 		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {

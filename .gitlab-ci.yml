@@ -1,52 +1,9 @@
-image: docker/compose:debian-1.29.1
-
-.docker_template: &docker_template
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
-  after_script:
-    - docker logout $CI_REGISTRY
-  script:
-    - cd /builds && docker build --build-arg GROUP=${GROUP} --build-arg CI_PROJECT_NAME=${CI_PROJECT_NAME} --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} --build-arg NODE_ENV=${NODE_ENV} --build-arg PRJ=${PRJ} -t ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} -f ${GROUP}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}/Dockerfile .
-    - docker tag ${REGISTRY}-${NODE_ENV}:${CI_PIPELINE_ID} ${REGISTRY}-${NODE_ENV}:latest
-    - docker push ${REGISTRY}-${NODE_ENV}
-
-.curl_install: &curl_install
-  before_script:
-    - apt update && apt upgrade -y
-    - apt install curl -y
-
 stages:
-  - build
-  - deploypreprod
-  - deploy
-  - deploy2
   - deployk8s
   - cleanup_registry
 
-variables:
-  GROUP: ${CI_PROJECT_NAMESPACE}
-  REGISTRY: ${CI_REGISTRY_IMAGE}/${CI_PROJECT_NAME}
-  BUILD_PATH: /builds/${GROUP}/${CI_PROJECT_NAME}
-  GIT_CLONE_PATH: ${BUILD_PATH}/${CI_PROJECT_NAME}
-
-# build dev:
-#   <<: *docker_template
-#   stage: build
-#   except:
-#     - master
-#     - tags
-#     - staging
-#     - staging-gl
-#     - production
-#     - production-gl
-#   tags:
-#     - glstaging
-#   variables:
-#     NODE_ENV: staging
 
 include:
-  - local: /gitlab-ci/gl-staging-tmpl.yml
-  - local: /gitlab-ci/gl-production-tmpl.yml
   - project: 'flant/pipeline'
     file: '/.gitlab-ci-k8sf.yml'
 

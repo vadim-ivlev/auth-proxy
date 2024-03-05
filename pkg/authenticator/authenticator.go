@@ -217,19 +217,19 @@ func ResetAuthenticator(c *gin.Context) {
 }
 
 // AuthenticatorBarcode возвращает изображение Barcode
-// Google Authenticator на телефоне клиента.
+// Ya.Key Authenticator на телефоне клиента.
 func AuthenticatorBarcode(c *gin.Context) {
 	AuthenticatorCode(c, "barcode")
 }
 
 // AuthenticatorManualCode возвращает код для ручной установки
-// Google Authenticator на телефоне клиента.
+// Ya.Key Authenticator на телефоне клиента.
 func AuthenticatorManualCode(c *gin.Context) {
 	AuthenticatorCode(c, "manualcode")
 }
 
 // AuthenticatorCode возвращает изображение Barcode
-// или код для ручной установки Google Authenticator на телефоне клиента
+// или код для ручной установки Ya.Key Authenticator на телефоне клиента
 // в зависимости от параметра:
 // codetype string = {barcode|manualcode}
 func AuthenticatorCode(c *gin.Context, codetype string) {

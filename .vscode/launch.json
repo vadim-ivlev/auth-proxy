@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:4400/admin/?url=http://localhost:4400",
+            "webRoot": "${workspaceFolder}"
+        },
+    
+        {
             "name": "Debug main.go",
             "type": "go",
             "request": "launch",

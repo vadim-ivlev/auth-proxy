@@ -29,7 +29,7 @@
 
 
         <div>
-            <label>Email</label>
+            <label>Email *</label>
             <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
             <input name="email" placeholder="емайл" {{#user}}disabled{{/user}}
             oninput="document.getElementById('newUserEmail').innerText = event.target.value; "
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-            <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
+            <label>password (минимум 6 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                 <input name="password" type="password" autocomplete="new-password" placeholder="новый пароль" value="{{user.password}}">
                 <!-- <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button> -->
@@ -50,7 +50,7 @@
         </div>
 
         <div>
-            <label>fullname</label>
+            <label>fullname *</label>
             <!-- <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}"> -->
             <input name="fullname"  placeholder="фамилия имя" value="{{#user}}{{user.fullname}}{{/user}}{{^user}}{{oauth2name}}{{/user}}">
         </div>
@@ -89,13 +89,13 @@
         <div class="{{^isAdmin}}hidden{{/isAdmin}}">
             <div>
                 <label>pinrequired</label>
-                <input name="pinrequired" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
-                <span> требовать PIN google authenticator</span>
+                <input name="pinrequired" type="checkbox"  title="требовать PIN Ya.Key authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
+                <span> требовать PIN Ya.Key authenticator</span>
             </div>
             <div>
-                <label>Затребована установка Google Authenticator</label>
-                <input name="pinset" type="checkbox" disabled title="Затребована установка Google Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
-                <span>Пользователь потребовал установки Google Authenticator</span>
+                <label>Затребована установка Ya.Key Authenticator</label>
+                <input name="pinset" type="checkbox" disabled title="Затребована установка Ya.Key Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
+                <span>Пользователь потребовал установки Ya.Key Authenticator</span>
             </div>
 
             {{^user}}
@@ -126,7 +126,7 @@
                             <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать временный PIN хэш</button>
                         </div>
                         <div>
-                            <b>pinhash_temp</b> служит для установки Google Authenticator. 
+                            <b>pinhash_temp</b> служит для установки Ya.Key Authenticator. 
                             Если вы изменили его, после сохранения изменений ниже будет показана
                             ссылка на страницу установки аутентификатора, которую необходимо переслать пользователю. 
                             Возможность ручной генерации  pinhash_temp оставлена на случай отказа почтовых серверов.
