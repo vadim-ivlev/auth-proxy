@@ -536,7 +536,7 @@ function errorMessage(errorElementID, errMsg) {
 
 // R E Q U E S T S  *******************************************************
 
-function doGraphQLRequest(query, responseHandler, errorElementID="loginError", xreqidHeader=null) {
+function doGraphQLRequest(query, responseHandler, errorElementID="loginError", xreqidHeader=null, onError) {
     fetch(model.appurl+'/graphql', { 
         // headers: new Headers({cache: "no-cache"}),
         headers: new Headers({"x-req-id": xreqidHeader}),
@@ -555,9 +555,14 @@ function doGraphQLRequest(query, responseHandler, errorElementID="loginError", x
             if (res.errors){
                 let errMsg = res.errors[0].message
                 errorMessage(errorElementID, errMsg)
+                if (onError && typeof onError === 'function'){ 
+                    onError(res)
+                }
                 return
             }
-            responseHandler && responseHandler(res)
+            if ( responseHandler && typeof responseHandler === 'function') { 
+                responseHandler(res)
+            }
         })
         .catch( e =>  errorMessage(errorElementID, "doGraphQLRequest: " +e ))    
     
@@ -685,8 +690,11 @@ function isPinRequired(username) {
         console.debug("isPinRequired()->", r);
         (r.use_pin && r.pinrequired) ? showElements(".pinclass") : hideElements(".pinclass"); 
     }
-       
-    doGraphQLRequest(query, onSuccess)   
+    function onError(res){
+        console.debug("isPinRequired().onError(res)->", res);
+        hideElements(".pinclass")
+    }
+    doGraphQLRequest(query, onSuccess, undefined, null, onError)   
 }
 
 
