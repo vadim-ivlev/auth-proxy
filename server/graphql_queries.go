@@ -147,6 +147,8 @@ func login() *graphql.Field {
 
 			// Провверяем наличие ошибок и возвращаем их если они есть
 			if totalErrorString != "" {
+				fmt.Println("ERROR login: ------------------------totalErrorString:")
+				fmt.Println(totalErrorString)
 				return "", errors.New(totalErrorString)
 			}
 
