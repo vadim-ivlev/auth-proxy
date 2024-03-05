@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -47,9 +48,9 @@ var (
 
 // ReadOauth2Config reads YAML with Oauth2 params
 func ReadOauth2Config(fileName string, env string) {
-	yamlFile, err := ioutil.ReadFile(fileName)
+	yamlFile, err := os.ReadFile(fileName)
 	if err != nil {
-		log.Println(err.Error())
+		log.Printf("ERROR ReadOauth2Config(): file=%s, env=%s, error=%s\n", fileName, env, err.Error())
 		return
 	}
 

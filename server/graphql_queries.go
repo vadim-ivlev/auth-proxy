@@ -17,6 +17,85 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+// Проверяет PIN и возвращает строку ошибки, если PIN неверный
+func CheckPin(username, pin string) (errorString string) {
+	// проверить PIN если установлен глобальный флаг
+	if app.Params.UsePin {
+		// нужен ли PIN для данного пользователя?
+		fmt.Println("Auth-proxy uses PIN !!!!!!")
+		pinRequired, _, _, err := authenticator.GetUserPinFields(username)
+		if err != nil {
+			errorString = fmt.Sprintf("CheckPin: email %s введен неверно. \n", username)
+			fmt.Println(errorString)
+			return
+		}
+		if pinRequired {
+			fmt.Printf("PIN is required for user %s !!! Entered pin=%s \n", username, pin)
+			// pin, _ := params.Args["pin"].(string)
+			// fmt.Println("pin = ", pin)
+			// правильный ли пин?
+			err := authenticator.IsPinGood(username, pin, false)
+			if err != nil {
+				errorString = fmt.Sprintf("CheckPin: пин введен неверно! %s. \n", err.Error())
+				fmt.Println(errorString)
+
+			}
+			fmt.Println("pin is good!!!!!!")
+		}
+	}
+	return
+}
+
+// Проверяет капчу и возвращает строку ошибки, если капча неверная
+func CheckCaptcha(username, captcha string, c *gin.Context) (errorString string) {
+	// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
+	if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
+		if captcha == "" {
+			return "CheckCaptcha: Вы должны ввести картинку. uri=/captcha. \n"
+		}
+
+		sessionCaptcha := GetSessionVariable(c, "captcha")
+		if sessionCaptcha != captcha {
+			return "CheckCaptcha: Картинка введена с ошибкой. uri=/captcha. \n"
+		}
+	}
+	return
+}
+
+// Проверить креденшелы пользователя и вернуть строку ошибки, если они неверные
+func CheckCredentials(username, password string, r int) (errorString string) {
+	// Пользователь не найден
+	if r == auth.NO_USER {
+		return fmt.Sprintf("CheckCredentials: пользователь %s не найден. \n", username)
+	} else
+	// Пользователь найден, но пароль неверный
+	if r == auth.WRONG_PASSWORD {
+		counter.IncrementCounter(username)
+		return fmt.Sprintf("CheckCredentials: пароль для %s введен неверно. \n", username)
+	} else
+	// Пользователь найден, но деактивирован
+	if r == auth.USER_DISABLED {
+		return fmt.Sprintf("CheckCredentials: пользователь %s деактивирован. \n", username)
+	} else
+	// Пользователь найден, но не подтвержден email
+	if r == auth.EMAIL_NOT_CONFIRMED {
+		// Если включена проверка подтверждения email, то
+		if !app.Params.LoginNotConfirmedEmail {
+			// получаем имя пользователя по email на случай, если введен email
+			username1 := auth.GetUserNameByEmail(username)
+			// проверяем, является ли пользователь админом
+			isAdmin := auth.AppUserRoleExist("auth", username, "authadmin") || auth.AppUserRoleExist("auth", username1, "authadmin")
+			fmt.Printf("User %s is admin: %v \n", username, isAdmin)
+			// Если пользователь не админ, то возвращаем ошибку и посылаем письмо для подтверждения email
+			if !isAdmin {
+				UpdateHashAndSendEmail(username, username, password, false)
+				return fmt.Sprintf("CheckCredentials: email %s не подтвержден. \n", username)
+			}
+		}
+	}
+	return
+}
+
 func login() *graphql.Field {
 	return &graphql.Field{
 		Type:        graphql.String,
@@ -45,87 +124,40 @@ func login() *graphql.Field {
 			username, _ := params.Args["username"].(string)
 			password, _ := params.Args["password"].(string)
 			captcha, _ := params.Args["captcha"].(string)
+			pin, _ := params.Args["pin"].(string)
 
-			// небольшая задержка чтобы усложнить перебор паролей
+			// небольшая задержка чтобы усложнить перебор паролей ??
 			time.Sleep(500 * time.Millisecond)
 
-			// проверить PIN если установлен глобальный флаг
-			if app.Params.UsePin {
-				// нужен ли PIN для данного пользователя?
-				fmt.Println("Auth-proxy uses PIN !!!!!!")
-				pinRequired, _, _, err := authenticator.GetUserPinFields(username)
-				if err != nil {
-					return nil, errors.New("email или пароль введен неверно")
-				}
-				if pinRequired {
-					fmt.Printf("PIN is required for user %s !!! \n", username)
-					pin, _ := params.Args["pin"].(string)
-					fmt.Println("pin = ", pin)
-					// правильный ли пин?
-					err := authenticator.IsPinGood(username, pin, false)
-					if err != nil {
-						fmt.Println("pin is bad!!!!!!")
-						return "", err
-					}
-					fmt.Println("pin is good!!!!!!")
-				}
-			}
-
-			// проверить капчу если превышено число допустимых ошибок входа /* или это админ */
-			if UseCaptcha && counter.IsTooBig(username) /* || auth.AppUserRoleExist("auth", username, "authadmin")*/ {
-				if captcha == "" {
-					return "", errors.New("Вы должны ввести картинку. uri=/captcha ")
-				}
-
-				sessionCaptcha := GetSessionVariable(c, "captcha")
-				if sessionCaptcha != captcha {
-					return "", errors.New("Картинка введена с ошибкой")
-				}
-			}
-
+			// ищем пользователя в базе данных
 			r, dbUsername := auth.CheckUserPassword(username, password)
-			// Пользователь не найден
-			if r == auth.NO_USER {
-				return nil, errors.New("email или пароль введен неверно")
-			} else
-			// Пользователь найден, но пароль неверный
-			if r == auth.WRONG_PASSWORD {
-				counter.IncrementCounter(username)
-				return nil, errors.New("email или пароль введен неверно")
-			} else
-			// Пользователь найден, но неактивирован
-			if r == auth.USER_DISABLED {
-				return nil, errors.New(username + " деактивирован.")
-			} else
-			// Пользователь найден, но не подтвержден email
-			if r == auth.EMAIL_NOT_CONFIRMED {
-				// Если включена проверка подтверждения email, то
-				if !app.Params.LoginNotConfirmedEmail {
-					// получаем имя пользователя по email на случай, если введен email
-					username1 := auth.GetUserNameByEmail(username)
-					// проверяем, является ли пользователь админом
-					isAdmin := auth.AppUserRoleExist("auth", username, "authadmin") || auth.AppUserRoleExist("auth", username1, "authadmin")
-					fmt.Printf("User %s is admin: %v \n", username, isAdmin)
-					// Если пользователь не админ, то возвращаем ошибку и посылаем письмо для подтверждения email
-					if !isAdmin {
-						UpdateHashAndSendEmail(username, username, password, false)
-						return nil, errors.New("email not confirmed")
-					}
-				}
-			}
 
-			// Все проверки пройдены. Устанавливаем переменные сессии
-			_ = SetSessionVariable(c, "user", dbUsername)
+			// Все сообщения об ошибках собираются в одну строку и возвращаются вместе
+			totalErrorString := ""
+			// Проверяем креденшелы, PIN и капчу
+			totalErrorString += CheckCredentials(username, password, r)
+			totalErrorString += CheckPin(username, pin)
+			totalErrorString += CheckCaptcha(username, captcha, c)
 
+			// Получаем запись пользователя из базы данных
 			user, err := auth.GetUser(username)
 			if err != nil {
-				return nil, errors.New("cant get record for " + username)
+				totalErrorString += fmt.Sprintf("GetUser: невозможно получить запись для пользователя %s. \n", username)
 			}
+
+			// Провверяем наличие ошибок и возвращаем их если они есть
+			if totalErrorString != "" {
+				return "", errors.New(totalErrorString)
+			}
+
+			// Все проверки пройдены.
+			// Устанавливаем переменные сессии
+			_ = SetSessionVariable(c, "user", dbUsername)
 			id := strconv.FormatInt(user["id"].(int64), 10)
 			_ = SetSessionVariable(c, "id", id)
 			email := user["email"].(string)
 			_ = SetSessionVariable(c, "email", email)
-
+			// Сбрасываем счетчик ошибок
 			counter.ResetCounter(username)
 			return "Success. " + dbUsername + " is authenticated.", nil
 		},
