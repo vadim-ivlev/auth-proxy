@@ -58,6 +58,10 @@ git:
     to: /app/templates
     owner: app
     group: app
+  - add: /configs/oauth2.yaml
+    to: /app/configs/oauth2.yaml
+    owner: app
+    group: app
 import:
   - image: build-artifact
     add: /app/auth-proxy
