@@ -1,22 +1,12 @@
 ## TODO:
 
-- merging 119-oauth
-- merging check-errors
-- merge with master
-- 117-2FA-2
+### 118. Двухфакторная аутентификация, отправка QR-кода
 
-поменять шаблоны писем и заменить в текстах гугл на яндекс
+- Если у приложения стоит флаг self_reg = false, 
+необходимо запретить метод самостоятельной отправки qr-кода по почте
 
-
-finish issue 91
-
-  - finish and test send_confirm_email()
-HTTP(err) - HTTPS
-- restore changing passwords by users in auth-admin 
-- add go templates for changing password
-
-- restore admin
-
+- Метод отправки qr-кода на почту может вызывать только администратор системы 
+(указывая email на который должен прийти QR)
 
 
 QUERY
