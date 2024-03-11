@@ -296,6 +296,48 @@ func send_html_email() *graphql.Field {
 	}
 }
 
+func send_password_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю email для установки пароля",
+		Type:        graphql.String,
+		Args: graphql.FieldConfigArgument{
+			"email_to": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email кому отправляется письмо",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			if !isAuthAdmin(params) {
+				return nil, errors.New("access denied")
+			}
+			// email_to, _ := params.Args["email_to"].(string)
+			return nil, errors.New("not implemented")
+			// return fmt.Sprintf("the letter to %s is sent", email_to), nil
+		},
+	}
+}
+
+func send_authenticator_email() *graphql.Field {
+	return &graphql.Field{
+		Description: "Послать пользователю email для установки аутентификатора",
+		Type:        graphql.String,
+		Args: graphql.FieldConfigArgument{
+			"email_to": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Email кому отправляется письмо",
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			if !isAuthAdmin(params) {
+				return nil, errors.New("access denied")
+			}
+			// email_to, _ := params.Args["email_to"].(string)
+			return nil, errors.New("not implemented")
+			// return fmt.Sprintf("the letter to %s is sent", email_to), nil
+		},
+	}
+}
+
 func update_user() *graphql.Field {
 	return &graphql.Field{
 		Description: "Обновить пользователя",
