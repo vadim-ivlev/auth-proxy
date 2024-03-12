@@ -55,9 +55,11 @@ var model = {
         if (v) {
             showElements("#selfRegButton")
             showElements("#selfRegHelp")
+            showElements("#reset-buttons")
         } else {
             hideElements("#selfRegButton")
             hideElements("#selfRegHelp")
+            hideElements("#reset-buttons")
         }
     },
     get selfRegAllowed() {
@@ -1229,6 +1231,39 @@ function deleteUser(id) {
     doGraphQLRequest(query, onSuccess)
     return false       
 }
+
+function sendPasswordEmail(email) {
+    var query =`
+    mutation {
+        send_password_email( email_to: "${email}") 
+        }
+    `
+    function onSuccess(res){
+        alert(JSON.stringify(res, null, 2))
+    }   
+    function onError(res){
+        alert(JSON.stringify(res, null, 2))
+    }
+    doGraphQLRequest(query, onSuccess, undefined, null, onError)
+    return false       
+}
+
+function sendAuthenticatorEmail(email) {
+    var query =`
+    mutation {
+        send_authenticator_email( email_to: "${email}") 
+        }
+    `
+    function onSuccess(res){
+        alert(JSON.stringify(res, null, 2))
+    } 
+    function onError(res){
+        alert(JSON.stringify(res, null, 2))
+    }
+    doGraphQLRequest(query, onSuccess, undefined, null, onError)
+    return false       
+}
+
 
 function fetchGroupsOfTheUser(user_id) {
     var query =`

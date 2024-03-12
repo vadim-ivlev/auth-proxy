@@ -145,9 +145,16 @@ func ConfirmEmail(c *gin.Context) {
 // и посылает ему письмо по email с адресом страницы установки пароля.
 func ResetPassword(c *gin.Context) {
 	username := c.Query("username")
+	if !app.Params.Selfreg {
+		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+	}
+	result, err := ResetPasswordByUsername(username)
+	c.JSON(200, gin.H{"result": result, "error": err})
+}
 
+func ResetPasswordByUsername(username string) (result string, err error) {
 	if username == "" {
-		c.JSON(200, gin.H{"result": false, "error": "username is required"})
+		err = errors.New("username is required")
 		return
 	}
 	// - устанавливаем поле pashash в для пользователя базе
@@ -155,65 +162,66 @@ func ResetPassword(c *gin.Context) {
 
 	log.Printf("User %s set reset password", username)
 
-	_, err := db.QueryExec(`UPDATE "user" SET  pashash  = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
+	_, err = db.QueryExec(`UPDATE "user" SET  pashash  = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	// - генерируем ссылку на страничку
-	// link := fmt.Sprintf(`%v/admin/set-password.html#username=%v&hash=%v&authurl=%v`, app.Params.AdminAPI, url.QueryEscape(username), hash, app.Params.AdminAPI)
 	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 	email, _ := user["email"].(string)
 	// посылаем письмо пользователю
 	err = mail.SendResetPasswordEmail(email, username, hash)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	c.JSON(200, gin.H{"result": "Письмо с инструкциями выслано по электронной почте ", "error": nil})
+	result = fmt.Sprintf("Письмо с инструкциями выслано на %s", email)
+	return
 }
 
 // ResetAuthenticator устанавливает поле pinhash для пользователя в базе данных
 // и посылает ему письмо по email с адресом страницы установки пина.
 func ResetAuthenticator(c *gin.Context) {
 	username := c.Query("username")
-	// adminurl := c.Query("adminurl")
-	// authurl := c.Query("authurl")
+	if !app.Params.Selfreg {
+		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+	}
+	result, err := ResetAuthenticatorByUsername(username)
+	c.JSON(200, gin.H{"result": result, "error": err})
+}
 
+func ResetAuthenticatorByUsername(username string) (result string, err error) {
 	if username == "" {
-		c.JSON(200, gin.H{"result": false, "error": "username is required"})
+		err = errors.New("username is required")
 		return
 	}
 	// - устанавливаем  pinhash_temp в базе
 	hash := uuid.New().String()
 	log.Println("hash=", hash)
 
-	_, err := db.QueryExec(`UPDATE "user" SET pinhash_temp = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
+	_, err = db.QueryExec(`UPDATE "user" SET pinhash_temp = $1  WHERE username = $2 OR email = $2 ;`, hash, username)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	// - генерируем ссылку на страничку
-	link := fmt.Sprintf(`%v/set-authenticator.html#username=%v&hash=%v&authurl=%v`, app.Params.AdminAPI+"/admin", url.QueryEscape(username), hash, app.Params.AdminAPI)
 	// - находим email пользователя
 	user, err := db.QueryRowMap(`SELECT * FROM "user" WHERE username=$1 OR email=$1`, username)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
+
 	email, _ := user["email"].(string)
+	// - генерируем ссылку на страничку
+	link := fmt.Sprintf(`%v/set-authenticator.html#username=%v&hash=%v&authurl=%v`, app.Params.AdminAPI+"/admin", url.QueryEscape(username), hash, app.Params.AdminAPI)
+
 	// посылаем письмо пользователю
 	err = mail.SendAuthenticatorEmail(email, link)
 	if err != nil {
-		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
-	c.JSON(200, gin.H{"result": "Письмо с инструкциями выслано по электронной почте ", "error": nil})
+	result = fmt.Sprintf("Письмо с инструкциями выслано на %s", email)
+	return
 }
 
 // AuthenticatorBarcode возвращает изображение Barcode

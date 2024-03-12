@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth-proxy/pkg/auth"
+	"auth-proxy/pkg/authenticator"
 	"auth-proxy/pkg/db"
 	"auth-proxy/pkg/mail"
 	"crypto/sha256"
@@ -310,9 +311,8 @@ func send_password_email() *graphql.Field {
 			if !isAuthAdmin(params) {
 				return nil, errors.New("access denied")
 			}
-			// email_to, _ := params.Args["email_to"].(string)
-			return nil, errors.New("not implemented")
-			// return fmt.Sprintf("the letter to %s is sent", email_to), nil
+			email_to, _ := params.Args["email_to"].(string)
+			return authenticator.ResetPasswordByUsername(email_to)
 		},
 	}
 }
@@ -331,9 +331,8 @@ func send_authenticator_email() *graphql.Field {
 			if !isAuthAdmin(params) {
 				return nil, errors.New("access denied")
 			}
-			// email_to, _ := params.Args["email_to"].(string)
-			return nil, errors.New("not implemented")
-			// return fmt.Sprintf("the letter to %s is sent", email_to), nil
+			email_to, _ := params.Args["email_to"].(string)
+			return authenticator.ResetAuthenticatorByUsername(email_to)
 		},
 	}
 }

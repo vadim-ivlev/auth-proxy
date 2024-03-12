@@ -127,7 +127,7 @@ func login() *graphql.Field {
 			pin, _ := params.Args["pin"].(string)
 
 			// небольшая задержка чтобы усложнить перебор паролей ??
-			time.Sleep(500 * time.Millisecond)
+			// time.Sleep(500 * time.Millisecond)
 
 			// ищем пользователя в базе данных
 			r, dbUsername := auth.CheckUserPassword(username, password)

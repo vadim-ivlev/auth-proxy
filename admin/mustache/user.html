@@ -90,7 +90,7 @@
             <div>
                 <label>pinrequired</label>
                 <input name="pinrequired" type="checkbox"  title="требовать PIN Ya.Key authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
-                <span> требовать PIN Ya.Key authenticator</span>
+                <span> требовать PIN Ya.Key1 authenticator</span>
             </div>
             <div>
                 <label>Затребована установка Ya.Key Authenticator</label>
@@ -111,7 +111,7 @@
             </div>
             {{/user}}
             
-<!-- 
+            <!-- 
             <div>
                 <label><a href="" onclick="toggleElements('#pinhashfields'); return false;" style="opacity:0.3;">pinhash поля ▷</a></label>
                 <div id="pinhashfields" class="hidden">
@@ -138,10 +138,16 @@
                     </div>
                 </div>
             </div> 
--->
+            -->
+
+            <br>
+            <label style="display: inline-block;">Послать Email об</label>&nbsp;&nbsp;
+            <button class="button button-outline" onclick="sendPasswordEmail('{{user.email}}');" >установке пароля</button>
+            <button class="button button-outline" onclick="sendAuthenticatorEmail('{{user.email}}');" >установке аутентификатора</button>
 
 
         </div>
+
         
         <br>
         <div style="text-align: right;">
@@ -153,7 +159,7 @@
             {{! #isAdmin}}
             <button type="button" class="button button-outline" onclick="deleteUser('{{user.id}}'); showPage('users');">удалить</button>
             {{! /isAdmin}}
-            <button type="button" class="button button-outline" onclick="updateUser(event)">сохранить изменения</button>
+            <button type="button" class="button" onclick="updateUser(event)">сохранить изменения</button>
             {{/user}}
             <div id="userError" class="error"></div>
         </div>
