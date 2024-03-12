@@ -30,8 +30,8 @@ app:
   secure:
     _default: true
   selfreg:
-    production: true
-    _default: true
+    production: false
+    _default: false
   login_not_confirmed_email:
     _default: false
   no_schema:
