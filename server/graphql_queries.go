@@ -22,7 +22,7 @@ func CheckPin(username, pin string) (errorString string) {
 	// проверить PIN если установлен глобальный флаг
 	if app.Params.UsePin {
 		// нужен ли PIN для данного пользователя?
-		fmt.Println("Auth-proxy uses PIN !!!!!!")
+		fmt.Println("Auth-proxy uses PIN. use_pin = true !!!!!!")
 		pinRequired, _, _, err := authenticator.GetUserPinFields(username)
 		if err != nil {
 			errorString = fmt.Sprintf("CheckPin: email %s введен неверно. \n", username)
@@ -31,14 +31,13 @@ func CheckPin(username, pin string) (errorString string) {
 		}
 		if pinRequired {
 			fmt.Printf("PIN is required for user %s !!! Entered pin=%s \n", username, pin)
-			// pin, _ := params.Args["pin"].(string)
-			// fmt.Println("pin = ", pin)
+			// TODO: проверить, не превышает ли количество запросов для данного пользователя разрешенный максимум
 			// правильный ли пин?
 			err := authenticator.IsPinGood(username, pin, false)
 			if err != nil {
 				errorString = fmt.Sprintf("CheckPin: пин введен неверно! %s. \n", err.Error())
 				fmt.Println(errorString)
-
+				// TODO: увеличить счетчик ошибок ввода PIN
 			}
 			fmt.Println("pin is good!!!!!!")
 		}
