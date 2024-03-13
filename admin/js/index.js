@@ -1239,7 +1239,7 @@ function sendPasswordEmail(email) {
         }
     `
     function onSuccess(res){
-        alert(JSON.stringify(res, null, 2))
+        alert(JSON.stringify(res.data.send_password_email, null, 2))
     }   
     function onError(res){
         alert(JSON.stringify(res, null, 2))
@@ -1255,7 +1255,7 @@ function sendAuthenticatorEmail(email) {
         }
     `
     function onSuccess(res){
-        alert(JSON.stringify(res, null, 2))
+        alert(JSON.stringify(res.data.send_authenticator_email, null, 2))
     } 
     function onError(res){
         alert(JSON.stringify(res, null, 2))
