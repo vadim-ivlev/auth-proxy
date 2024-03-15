@@ -11,20 +11,29 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestRequestCounter_AddRequest(t *testing.T) {
+func printRequestTimes() {
+	for i, request := range Requests {
+		fmt.Printf("  #%d %v\n", i, request.PinRequestTime)
+	}
+}
 
-	// создаем новый RequestThrottler
-	// с интервалом времени 1 секунда и максимальным количеством запросов 10
-	rc := NewRequestThrottler(1*time.Second, 10)
+func TestRequestCounter_AddRequest(t *testing.T) {
+	// устанавливаем интервал времени для запросов
+	Params.PinRequestsTimeInterval = 5 * time.Second
+	// устанавливаем максимальное количество запросов
+	Params.MaxPinRequestsPerInterval = 3
 
 	// делаем несколько попыток добавить запрос
 	// с произвольным интервалом ожидания между попытками
 
-	for i := 0; i < 100; i++ {
-		requestsNumber, timeToWait, ok := rc.TryToAddRequest()
+	for i := 0; i < 30; i++ {
+		requestsNumber, timeToWait, ok := TryToAddRequest("aaa@bbb.ccc")
 		fmt.Printf("requestsNumber=%v, timeToWait=%v ok=%v\n", requestsNumber, timeToWait, ok)
+		if ok {
+			printRequestTimes()
+		}
 		// произвольный интервал ожидания в промежутке от 0 до 100 миллисекунд
-		waitingTime := rand.Intn(100)
+		waitingTime := rand.Intn(500)
 		fmt.Printf("Ждем %v миллисекунд\n", waitingTime)
 		time.Sleep(time.Duration(waitingTime) * time.Millisecond)
 	}
