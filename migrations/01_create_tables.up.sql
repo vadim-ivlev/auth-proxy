@@ -131,3 +131,15 @@ CREATE TABLE IF NOT EXISTS group_app_role (
 );
 
 
+-- таблица ограничителя потока запросов. 
+-- Пересоздается при каждом запуске сервера.
+DROP INDEX IF EXISTS requests_email_pin_request_time_idx;
+DROP INDEX IF EXISTS requests_pin_request_time_idx;
+DROP TABLE IF EXISTS requests;
+
+CREATE TABLE IF NOT EXISTS requests (
+    email text NOT NULL DEFAULT '',
+    pin_request_time BIGINT NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS requests_email_pin_request_time_idx ON requests (email, pin_request_time);
+CREATE INDEX IF NOT EXISTS requests_pin_request_time_idx ON requests (pin_request_time);
