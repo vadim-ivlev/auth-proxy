@@ -1,0 +1,24 @@
+# Используется расширение vscode extension: REST Client. 
+# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+# Перед исполнением запустите приложение 
+
+# Конечная точка GraphQL
+@END_POINT=http://localhost:4400/schema
+
+
+### 1. login
+POST {{END_POINT}}
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query{
+  login(
+  username: "admin@rg.ru", 
+  password: "rosgas2011", 
+  captcha: "1234", 
+  pin:"123456"
+  ) 
+}
+
+

@@ -72,15 +72,19 @@ func printRequestTimesDB() {
 }
 
 func TestRequestCounter_TryToAddRequestDB(t *testing.T) {
+	fmt.Printf("Params: %v\n", Params)
+
 	// устанавливаем интервал времени для запросов
-	Params.PinRequestsTimeInterval = 5 * time.Second
+	Params.PinRequestsTimeInterval = 12 * time.Second
 	// устанавливаем максимальное количество запросов
-	Params.MaxPinRequestsPerInterval = 3
+	Params.MaxPinRequestsPerInterval = 2
+
+	fmt.Printf("Params: %v\n", Params)
 
 	// делаем несколько попыток добавить запрос
 	// с произвольным интервалом ожидания между попытками
 
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 100; i++ {
 		requestsNumber, timeToWait, ok := TryToAddRequestDB("aaa@bbb.ccc")
 		fmt.Printf("requestsNumber=%v, timeToWait=%v ok=%v\n", requestsNumber, timeToWait, ok)
 		if ok {

@@ -5,6 +5,7 @@ import (
 	"auth-proxy/pkg/auth"
 	"auth-proxy/pkg/authenticator"
 	"auth-proxy/pkg/counter"
+	"auth-proxy/pkg/requestthrottler"
 	"strconv"
 
 	"auth-proxy/pkg/db"
@@ -31,13 +32,20 @@ func CheckPin(username, pin string) (errorString string) {
 		}
 		if pinRequired {
 			fmt.Printf("PIN is required for user %s !!! Entered pin=%s \n", username, pin)
-			// TODO: проверить, не превышает ли количество запросов для данного пользователя разрешенный максимум
+			// проверить, не превышает ли количество запросов для данного пользователя разрешенный максимум
+			requestsNumber, timeToWait, ok := requestthrottler.TryToAddRequestDB("aaa@bbb.ccc")
+			if !ok {
+				errorString = fmt.Sprintf("CheckPin: превышено число запросов PIN %v. Попробуйте через %v. \n", requestsNumber, timeToWait)
+				fmt.Println(errorString)
+				return
+			}
 			// правильный ли пин?
 			err := authenticator.IsPinGood(username, pin, false)
 			if err != nil {
 				errorString = fmt.Sprintf("CheckPin: пин введен неверно! %s. \n", err.Error())
 				fmt.Println(errorString)
-				// TODO: увеличить счетчик ошибок ввода PIN
+				// увеличить счетчик ошибок ввода PIN
+				// requestthrottler.AddRequestDB(username)
 			}
 			fmt.Println("pin is good!!!!!!")
 		}

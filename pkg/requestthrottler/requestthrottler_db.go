@@ -1,3 +1,5 @@
+// Вариант использующий базу данных для хранения запросов
+
 package requestthrottler
 
 import (
@@ -15,8 +17,6 @@ func RemoveOldPinRequestsDB() {
 		return
 	}
 	_ = res
-	// rowsAffected, _ := res.RowsAffected()
-	// fmt.Printf("RemoveOldPinRequestsDB: %d rows affected\n", rowsAffected)
 }
 
 // getPinRequestsNumberDB возвращает количество запросов в RequestTrottler для указанного email из таблицы requests
