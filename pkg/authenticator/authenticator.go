@@ -146,7 +146,7 @@ func ConfirmEmail(c *gin.Context) {
 func ResetPassword(c *gin.Context) {
 	username := c.Query("username")
 	if !app.Params.Selfreg {
-		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+		c.JSON(200, gin.H{"result": false, "error": "Восстановление пароля запрещено. Обратитесь к администратору."})
 		return
 	}
 	result, err := ResetPasswordByUsername(username)
@@ -187,7 +187,7 @@ func ResetPasswordByUsername(username string) (result string, err error) {
 func ResetAuthenticator(c *gin.Context) {
 	username := c.Query("username")
 	if !app.Params.Selfreg {
-		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+		c.JSON(200, gin.H{"result": false, "error": "Установка аутентификатора запрещена. Обратитесь к администратору."})
 		return
 	}
 	result, err := ResetAuthenticatorByUsername(username)
