@@ -74,7 +74,7 @@ func buildOauthConfig(provider string) *oauth2.Config {
 			TokenURL: params.TokenURI,
 		},
 		Scopes:      params.Scopes,
-		RedirectURL: params.RedirectURI,
+		RedirectURL: app.Params.AdminAPI + params.RedirectURI,
 	}
 	return oauthConfig
 }

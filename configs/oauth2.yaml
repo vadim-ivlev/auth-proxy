@@ -14,7 +14,7 @@ front:
     user_info_uri: https://oauth.mail.ru/userinfo?access_token=
     email_field_name: email
     name_field_name: name
-    redirect_uri: http://localhost:4400/oauthcallback/mailru
+    redirect_uri: /oauthcallback/mailru
     scopes: 
       - userinfo
 
@@ -29,7 +29,7 @@ front:
     user_info_uri: https://api.vk.com/method/users.get?&v=5.103&access_token=
     email_field_name: email
     name_field_name: response
-    redirect_uri: http://localhost:4400/oauthcallback/vk
+    redirect_uri: /oauthcallback/vk
     scopes: 
       - email
 
@@ -43,7 +43,7 @@ front:
     user_info_uri: https://api.github.com/user/emails?access_token=
     email_field_name: email
     name_field_name: name
-    redirect_uri: http://localhost:4400/oauthcallback/github
+    redirect_uri: /oauthcallback/github
     scopes: 
       - user:email
 
@@ -58,7 +58,7 @@ front:
     user_info_uri: https://graph.facebook.com/me?fields=id,name,email&access_token=
     email_field_name: email
     name_field_name: name
-    redirect_uri: http://localhost:4400/oauthcallback/facebook
+    redirect_uri: /oauthcallback/facebook
     scopes: 
       - email
 
@@ -73,7 +73,7 @@ front:
     user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo?access_token=
     email_field_name: email
     name_field_name: name
-    redirect_uri: http://localhost:4400/oauthcallback/google
+    redirect_uri: /oauthcallback/google
     scopes: 
       - https://www.googleapis.com/auth/userinfo.profile
       - https://www.googleapis.com/auth/userinfo.email
@@ -91,6 +91,6 @@ front:
     user_info_uri: https://login.yandex.ru/info?oauth_token=
     email_field_name: default_email
     name_field_name: display_name
-    redirect_uri: http://localhost:4400/oauthcallback/yandex
+    redirect_uri: /oauthcallback/yandex
     scopes: ["login:birthday", "login:email", "login:info", "login:avatar"]
 
