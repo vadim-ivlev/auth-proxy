@@ -147,6 +147,7 @@ func ResetPassword(c *gin.Context) {
 	username := c.Query("username")
 	if !app.Params.Selfreg {
 		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+		return
 	}
 	result, err := ResetPasswordByUsername(username)
 	c.JSON(200, gin.H{"result": result, "error": err})
@@ -187,6 +188,7 @@ func ResetAuthenticator(c *gin.Context) {
 	username := c.Query("username")
 	if !app.Params.Selfreg {
 		c.JSON(200, gin.H{"result": false, "error": "Саморегистрация отключена. Свяжитесь с администратором."})
+		return
 	}
 	result, err := ResetAuthenticatorByUsername(username)
 	c.JSON(200, gin.H{"result": result, "error": err})
